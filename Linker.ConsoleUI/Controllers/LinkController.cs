@@ -100,12 +100,16 @@ namespace Linker.ConsoleUI.Controllers
             var _tags = PromptForInput("Tags (pipe seperated): ");
             var tags = _tags.Split(",");
 
+            var now = DateTime.Now;
+
             var newLink = new Link()
             {
                 Name = name,
                 Url = url,
                 Description = description,
                 Tags = tags,
+                CreatedAt = now,
+                ModifiedAt = now,
             };
 
             this.linkRepository.Add(newLink);
