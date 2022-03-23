@@ -167,19 +167,21 @@ namespace Linker.ConsoleUI.Controllers
 
         public void RemoveLink()
         {
-            string MockGetGuid() => Guid.NewGuid().ToString();
+            Console.Clear();
 
-            Console.WriteLine("======================================");
-            Console.WriteLine("================Remove================");
+            this.DisplayAllLinks();
 
-            var _id = PromptForInput("Select an ID to remove: ");
-            int id;
+            var id = PromptForInput("Select an ID to remove: ", "");
 
-            int.TryParse(_id, out id);
-
-            this.linkRepository.Remove(MockGetGuid());
-
-            Console.WriteLine("Successfully removed link");
+            try
+            {
+                this.linkRepository.Remove(id);
+                Console.WriteLine("Successfully removed link");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failed to remove link! Error: {0}", ex.Message);
+            }
         }
 
         private static string PromptForInput(params object[] prompt)
