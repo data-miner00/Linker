@@ -1,4 +1,5 @@
 ﻿using System;
+using EnsureThat;
 using Linker.Core.Controllers;
 
 namespace Linker.ConsoleUI
@@ -9,7 +10,7 @@ namespace Linker.ConsoleUI
 
         public Startup(ILinkController linkController)
         {
-            this.linkController = linkController;
+            this.linkController = EnsureArg.IsNotNull(linkController, nameof(linkController));
         }
 
         public void Run()
