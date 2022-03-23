@@ -136,14 +136,17 @@ namespace Linker.ConsoleUI.Controllers
 
         public void InsertLink()
         {
-            Console.WriteLine("======================================");
-            Console.WriteLine("===============Insert=================");
+            Console.Clear();
 
-            var name = PromptForInput("Name: ");
-            var url = PromptForInput("Url: ");
-            var description = PromptForInput("Description: ");
-            var _tags = PromptForInput("Tags (pipe seperated): ");
-            var tags = _tags.Split(",");
+            const string labelTemplate = "{0}: ";
+            const int labelPad = 13;
+
+            var name = PromptForInput(labelTemplate, "Name".PadRight(labelPad));
+            var url = PromptForInput(labelTemplate, "Url".PadRight(labelPad));
+            var description = PromptForInput(labelTemplate, "Description".PadRight(labelPad));
+
+            var _tags = PromptForInput(labelTemplate, "Tags".PadRight(labelPad));
+            var tags = _tags.Split(",").Select(tag => tag.Trim());
 
             var now = DateTime.Now;
 
