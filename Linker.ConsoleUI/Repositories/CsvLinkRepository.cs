@@ -58,13 +58,11 @@ namespace Linker.ConsoleUI.Repositories
         }
 
         private List<Link> links;
-        private bool fileExist = true;
 
         public CsvLinkRepository()
         {
             if (!File.Exists(pathToData))
             {
-                fileExist = false;
                 links = new List<Link>();
                 Console.WriteLine("No data found");
             } else
