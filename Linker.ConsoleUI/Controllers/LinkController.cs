@@ -25,33 +25,38 @@ namespace Linker.ConsoleUI.Controllers
 
             static void RenderLinks(IEnumerable<Link> links)
             {
-                var displayTemplate = "|| {0} || {1} || {2} || {3} || {4} ||";
+                var displayTemplate = "|| {0} || {1} || {2} || {3} || {4} || {5} ||";
                 var indexPad = 6;
+                var idPad = 38;
                 var namePad = 20;
                 var urlPad = 30;
                 var tagsPad = 20;
                 var modifiedPad = 23;
 
-                Console.WriteLine("=========================================================================================================================");
+                Console.WriteLine("".PadRight(163, '='));
                 Console.WriteLine(
                     displayTemplate,
                     "Index".PadRight(indexPad),
+                    "Id".PadRight(idPad),
                     "Name".PadRight(namePad),
                     "Url".PadRight(urlPad),
                     "Tags".PadRight(tagsPad),
                     "Modified Date".PadRight(modifiedPad));
-                Console.WriteLine("=========================================================================================================================");
-                
+                Console.WriteLine("".PadRight(163, '='));
+
                 foreach (var (link, index) in links.WithIndex())
                 {
                     Console.WriteLine(
                         displayTemplate,
                         (index + 1).ToString().PadRight(indexPad),
+                        link.Id.PadRight(idPad),
                         link.Name.TruncateWithEllipsis(namePad - 3).PadRight(namePad),
                         link.Url.TruncateWithEllipsis(urlPad - 3).PadRight(urlPad),
                         string.Join(", ", link.Tags).TruncateWithEllipsis(tagsPad - 3).PadRight(tagsPad),
                         link.ModifiedAt.ToString().PadRight(modifiedPad));
                 }
+
+                Console.WriteLine("".PadRight(163, '='));
             }
         }
 
