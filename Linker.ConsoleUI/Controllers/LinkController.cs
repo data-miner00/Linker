@@ -19,6 +19,7 @@ namespace Linker.ConsoleUI.Controllers
 
         public void DisplayAllLinks()
         {
+            Console.Clear();
             Console.WriteLine("List of collected links.");
 
             RenderLinks(this.linkRepository.GetAll());
@@ -62,6 +63,7 @@ namespace Linker.ConsoleUI.Controllers
 
         public void DisplaySingleLink()
         {
+            Console.Clear();
             var id = PromptForInput("Enter the ID of the link: ");
 
             var link = this.linkRepository.GetById(id);
