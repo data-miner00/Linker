@@ -114,16 +114,19 @@ namespace Linker.ConsoleUI.Repositories
         {
             var _link = this.links.Where(l => l.Id == link.Id).FirstOrDefault();
             
-            _link.Name = link.Name;
-            _link.Url = link.Url;
+            _link.Name = link.Name ?? _link.Name;
+            _link.Url = link.Url ?? _link.Url;
+            _link.Domain = link.Domain ?? _link.Domain;
+            _link.Description = link.Description ?? _link.Description;
+            _link.Tags = link.Tags ?? _link.Tags;
+
             _link.Category = link.Category;
-            _link.Domain = link.Domain;
-            _link.IsSubdomain = link.IsSubdomain;
-            _link.Description = link.Description;
-            _link.Tags = link.Tags;
-            _link.ModifiedAt = DateTime.Now;
             _link.MainLanguage = link.MainLanguage;
+
+            _link.IsSubdomain = link.IsSubdomain;
             _link.IsMultilingual = link.IsMultilingual;
+
+            _link.ModifiedAt = DateTime.Now;
         }
 
         public int Commit()

@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Linker.ConsoleUI.Extensions;
+using System.Linq;
+using System.Reflection;
 
 namespace Linker.ConsoleUI.Controllers
 {
@@ -64,7 +66,7 @@ namespace Linker.ConsoleUI.Controllers
         public void DisplaySingleLink()
         {
             Console.Clear();
-            var id = PromptForInput("Enter the ID of the link: ");
+            var id = PromptForInput("Enter the ID of the link: ", "");
 
             var link = this.linkRepository.GetById(id);
 
@@ -94,36 +96,42 @@ namespace Linker.ConsoleUI.Controllers
 
         public void UpdateLink()
         {
-            string MockGetGuid() => Guid.NewGuid().ToString();
-
-            Console.WriteLine("======================================");
-            Console.WriteLine("==============Update==================");
+            Console.Clear();
 
             this.DisplayAllLinks();
 
-            Console.WriteLine("Please select the ID of the link to be updated: ");
-            int index;
-            int.TryParse(Console.ReadLine(), out index);
+            var id = PromptForInput("Please select the ID of the link to be updated: ", "");
 
-            Console.WriteLine("Insert the details that needed to be changed. Hit Enter to skip.");
-            var name = PromptForInput("Name: ");
-            var url = PromptForInput("Url: ");
-            var description = PromptForInput("Description: ");
-            var _tags = PromptForInput("Tags (comma seperated): ");
-            var tags = _tags.Split(",");
+            Console.WriteLine("\nInsert the details that needed to be changed. Hit Enter to skip.");
+
+            const string labelTemplate = "{0}: ";
+            const int labelPad = 13;
+
+            var name = PromptForInput(labelTemplate, "Name".PadRight(labelPad)).ReturnNullIfEmpty();
+            var url = PromptForInput(labelTemplate, "Url".PadRight(labelPad)).ReturnNullIfEmpty();
+            var description = PromptForInput(labelTemplate, "Description".PadRight(labelPad)).ReturnNullIfEmpty();
+
+            var _tags = PromptForInput(labelTemplate, "Tags".PadRight(labelPad));
+            var tags = string.IsNullOrEmpty(_tags) ? null : _tags.Split(",").Select(tag => tag.Trim());
 
             var link = new Link()
             {
-                Id = MockGetGuid(),
+                Id = id,
                 Name = name,
                 Url = url,
                 Description = description,
                 Tags = tags,
             };
 
-            this.linkRepository.Update(link);
-
-            Console.WriteLine("Successfully updated link!");
+            try
+            {
+                this.linkRepository.Update(link);
+                Console.WriteLine("Successfully updated link!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failed update link! Error: {0}", ex.Message);
+            }
         }
 
         public void InsertLink()
@@ -171,12 +179,16 @@ namespace Linker.ConsoleUI.Controllers
             Console.WriteLine("Successfully removed link");
         }
 
-        private string PromptForInput(string prompt)
+        private static string PromptForInput(params object[] prompt)
         {
+            var consoleWrite = typeof(Console)
+                .GetMethods()
+                .Where(x => x.Name == "Write" && x.IsStatic)
+                .FirstOrDefault();
 
-            Console.Write(prompt);
+            consoleWrite.Invoke(null, prompt);
+
             var input = Console.ReadLine();
-
             return input;
         }
 
