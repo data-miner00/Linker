@@ -62,21 +62,31 @@ namespace Linker.ConsoleUI.Controllers
 
         public void DisplaySingleLink()
         {
-            string MockGetGuid() => Guid.NewGuid().ToString();
-            Console.WriteLine("======================================");
-            Console.WriteLine("============Display One===============");
-
             var id = PromptForInput("Enter the ID of the link: ");
 
-            var link = this.linkRepository.GetById(MockGetGuid());
+            var link = this.linkRepository.GetById(id);
 
-            Console.WriteLine("====================");
-            Console.WriteLine("{0} - {1}", link.Name, link.Url);
-            Console.WriteLine("====================");
-            Console.WriteLine(link.Description);
-            Console.WriteLine("--------------------");
-            Console.WriteLine("Tags: ", string.Join(", ", link.Tags));
-            Console.WriteLine("\n\n----- End of display -----");
+            var dividerLength = 100;
+            var labelPad = 15;
+            var contentPad = 83;
+            
+            Console.WriteLine("|{0}|", "".PadRight(dividerLength, '='));
+            Console.WriteLine("|{0}|", "".PadRight(dividerLength, ' '));
+            Console.WriteLine("|{0}|", link.Name.PadSides(dividerLength));
+            Console.WriteLine("|{0}|", "".PadRight(dividerLength, ' '));
+            Console.WriteLine("|{0}|", "".PadRight(dividerLength, '='));
+            Console.WriteLine("|{0}: {1}|", "Id".PadRight(labelPad), link.Id.PadRight(contentPad));
+            Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
+            Console.WriteLine("|{0}: {1}|", "Url".PadRight(labelPad), link.Url.PadRight(contentPad));
+            Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
+            Console.WriteLine("|{0}: {1}|", "Language".PadRight(labelPad), link.MainLanguage.ToString().PadRight(contentPad));
+            Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
+            Console.WriteLine("|{0}: {1}|", "Description".PadRight(labelPad), link.Description.PadRight(contentPad));
+            Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
+            Console.WriteLine("|{0}: {1}|", "Tags".PadRight(labelPad), string.Join(", ", link.Tags).PadRight(contentPad));
+            Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
+            Console.WriteLine("|{0}: {1}| {2}: {3}|", "Created".PadRight(labelPad), link.CreatedAt.ToString().PadRight(30), "Modified".PadRight(labelPad), link.ModifiedAt.ToString().PadRight(34));
+            Console.WriteLine("|{0}|", "".PadRight(dividerLength, '='));
         }
 
 
