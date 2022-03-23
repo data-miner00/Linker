@@ -47,8 +47,10 @@ namespace Linker.ConsoleUI
                     case "5":
                         this.linkController.RemoveLink();
                         break;
-                    default:
+                    case "6":
                         this.linkController.Save();
+                        break;
+                    default:
                         Console.WriteLine("Invalid input!");
                         break;
                 }
