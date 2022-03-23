@@ -69,15 +69,12 @@ namespace Linker.ConsoleUI.Repositories
                 Console.WriteLine("No data found");
             } else
             {
-                using (var streamReader = new StreamReader(pathToData))
-                {
-                    using (var csvReader = new CsvReader(streamReader, InvariantCulture))
-                    {
-                        csvReader.Context.RegisterClassMap<LinkClassMap>();
-                        this.links = csvReader.GetRecords<CsvLink>().ToList().ConvertAll(
-                            new Converter<CsvLink, Link>(CsvLinkToLink));
-                    }
-                }
+                using var streamReader = new StreamReader(pathToData);
+                using var csvReader = new CsvReader(streamReader, InvariantCulture);
+
+                csvReader.Context.RegisterClassMap<LinkClassMap>();
+                this.links = csvReader.GetRecords<CsvLink>().ToList().ConvertAll(
+                    new Converter<CsvLink, Link>(CsvLinkToLink));
             }
         }
 
