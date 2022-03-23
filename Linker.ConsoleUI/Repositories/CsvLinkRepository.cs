@@ -25,6 +25,7 @@ namespace Linker.ConsoleUI.Repositories
                 Name = csvLink.Name,
                 Url = csvLink.Url,
                 Category = (Category)csvLink.Category,
+                Aesthetics = (Aesthetics)csvLink.Aesthetics,
                 Domain = csvLink.Domain,
                 Description = csvLink.Description,
                 Tags = csvLink.Tags.Split('|'),
@@ -45,6 +46,7 @@ namespace Linker.ConsoleUI.Repositories
                 Name = link.Name,
                 Url = link.Url,
                 Category = (int)link.Category,
+                Aesthetics = (int)link.Aesthetics,
                 Domain = link.Domain,
                 Description = link.Description,
                 Tags = string.Join('|', link.Tags),
@@ -121,6 +123,7 @@ namespace Linker.ConsoleUI.Repositories
             _link.Tags = link.Tags ?? _link.Tags;
 
             _link.Category = link.Category;
+            _link.Aesthetics = link.Aesthetics;
             _link.MainLanguage = link.MainLanguage;
 
             _link.IsSubdomain = link.IsSubdomain;

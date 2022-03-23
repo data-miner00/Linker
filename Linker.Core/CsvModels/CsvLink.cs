@@ -25,6 +25,8 @@ namespace Linker.Core.CsvModels
 
         public int MainLanguage { get; set; }
 
+        public int Aesthetics { get; set; }
+
         public bool IsSubdomain { get; set; }
 
         public bool IsMultilingual { get; set; }

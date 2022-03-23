@@ -13,6 +13,7 @@ namespace Linker.Core.CsvModels
             Map(m => m.Name).Name("Name");
             Map(m => m.Url).Name("Url");
             Map(m => m.Category).Name("Category");
+            Map(m => m.Aesthetics).Name("Aesthetics");
             Map(m => m.Domain).Name("Domain");
             Map(m => m.IsSubdomain).Name("IsSubdomain");
             Map(m => m.Description).Name("Description");

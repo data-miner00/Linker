@@ -22,6 +22,8 @@ namespace Linker.Core.Models
 
         public Language MainLanguage { get; set; } = default;
 
+        public Aesthetics Aesthetics { get; set; }
+
         public bool IsSubdomain { get; set; }
 
         public bool IsMultilingual { get; set; }
