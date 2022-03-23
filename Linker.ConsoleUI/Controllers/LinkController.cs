@@ -28,13 +28,13 @@ namespace Linker.ConsoleUI.Controllers
 
             static void RenderLinks(IEnumerable<Link> links)
             {
-                var displayTemplate = "|| {0} || {1} || {2} || {3} || {4} || {5} ||";
-                var indexPad = 6;
-                var idPad = 38;
-                var namePad = 20;
-                var urlPad = 30;
-                var tagsPad = 20;
-                var modifiedPad = 23;
+                const string displayTemplate = "|| {0} || {1} || {2} || {3} || {4} || {5} ||";
+                const int indexPad = 6;
+                const int idPad = 38;
+                const int namePad = 20;
+                const int urlPad = 30;
+                const int tagsPad = 20;
+                const int modifiedPad = 23;
 
                 Console.WriteLine("".PadRight(163, '='));
                 Console.WriteLine(
@@ -70,9 +70,9 @@ namespace Linker.ConsoleUI.Controllers
 
             var link = this.linkRepository.GetById(id);
 
-            var dividerLength = 100;
-            var labelPad = 15;
-            var contentPad = 83;
+            const int dividerLength = 100;
+            const int labelPad = 15;
+            const int contentPad = 83;
             
             Console.WriteLine("|{0}|", "".PadRight(dividerLength, '='));
             Console.WriteLine("|{0}|", "".PadRight(dividerLength, ' '));
