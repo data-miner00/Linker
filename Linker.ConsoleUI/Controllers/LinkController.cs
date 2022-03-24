@@ -94,6 +94,24 @@ namespace Linker.ConsoleUI.Controllers
                 Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
                 Console.WriteLine("|{0}: {1}| {2}: {3}|", "Created".PadRight(labelPad), link.CreatedAt.ToString().PadRight(30), "Modified".PadRight(labelPad), link.ModifiedAt.ToString().PadRight(34));
                 Console.WriteLine("|{0}|", "".PadRight(dividerLength, '='));
+
+                Console.WriteLine("\nActions");
+                Console.WriteLine("1. Visit link");
+                Console.WriteLine("2. Get full URL");
+                Console.WriteLine("3. Return");
+
+                var input = PromptForInput(">", "");
+                switch (input)
+                {
+                    case "1":
+                        System.Diagnostics.Process.Start("chrome.exe", link.Url);
+                        break;
+                    case "2":
+                        Console.WriteLine("Full link: {0}", link.Url);
+                        break;
+                    default:
+                        break;
+                }
             }
             catch (Exception ex)
             {
