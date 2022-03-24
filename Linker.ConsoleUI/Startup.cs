@@ -17,7 +17,7 @@ namespace Linker.ConsoleUI
         {
             Console.WriteLine("Link Management Program\n");
             Console.WriteLine("1. View all links");
-            Console.WriteLine("2. Search with keywords");
+            Console.WriteLine("2. View by id");
             Console.WriteLine("3. Insert a link");
             Console.WriteLine("4. Update a link");
             Console.WriteLine("5. Remove a link");
