@@ -3,6 +3,7 @@
     public enum Category
     {
         Health,
+        Education,
         Entertainment,
         Finance,
         News,

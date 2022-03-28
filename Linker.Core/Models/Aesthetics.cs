@@ -8,7 +8,6 @@ namespace Linker.Core.Models
     {
         Undetermined,
         Poor,
-        Acceptable,
         Normal,
         Clean,
         Decent,
