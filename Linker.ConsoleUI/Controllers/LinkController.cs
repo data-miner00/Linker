@@ -30,6 +30,7 @@ namespace Linker.ConsoleUI.Controllers
             static void RenderLinks(IEnumerable<Link> links)
             {
                 const string displayTemplate = "|| {0} || {1} || {2} || {3} || {4} || {5} ||";
+                const int dividerLength = 163;
                 const int indexPad = 6;
                 const int idPad = 38;
                 const int namePad = 20;
@@ -37,7 +38,7 @@ namespace Linker.ConsoleUI.Controllers
                 const int tagsPad = 20;
                 const int modifiedPad = 23;
 
-                Console.WriteLine("".PadRight(163, '='));
+                Console.WriteLine("".PadRight(dividerLength, '='));
                 Console.WriteLine(
                     displayTemplate,
                     "Index".PadRight(indexPad),
@@ -46,7 +47,7 @@ namespace Linker.ConsoleUI.Controllers
                     "Url".PadRight(urlPad),
                     "Tags".PadRight(tagsPad),
                     "Modified Date".PadRight(modifiedPad));
-                Console.WriteLine("".PadRight(163, '='));
+                Console.WriteLine("".PadRight(dividerLength, '='));
 
                 foreach (var (link, index) in links.WithIndex())
                 {
@@ -60,7 +61,7 @@ namespace Linker.ConsoleUI.Controllers
                         link.ModifiedAt.ToString().PadRight(modifiedPad));
                 }
 
-                Console.WriteLine("".PadRight(163, '='));
+                Console.WriteLine("".PadRight(dividerLength, '='));
             }
         }
 
@@ -98,19 +99,25 @@ namespace Linker.ConsoleUI.Controllers
                 Console.WriteLine("\nActions");
                 Console.WriteLine("1. Visit link");
                 Console.WriteLine("2. Get full URL");
-                Console.WriteLine("3. Return");
+                Console.WriteLine("3. Return\n");
 
-                var input = PromptForInput(">", "");
-                switch (input)
+                while (true)
                 {
-                    case "1":
-                        System.Diagnostics.Process.Start("chrome.exe", link.Url);
-                        break;
-                    case "2":
-                        Console.WriteLine("Full link: {0}", link.Url);
-                        break;
-                    default:
-                        break;
+                    var input = PromptForInput("> ", "");
+                    switch (input)
+                    {
+                        case "1":
+                            System.Diagnostics.Process.Start("chrome.exe", link.Url);
+                            break;
+                        case "2":
+                            Console.WriteLine("Full link: {0}", link.Url);
+                            break;
+                        case "3":
+                            return;
+                        default:
+                            Console.WriteLine("Please insert the correct selection!");
+                            break;
+                    }
                 }
             }
             catch (Exception ex)
@@ -140,7 +147,7 @@ namespace Linker.ConsoleUI.Controllers
             var _tags = PromptForInput(labelTemplate, "Tags".PadRight(labelPad));
             var tags = string.IsNullOrEmpty(_tags) ? null : _tags.Split(",").Select(tag => tag.Trim());
 
-            var link = new Link()
+            var link = new Link
             {
                 Id = id,
                 Name = name,
@@ -176,7 +183,7 @@ namespace Linker.ConsoleUI.Controllers
 
             var now = DateTime.Now;
 
-            var newLink = new Link()
+            var newLink = new Link
             {
                 Name = name,
                 Url = url,
