@@ -27,6 +27,8 @@ namespace Linker.ConsoleUI.Controllers
 
             RenderLinks(this.linkRepository.GetAll());
 
+            _ = PromptForInput("Press ENTER to return to main menu...", "");
+
             static void RenderLinks(IEnumerable<Link> links)
             {
                 const string displayTemplate = "|| {0} || {1} || {2} || {3} || {4} || {5} ||";
@@ -87,9 +89,9 @@ namespace Linker.ConsoleUI.Controllers
                 Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
                 Console.WriteLine("|{0}: {1}|", "Url".PadRight(labelPad), link.Url.PadRight(contentPad));
                 Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
-                Console.WriteLine("|{0}: {1}|", "Language".PadRight(labelPad), link.MainLanguage.ToString().PadRight(contentPad));
+                Console.WriteLine("|{0}: {1}| {2}: {3}|", "Language".PadRight(labelPad), link.MainLanguage.ToString().PadRight(30), "Aesthetics".PadRight(labelPad), link.Aesthetics.ToString().PadRight(34));
                 Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
-                Console.WriteLine("|{0}: {1}|", "Description".PadRight(labelPad), link.Description.PadRight(contentPad));
+                Console.WriteLine("|{0}: {1}|", "Description".PadRight(labelPad), link.Description.TruncateWithEllipsis(contentPad - 3).PadRight(contentPad));
                 Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
                 Console.WriteLine("|{0}: {1}|", "Tags".PadRight(labelPad), string.Join(", ", link.Tags).PadRight(contentPad));
                 Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
@@ -99,6 +101,7 @@ namespace Linker.ConsoleUI.Controllers
                 Console.WriteLine("\nActions");
                 Console.WriteLine("1. Visit link");
                 Console.WriteLine("2. Get full URL");
+                Console.WriteLine("3. Get full description");
                 Console.WriteLine("3. Return\n");
 
                 while (true)
@@ -113,6 +116,9 @@ namespace Linker.ConsoleUI.Controllers
                             Console.WriteLine("Full link: {0}", link.Url);
                             break;
                         case "3":
+                            Console.WriteLine("Full description: {0}", link.Description);
+                            break;
+                        case "4":
                             return;
                         default:
                             Console.WriteLine("Please insert the correct selection!");
@@ -165,6 +171,8 @@ namespace Linker.ConsoleUI.Controllers
             {
                 Console.WriteLine("Failed update link! Error: {0}", ex.Message);
             }
+
+            _ = PromptForInput("\nPress ENTER to return to main menu...", "");
         }
 
         public void InsertLink()
@@ -177,18 +185,35 @@ namespace Linker.ConsoleUI.Controllers
             var name = PromptForInput(labelTemplate, "Name".PadRight(labelPad));
             var url = PromptForInput(labelTemplate, "Url".PadRight(labelPad));
             var description = PromptForInput(labelTemplate, "Description".PadRight(labelPad));
+            
+            Console.WriteLine();
+            DisplayEnum<Category>(nameof(Category));
+            var category = Convert.ToUInt32(PromptForInput(labelTemplate, "Category".PadRight(labelPad)));
+
+            Console.WriteLine();
+            DisplayEnum<Language>(nameof(Language));
+            var language = Convert.ToUInt32(PromptForInput(labelTemplate, "Language".PadRight(labelPad)));
+
+            Console.WriteLine();
+            DisplayEnum<Aesthetics>(nameof(Aesthetics));
+            var aesthetics = Convert.ToUInt32(PromptForInput(labelTemplate, "Aesthetics".PadRight(labelPad)));
 
             var _tags = PromptForInput(labelTemplate, "Tags".PadRight(labelPad));
             var tags = _tags.Split(",").Select(tag => tag.Trim());
 
             var now = DateTime.Now;
-
+            
             var newLink = new Link
             {
                 Name = name,
                 Url = url,
+                Category = (Category)category,
                 Description = description,
                 Tags = tags,
+                MainLanguage = (Language)language,
+                Aesthetics = (Aesthetics)aesthetics,
+                IsSubdomain = false,
+                IsMultilingual = false,
                 CreatedAt = now,
                 ModifiedAt = now,
             };
@@ -196,6 +221,7 @@ namespace Linker.ConsoleUI.Controllers
             this.linkRepository.Add(newLink);
 
             Console.WriteLine("Successfully added new link!");
+            _ = PromptForInput("\nPress ENTER to return to main menu...", "");
         }
 
         public void RemoveLink()
@@ -214,6 +240,19 @@ namespace Linker.ConsoleUI.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine("Failed to remove link! Error: {0}", ex.Message);
+            }
+
+            _ = PromptForInput("\nPress ENTER to return to main menu...", "");
+        }
+
+        private static void DisplayEnum<T>(string name)
+        {
+            Console.WriteLine($"List of available {name}");
+            var items = Enum.GetValues(typeof(T)).Cast<T>();
+
+            foreach (var (item, index) in items.WithIndex())
+            {
+                Console.WriteLine("{0} {1}", (index + ".").PadRight(3), item);
             }
         }
 
