@@ -131,15 +131,23 @@ namespace Linker.ConsoleUI.Repositories
 
         public int Commit()
         {
-            using var streamWriter = new StreamWriter(pathToData);
-            using var csvWriter = new CsvWriter(streamWriter, InvariantCulture);
+            try
+            {
+                using var streamWriter = new StreamWriter(pathToData);
+                using var csvWriter = new CsvWriter(streamWriter, InvariantCulture);
 
-            var csvLinks = links.ConvertAll(
-                new Converter<Link, CsvLink>(LinkToCsvLink));
+                var csvLinks = links.ConvertAll(
+                    new Converter<Link, CsvLink>(LinkToCsvLink));
 
-            csvWriter.WriteRecords(csvLinks);
+                csvWriter.WriteRecords(csvLinks);
 
-            return 0;
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: {0}", ex.Message);
+                return -1;
+            }
         }
     }
 }
