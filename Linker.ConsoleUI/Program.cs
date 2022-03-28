@@ -8,11 +8,9 @@ namespace Linker.ConsoleUI
         {
             var container = ContainerConfig.Configure();
 
-            using (var scope = container.BeginLifetimeScope())
-            {
-                var app = scope.Resolve<IStartup>();
-                app.Run();
-            }
+            using var scope = container.BeginLifetimeScope();
+            var app = scope.Resolve<IStartup>();
+            app.Run();
         }
     }
 }
