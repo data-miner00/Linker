@@ -113,6 +113,11 @@ namespace Linker.ConsoleUI.Repositories
         {
             var _link = this.links.Where(l => l.Id == link.Id).FirstOrDefault();
             
+            if (_link == null)
+            {
+                throw new InvalidOperationException("Cannot find the link with id");
+            }
+
             _link.Name = link.Name ?? _link.Name;
             _link.Url = link.Url ?? _link.Url;
             _link.Domain = link.Domain ?? _link.Domain;
