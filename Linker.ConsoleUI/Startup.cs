@@ -19,7 +19,17 @@ namespace Linker.ConsoleUI
 
             do
             {
-                Console.WriteLine("Link Management Program\n");
+                Console.WriteLine();
+                Console.WriteLine("   █████        ███             █████                        ");
+                Console.WriteLine("  ░░███        ░░░             ░░███                         ");
+                Console.WriteLine("   ░███        ████  ████████   ░███ █████  ██████  ████████ ");
+                Console.WriteLine("   ░███       ░░███ ░░███░░███  ░███░░███  ███░░███░░███░░███");
+                Console.WriteLine("   ░███        ░███  ░███ ░███  ░██████░  ░███████  ░███ ░░░ ");
+                Console.WriteLine("   ░███      █ ░███  ░███ ░███  ░███░░███ ░███░░░   ░███     ");
+                Console.WriteLine("   ███████████ █████ ████ █████ ████ █████░░██████  █████    ");
+                Console.WriteLine("  ░░░░░░░░░░░ ░░░░░ ░░░░ ░░░░░ ░░░░ ░░░░░  ░░░░░░  ░░░░░     ");
+
+                Console.WriteLine("\nLink Management Program\n");
                 Console.WriteLine("1. View all links");
                 Console.WriteLine("2. View by id");
                 Console.WriteLine("3. Insert a link");
