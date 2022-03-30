@@ -143,24 +143,8 @@ namespace Linker.ConsoleUI.Controllers
 
             Console.WriteLine("\nInsert the details that needed to be changed. Hit Enter to skip.");
 
-            const string labelTemplate = "{0}: ";
-            const int labelPad = 13;
-
-            var name = PromptForInput(labelTemplate, "Name".PadRight(labelPad)).ReturnNullIfEmpty();
-            var url = PromptForInput(labelTemplate, "Url".PadRight(labelPad)).ReturnNullIfEmpty();
-            var description = PromptForInput(labelTemplate, "Description".PadRight(labelPad)).ReturnNullIfEmpty();
-
-            var _tags = PromptForInput(labelTemplate, "Tags".PadRight(labelPad));
-            var tags = string.IsNullOrEmpty(_tags) ? null : _tags.Split(",").Select(tag => tag.Trim());
-
-            var link = new Link
-            {
-                Id = id,
-                Name = name,
-                Url = url,
-                Description = description,
-                Tags = tags,
-            };
+            var link = GetLinkFromInput();
+            link.Id = id;
 
             try
             {
@@ -179,13 +163,26 @@ namespace Linker.ConsoleUI.Controllers
         {
             Console.Clear();
 
+            var newLink = GetLinkFromInput();
+            var now = DateTime.Now;
+            newLink.CreatedAt = now;
+            newLink.ModifiedAt = now;
+
+            this.linkRepository.Add(newLink);
+
+            Console.WriteLine("Successfully added new link!");
+            _ = PromptForInput("\nPress ENTER to return to main menu...", "");
+        }
+
+        public static Link GetLinkFromInput()
+        {
             const string labelTemplate = "{0}: ";
             const int labelPad = 13;
 
             var name = PromptForInput(labelTemplate, "Name".PadRight(labelPad));
             var url = PromptForInput(labelTemplate, "Url".PadRight(labelPad));
             var description = PromptForInput(labelTemplate, "Description".PadRight(labelPad));
-            
+
             Console.WriteLine();
             DisplayEnum<Category>(nameof(Category));
             var category = Convert.ToUInt32(PromptForInput(labelTemplate, "Category".PadRight(labelPad)));
@@ -201,9 +198,8 @@ namespace Linker.ConsoleUI.Controllers
             var _tags = PromptForInput(labelTemplate, "Tags".PadRight(labelPad));
             var tags = _tags.Split(",").Select(tag => tag.Trim());
 
-            var now = DateTime.Now;
-            
-            var newLink = new Link
+
+            return new Link
             {
                 Name = name,
                 Url = url,
@@ -214,14 +210,7 @@ namespace Linker.ConsoleUI.Controllers
                 Aesthetics = (Aesthetics)aesthetics,
                 IsSubdomain = false,
                 IsMultilingual = false,
-                CreatedAt = now,
-                ModifiedAt = now,
             };
-
-            this.linkRepository.Add(newLink);
-
-            Console.WriteLine("Successfully added new link!");
-            _ = PromptForInput("\nPress ENTER to return to main menu...", "");
         }
 
         public void RemoveLink()
