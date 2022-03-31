@@ -104,9 +104,9 @@ namespace Linker.ConsoleUI.Repositories
 
         public void Remove(string id)
         {
-            this.links = (List<Link>)(from l in links
+            this.links = (from l in links
                          where l.Id != id
-                         select l);
+                         select l).ToList();
         }
 
         public void Update(Link link)
