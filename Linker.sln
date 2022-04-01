@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linker.ConsoleUI", "Linker.ConsoleUI\Linker.ConsoleUI.csproj", "{9BDF7E70-01E7-40BF-9213-5D7170C1DF78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.ConsoleUI", "Linker.ConsoleUI\Linker.ConsoleUI.csproj", "{9BDF7E70-01E7-40BF-9213-5D7170C1DF78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linker.Core", "Linker.Core\Linker.Core.csproj", "{D3D1511C-FEBA-4706-B4A5-8E6D3ECE2AFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.Core", "Linker.Core\Linker.Core.csproj", "{D3D1511C-FEBA-4706-B4A5-8E6D3ECE2AFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linker.ConsoleUI.UnitTests", "Linker.ConsoleUI.UnitTests\Linker.ConsoleUI.UnitTests.csproj", "{7BAB20C8-92BF-401B-AB0A-43A4E770E4FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{D3D1511C-FEBA-4706-B4A5-8E6D3ECE2AFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3D1511C-FEBA-4706-B4A5-8E6D3ECE2AFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3D1511C-FEBA-4706-B4A5-8E6D3ECE2AFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BAB20C8-92BF-401B-AB0A-43A4E770E4FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BAB20C8-92BF-401B-AB0A-43A4E770E4FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BAB20C8-92BF-401B-AB0A-43A4E770E4FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BAB20C8-92BF-401B-AB0A-43A4E770E4FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
