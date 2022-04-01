@@ -102,7 +102,7 @@ namespace Linker.ConsoleUI.Controllers
                 Console.WriteLine("1. Visit link");
                 Console.WriteLine("2. Get full URL");
                 Console.WriteLine("3. Get full description");
-                Console.WriteLine("3. Return\n");
+                Console.WriteLine("4. Return\n");
 
                 while (true)
                 {
