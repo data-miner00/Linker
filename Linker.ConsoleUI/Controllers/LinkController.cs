@@ -185,15 +185,55 @@ namespace Linker.ConsoleUI.Controllers
 
             Console.WriteLine();
             DisplayEnum<Category>(nameof(Category));
-            var category = Convert.ToUInt32(PromptForInput(labelTemplate, "Category".PadRight(labelPad)));
+            uint category, language, aesthetics;
+
+            while (true)
+            {
+                try
+                {
+                    category = Convert.ToUInt32(PromptForInput(labelTemplate, "Category".PadRight(labelPad)));
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: {0}", ex.Message);
+                    continue;
+                }
+            }
 
             Console.WriteLine();
             DisplayEnum<Language>(nameof(Language));
-            var language = Convert.ToUInt32(PromptForInput(labelTemplate, "Language".PadRight(labelPad)));
+            
+            while (true)
+            {
+                try
+                {
+                    language = Convert.ToUInt32(PromptForInput(labelTemplate, "Language".PadRight(labelPad)));
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: {0}", ex.Message);
+                    continue;
+                }
+            }
 
             Console.WriteLine();
             DisplayEnum<Aesthetics>(nameof(Aesthetics));
-            var aesthetics = Convert.ToUInt32(PromptForInput(labelTemplate, "Aesthetics".PadRight(labelPad)));
+
+            while (true)
+            {
+                try
+                {
+                    aesthetics = Convert.ToUInt32(PromptForInput(labelTemplate, "Aesthetics".PadRight(labelPad)));
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: {0}", ex.Message);
+                    continue;
+                }
+            }
 
             var _tags = PromptForInput(labelTemplate, "Tags".PadRight(labelPad));
             var tags = _tags.Split(",").Select(tag => tag.Trim());
