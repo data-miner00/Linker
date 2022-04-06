@@ -9,10 +9,6 @@
     <PackageReference Include="Autofac" Version="6.3.0" />
     <PackageReference Include="CsvHelper" Version="27.2.1" />
     <PackageReference Include="Ensure.That" Version="10.1.0" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
