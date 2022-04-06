@@ -1,10 +1,8 @@
-﻿using Linker.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Linker.Core.Repositories
+﻿namespace Linker.Core.Repositories
 {
+    using System.Collections.Generic;
+    using Linker.Core.Models;
+
     public interface ILinkRepository
     {
         public IEnumerable<Link> GetAll();

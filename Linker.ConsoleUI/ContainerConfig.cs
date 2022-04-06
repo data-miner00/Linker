@@ -1,11 +1,11 @@
-﻿using Autofac;
-using Linker.ConsoleUI.Controllers;
-using Linker.ConsoleUI.Repositories;
-using Linker.Core.Repositories;
-using Linker.Core.Controllers;
-
-namespace Linker.ConsoleUI
+﻿namespace Linker.ConsoleUI
 {
+    using Autofac;
+    using Linker.ConsoleUI.Controllers;
+    using Linker.ConsoleUI.Repositories;
+    using Linker.Core.Controllers;
+    using Linker.Core.Repositories;
+
     public static class ContainerConfig
     {
         public static IContainer Configure()

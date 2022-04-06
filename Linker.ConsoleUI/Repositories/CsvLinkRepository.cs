@@ -1,18 +1,15 @@
-﻿using Linker.Core.Models;
-using Linker.Core.Repositories;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using CsvHelper;
-using CsvHelper.Configuration;
-using CsvHelper.Configuration.Attributes;
-using static System.Globalization.CultureInfo;
-using System.Linq;
-using System.Text;
-using Linker.Core.CsvModels;
-
-namespace Linker.ConsoleUI.Repositories
+﻿namespace Linker.ConsoleUI.Repositories
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using CsvHelper;
+    using Linker.Core.CsvModels;
+    using Linker.Core.Models;
+    using Linker.Core.Repositories;
+    using static System.Globalization.CultureInfo;
+
     public sealed class CsvLinkRepository : ILinkRepository
     {
         static readonly string pathToData = Path.Combine(Environment.CurrentDirectory ,"data.csv");

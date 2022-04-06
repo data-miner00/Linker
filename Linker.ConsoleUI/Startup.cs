@@ -1,9 +1,9 @@
-﻿using System;
-using EnsureThat;
-using Linker.Core.Controllers;
-
-namespace Linker.ConsoleUI
+﻿namespace Linker.ConsoleUI
 {
+    using System;
+    using EnsureThat;
+    using Linker.Core.Controllers;
+
     internal sealed class Startup : IStartup
     {
         private readonly ILinkController linkController;

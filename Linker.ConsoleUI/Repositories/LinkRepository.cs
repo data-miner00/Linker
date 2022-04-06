@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Linker.Core.Models;
-using Linker.Core.Repositories;
-using System.Linq;
-using System.Text.RegularExpressions;
-
-namespace Linker.ConsoleUI.Repositories
+﻿namespace Linker.ConsoleUI.Repositories
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using Linker.Core.Models;
+    using Linker.Core.Repositories;
+
     public class LinkRepository : ILinkRepository
     {
         private IList<Link> links;

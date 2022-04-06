@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Linker.Core.Controllers
+﻿namespace Linker.Core.Controllers
 {
     public interface ILinkController
     {

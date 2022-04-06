@@ -1,7 +1,7 @@
-﻿using Autofac;
-
-namespace Linker.ConsoleUI
+﻿namespace Linker.ConsoleUI
 {
+    using Autofac;
+
     internal sealed class Program
     {
         static void Main(string[] args)

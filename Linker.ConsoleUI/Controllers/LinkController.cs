@@ -1,16 +1,14 @@
-﻿using Linker.Core.Controllers;
-using Linker.Core.Models;
-using Linker.Core.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Linker.ConsoleUI.Extensions;
-using System.Linq;
-using System.Reflection;
-using EnsureThat;
-
-namespace Linker.ConsoleUI.Controllers
+﻿namespace Linker.ConsoleUI.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using EnsureThat;
+    using Linker.ConsoleUI.Extensions;
+    using Linker.Core.Controllers;
+    using Linker.Core.Models;
+    using Linker.Core.Repositories;
+
     public sealed class LinkController : ILinkController
     {
         private readonly ILinkRepository linkRepository;

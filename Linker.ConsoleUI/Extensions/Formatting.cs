@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Linker.ConsoleUI.Extensions
+﻿namespace Linker.ConsoleUI.Extensions
 {
     public static class Formatting
     {

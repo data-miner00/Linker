@@ -1,10 +1,7 @@
-﻿using CsvHelper.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Linker.Core.CsvModels
+﻿namespace Linker.Core.CsvModels
 {
+    using CsvHelper.Configuration;
+
     public sealed class LinkClassMap : ClassMap<CsvLink>
     {
         public LinkClassMap()

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Linker.Core.Models
+﻿namespace Linker.Core.Models
 {
+    using System;
+    using System.Collections.Generic;
+
     public class Link
     {
         public string Id { get; set; }

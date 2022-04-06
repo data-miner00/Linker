@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using CsvHelper.Configuration.Attributes;
-using CsvHelper.Configuration;
-
-namespace Linker.Core.CsvModels
+﻿namespace Linker.Core.CsvModels
 {
+    using System;
 
     public class CsvLink
     {
