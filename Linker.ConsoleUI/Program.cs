@@ -2,7 +2,7 @@
 {
     using Autofac;
 
-    internal sealed class Program
+    internal static class Program
     {
         static void Main(string[] args)
         {
