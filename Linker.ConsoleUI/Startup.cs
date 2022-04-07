@@ -2,15 +2,17 @@
 {
     using System;
     using EnsureThat;
-    using Linker.Core.Controllers;
+    using Linker.ConsoleUI.UI;
 
     internal sealed class Startup : IStartup
     {
-        private readonly ILinkController linkController;
+        private readonly IMenu menu;
+        private readonly IRouter router;
 
-        public Startup(ILinkController linkController)
+        public Startup(IMenu menu, IRouter router)
         {
-            this.linkController = EnsureArg.IsNotNull(linkController, nameof(linkController));
+            this.menu = EnsureArg.IsNotNull(menu);
+            this.router = EnsureArg.IsNotNull(router);
         }
 
         public void Run()
@@ -19,56 +21,45 @@
 
             do
             {
-                Console.WriteLine();
-                Console.WriteLine("   █████        ███             █████                        ");
-                Console.WriteLine("  ░░███        ░░░             ░░███                         ");
-                Console.WriteLine("   ░███        ████  ████████   ░███ █████  ██████  ████████ ");
-                Console.WriteLine("   ░███       ░░███ ░░███░░███  ░███░░███  ███░░███░░███░░███");
-                Console.WriteLine("   ░███        ░███  ░███ ░███  ░██████░  ░███████  ░███ ░░░ ");
-                Console.WriteLine("   ░███      █ ░███  ░███ ░███  ░███░░███ ░███░░░   ░███     ");
-                Console.WriteLine("   ███████████ █████ ████ █████ ████ █████░░██████  █████    ");
-                Console.WriteLine("  ░░░░░░░░░░░ ░░░░░ ░░░░ ░░░░░ ░░░░ ░░░░░  ░░░░░░  ░░░░░     ");
+                this.menu.DisplayBanner();
+                this.menu.PageHeader("Link Management System", "2.0.0");
+                this.menu.GenerateMenu(new[]
+                {
+                    "Website",
+                    "Articles",
+                    "Youtube",
+                    "Ad Hoc",
+                    "Exit",
+                });
 
-                Console.WriteLine("\nLink Management Program\n");
-                Console.WriteLine("1. View all links");
-                Console.WriteLine("2. View by id");
-                Console.WriteLine("3. Insert a link");
-                Console.WriteLine("4. Update a link");
-                Console.WriteLine("5. Remove a link");
-                Console.WriteLine("6. Exit");
-
-
-                Console.Write("> ");
+                Console.Write("Your selection: ");
                 input = Console.ReadLine();
 
-                switch(input)
+                switch (input)
                 {
                     case "1":
-                        this.linkController.DisplayAllLinks();
+                        this.router.Website();
                         break;
                     case "2":
-                        this.linkController.DisplaySingleLink();
+                        this.router.Article();
                         break;
                     case "3":
-                        this.linkController.InsertLink();
+                        this.router.Youtube();
                         break;
                     case "4":
-                        this.linkController.UpdateLink();
+                        this.router.AdHoc();
                         break;
                     case "5":
-                        this.linkController.RemoveLink();
-                        break;
-                    case "6":
-                        this.linkController.Save();
-                        break;
+                        Console.WriteLine("Program has been terminated");
+                        return;
                     default:
-                        Console.WriteLine("Invalid input!");
+                        Console.WriteLine("The input is invalid, please provide the correct input.");
                         break;
                 }
 
                 Console.Clear();
-
-            } while (input != "6");
+            }
+            while (true);
         }
     }
 }
