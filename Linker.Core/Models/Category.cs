@@ -13,5 +13,6 @@
         Utility,
         Animals,
         CloudStorage,
+        Forum,
     }
 }
