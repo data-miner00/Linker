@@ -4,17 +4,26 @@
     using Linker.ConsoleUI.UI;
     using Linker.Core.Controllers;
 
+    /// <summary>
+    /// The actual router that handles the routing between link managers.
+    /// </summary>
     public sealed class Router : IRouter
     {
         private readonly ILinkController linkController;
         private readonly IMenu menu;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Router"/> class.
+        /// </summary>
+        /// <param name="linkController">The <see cref="ILinkController"/> object.</param>
+        /// <param name="menu">The <see cref="IMenu"/> object.</param>
         public Router(ILinkController linkController, IMenu menu)
         {
             this.linkController = linkController;
             this.menu = menu;
         }
 
+        /// <inheritdoc/>
         public void Website()
         {
             while (true)
@@ -68,19 +77,22 @@
             }
         }
 
+        /// <inheritdoc/>
         public void Article()
         {
-
+            // wip
         }
 
+        /// <inheritdoc/>
         public void Youtube()
         {
-
+            // wip
         }
 
+        /// <inheritdoc/>
         public void AdHoc()
         {
-
+            // wip
         }
     }
 }

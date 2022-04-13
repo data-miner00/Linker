@@ -4,17 +4,26 @@
     using EnsureThat;
     using Linker.ConsoleUI.UI;
 
+    /// <summary>
+    /// The actual class that provides startup code for the appplication.
+    /// </summary>
     internal sealed class Startup : IStartup
     {
         private readonly IMenu menu;
         private readonly IRouter router;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Startup"/> class.
+        /// </summary>
+        /// <param name="menu">The <see cref="IMenu"/> instance.</param>
+        /// <param name="router">The <see cref="IRouter"/> instance.</param>
         public Startup(IMenu menu, IRouter router)
         {
             this.menu = EnsureArg.IsNotNull(menu);
             this.router = EnsureArg.IsNotNull(router);
         }
 
+        /// <inheritdoc/>
         public void Run()
         {
             string input;

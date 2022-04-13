@@ -2,9 +2,16 @@
 {
     using Autofac;
 
+    /// <summary>
+    /// The entry class of the program.
+    /// </summary>
     internal static class Program
     {
-        static void Main(string[] args)
+        /// <summary>
+        /// The entry point of the program.
+        /// </summary>
+        /// <param name="args">The command line arguments.</param>
+        internal static void Main(string[] args)
         {
             var container = ContainerConfig.Configure();
 

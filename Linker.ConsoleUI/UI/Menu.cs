@@ -4,10 +4,17 @@
     using System.Collections.Generic;
     using Linker.ConsoleUI.Extensions;
 
+    /// <summary>
+    /// The actual class that implements <see cref="IMenu"/>.
+    /// </summary>
     public sealed class Menu : IMenu
     {
+        /// <summary>
+        /// Gets or sets the width of the console that can display.
+        /// </summary>
         public int Width { get; set; } = 61;
 
+        /// <inheritdoc/>
         public void DisplayBanner()
         {
             Console.WriteLine();
@@ -22,6 +29,7 @@
             Console.WriteLine();
         }
 
+        /// <inheritdoc/>
         public void PageHeader(string title, string version)
         {
             Console.WriteLine(string.Empty.PadLeft(this.Width, '='));
@@ -32,6 +40,7 @@
             Console.WriteLine(string.Empty.PadLeft(this.Width, '='));
         }
 
+        /// <inheritdoc/>
         public void GenerateMenu(IEnumerable<string> items)
         {
             foreach (var (item, index) in items.WithIndex())
@@ -43,7 +52,8 @@
             Console.WriteLine(string.Empty.PadLeft(this.Width, '='));
         }
 
-        public void PageFooter(string copyright)
+        /// <inheritdoc/>
+        public void PageFooter()
         {
             // wip
         }
