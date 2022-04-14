@@ -1,2 +1,3 @@
 [*.cs]
 insert_final_newline=true
+dotnet_diagnostic.SA1633.severity=silent
