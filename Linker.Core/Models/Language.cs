@@ -1,13 +1,28 @@
 ﻿namespace Linker.Core.Models
 {
+    /// <summary>
+    /// The supported Language variant.
+    /// </summary>
     public enum Language
     {
-        English = 0,
+        /// <summary>
+        /// The English Language.
+        /// </summary>
+        English,
 
-        Japanese = 1,
+        /// <summary>
+        /// The Japanese Language.
+        /// </summary>
+        Japanese,
 
-        Chinese = 2,
+        /// <summary>
+        /// The Chinese Language.
+        /// </summary>
+        Chinese,
 
-        Korean = 3,
+        /// <summary>
+        /// The Korean Language.
+        /// </summary>
+        Korean,
     }
 }
