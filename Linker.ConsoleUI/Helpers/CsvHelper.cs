@@ -4,11 +4,11 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using CsvHelper;
-    using CsvHelper.Configuration;
+    using global::CsvHelper;
+    using global::CsvHelper.Configuration;
     using static System.Globalization.CultureInfo;
 
-    public static class CsvLoader
+    public static class CsvHelper
     {
         public static List<T> Load<V, T, U>(string path, Func<V, T> mapper)
             where U : ClassMap<V>
