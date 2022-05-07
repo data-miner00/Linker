@@ -1,17 +1,8 @@
 ﻿namespace Linker.Core.Controllers
 {
-    public interface IWebsiteController
+    using Linker.Core.Models;
+
+    public interface IWebsiteController : IController<Website>
     {
-        public void DisplayAllLinks();
-
-        public void DisplaySingleLink();
-
-        public void InsertLink();
-
-        public void UpdateLink();
-
-        public void RemoveLink();
-
-        public void Save();
     }
 }
