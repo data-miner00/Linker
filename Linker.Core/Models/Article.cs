@@ -64,6 +64,11 @@
         public Language Language { get; set; }
 
         /// <summary>
+        /// Gets or sets the grammatical level of the article.
+        /// </summary>
+        public Grammar Grammar { get; set; }
+
+        /// <summary>
         /// Gets or sets the last visit of the article.
         /// </summary>
         public DateTime LastVisitAt { get; set; }
