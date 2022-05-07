@@ -4,12 +4,10 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using CsvHelper;
     using Linker.ConsoleUI.Helpers;
     using Linker.Core.CsvModels;
     using Linker.Core.Models;
     using Linker.Core.Repositories;
-    using static System.Globalization.CultureInfo;
 
     public sealed class CsvWebsiteRepository : IWebsiteRepository
     {
@@ -61,7 +59,7 @@
 
         public CsvWebsiteRepository()
         {
-            this.websites = CsvLoader.Load<CsvWebsite, Website, WebsiteClassMap>(pathToData, CsvWebsiteToWebsite);
+            this.websites = CsvHelper.Load<CsvWebsite, Website, WebsiteClassMap>(pathToData, CsvWebsiteToWebsite);
         }
 
         public void Add(Website item)
@@ -122,23 +120,7 @@
 
         public int Commit()
         {
-            try
-            {
-                using var streamWriter = new StreamWriter(pathToData);
-                using var csvWriter = new CsvWriter(streamWriter, InvariantCulture);
-
-                var csvLinks = websites.ConvertAll(
-                    new Converter<Website, CsvWebsite>(WebsiteToCsvWebsite));
-
-                csvWriter.WriteRecords(csvLinks);
-
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-                return -1;
-            }
+            return CsvHelper.Save(pathToData, WebsiteToCsvWebsite, this.websites);
         }
     }
 }

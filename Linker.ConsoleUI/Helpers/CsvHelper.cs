@@ -6,12 +6,14 @@
     using System.Linq;
     using global::CsvHelper;
     using global::CsvHelper.Configuration;
+    using Linker.Core.Models;
     using static System.Globalization.CultureInfo;
 
     public static class CsvHelper
     {
         public static List<T> Load<V, T, U>(string path, Func<V, T> mapper)
             where U : ClassMap<V>
+            where T : Link
         {
             List<T> items;
 
@@ -31,6 +33,28 @@
             }
 
             return items;
+        }
+
+        public static int Save<T, V>(string path, Func<T, V> mapper, List<T> items)
+            where T : Link
+        {
+            try
+            {
+                using var streamWriter = new StreamWriter(path);
+                using var csvWriter = new CsvWriter(streamWriter, InvariantCulture);
+
+                var csvLinks = items.ConvertAll(
+                    new Converter<T, V>(mapper));
+
+                csvWriter.WriteRecords(csvLinks);
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: {0}", ex.Message);
+                return -1;
+            }
         }
     }
 }
