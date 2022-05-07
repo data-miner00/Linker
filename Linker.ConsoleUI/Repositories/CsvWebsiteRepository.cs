@@ -15,72 +15,72 @@
     {
         static readonly string pathToData = Path.Combine(Environment.CurrentDirectory, "data.csv");
 
-        public static Website CsvLinkToLink(CsvWebsite csvLink)
+        public static Website CsvWebsiteToWebsite(CsvWebsite csvWebsite)
         {
             return new Website
             {
-                Id = csvLink.Id,
-                Name = csvLink.Name,
-                Url = csvLink.Url,
-                Category = (Category)csvLink.Category,
-                Aesthetics = (Aesthetics)csvLink.Aesthetics,
-                Domain = csvLink.Domain,
-                Description = csvLink.Description,
-                Tags = csvLink.Tags.Split('|'),
-                MainLanguage = (Language)csvLink.MainLanguage,
-                IsSubdomain = csvLink.IsSubdomain,
-                IsMultilingual = csvLink.IsMultilingual,
-                LastVisitAt = csvLink.LastVisitAt,
-                CreatedAt = csvLink.CreatedAt,
-                ModifiedAt = csvLink.ModifiedAt,
+                Id = csvWebsite.Id,
+                Name = csvWebsite.Name,
+                Url = csvWebsite.Url,
+                Category = (Category)csvWebsite.Category,
+                Aesthetics = (Aesthetics)csvWebsite.Aesthetics,
+                Domain = csvWebsite.Domain,
+                Description = csvWebsite.Description,
+                Tags = csvWebsite.Tags.Split('|'),
+                MainLanguage = (Language)csvWebsite.MainLanguage,
+                IsSubdomain = csvWebsite.IsSubdomain,
+                IsMultilingual = csvWebsite.IsMultilingual,
+                LastVisitAt = csvWebsite.LastVisitAt,
+                CreatedAt = csvWebsite.CreatedAt,
+                ModifiedAt = csvWebsite.ModifiedAt,
             };
         }
 
-        public static CsvWebsite LinkToCsvLink(Website link)
+        public static CsvWebsite WebsiteToCsvWebsite(Website website)
         {
             return new CsvWebsite
             {
-                Id = link.Id,
-                Name = link.Name,
-                Url = link.Url,
-                Category = (int)link.Category,
-                Aesthetics = (int)link.Aesthetics,
-                Domain = link.Domain,
-                Description = link.Description,
-                Tags = string.Join('|', link.Tags),
-                MainLanguage = (int)link.MainLanguage,
-                IsSubdomain = link.IsSubdomain,
-                IsMultilingual = link.IsMultilingual,
-                LastVisitAt = link.LastVisitAt,
-                CreatedAt = link.CreatedAt,
-                ModifiedAt = link.ModifiedAt,
+                Id = website.Id,
+                Name = website.Name,
+                Url = website.Url,
+                Category = (int)website.Category,
+                Aesthetics = (int)website.Aesthetics,
+                Domain = website.Domain,
+                Description = website.Description,
+                Tags = string.Join('|', website.Tags),
+                MainLanguage = (int)website.MainLanguage,
+                IsSubdomain = website.IsSubdomain,
+                IsMultilingual = website.IsMultilingual,
+                LastVisitAt = website.LastVisitAt,
+                CreatedAt = website.CreatedAt,
+                ModifiedAt = website.ModifiedAt,
             };
         }
 
-        private List<Website> links;
+        private List<Website> websites;
 
         public CsvWebsiteRepository()
         {
-            this.links = CsvLoader.Load<CsvWebsite, Website, WebsiteClassMap>(pathToData, CsvLinkToLink);
+            this.websites = CsvLoader.Load<CsvWebsite, Website, WebsiteClassMap>(pathToData, CsvWebsiteToWebsite);
         }
 
-        public void Add(Website link)
+        public void Add(Website item)
         {
             var randomId = Guid.NewGuid().ToString();
-            link.Id = randomId;
-            this.links.Add(link);
+            item.Id = randomId;
+            this.websites.Add(item);
         }
 
         public IEnumerable<Website> GetAll()
         {
-            return from l in links
+            return from l in websites
                    orderby l.CreatedAt
                    select l;
         }
 
         public Website GetById(string id)
         {
-            var link = from l in links
+            var link = from l in websites
                        orderby l.CreatedAt
                        where l.Id == id
                        select l;
@@ -90,32 +90,32 @@
 
         public void Remove(string id)
         {
-            this.links = (from l in links
+            this.websites = (from l in websites
                          where l.Id != id
                          select l).ToList();
         }
 
-        public void Update(Website link)
+        public void Update(Website item)
         {
-            var _link = this.links.Where(l => l.Id == link.Id).FirstOrDefault();
-            
+            var _link = this.websites.Where(l => l.Id == item.Id).FirstOrDefault();
+
             if (_link == null)
             {
                 throw new InvalidOperationException("Cannot find the link with id");
             }
 
-            _link.Name = link.Name ?? _link.Name;
-            _link.Url = link.Url ?? _link.Url;
-            _link.Domain = link.Domain ?? _link.Domain;
-            _link.Description = link.Description ?? _link.Description;
-            _link.Tags = link.Tags ?? _link.Tags;
+            _link.Name = item.Name ?? _link.Name;
+            _link.Url = item.Url ?? _link.Url;
+            _link.Domain = item.Domain ?? _link.Domain;
+            _link.Description = item.Description ?? _link.Description;
+            _link.Tags = item.Tags ?? _link.Tags;
 
-            _link.Category = link.Category;
-            _link.Aesthetics = link.Aesthetics;
-            _link.MainLanguage = link.MainLanguage;
+            _link.Category = item.Category;
+            _link.Aesthetics = item.Aesthetics;
+            _link.MainLanguage = item.MainLanguage;
 
-            _link.IsSubdomain = link.IsSubdomain;
-            _link.IsMultilingual = link.IsMultilingual;
+            _link.IsSubdomain = item.IsSubdomain;
+            _link.IsMultilingual = item.IsMultilingual;
 
             _link.ModifiedAt = DateTime.Now;
         }
@@ -127,8 +127,8 @@
                 using var streamWriter = new StreamWriter(pathToData);
                 using var csvWriter = new CsvWriter(streamWriter, InvariantCulture);
 
-                var csvLinks = links.ConvertAll(
-                    new Converter<Website, CsvWebsite>(LinkToCsvLink));
+                var csvLinks = websites.ConvertAll(
+                    new Converter<Website, CsvWebsite>(WebsiteToCsvWebsite));
 
                 csvWriter.WriteRecords(csvLinks);
 

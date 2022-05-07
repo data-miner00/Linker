@@ -11,19 +11,19 @@
 
     public sealed class WebsiteController : IWebsiteController
     {
-        private readonly IWebsiteRepository linkRepository;
+        private readonly IWebsiteRepository websiteRepository;
 
-        public WebsiteController(IWebsiteRepository linkRepository)
+        public WebsiteController(IWebsiteRepository websiteRepository)
         {
-            this.linkRepository = EnsureArg.IsNotNull(linkRepository, nameof(linkRepository));
+            this.websiteRepository = EnsureArg.IsNotNull(websiteRepository, nameof(websiteRepository));
         }
 
-        public void DisplayAllLinks()
+        public void DisplayAllItems()
         {
             Console.Clear();
             Console.WriteLine("List of collected links.");
 
-            RenderLinks(this.linkRepository.GetAll());
+            RenderLinks(this.websiteRepository.GetAll());
 
             _ = PromptForInput("Press ENTER to return to main menu...", "");
 
@@ -65,14 +65,14 @@
             }
         }
 
-        public void DisplaySingleLink()
+        public void DisplayItemDetails()
         {
             Console.Clear();
             var id = PromptForInput("Enter the ID of the link: ", "");
 
             try
             {
-                var link = this.linkRepository.GetById(id);
+                var link = this.websiteRepository.GetById(id);
 
                 const int dividerLength = 100;
                 const int labelPad = 15;
@@ -130,12 +130,11 @@
             }
         }
 
-
-        public void UpdateLink()
+        public void UpdateItem()
         {
             Console.Clear();
 
-            this.DisplayAllLinks();
+            this.DisplayAllItems();
 
             var id = PromptForInput("Please select the ID of the link to be updated: ", "");
 
@@ -146,7 +145,7 @@
 
             try
             {
-                this.linkRepository.Update(link);
+                this.websiteRepository.Update(link);
                 Console.WriteLine("Successfully updated link!");
             }
             catch (Exception ex)
@@ -157,7 +156,7 @@
             _ = PromptForInput("\nPress ENTER to return to main menu...", "");
         }
 
-        public void InsertLink()
+        public void InsertItem()
         {
             Console.Clear();
 
@@ -166,7 +165,7 @@
             newLink.CreatedAt = now;
             newLink.ModifiedAt = now;
 
-            this.linkRepository.Add(newLink);
+            this.websiteRepository.Add(newLink);
 
             Console.WriteLine("Successfully added new link!");
             _ = PromptForInput("\nPress ENTER to return to main menu...", "");
@@ -201,7 +200,7 @@
 
             Console.WriteLine();
             DisplayEnum<Language>(nameof(Language));
-            
+
             while (true)
             {
                 try
@@ -236,7 +235,6 @@
             var _tags = PromptForInput(labelTemplate, "Tags".PadRight(labelPad));
             var tags = _tags.Split(",").Select(tag => tag.Trim());
 
-
             return new Website
             {
                 Name = name,
@@ -251,17 +249,17 @@
             };
         }
 
-        public void RemoveLink()
+        public void RemoveItem()
         {
             Console.Clear();
 
-            this.DisplayAllLinks();
+            this.DisplayAllItems();
 
             var id = PromptForInput("Select an ID to remove: ", "");
 
             try
             {
-                this.linkRepository.Remove(id);
+                this.websiteRepository.Remove(id);
                 Console.WriteLine("Successfully removed link");
             }
             catch (Exception ex)
@@ -296,9 +294,9 @@
             return input;
         }
 
-        public void Save()
+        public void SaveChanges()
         {
-            this.linkRepository.Commit();
+            this.websiteRepository.Commit();
         }
     }
 }
