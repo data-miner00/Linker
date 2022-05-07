@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using CsvHelper;
+    using Linker.ConsoleUI.Helpers;
     using Linker.Core.CsvModels;
     using Linker.Core.Models;
     using Linker.Core.Repositories;
@@ -12,7 +13,7 @@
 
     public sealed class CsvLinkRepository : ILinkRepository
     {
-        static readonly string pathToData = Path.Combine(Environment.CurrentDirectory ,"data.csv");
+        static readonly string pathToData = Path.Combine(Environment.CurrentDirectory, "data.csv");
 
         public static Link CsvLinkToLink(CsvLink csvLink)
         {
@@ -60,19 +61,7 @@
 
         public CsvLinkRepository()
         {
-            if (!File.Exists(pathToData))
-            {
-                links = new List<Link>();
-                Console.WriteLine("No data found");
-            } else
-            {
-                using var streamReader = new StreamReader(pathToData);
-                using var csvReader = new CsvReader(streamReader, InvariantCulture);
-
-                csvReader.Context.RegisterClassMap<LinkClassMap>();
-                this.links = csvReader.GetRecords<CsvLink>().ToList().ConvertAll(
-                    new Converter<CsvLink, Link>(CsvLinkToLink));
-            }
+            this.links = CsvLoader.Load<CsvLink, Link, LinkClassMap>(pathToData, CsvLinkToLink);
         }
 
         public void Add(Link link)
