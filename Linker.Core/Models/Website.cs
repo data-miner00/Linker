@@ -6,7 +6,7 @@
     /// <summary>
     /// The model for a general website's link.
     /// </summary>
-    public class Link
+    public class Website
     {
         /// <summary>
         /// Gets or sets the unique identifier for the object.

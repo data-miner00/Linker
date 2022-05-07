@@ -11,13 +11,13 @@
     using Linker.Core.Repositories;
     using static System.Globalization.CultureInfo;
 
-    public sealed class CsvLinkRepository : ILinkRepository
+    public sealed class CsvWebsiteRepository : IWebsiteRepository
     {
         static readonly string pathToData = Path.Combine(Environment.CurrentDirectory, "data.csv");
 
-        public static Link CsvLinkToLink(CsvLink csvLink)
+        public static Website CsvLinkToLink(CsvWebsite csvLink)
         {
-            return new Link
+            return new Website
             {
                 Id = csvLink.Id,
                 Name = csvLink.Name,
@@ -36,9 +36,9 @@
             };
         }
 
-        public static CsvLink LinkToCsvLink(Link link)
+        public static CsvWebsite LinkToCsvLink(Website link)
         {
-            return new CsvLink
+            return new CsvWebsite
             {
                 Id = link.Id,
                 Name = link.Name,
@@ -57,28 +57,28 @@
             };
         }
 
-        private List<Link> links;
+        private List<Website> links;
 
-        public CsvLinkRepository()
+        public CsvWebsiteRepository()
         {
-            this.links = CsvLoader.Load<CsvLink, Link, LinkClassMap>(pathToData, CsvLinkToLink);
+            this.links = CsvLoader.Load<CsvWebsite, Website, WebsiteClassMap>(pathToData, CsvLinkToLink);
         }
 
-        public void Add(Link link)
+        public void Add(Website link)
         {
             var randomId = Guid.NewGuid().ToString();
             link.Id = randomId;
             this.links.Add(link);
         }
 
-        public IEnumerable<Link> GetAll()
+        public IEnumerable<Website> GetAll()
         {
             return from l in links
                    orderby l.CreatedAt
                    select l;
         }
 
-        public Link GetById(string id)
+        public Website GetById(string id)
         {
             var link = from l in links
                        orderby l.CreatedAt
@@ -95,7 +95,7 @@
                          select l).ToList();
         }
 
-        public void Update(Link link)
+        public void Update(Website link)
         {
             var _link = this.links.Where(l => l.Id == link.Id).FirstOrDefault();
             
@@ -128,7 +128,7 @@
                 using var csvWriter = new CsvWriter(streamWriter, InvariantCulture);
 
                 var csvLinks = links.ConvertAll(
-                    new Converter<Link, CsvLink>(LinkToCsvLink));
+                    new Converter<Website, CsvWebsite>(LinkToCsvLink));
 
                 csvWriter.WriteRecords(csvLinks);
 

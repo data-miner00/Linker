@@ -9,11 +9,11 @@
     using Linker.Core.Models;
     using Linker.Core.Repositories;
 
-    public sealed class LinkController : ILinkController
+    public sealed class WebsiteController : IWebsiteController
     {
-        private readonly ILinkRepository linkRepository;
+        private readonly IWebsiteRepository linkRepository;
 
-        public LinkController(ILinkRepository linkRepository)
+        public WebsiteController(IWebsiteRepository linkRepository)
         {
             this.linkRepository = EnsureArg.IsNotNull(linkRepository, nameof(linkRepository));
         }
@@ -27,7 +27,7 @@
 
             _ = PromptForInput("Press ENTER to return to main menu...", "");
 
-            static void RenderLinks(IEnumerable<Link> links)
+            static void RenderLinks(IEnumerable<Website> links)
             {
                 const string displayTemplate = "|| {0} || {1} || {2} || {3} || {4} || {5} ||";
                 const int dividerLength = 163;
@@ -172,7 +172,7 @@
             _ = PromptForInput("\nPress ENTER to return to main menu...", "");
         }
 
-        public static Link GetLinkFromInput()
+        public static Website GetLinkFromInput()
         {
             const string labelTemplate = "{0}: ";
             const int labelPad = 13;
@@ -237,7 +237,7 @@
             var tags = _tags.Split(",").Select(tag => tag.Trim());
 
 
-            return new Link
+            return new Website
             {
                 Name = name,
                 Url = url,

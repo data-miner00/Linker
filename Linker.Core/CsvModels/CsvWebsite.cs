@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class CsvLink
+    public class CsvWebsite
     {
         public string Id { get; set; }
 

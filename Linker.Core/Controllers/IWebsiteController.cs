@@ -1,6 +1,6 @@
 ﻿namespace Linker.Core.Controllers
 {
-    public interface ILinkController
+    public interface IWebsiteController
     {
         public void DisplayAllLinks();
 

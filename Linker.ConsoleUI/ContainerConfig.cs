@@ -21,8 +21,8 @@
             var builder = new ContainerBuilder();
 
             builder.RegisterType<Startup>().As<IStartup>();
-            builder.RegisterType<LinkController>().As<ILinkController>();
-            builder.RegisterType<CsvLinkRepository>().As<ILinkRepository>();
+            builder.RegisterType<WebsiteController>().As<IWebsiteController>();
+            builder.RegisterType<CsvWebsiteRepository>().As<IWebsiteRepository>();
             builder.RegisterType<Router>().As<IRouter>();
 
             // UI

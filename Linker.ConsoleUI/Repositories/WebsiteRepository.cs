@@ -7,15 +7,15 @@
     using Linker.Core.Models;
     using Linker.Core.Repositories;
 
-    public class LinkRepository : ILinkRepository
+    public class WebsiteRepository : IWebsiteRepository
     {
-        private IList<Link> links;
+        private IList<Website> links;
 
-        public LinkRepository()
+        public WebsiteRepository()
         {
-            links = new List<Link>
+            links = new List<Website>
             {
-                new Link
+                new Website
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = "Google",
@@ -26,7 +26,7 @@
                     CreatedAt = DateTime.Now,
                     ModifiedAt = DateTime.Now
                 },
-                new Link
+                new Website
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = "Google",
@@ -37,7 +37,7 @@
                     CreatedAt = DateTime.Now,
                     ModifiedAt = DateTime.Now
                 },
-                new Link
+                new Website
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = "Google",
@@ -51,7 +51,7 @@
             };
         }
 
-        public void Add(Link link)
+        public void Add(Website link)
         {
             link.Id = Guid.NewGuid().ToString();
             link.Domain = ExtractDomainFromUrl(link.Url);
@@ -61,14 +61,14 @@
             links.Add(link);
         }
 
-        public IEnumerable<Link> GetAll()
+        public IEnumerable<Website> GetAll()
         {
             return from l in links
                    orderby l.CreatedAt
                    select l;
         }
 
-        public Link GetById(string id)
+        public Website GetById(string id)
         {
 
             var link = links.FirstOrDefault(x => x.Id == id);
@@ -85,10 +85,9 @@
             }
         }
 
-        public void Update(Link updatedLink)
+        public void Update(Website updatedLink)
         {
             var link = links.FirstOrDefault(x => x.Id == updatedLink.Id);
-            
             if (link != null)
             {
                 link.Name = updatedLink.Name ?? link.Name;
@@ -103,11 +102,6 @@
         public int Commit()
         {
             return 0;
-        }
-
-        private bool IsExists(string id)
-        {
-            return GetById(id) != null;
         }
 
         private string ExtractDomainFromUrl(string url)

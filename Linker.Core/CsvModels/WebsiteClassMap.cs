@@ -2,9 +2,9 @@
 {
     using CsvHelper.Configuration;
 
-    public sealed class LinkClassMap : ClassMap<CsvLink>
+    public sealed class WebsiteClassMap : ClassMap<CsvWebsite>
     {
-        public LinkClassMap()
+        public WebsiteClassMap()
         {
             Map(m => m.Id).Name("Id");
             Map(m => m.Name).Name("Name");

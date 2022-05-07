@@ -9,15 +9,15 @@
     /// </summary>
     public sealed class Router : IRouter
     {
-        private readonly ILinkController linkController;
+        private readonly IWebsiteController linkController;
         private readonly IMenu menu;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Router"/> class.
         /// </summary>
-        /// <param name="linkController">The <see cref="ILinkController"/> object.</param>
+        /// <param name="linkController">The <see cref="IWebsiteController"/> object.</param>
         /// <param name="menu">The <see cref="IMenu"/> object.</param>
-        public Router(ILinkController linkController, IMenu menu)
+        public Router(IWebsiteController linkController, IMenu menu)
         {
             this.linkController = linkController;
             this.menu = menu;
@@ -80,7 +80,55 @@
         /// <inheritdoc/>
         public void Article()
         {
-            // wip
+            while (true)
+            {
+                Console.Clear();
+
+                this.menu.DisplayBanner();
+                this.menu.PageHeader("Link Management System", "Article");
+                this.menu.GenerateMenu(new[]
+                {
+                    "View all articles",
+                    "View article by ID",
+                    "Insert an article",
+                    "Update an article",
+                    "Remove an article",
+                    "Return",
+                    "Exit",
+                });
+
+                Console.Write("Your selection: ");
+                var input = Console.ReadLine();
+
+                switch (input)
+                {
+                    case "1":
+                        this.linkController.DisplayAllLinks();
+                        break;
+                    case "2":
+                        this.linkController.DisplaySingleLink();
+                        break;
+                    case "3":
+                        this.linkController.InsertLink();
+                        break;
+                    case "4":
+                        this.linkController.UpdateLink();
+                        break;
+                    case "5":
+                        this.linkController.RemoveLink();
+                        break;
+                    case "6":
+                        this.linkController.Save();
+                        return;
+                    case "7":
+                        this.linkController.Save();
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        Console.WriteLine("The input is invalid, please provide the correct input.");
+                        break;
+                }
+            }
         }
 
         /// <inheritdoc/>
