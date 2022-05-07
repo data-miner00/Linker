@@ -27,7 +27,7 @@
                 Domain = csvWebsite.Domain,
                 Description = csvWebsite.Description,
                 Tags = csvWebsite.Tags.Split('|'),
-                MainLanguage = (Language)csvWebsite.MainLanguage,
+                Language = (Language)csvWebsite.MainLanguage,
                 IsSubdomain = csvWebsite.IsSubdomain,
                 IsMultilingual = csvWebsite.IsMultilingual,
                 LastVisitAt = csvWebsite.LastVisitAt,
@@ -48,7 +48,7 @@
                 Domain = website.Domain,
                 Description = website.Description,
                 Tags = string.Join('|', website.Tags),
-                MainLanguage = (int)website.MainLanguage,
+                MainLanguage = (int)website.Language,
                 IsSubdomain = website.IsSubdomain,
                 IsMultilingual = website.IsMultilingual,
                 LastVisitAt = website.LastVisitAt,
@@ -112,7 +112,7 @@
 
             _link.Category = item.Category;
             _link.Aesthetics = item.Aesthetics;
-            _link.MainLanguage = item.MainLanguage;
+            _link.Language = item.Language;
 
             _link.IsSubdomain = item.IsSubdomain;
             _link.IsMultilingual = item.IsMultilingual;

@@ -87,7 +87,7 @@
                 Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
                 Console.WriteLine("|{0}: {1}|", "Url".PadRight(labelPad), link.Url.PadRight(contentPad));
                 Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
-                Console.WriteLine("|{0}: {1}| {2}: {3}|", "Language".PadRight(labelPad), link.MainLanguage.ToString().PadRight(30), "Aesthetics".PadRight(labelPad), link.Aesthetics.ToString().PadRight(34));
+                Console.WriteLine("|{0}: {1}| {2}: {3}|", "Language".PadRight(labelPad), link.Language.ToString().PadRight(30), "Aesthetics".PadRight(labelPad), link.Aesthetics.ToString().PadRight(34));
                 Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
                 Console.WriteLine("|{0}: {1}|", "Description".PadRight(labelPad), link.Description.TruncateWithEllipsis(contentPad - 3).PadRight(contentPad));
                 Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
@@ -242,7 +242,7 @@
                 Category = (Category)category,
                 Description = description,
                 Tags = tags,
-                MainLanguage = (Language)language,
+                Language = (Language)language,
                 Aesthetics = (Aesthetics)aesthetics,
                 IsSubdomain = false,
                 IsMultilingual = false,
