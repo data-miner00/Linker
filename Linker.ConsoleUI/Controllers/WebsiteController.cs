@@ -3,27 +3,24 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using EnsureThat;
     using Linker.ConsoleUI.Extensions;
     using Linker.Core.Controllers;
     using Linker.Core.Models;
     using Linker.Core.Repositories;
 
-    public sealed class WebsiteController : IWebsiteController
+    public sealed class WebsiteController : BaseController<Website>, IWebsiteController
     {
-        private readonly IWebsiteRepository websiteRepository;
-
         public WebsiteController(IWebsiteRepository websiteRepository)
+            : base(websiteRepository)
         {
-            this.websiteRepository = EnsureArg.IsNotNull(websiteRepository, nameof(websiteRepository));
         }
 
-        public void DisplayAllItems()
+        public override void DisplayAllItems()
         {
             Console.Clear();
             Console.WriteLine("List of collected links.");
 
-            RenderLinks(this.websiteRepository.GetAll());
+            RenderLinks(this.repository.GetAll());
 
             _ = PromptForInput("Press ENTER to return to main menu...", "");
 
@@ -65,14 +62,14 @@
             }
         }
 
-        public void DisplayItemDetails()
+        public override void DisplayItemDetails()
         {
             Console.Clear();
             var id = PromptForInput("Enter the ID of the link: ", "");
 
             try
             {
-                var link = this.websiteRepository.GetById(id);
+                var link = this.repository.GetById(id);
 
                 const int dividerLength = 100;
                 const int labelPad = 15;
@@ -130,48 +127,7 @@
             }
         }
 
-        public void UpdateItem()
-        {
-            Console.Clear();
-
-            this.DisplayAllItems();
-
-            var id = PromptForInput("Please select the ID of the link to be updated: ", "");
-
-            Console.WriteLine("\nInsert the details that needed to be changed. Hit Enter to skip.");
-
-            var link = GetLinkFromInput();
-            link.Id = id;
-
-            try
-            {
-                this.websiteRepository.Update(link);
-                Console.WriteLine("Successfully updated link!");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Failed update link! Error: {0}", ex.Message);
-            }
-
-            _ = PromptForInput("\nPress ENTER to return to main menu...", "");
-        }
-
-        public void InsertItem()
-        {
-            Console.Clear();
-
-            var newLink = GetLinkFromInput();
-            var now = DateTime.Now;
-            newLink.CreatedAt = now;
-            newLink.ModifiedAt = now;
-
-            this.websiteRepository.Add(newLink);
-
-            Console.WriteLine("Successfully added new link!");
-            _ = PromptForInput("\nPress ENTER to return to main menu...", "");
-        }
-
-        public static Website GetLinkFromInput()
+        protected override Website GetItemFromInput()
         {
             const string labelTemplate = "{0}: ";
             const int labelPad = 13;
@@ -247,56 +203,6 @@
                 IsSubdomain = false,
                 IsMultilingual = false,
             };
-        }
-
-        public void RemoveItem()
-        {
-            Console.Clear();
-
-            this.DisplayAllItems();
-
-            var id = PromptForInput("Select an ID to remove: ", "");
-
-            try
-            {
-                this.websiteRepository.Remove(id);
-                Console.WriteLine("Successfully removed link");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Failed to remove link! Error: {0}", ex.Message);
-            }
-
-            _ = PromptForInput("\nPress ENTER to return to main menu...", "");
-        }
-
-        private static void DisplayEnum<T>(string name)
-        {
-            Console.WriteLine($"List of available {name}");
-            var items = Enum.GetValues(typeof(T)).Cast<T>();
-
-            foreach (var (item, index) in items.WithIndex())
-            {
-                Console.WriteLine("{0} {1}", (index + ".").PadRight(3), item);
-            }
-        }
-
-        private static string PromptForInput(params object[] prompt)
-        {
-            var consoleWrite = typeof(Console)
-                .GetMethods()
-                .Where(x => x.Name == "Write" && x.IsStatic)
-                .FirstOrDefault();
-
-            consoleWrite.Invoke(null, prompt);
-
-            var input = Console.ReadLine();
-            return input;
-        }
-
-        public void SaveChanges()
-        {
-            this.websiteRepository.Commit();
         }
     }
 }
