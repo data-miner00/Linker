@@ -10,16 +10,19 @@
     public sealed class Router : IRouter
     {
         private readonly IWebsiteController linkController;
+        private readonly IArticleController articleController;
         private readonly IMenu menu;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Router"/> class.
         /// </summary>
         /// <param name="linkController">The <see cref="IWebsiteController"/> object.</param>
+        /// <param name="articleController">The <see cref="IArticleController"/> object.</param>
         /// <param name="menu">The <see cref="IMenu"/> object.</param>
-        public Router(IWebsiteController linkController, IMenu menu)
+        public Router(IWebsiteController linkController, IArticleController articleController, IMenu menu)
         {
             this.linkController = linkController;
+            this.articleController = articleController;
             this.menu = menu;
         }
 
@@ -49,25 +52,25 @@
                 switch (input)
                 {
                     case "1":
-                        this.linkController.DisplayAllLinks();
+                        this.linkController.DisplayAllItems();
                         break;
                     case "2":
-                        this.linkController.DisplaySingleLink();
+                        this.linkController.DisplayItemDetails();
                         break;
                     case "3":
-                        this.linkController.InsertLink();
+                        this.linkController.InsertItem();
                         break;
                     case "4":
-                        this.linkController.UpdateLink();
+                        this.linkController.UpdateItem();
                         break;
                     case "5":
-                        this.linkController.RemoveLink();
+                        this.linkController.RemoveItem();
                         break;
                     case "6":
-                        this.linkController.Save();
+                        this.linkController.SaveChanges();
                         return;
                     case "7":
-                        this.linkController.Save();
+                        this.linkController.SaveChanges();
                         Environment.Exit(0);
                         break;
                     default:
@@ -103,25 +106,25 @@
                 switch (input)
                 {
                     case "1":
-                        this.linkController.DisplayAllLinks();
+                        this.articleController.DisplayAllItems();
                         break;
                     case "2":
-                        this.linkController.DisplaySingleLink();
+                        this.articleController.DisplayItemDetails();
                         break;
                     case "3":
-                        this.linkController.InsertLink();
+                        this.articleController.InsertItem();
                         break;
                     case "4":
-                        this.linkController.UpdateLink();
+                        this.articleController.UpdateItem();
                         break;
                     case "5":
-                        this.linkController.RemoveLink();
+                        this.articleController.RemoveItem();
                         break;
                     case "6":
-                        this.linkController.Save();
+                        this.articleController.SaveChanges();
                         return;
                     case "7":
-                        this.linkController.Save();
+                        this.articleController.SaveChanges();
                         Environment.Exit(0);
                         break;
                     default:

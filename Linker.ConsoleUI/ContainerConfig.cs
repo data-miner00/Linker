@@ -23,6 +23,8 @@
             builder.RegisterType<Startup>().As<IStartup>();
             builder.RegisterType<WebsiteController>().As<IWebsiteController>();
             builder.RegisterType<CsvWebsiteRepository>().As<IWebsiteRepository>();
+            builder.RegisterType<ArticleController>().As<IArticleController>();
+            builder.RegisterType<CsvArticleRepository>().As<IArticleRepository>();
             builder.RegisterType<Router>().As<IRouter>();
 
             // UI
