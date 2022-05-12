@@ -16,6 +16,9 @@
     public abstract class BaseController<T> : IController<T>
         where T : Link
     {
+        /// <summary>
+        /// The repository that is connected to the access data layer of the <typeparamref name="T"/> type.
+        /// </summary>
         protected readonly IRepository<T> repository;
 
         /// <summary>
@@ -28,17 +31,17 @@
         }
 
         /// <summary>
-        /// A page to displays all items in the list.
+        /// A page to displays all <typeparamref name="T"/> items in a list.
         /// </summary>
         public abstract void DisplayAllItems();
 
         /// <summary>
-        /// A page to displays single item with it's details.
+        /// A page to displays details of an item of type <typeparamref name="T"/>.
         /// </summary>
         public abstract void DisplayItemDetails();
 
         /// <summary>
-        /// A page to add a new item into the database.
+        /// A page to add a new item of type <typeparamref name="T"/> into the database.
         /// </summary>
         public virtual void InsertItem()
         {
@@ -56,7 +59,7 @@
         }
 
         /// <summary>
-        /// A page to delete an item from the database.
+        /// A page to delete an item of type <typeparamref name="T"/> from the database.
         /// </summary>
         public virtual void RemoveItem()
         {

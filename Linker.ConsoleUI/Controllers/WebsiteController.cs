@@ -8,13 +8,21 @@
     using Linker.Core.Models;
     using Linker.Core.Repositories;
 
+    /// <summary>
+    /// The controller for the <see cref="Website"/>.
+    /// </summary>
     public sealed class WebsiteController : BaseController<Website>, IWebsiteController
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebsiteController"/> class.
+        /// </summary>
+        /// <param name="websiteRepository">The <see cref="IWebsiteRepository"/> object.</param>
         public WebsiteController(IWebsiteRepository websiteRepository)
             : base(websiteRepository)
         {
         }
 
+        /// <inheritdoc/>
         public override void DisplayAllItems()
         {
             Console.Clear();
@@ -62,6 +70,7 @@
             }
         }
 
+        /// <inheritdoc/>
         public override void DisplayItemDetails()
         {
             Console.Clear();
@@ -127,6 +136,7 @@
             }
         }
 
+        /// <inheritdoc/>
         protected override Website GetItemFromInput()
         {
             const string labelTemplate = "{0}: ";
