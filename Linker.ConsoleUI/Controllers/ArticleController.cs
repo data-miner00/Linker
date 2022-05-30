@@ -8,13 +8,21 @@
     using Linker.Core.Models;
     using Linker.Core.Repositories;
 
+    /// <summary>
+    /// The controller for the <see cref="Article"/>.
+    /// </summary>
     public sealed class ArticleController : BaseController<Article>, IArticleController
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArticleController"/> class.
+        /// </summary>
+        /// <param name="articleRepository">The <see cref="IArticleRepository"/> object.</param>
         public ArticleController(IArticleRepository articleRepository)
             : base(articleRepository)
         {
         }
 
+        /// <inheritdoc/>
         public override void DisplayAllItems()
         {
             Console.Clear();
@@ -62,6 +70,7 @@
             }
         }
 
+        /// <inheritdoc/>
         public override void DisplayItemDetails()
         {
             Console.Clear();
@@ -127,6 +136,7 @@
             }
         }
 
+        /// <inheritdoc/>
         protected override Article GetItemFromInput()
         {
             const string labelTemplate = "{0}: ";
