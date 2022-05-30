@@ -122,12 +122,12 @@
         /// <summary>
         /// A helper method to display all possible values of an enum.
         /// </summary>
-        /// <typeparam name="T">The <see cref="Enum"/> type.</typeparam>
+        /// <typeparam name="TEnum">The <see cref="Enum"/> type.</typeparam>
         /// <param name="name">The name of the Enum.</param>
-        protected void DisplayEnum<T>(string name)
+        protected void DisplayEnum<TEnum>(string name)
         {
             Console.WriteLine($"List of available {name}");
-            var items = Enum.GetValues(typeof(T)).Cast<T>();
+            var items = Enum.GetValues(typeof(TEnum)).Cast<TEnum>();
 
             foreach (var (item, index) in items.WithIndex())
             {
