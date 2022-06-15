@@ -11,7 +11,8 @@
 
     public sealed class CsvWebsiteRepository : IWebsiteRepository
     {
-        static readonly string pathToData = Path.Combine(Environment.CurrentDirectory, "data.csv");
+
+        private readonly string pathToData;
 
         public static Website CsvWebsiteToWebsite(CsvWebsite csvWebsite)
         {
@@ -59,7 +60,10 @@
 
         public CsvWebsiteRepository()
         {
-            this.websites = CsvHelper.Load<CsvWebsite, Website, WebsiteClassMap>(pathToData, CsvWebsiteToWebsite);
+            var filePath = ConfigurationResolver.GetConfig("WebsiteCsvPath");
+            this.pathToData = Path.Combine(Environment.CurrentDirectory, filePath);
+
+            this.websites = CsvHelper.Load<CsvWebsite, Website, WebsiteClassMap>(this.pathToData, CsvWebsiteToWebsite);
         }
 
         public void Add(Website item)
@@ -120,7 +124,7 @@
 
         public int Commit()
         {
-            return CsvHelper.Save(pathToData, WebsiteToCsvWebsite, this.websites);
+            return CsvHelper.Save(this.pathToData, WebsiteToCsvWebsite, this.websites);
         }
     }
 }

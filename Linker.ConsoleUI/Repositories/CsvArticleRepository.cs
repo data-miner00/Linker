@@ -11,7 +11,7 @@
 
     public sealed class CsvArticleRepository : IArticleRepository
     {
-        static readonly string pathToData = Path.Combine(Environment.CurrentDirectory, "articles.csv");
+        private readonly string pathToData;
 
         public static Article CsvArticleToArticle(CsvArticle csvArticle)
         {
@@ -61,7 +61,10 @@
 
         public CsvArticleRepository()
         {
-            this.articles = CsvHelper.Load<CsvArticle, Article, ArticleClassMap>(pathToData, CsvArticleToArticle);
+            var filePath = ConfigurationResolver.GetConfig("ArticleCsvPath");
+            this.pathToData = Path.Combine(Environment.CurrentDirectory, filePath);
+
+            this.articles = CsvHelper.Load<CsvArticle, Article, ArticleClassMap>(this.pathToData, CsvArticleToArticle);
         }
 
         public void Add(Article item)
@@ -120,7 +123,7 @@
 
         public int Commit()
         {
-            return CsvHelper.Save(pathToData, ArticleToCsvArticle, this.articles);
+            return CsvHelper.Save(this.pathToData, ArticleToCsvArticle, this.articles);
         }
     }
 }
