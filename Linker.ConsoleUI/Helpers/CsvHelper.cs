@@ -17,21 +17,21 @@
         /// <summary>
         /// Loads the data from csv and serialize it into usable objects.
         /// </summary>
-        /// <typeparam name="V">The csv model for <typeparamref name="T"/>.</typeparam>
-        /// <typeparam name="T">The model of objects to work with.</typeparam>
-        /// <typeparam name="U">The classmap object for the conversion.</typeparam>
+        /// <typeparam name="TCsvModel">The csv model for <typeparamref name="TModel"/>.</typeparam>
+        /// <typeparam name="TModel">The model of objects to work with.</typeparam>
+        /// <typeparam name="TClassMap">The classmap object for the conversion.</typeparam>
         /// <param name="path">The path to save the csv data.</param>
-        /// <param name="mapper">The mapper that constructs <typeparamref name="V"/> to <typeparamref name="T"/>.</param>
-        /// <returns>The serialized list of <typeparamref name="T"/>.</returns>
-        public static List<T> Load<V, T, U>(string path, Func<V, T> mapper)
-            where U : ClassMap<V>
-            where T : Link
+        /// <param name="mapper">The mapper that constructs <typeparamref name="TCsvModel"/> to <typeparamref name="TModel"/>.</param>
+        /// <returns>The serialized list of <typeparamref name="TModel"/>.</returns>
+        public static List<TModel> Load<TCsvModel, TModel, TClassMap>(string path, Func<TCsvModel, TModel> mapper)
+            where TClassMap : ClassMap<TCsvModel>
+            where TModel : Link
         {
-            List<T> items;
+            List<TModel> items;
 
             if (!File.Exists(path))
             {
-                items = new List<T>();
+                items = new List<TModel>();
                 Console.WriteLine($"File to {path} not found");
             }
             else
@@ -39,9 +39,9 @@
                 using var streamReader = new StreamReader(path);
                 using var csvReader = new CsvReader(streamReader, InvariantCulture);
 
-                csvReader.Context.RegisterClassMap<U>();
-                items = csvReader.GetRecords<V>().ToList().ConvertAll(
-                    new Converter<V, T>(mapper));
+                csvReader.Context.RegisterClassMap<TClassMap>();
+                items = csvReader.GetRecords<TCsvModel>().ToList().ConvertAll(
+                    new Converter<TCsvModel, TModel>(mapper));
             }
 
             return items;
@@ -50,14 +50,14 @@
         /// <summary>
         /// Save the data to csv file.
         /// </summary>
-        /// <typeparam name="T">The model of items to be saved.</typeparam>
-        /// <typeparam name="V">The csv model for <typeparamref name="T"/>.</typeparam>
+        /// <typeparam name="TModel">The model of items to be saved.</typeparam>
+        /// <typeparam name="TCsvModel">The csv model for <typeparamref name="TModel"/>.</typeparam>
         /// <param name="path">The path to save the data to.</param>
-        /// <param name="mapper">The mapper that constructs <typeparamref name="T"/> to <typeparamref name="V"/>.</param>
-        /// <param name="items">The list of <typeparamref name="T"/> items.</param>
+        /// <param name="mapper">The mapper that constructs <typeparamref name="TModel"/> to <typeparamref name="TCsvModel"/>.</param>
+        /// <param name="items">The list of <typeparamref name="TModel"/> items.</param>
         /// <returns>0 for success and -1 for error.</returns>
-        public static int Save<T, V>(string path, Func<T, V> mapper, List<T> items)
-            where T : Link
+        public static int Save<TModel, TCsvModel>(string path, Func<TModel, TCsvModel> mapper, List<TModel> items)
+            where TModel : Link
         {
             try
             {
@@ -65,7 +65,7 @@
                 using var csvWriter = new CsvWriter(streamWriter, InvariantCulture);
 
                 var csvLinks = items.ConvertAll(
-                    new Converter<T, V>(mapper));
+                    new Converter<TModel, TCsvModel>(mapper));
 
                 csvWriter.WriteRecords(csvLinks);
 
