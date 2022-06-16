@@ -1,4 +1,4 @@
-﻿namespace Linker.ConsoleUI.Helpers
+﻿namespace Linker.Common.Helpers
 {
     using System;
     using System.Configuration;

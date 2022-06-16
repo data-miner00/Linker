@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using Linker.Common.Extensions;
     using Linker.ConsoleUI.Extensions;
 
     /// <summary>

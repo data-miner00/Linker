@@ -1,8 +1,8 @@
 ﻿namespace Linker.ConsoleUI
 {
     using Autofac;
+    using Linker.Common.Repositories;
     using Linker.ConsoleUI.Controllers;
-    using Linker.ConsoleUI.Repositories;
     using Linker.ConsoleUI.UI;
     using Linker.Core.Controllers;
     using Linker.Core.Repositories;

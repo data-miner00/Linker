@@ -1,10 +1,10 @@
-﻿namespace Linker.ConsoleUI.Repositories
+﻿namespace Linker.Common.Repositories
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Linker.ConsoleUI.Helpers;
+    using Linker.Common.Helpers;
     using Linker.Core.CsvModels;
     using Linker.Core.Models;
     using Linker.Core.Repositories;

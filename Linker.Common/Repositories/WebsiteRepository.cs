@@ -1,4 +1,4 @@
-﻿namespace Linker.ConsoleUI.Repositories
+﻿namespace Linker.Common.Repositories
 {
     using System;
     using System.Collections.Generic;
