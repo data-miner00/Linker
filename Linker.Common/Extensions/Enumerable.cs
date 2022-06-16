@@ -1,4 +1,4 @@
-﻿namespace Linker.ConsoleUI.Extensions
+﻿namespace Linker.Common.Extensions
 {
     using System.Collections.Generic;
     using System.Linq;

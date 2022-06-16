@@ -3,7 +3,7 @@
     using System;
     using System.Linq;
     using EnsureThat;
-    using Linker.ConsoleUI.Extensions;
+    using Linker.Common.Extensions;
     using Linker.Core.Controllers;
     using Linker.Core.Models;
     using Linker.Core.Repositories;

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Linker.Common.Extensions;
     using Linker.ConsoleUI.Extensions;
     using Linker.Core.Controllers;
     using Linker.Core.Models;
