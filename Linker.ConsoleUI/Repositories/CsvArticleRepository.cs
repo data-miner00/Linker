@@ -9,10 +9,34 @@
     using Linker.Core.Models;
     using Linker.Core.Repositories;
 
+    /// <summary>
+    /// The article repository with csv as storage.
+    /// </summary>
     public sealed class CsvArticleRepository : IArticleRepository
     {
         private readonly string pathToData;
 
+        /// <summary>
+        /// The in memory list that holds all articles.
+        /// </summary>
+        private List<Article> articles;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CsvArticleRepository"/> class.
+        /// </summary>
+        public CsvArticleRepository()
+        {
+            var filePath = ConfigurationResolver.GetConfig("ArticleCsvPath");
+            this.pathToData = Path.Combine(Environment.CurrentDirectory, filePath);
+
+            this.articles = CsvHelper.Load<CsvArticle, Article, ArticleClassMap>(this.pathToData, CsvArticleToArticle);
+        }
+
+        /// <summary>
+        /// Converts the CsvArticle model to Article.
+        /// </summary>
+        /// <param name="csvArticle">The <see cref="CsvArticle"/> object.</param>
+        /// <returns>The converted <see cref="Article"/> object.</returns>
         public static Article CsvArticleToArticle(CsvArticle csvArticle)
         {
             return new Article
@@ -35,6 +59,11 @@
             };
         }
 
+        /// <summary>
+        /// Converts the Article model back to CsvArticle.
+        /// </summary>
+        /// <param name="article">The <see cref="Article"/> object.</param>
+        /// <returns>The converted <see cref="CsvArticle"/> object.</returns>
         public static CsvArticle ArticleToCsvArticle(Article article)
         {
             return new CsvArticle
@@ -57,16 +86,7 @@
             };
         }
 
-        private List<Article> articles;
-
-        public CsvArticleRepository()
-        {
-            var filePath = ConfigurationResolver.GetConfig("ArticleCsvPath");
-            this.pathToData = Path.Combine(Environment.CurrentDirectory, filePath);
-
-            this.articles = CsvHelper.Load<CsvArticle, Article, ArticleClassMap>(this.pathToData, CsvArticleToArticle);
-        }
-
+        /// <inheritdoc/>
         public void Add(Article item)
         {
             var randomId = Guid.NewGuid().ToString();
@@ -74,6 +94,7 @@
             this.articles.Add(item);
         }
 
+        /// <inheritdoc/>
         public IEnumerable<Article> GetAll()
         {
             return from l in this.articles
@@ -81,6 +102,7 @@
                    select l;
         }
 
+        /// <inheritdoc/>
         public Article GetById(string id)
         {
             var link = from l in this.articles
@@ -91,6 +113,7 @@
             return link.FirstOrDefault();
         }
 
+        /// <inheritdoc/>
         public void Remove(string id)
         {
             this.articles = (from l in this.articles
@@ -98,6 +121,7 @@
                              select l).ToList();
         }
 
+        /// <inheritdoc/>
         public void Update(Article item)
         {
             var _item = this.articles.FirstOrDefault(l => l.Id == item.Id);
@@ -121,6 +145,7 @@
             _item.ModifiedAt = DateTime.Now;
         }
 
+        /// <inheritdoc/>
         public int Commit()
         {
             return CsvHelper.Save(this.pathToData, ArticleToCsvArticle, this.articles);
