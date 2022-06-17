@@ -9,11 +9,35 @@
     using Linker.Core.Models;
     using Linker.Core.Repositories;
 
+    /// <summary>
+    /// An in-memory website repository using csv as data source.
+    /// </summary>
     public sealed class CsvWebsiteRepository : IWebsiteRepository
     {
 
         private readonly string pathToData;
 
+        /// <summary>
+        /// The in memory list that holds all websites.
+        /// </summary>
+        private List<Website> websites;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CsvWebsiteRepository"/> class.
+        /// </summary>
+        public CsvWebsiteRepository()
+        {
+            var filePath = ConfigurationResolver.GetConfig("WebsiteCsvPath");
+            this.pathToData = Path.Combine(Environment.CurrentDirectory, filePath);
+
+            this.websites = CsvHelper.Load<CsvWebsite, Website, WebsiteClassMap>(this.pathToData, CsvWebsiteToWebsite);
+        }
+
+        /// <summary>
+        /// Converts the CsvWebsite model to Website.
+        /// </summary>
+        /// <param name="csvWebsite">The <see cref="CsvWebsite"/> object.</param>
+        /// <returns>The converted <see cref="Website"/> object.</returns>
         public static Website CsvWebsiteToWebsite(CsvWebsite csvWebsite)
         {
             return new Website
@@ -35,6 +59,11 @@
             };
         }
 
+        /// <summary>
+        /// Converts the Website model to CsvWebsite.
+        /// </summary>
+        /// <param name="website">The <see cref="Website"/> object.</param>
+        /// <returns>The converted <see cref="CsvWebsite"/> object.</returns>
         public static CsvWebsite WebsiteToCsvWebsite(Website website)
         {
             return new CsvWebsite
@@ -56,16 +85,7 @@
             };
         }
 
-        private List<Website> websites;
-
-        public CsvWebsiteRepository()
-        {
-            var filePath = ConfigurationResolver.GetConfig("WebsiteCsvPath");
-            this.pathToData = Path.Combine(Environment.CurrentDirectory, filePath);
-
-            this.websites = CsvHelper.Load<CsvWebsite, Website, WebsiteClassMap>(this.pathToData, CsvWebsiteToWebsite);
-        }
-
+        /// <inheritdoc/>
         public void Add(Website item)
         {
             var randomId = Guid.NewGuid().ToString();
@@ -73,6 +93,7 @@
             this.websites.Add(item);
         }
 
+        /// <inheritdoc/>
         public IEnumerable<Website> GetAll()
         {
             return from l in websites
@@ -80,6 +101,7 @@
                    select l;
         }
 
+        /// <inheritdoc/>
         public Website GetById(string id)
         {
             var link = from l in websites
@@ -90,6 +112,7 @@
             return link.FirstOrDefault();
         }
 
+        /// <inheritdoc/>
         public void Remove(string id)
         {
             this.websites = (from l in websites
@@ -97,6 +120,7 @@
                          select l).ToList();
         }
 
+        /// <inheritdoc/>
         public void Update(Website item)
         {
             var _link = this.websites.Where(l => l.Id == item.Id).FirstOrDefault();
@@ -122,6 +146,7 @@
             _link.ModifiedAt = DateTime.Now;
         }
 
+        /// <inheritdoc/>
         public int Commit()
         {
             return CsvHelper.Save(this.pathToData, WebsiteToCsvWebsite, this.websites);
