@@ -12,9 +12,8 @@
     /// <summary>
     /// An in-memory website repository using csv as data source.
     /// </summary>
-    public sealed class CsvWebsiteRepository : IWebsiteRepository
+    public sealed class CsvWebsiteRepository : IWebsiteRepository, ICsvRepository<Website, CsvWebsite>
     {
-
         private readonly string pathToData;
 
         /// <summary>
@@ -30,59 +29,7 @@
             var filePath = ConfigurationResolver.GetConfig("WebsiteCsvPath");
             this.pathToData = Path.Combine(Environment.CurrentDirectory, filePath);
 
-            this.websites = CsvHelper.Load<CsvWebsite, Website, WebsiteClassMap>(this.pathToData, CsvWebsiteToWebsite);
-        }
-
-        /// <summary>
-        /// Converts the CsvWebsite model to Website.
-        /// </summary>
-        /// <param name="csvWebsite">The <see cref="CsvWebsite"/> object.</param>
-        /// <returns>The converted <see cref="Website"/> object.</returns>
-        public static Website CsvWebsiteToWebsite(CsvWebsite csvWebsite)
-        {
-            return new Website
-            {
-                Id = csvWebsite.Id,
-                Name = csvWebsite.Name,
-                Url = csvWebsite.Url,
-                Category = (Category)csvWebsite.Category,
-                Aesthetics = (Aesthetics)csvWebsite.Aesthetics,
-                Domain = csvWebsite.Domain,
-                Description = csvWebsite.Description,
-                Tags = csvWebsite.Tags.Split('|'),
-                Language = (Language)csvWebsite.MainLanguage,
-                IsSubdomain = csvWebsite.IsSubdomain,
-                IsMultilingual = csvWebsite.IsMultilingual,
-                LastVisitAt = csvWebsite.LastVisitAt,
-                CreatedAt = csvWebsite.CreatedAt,
-                ModifiedAt = csvWebsite.ModifiedAt,
-            };
-        }
-
-        /// <summary>
-        /// Converts the Website model to CsvWebsite.
-        /// </summary>
-        /// <param name="website">The <see cref="Website"/> object.</param>
-        /// <returns>The converted <see cref="CsvWebsite"/> object.</returns>
-        public static CsvWebsite WebsiteToCsvWebsite(Website website)
-        {
-            return new CsvWebsite
-            {
-                Id = website.Id,
-                Name = website.Name,
-                Url = website.Url,
-                Category = (int)website.Category,
-                Aesthetics = (int)website.Aesthetics,
-                Domain = website.Domain,
-                Description = website.Description,
-                Tags = string.Join('|', website.Tags),
-                MainLanguage = (int)website.Language,
-                IsSubdomain = website.IsSubdomain,
-                IsMultilingual = website.IsMultilingual,
-                LastVisitAt = website.LastVisitAt,
-                CreatedAt = website.CreatedAt,
-                ModifiedAt = website.ModifiedAt,
-            };
+            this.websites = CsvHelper.Load<CsvWebsite, Website, WebsiteClassMap>(this.pathToData, this.CsvModelToModel);
         }
 
         /// <inheritdoc/>
@@ -149,7 +96,51 @@
         /// <inheritdoc/>
         public int Commit()
         {
-            return CsvHelper.Save(this.pathToData, WebsiteToCsvWebsite, this.websites);
+            return CsvHelper.Save(this.pathToData, this.ModelToCsvModel, this.websites);
+        }
+
+        /// <inheritdoc/>
+        public Website CsvModelToModel(CsvWebsite csvModel)
+        {
+            return new Website
+            {
+                Id = csvModel.Id,
+                Name = csvModel.Name,
+                Url = csvModel.Url,
+                Category = (Category)csvModel.Category,
+                Aesthetics = (Aesthetics)csvModel.Aesthetics,
+                Domain = csvModel.Domain,
+                Description = csvModel.Description,
+                Tags = csvModel.Tags.Split('|'),
+                Language = (Language)csvModel.MainLanguage,
+                IsSubdomain = csvModel.IsSubdomain,
+                IsMultilingual = csvModel.IsMultilingual,
+                LastVisitAt = csvModel.LastVisitAt,
+                CreatedAt = csvModel.CreatedAt,
+                ModifiedAt = csvModel.ModifiedAt,
+            };
+        }
+
+        /// <inheritdoc/>
+        public CsvWebsite ModelToCsvModel(Website model)
+        {
+            return new CsvWebsite
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Url = model.Url,
+                Category = (int)model.Category,
+                Aesthetics = (int)model.Aesthetics,
+                Domain = model.Domain,
+                Description = model.Description,
+                Tags = string.Join('|', model.Tags),
+                MainLanguage = (int)model.Language,
+                IsSubdomain = model.IsSubdomain,
+                IsMultilingual = model.IsMultilingual,
+                LastVisitAt = model.LastVisitAt,
+                CreatedAt = model.CreatedAt,
+                ModifiedAt = model.ModifiedAt,
+            };
         }
     }
 }

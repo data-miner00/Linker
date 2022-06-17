@@ -12,7 +12,7 @@
     /// <summary>
     /// The article repository with csv as storage.
     /// </summary>
-    public sealed class CsvArticleRepository : IArticleRepository
+    public sealed class CsvArticleRepository : IArticleRepository, ICsvRepository<Article, CsvArticle>
     {
         private readonly string pathToData;
 
@@ -29,61 +29,7 @@
             var filePath = ConfigurationResolver.GetConfig("ArticleCsvPath");
             this.pathToData = Path.Combine(Environment.CurrentDirectory, filePath);
 
-            this.articles = CsvHelper.Load<CsvArticle, Article, ArticleClassMap>(this.pathToData, CsvArticleToArticle);
-        }
-
-        /// <summary>
-        /// Converts the CsvArticle model to Article.
-        /// </summary>
-        /// <param name="csvArticle">The <see cref="CsvArticle"/> object.</param>
-        /// <returns>The converted <see cref="Article"/> object.</returns>
-        public static Article CsvArticleToArticle(CsvArticle csvArticle)
-        {
-            return new Article
-            {
-                Id = csvArticle.Id,
-                Title = csvArticle.Title,
-                Author = csvArticle.Author,
-                Year = csvArticle.Year,
-                Url = csvArticle.Url,
-                Category = (Category)csvArticle.Category,
-                WatchLater = csvArticle.WatchLater,
-                Domain = csvArticle.Domain,
-                Description = csvArticle.Description,
-                Tags = csvArticle.Tags.Split('|'),
-                Language = (Language)csvArticle.Language,
-                Grammar = (Grammar)csvArticle.Grammar,
-                LastVisitAt = csvArticle.LastVisitAt,
-                CreatedAt = csvArticle.CreatedAt,
-                ModifiedAt = csvArticle.ModifiedAt,
-            };
-        }
-
-        /// <summary>
-        /// Converts the Article model back to CsvArticle.
-        /// </summary>
-        /// <param name="article">The <see cref="Article"/> object.</param>
-        /// <returns>The converted <see cref="CsvArticle"/> object.</returns>
-        public static CsvArticle ArticleToCsvArticle(Article article)
-        {
-            return new CsvArticle
-            {
-                Id = article.Id,
-                Title = article.Title,
-                Author = article.Author,
-                Year = article.Year,
-                Url = article.Url,
-                Category = (int)article.Category,
-                WatchLater = article.WatchLater,
-                Domain = article.Domain,
-                Description = article.Description,
-                Tags = string.Join('|', article.Tags),
-                Language = (int)article.Language,
-                Grammar = (int)article.Grammar,
-                LastVisitAt = article.LastVisitAt,
-                CreatedAt = article.CreatedAt,
-                ModifiedAt = article.ModifiedAt,
-            };
+            this.articles = CsvHelper.Load<CsvArticle, Article, ArticleClassMap>(this.pathToData, this.CsvModelToModel);
         }
 
         /// <inheritdoc/>
@@ -148,7 +94,53 @@
         /// <inheritdoc/>
         public int Commit()
         {
-            return CsvHelper.Save(this.pathToData, ArticleToCsvArticle, this.articles);
+            return CsvHelper.Save(this.pathToData, this.ModelToCsvModel, this.articles);
+        }
+
+        /// <inheritdoc/>
+        public Article CsvModelToModel(CsvArticle csvModel)
+        {
+            return new Article
+            {
+                Id = csvModel.Id,
+                Title = csvModel.Title,
+                Author = csvModel.Author,
+                Year = csvModel.Year,
+                Url = csvModel.Url,
+                Category = (Category)csvModel.Category,
+                WatchLater = csvModel.WatchLater,
+                Domain = csvModel.Domain,
+                Description = csvModel.Description,
+                Tags = csvModel.Tags.Split('|'),
+                Language = (Language)csvModel.Language,
+                Grammar = (Grammar)csvModel.Grammar,
+                LastVisitAt = csvModel.LastVisitAt,
+                CreatedAt = csvModel.CreatedAt,
+                ModifiedAt = csvModel.ModifiedAt,
+            };
+        }
+
+        /// <inheritdoc/>
+        public CsvArticle ModelToCsvModel(Article model)
+        {
+            return new CsvArticle
+            {
+                Id = model.Id,
+                Title = model.Title,
+                Author = model.Author,
+                Year = model.Year,
+                Url = model.Url,
+                Category = (int)model.Category,
+                WatchLater = model.WatchLater,
+                Domain = model.Domain,
+                Description = model.Description,
+                Tags = string.Join('|', model.Tags),
+                Language = (int)model.Language,
+                Grammar = (int)model.Grammar,
+                LastVisitAt = model.LastVisitAt,
+                CreatedAt = model.CreatedAt,
+                ModifiedAt = model.ModifiedAt,
+            };
         }
     }
 }
