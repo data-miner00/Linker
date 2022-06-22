@@ -14,7 +14,7 @@
         /// <typeparam name="T">Any type.</typeparam>
         /// <param name="self">The reference to self.</param>
         /// <returns>An enumerable with tuple of the item and index.</returns>
-        public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> self)
+        public static IEnumerable<(T Item, int Index)> WithIndex<T>(this IEnumerable<T> self)
             => self.Select((item, index) => (item, index));
     }
 }
