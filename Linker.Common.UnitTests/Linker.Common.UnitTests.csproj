@@ -19,4 +19,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Linker.Common\Linker.Common.csproj" />
+    <ProjectReference Include="..\Linker.Core\Linker.Core.csproj" />
+  </ItemGroup>
+
 </Project>
