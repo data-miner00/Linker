@@ -1,6 +1,7 @@
 ﻿namespace Linker.ConsoleUI
 {
     using System;
+    using EnsureThat;
     using Linker.ConsoleUI.UI;
     using Linker.Core.Controllers;
 
@@ -21,9 +22,9 @@
         /// <param name="menu">The <see cref="IMenu"/> object.</param>
         public Router(IWebsiteController linkController, IArticleController articleController, IMenu menu)
         {
-            this.linkController = linkController;
-            this.articleController = articleController;
-            this.menu = menu;
+            this.linkController = EnsureArg.IsNotNull(linkController, nameof(linkController));
+            this.articleController = EnsureArg.IsNotNull(articleController, nameof(articleController));
+            this.menu = EnsureArg.IsNotNull(menu, nameof(menu));
         }
 
         /// <inheritdoc/>
