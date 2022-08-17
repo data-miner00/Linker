@@ -150,8 +150,7 @@
         {
             var consoleWrite = typeof(Console)
                 .GetMethods()
-                .Where(x => x.Name == "Write" && x.IsStatic)
-                .FirstOrDefault();
+                .FirstOrDefault(x => x.Name == "Write" && x.IsStatic);
 
             consoleWrite.Invoke(null, prompt);
 

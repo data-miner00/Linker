@@ -31,7 +31,7 @@
 
             RenderLinks(this.repository.GetAll());
 
-            _ = PromptForInput("Press ENTER to return to main menu...", "");
+            _ = this.PromptForInput("Press ENTER to return to main menu...", "");
 
             static void RenderLinks(IEnumerable<Website> links)
             {
@@ -44,7 +44,7 @@
                 const int tagsPad = 20;
                 const int modifiedPad = 23;
 
-                Console.WriteLine("".PadRight(dividerLength, '='));
+                Console.WriteLine(string.Empty.PadRight(dividerLength, '='));
                 Console.WriteLine(
                     displayTemplate,
                     "Index".PadRight(indexPad),
@@ -53,7 +53,7 @@
                     "Url".PadRight(urlPad),
                     "Tags".PadRight(tagsPad),
                     "Modified Date".PadRight(modifiedPad));
-                Console.WriteLine("".PadRight(dividerLength, '='));
+                Console.WriteLine(string.Empty.PadRight(dividerLength, '='));
 
                 foreach (var (link, index) in links.WithIndex())
                 {
@@ -67,7 +67,7 @@
                         link.ModifiedAt.ToString().PadRight(modifiedPad));
                 }
 
-                Console.WriteLine("".PadRight(dividerLength, '='));
+                Console.WriteLine(string.Empty.PadRight(dividerLength, '='));
             }
         }
 
@@ -75,7 +75,7 @@
         public override void DisplayItemDetails()
         {
             Console.Clear();
-            var id = PromptForInput("Enter the ID of the link: ", "");
+            var id = this.PromptForInput("Enter the ID of the link: ", string.Empty);
 
             try
             {
@@ -85,23 +85,23 @@
                 const int labelPad = 15;
                 const int contentPad = 83;
 
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, '='));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, ' '));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, '='));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, ' '));
                 Console.WriteLine("|{0}|", link.Name.PadSides(dividerLength));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, ' '));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, '='));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, ' '));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, '='));
                 Console.WriteLine("|{0}: {1}|", "Id".PadRight(labelPad), link.Id.PadRight(contentPad));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, '-'));
                 Console.WriteLine("|{0}: {1}|", "Url".PadRight(labelPad), link.Url.PadRight(contentPad));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, '-'));
                 Console.WriteLine("|{0}: {1}| {2}: {3}|", "Language".PadRight(labelPad), link.Language.ToString().PadRight(30), "Aesthetics".PadRight(labelPad), link.Aesthetics.ToString().PadRight(34));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, '-'));
                 Console.WriteLine("|{0}: {1}|", "Description".PadRight(labelPad), link.Description.TruncateWithEllipsis(contentPad - 3).PadRight(contentPad));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, '-'));
                 Console.WriteLine("|{0}: {1}|", "Tags".PadRight(labelPad), string.Join(", ", link.Tags).PadRight(contentPad));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, '-'));
                 Console.WriteLine("|{0}: {1}| {2}: {3}|", "Created".PadRight(labelPad), link.CreatedAt.ToString().PadRight(30), "Modified".PadRight(labelPad), link.ModifiedAt.ToString().PadRight(34));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, '='));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, '='));
 
                 Console.WriteLine("\nActions");
                 Console.WriteLine("1. Visit link");
@@ -111,7 +111,7 @@
 
                 while (true)
                 {
-                    var input = PromptForInput("> ", "");
+                    var input = this.PromptForInput("> ", string.Empty);
                     switch (input)
                     {
                         case "1":
@@ -143,63 +143,60 @@
             const string labelTemplate = "{0}: ";
             const int labelPad = 13;
 
-            var name = PromptForInput(labelTemplate, "Name".PadRight(labelPad));
-            var url = PromptForInput(labelTemplate, "Url".PadRight(labelPad));
-            var description = PromptForInput(labelTemplate, "Description".PadRight(labelPad));
+            var name = this.PromptForInput(labelTemplate, "Name".PadRight(labelPad));
+            var url = this.PromptForInput(labelTemplate, "Url".PadRight(labelPad));
+            var description = this.PromptForInput(labelTemplate, "Description".PadRight(labelPad));
 
             Console.WriteLine();
-            DisplayEnum<Category>(nameof(Category));
+            this.DisplayEnum<Category>(nameof(Category));
             uint category, language, aesthetics;
 
             while (true)
             {
                 try
                 {
-                    category = Convert.ToUInt32(PromptForInput(labelTemplate, "Category".PadRight(labelPad)));
+                    category = Convert.ToUInt32(this.PromptForInput(labelTemplate, "Category".PadRight(labelPad)));
                     break;
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error: {0}", ex.Message);
-                    continue;
                 }
             }
 
             Console.WriteLine();
-            DisplayEnum<Language>(nameof(Language));
+            this.DisplayEnum<Language>(nameof(Language));
 
             while (true)
             {
                 try
                 {
-                    language = Convert.ToUInt32(PromptForInput(labelTemplate, "Language".PadRight(labelPad)));
+                    language = Convert.ToUInt32(this.PromptForInput(labelTemplate, "Language".PadRight(labelPad)));
                     break;
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error: {0}", ex.Message);
-                    continue;
                 }
             }
 
             Console.WriteLine();
-            DisplayEnum<Aesthetics>(nameof(Aesthetics));
+            this.DisplayEnum<Aesthetics>(nameof(Aesthetics));
 
             while (true)
             {
                 try
                 {
-                    aesthetics = Convert.ToUInt32(PromptForInput(labelTemplate, "Aesthetics".PadRight(labelPad)));
+                    aesthetics = Convert.ToUInt32(this.PromptForInput(labelTemplate, "Aesthetics".PadRight(labelPad)));
                     break;
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error: {0}", ex.Message);
-                    continue;
                 }
             }
 
-            var _tags = PromptForInput(labelTemplate, "Tags".PadRight(labelPad));
+            var _tags = this.PromptForInput(labelTemplate, "Tags".PadRight(labelPad));
             var tags = _tags.Split(",").Select(tag => tag.Trim());
 
             return new Website

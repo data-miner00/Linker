@@ -85,23 +85,23 @@
                 const int labelPad = 15;
                 const int contentPad = 83;
 
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, '='));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, ' '));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, '='));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, ' '));
                 Console.WriteLine("|{0}|", link.Title.PadSides(dividerLength));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, ' '));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, '='));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, ' '));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, '='));
                 Console.WriteLine("|{0}: {1}|", "Id".PadRight(labelPad), link.Id.PadRight(contentPad));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, '-'));
                 Console.WriteLine("|{0}: {1}|", "Url".PadRight(labelPad), link.Url.PadRight(contentPad));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, '-'));
                 Console.WriteLine("|{0}: {1}| {2}: {3}|", "Language".PadRight(labelPad), link.Language.ToString().PadRight(30), "Grammar".PadRight(labelPad), link.Grammar.ToString().PadRight(34));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, '-'));
                 Console.WriteLine("|{0}: {1}|", "Description".PadRight(labelPad), link.Description.TruncateWithEllipsis(contentPad - 3).PadRight(contentPad));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, '-'));
                 Console.WriteLine("|{0}: {1}|", "Tags".PadRight(labelPad), string.Join(", ", link.Tags).PadRight(contentPad));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, '-'));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, '-'));
                 Console.WriteLine("|{0}: {1}| {2}: {3}|", "Created".PadRight(labelPad), link.CreatedAt.ToString().PadRight(30), "Modified".PadRight(labelPad), link.ModifiedAt.ToString().PadRight(34));
-                Console.WriteLine("|{0}|", "".PadRight(dividerLength, '='));
+                Console.WriteLine("|{0}|", string.Empty.PadRight(dividerLength, '='));
 
                 Console.WriteLine("\nActions");
                 Console.WriteLine("1. Visit link");
