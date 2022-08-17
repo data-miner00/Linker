@@ -40,11 +40,5 @@
         /// </summary>
         /// <param name="item">The item with updated details.</param>
         public void Update(T item);
-
-        /// <summary>
-        /// Commit the changes to the database.
-        /// </summary>
-        /// <returns>0 for success and -1 for failed.</returns>
-        public int Commit();
     }
 }

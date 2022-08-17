@@ -12,7 +12,7 @@
     /// <summary>
     /// The article repository with csv as storage.
     /// </summary>
-    public sealed class CsvArticleRepository : IArticleRepository, ICsvRepository<Article, CsvArticle>
+    public sealed class InMemoryCsvArticleRepository : IArticleRepository, IInMemoryCsvRepository<Article, CsvArticle>
     {
         private readonly string pathToData;
 
@@ -22,9 +22,9 @@
         private List<Article> articles;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CsvArticleRepository"/> class.
+        /// Initializes a new instance of the <see cref="InMemoryCsvArticleRepository"/> class.
         /// </summary>
-        public CsvArticleRepository()
+        public InMemoryCsvArticleRepository()
         {
             var filePath = ConfigurationResolver.GetConfig("ArticleCsvPath");
             this.pathToData = Path.Combine(Environment.CurrentDirectory, filePath);

@@ -12,7 +12,7 @@
     /// <summary>
     /// An in-memory website repository using csv as data source.
     /// </summary>
-    public sealed class CsvWebsiteRepository : IWebsiteRepository, ICsvRepository<Website, CsvWebsite>
+    public sealed class InMemoryCsvWebsiteRepository : IWebsiteRepository, IInMemoryCsvRepository<Website, CsvWebsite>
     {
         private readonly string pathToData;
 
@@ -22,9 +22,9 @@
         private List<Website> websites;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CsvWebsiteRepository"/> class.
+        /// Initializes a new instance of the <see cref="InMemoryCsvWebsiteRepository"/> class.
         /// </summary>
-        public CsvWebsiteRepository()
+        public InMemoryCsvWebsiteRepository()
         {
             var filePath = ConfigurationResolver.GetConfig("WebsiteCsvPath");
             this.pathToData = Path.Combine(Environment.CurrentDirectory, filePath);

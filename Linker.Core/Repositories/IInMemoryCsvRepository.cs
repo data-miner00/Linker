@@ -7,9 +7,15 @@
     /// </summary>
     /// <typeparam name="TModel">The object model itself.</typeparam>
     /// <typeparam name="TCsvModel">The csv counterpart of the model.</typeparam>
-    public interface ICsvRepository<TModel, TCsvModel> : IRepository<TModel>
+    public interface IInMemoryCsvRepository<TModel, TCsvModel> : IRepository<TModel>
         where TModel : Link
     {
+        /// <summary>
+        /// Commit the changes to the database.
+        /// </summary>
+        /// <returns>0 for success and -1 for failed.</returns>
+        public int Commit();
+
         /// <summary>
         /// Converts the csv model to its model.
         /// </summary>
