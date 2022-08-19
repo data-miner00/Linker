@@ -30,10 +30,6 @@
             // UI
             builder.RegisterType<Menu>().As<IMenu>();
 
-            //builder.RegisterAssemblyTypes(Assembly.Load(nameof(DemoLibray)))
-            //    .Where(t => t.Namespace.Contains("ABC"))
-            //    .As(t => t.GetInterfaces().FirstOrDefault(i => i.Name == "I" + t.Name));
-
             return builder.Build();
         }
     }
