@@ -12,7 +12,7 @@
     /// <summary>
     /// The controller for the <see cref="Article"/>.
     /// </summary>
-    public sealed class ArticleController : BaseController<Article>, IArticleController
+    internal sealed class ArticleController : BaseController<Article>, IArticleController
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ArticleController"/> class.

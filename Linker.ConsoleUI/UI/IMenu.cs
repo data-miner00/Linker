@@ -5,7 +5,7 @@
     /// <summary>
     /// The contract on how the actual Menu will be implemented.
     /// </summary>
-    public interface IMenu
+    internal interface IMenu
     {
         /// <summary>
         /// The function that renders the banner text for the application.

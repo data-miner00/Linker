@@ -13,7 +13,7 @@
     /// Contains a few common functions.
     /// </summary>
     /// <typeparam name="T">The <see cref="Link"/> children.</typeparam>
-    public abstract class BaseController<T> : IController<T>
+    internal abstract class BaseController<T> : IController<T>
         where T : Link
     {
         /// <summary>

@@ -8,7 +8,7 @@
     /// <summary>
     /// The actual class that implements <see cref="IMenu"/>.
     /// </summary>
-    public sealed class Menu : IMenu
+    internal sealed class Menu : IMenu
     {
         /// <summary>
         /// Gets or sets the width of the console that can display.

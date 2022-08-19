@@ -3,7 +3,7 @@
     /// <summary>
     /// The interface for routing functionality. Defines the available routes to navigate.
     /// </summary>
-    public interface IRouter
+    internal interface IRouter
     {
         /// <summary>
         /// The route to general website link manager.

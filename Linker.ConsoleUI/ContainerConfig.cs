@@ -10,7 +10,7 @@
     /// <summary>
     /// A static class that contains logics for container registration.
     /// </summary>
-    public static class ContainerConfig
+    internal static class ContainerConfig
     {
         /// <summary>
         /// The actual method that registers the dependencies into an IoC container.

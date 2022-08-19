@@ -12,7 +12,7 @@
     /// <summary>
     /// The controller for the <see cref="Website"/>.
     /// </summary>
-    public sealed class WebsiteController : BaseController<Website>, IWebsiteController
+    internal sealed class WebsiteController : BaseController<Website>, IWebsiteController
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="WebsiteController"/> class.

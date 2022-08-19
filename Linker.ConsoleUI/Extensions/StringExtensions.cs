@@ -3,7 +3,7 @@
     /// <summary>
     /// The static class for custom string extension methods.
     /// </summary>
-    public static class StringExtensions
+    internal static class StringExtensions
     {
         /// <summary>
         /// Checks that return null value if the string is empty.

@@ -3,7 +3,7 @@
     /// <summary>
     /// The static class for custom string extension methods for UI formatting.
     /// </summary>
-    public static class Formatting
+    internal static class Formatting
     {
         /// <summary>
         /// Truncates a string that is longer than the threshold and replace with ellipsis.

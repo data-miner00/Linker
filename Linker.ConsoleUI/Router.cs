@@ -8,7 +8,7 @@
     /// <summary>
     /// The actual router that handles the routing between link managers.
     /// </summary>
-    public sealed class Router : IRouter
+    internal sealed class Router : IRouter
     {
         private readonly IWebsiteController linkController;
         private readonly IArticleController articleController;
