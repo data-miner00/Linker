@@ -6,7 +6,7 @@
     /// <summary>
     /// The model for a Youtube channel's link.
     /// </summary>
-    public class YoutubeChannel
+    public class Youtube
     {
         /// <summary>
         /// Gets or sets the unique Id of the Youtube Channel.
