@@ -7,7 +7,7 @@
     /// The base interface for link repositories.
     /// </summary>
     /// <typeparam name="T">The object that extends <see cref="Link"/>.</typeparam>
-    public interface IRepository<T>
+    public interface IRepository<T> : ITransactionalRepository
         where T : Link
     {
         /// <summary>

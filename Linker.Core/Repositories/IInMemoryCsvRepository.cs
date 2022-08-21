@@ -11,12 +11,6 @@
         where TModel : Link
     {
         /// <summary>
-        /// Commit the changes to the database.
-        /// </summary>
-        /// <returns>0 for success and -1 for failed.</returns>
-        public int Commit();
-
-        /// <summary>
         /// Converts the csv model to its model.
         /// </summary>
         /// <param name="csvModel">The model that represents the object when first read from csv.</param>
