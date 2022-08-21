@@ -25,6 +25,8 @@
             builder.RegisterType<InMemoryCsvWebsiteRepository>().As<IWebsiteRepository>();
             builder.RegisterType<ArticleController>().As<IArticleController>();
             builder.RegisterType<InMemoryCsvArticleRepository>().As<IArticleRepository>();
+            builder.RegisterType<YoutubeController>().As<IYoutubeController>();
+            builder.RegisterType<InMemoryCsvYoutubeRepository>().As<IYoutubeRepository>();
             builder.RegisterType<Router>().As<IRouter>();
 
             // UI

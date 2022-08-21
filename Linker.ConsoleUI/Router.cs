@@ -12,6 +12,7 @@
     {
         private readonly IWebsiteController linkController;
         private readonly IArticleController articleController;
+        private readonly IYoutubeController youtubeController;
         private readonly IMenu menu;
 
         /// <summary>
@@ -19,11 +20,17 @@
         /// </summary>
         /// <param name="linkController">The <see cref="IWebsiteController"/> object.</param>
         /// <param name="articleController">The <see cref="IArticleController"/> object.</param>
+        /// <param name="youtubeController">The <see cref="IYoutubeController"/> object.</param>
         /// <param name="menu">The <see cref="IMenu"/> object.</param>
-        public Router(IWebsiteController linkController, IArticleController articleController, IMenu menu)
+        public Router(
+            IWebsiteController linkController,
+            IArticleController articleController,
+            IYoutubeController youtubeController,
+            IMenu menu)
         {
             this.linkController = EnsureArg.IsNotNull(linkController, nameof(linkController));
             this.articleController = EnsureArg.IsNotNull(articleController, nameof(articleController));
+            this.youtubeController = EnsureArg.IsNotNull(youtubeController, nameof(youtubeController));
             this.menu = EnsureArg.IsNotNull(menu, nameof(menu));
         }
 
@@ -138,7 +145,55 @@
         /// <inheritdoc/>
         public void Youtube()
         {
-            // wip
+            while (true)
+            {
+                Console.Clear();
+
+                this.menu.DisplayBanner();
+                this.menu.PageHeader("Link Management System", "Youtube");
+                this.menu.GenerateMenu(new[]
+                {
+                    "View all channels",
+                    "View channel by ID",
+                    "Insert a channel",
+                    "Update a channel",
+                    "Remove a channel",
+                    "Return",
+                    "Exit",
+                });
+
+                Console.Write("Your selection: ");
+                var input = Console.ReadLine();
+
+                switch (input)
+                {
+                    case "1":
+                        this.youtubeController.DisplayAllItems();
+                        break;
+                    case "2":
+                        this.youtubeController.DisplayItemDetails();
+                        break;
+                    case "3":
+                        this.youtubeController.InsertItem();
+                        break;
+                    case "4":
+                        this.youtubeController.UpdateItem();
+                        break;
+                    case "5":
+                        this.youtubeController.RemoveItem();
+                        break;
+                    case "6":
+                        this.youtubeController.SaveChanges();
+                        return;
+                    case "7":
+                        this.youtubeController.SaveChanges();
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        Console.WriteLine("The input is invalid, please provide the correct input.");
+                        break;
+                }
+            }
         }
 
         /// <inheritdoc/>
