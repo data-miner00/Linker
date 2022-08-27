@@ -46,7 +46,7 @@
                     Description = "The world's famous search engine",
                     Tags = new List<string> { "search", "famous" },
                     CreatedAt = DateTime.Now,
-                    ModifiedAt = DateTime.Now
+                    ModifiedAt = DateTime.Now,
                 },
             };
         }
@@ -59,6 +59,11 @@
             link.ModifiedAt = DateTime.Now;
 
             links.Add(link);
+        }
+
+        public int Commit()
+        {
+            return 0;
         }
 
         public IEnumerable<Website> GetAll()
@@ -97,11 +102,6 @@
                 link.Tags = updatedLink.Tags ?? link.Tags;
                 link.ModifiedAt = DateTime.Now;
             }
-        }
-
-        public int Commit()
-        {
-            return 0;
         }
 
         private string ExtractDomainFromUrl(string url)
