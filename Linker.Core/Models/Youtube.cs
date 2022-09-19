@@ -1,8 +1,5 @@
 ﻿namespace Linker.Core.Models
 {
-    using System;
-    using System.Collections.Generic;
-
     /// <summary>
     /// The model for a Youtube channel's link.
     /// </summary>
