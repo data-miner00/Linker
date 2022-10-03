@@ -19,27 +19,33 @@
         {
             var query = @"
                 INSERT INTO Websites (
+                    Id,
                     Url,
                     Category,
                     Description,
-                    Tags,
                     Language,
                     Name,
                     Domain,
                     Aesthetics,
                     IsSubdomain,
-                    IsMultilingual
+                    IsMultilingual,
+                    LastVisitAt,
+                    CreatedAt,
+                    ModifiedAt
                 ) VALUES (
+                    @Id,
                     @Url,
                     @Category,
                     @Description,
-                    @Tags,
                     @Language,
                     @Name,
                     @Domain,
                     @Aesthetics,
                     @IsSubdomain,
-                    @IsMultilingual
+                    @IsMultilingual,
+                    @LastVisitAt,
+                    @CreatedAt,
+                    @ModifiedAt
                 );
             ";
 
@@ -70,13 +76,17 @@
         /// <inheritdoc/>
         public void Remove(string id)
         {
-            throw new NotImplementedException();
+            var query = @"DELETE FROM Website WHERE Id = @Id;";
+            this.connection.Execute(query, new { Id = id, });
         }
 
         /// <inheritdoc/>
         public void Update(Website item)
         {
-            throw new NotImplementedException();
+            var query = @"UPDATE Website SET Categpry = @Category WHERE Id = @Id;";
+
+            this.Remove(item.Id);
+            this.Add(item);
         }
 
         /// <inheritdoc/>
