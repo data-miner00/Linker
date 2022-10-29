@@ -1,0 +1,3 @@
+- [Dapper Tutorial](https://zetcode.com/csharp/dapper/)
+- [Facade Pattern](https://refactoring.guru/design-patterns/facade)
+- [Parameter validation in "async"/"await" methods should be wrapped](https://sonarsource.atlassian.net/browse/RSPEC-4457)
