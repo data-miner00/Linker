@@ -6,7 +6,7 @@
     /// <summary>
     /// The base model for all of the link related objects.
     /// </summary>
-    public abstract class Link
+    public class Link
     {
         /// <summary>
         /// Gets or sets the unique identifier for the object.
