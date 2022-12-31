@@ -1,7 +1,6 @@
 ﻿namespace Linker.Data.SQLite
 {
     using System.Data;
-    using System.Security.Policy;
     using Dapper;
     using EnsureThat;
     using Linker.Core.Models;
@@ -13,7 +12,7 @@
 
         public WebsiteRepository(IDbConnection connection)
         {
-            this.connection = EnsureArg.IsNotNull(connection);
+            this.connection = EnsureArg.IsNotNull(connection, nameof(connection));
         }
 
         /// <inheritdoc/>
@@ -47,9 +46,9 @@
                 INSERT INTO Websites (
                     LinkId,
                     Name,
-                    Domain
-                    Aesthetics
-                    IsSubdomain
+                    Domain,
+                    Aesthetics,
+                    IsSubdomain,
                     IsMultilingual
                 ) VALUES (
                     @LinkId,
@@ -66,10 +65,14 @@
             var operation3 = @"
                 INSERT INTO Tags (
                     Id,
-                    Name
+                    Name,
+                    CreatedAt,
+                    ModifiedAt
                 ) VALUES (
                     @Id,
-                    @Name
+                    @Name,
+                    @CreatedAt,
+                    @ModifiedAt
                 );
             ";
 
@@ -86,13 +89,13 @@
             this.connection.Execute(operation, new
             {
                 Id = randomId,
-                Url = item.Url,
+                item.Url,
                 Category = item.Category.ToString(),
-                Description = item.Description,
+                item.Description,
                 Language = item.Language.ToString(),
-                LastVisitAt = item.LastVisitAt,
-                CreatedAt = item.CreatedAt,
-                ModifiedAt = item.ModifiedAt,
+                item.LastVisitAt,
+                item.CreatedAt,
+                item.ModifiedAt,
             });
 
             this.connection.Execute(operation2, new
@@ -107,57 +110,205 @@
 
             foreach (var tag in item.Tags)
             {
-                var result = this.connection.Query(query, new { Name = tag });
-                var randomId2 = Guid.NewGuid().ToString();
+                var result = this.connection.Query<Tag>(query, new { Name = tag });
 
                 if (!result.Any())
                 {
+                    var randomId2 = Guid.NewGuid().ToString();
                     this.connection.Execute(operation3, new
                     {
                         Id = randomId2,
                         Name = tag,
+                        item.CreatedAt,
+                        item.ModifiedAt,
                     });
+                    this.connection.Execute(operation4, new { LinkId = randomId, TagId = randomId2 });
                 }
-
-                this.connection.Execute(operation4, new { LinkId = randomId, TagId = randomId2 });
+                else
+                {
+                    this.connection.Execute(operation4, new { LinkId = randomId, TagId = result.FirstOrDefault()?.Id });
+                }
             }
         }
 
         /// <inheritdoc/>
         public IEnumerable<Website> GetAll()
         {
+            var websites = new List<Website>();
+
             var query = @"SELECT * FROM Websites;";
-            var parameters = new DynamicParameters();
 
-            var output = this.connection.Query<Website>(query, parameters);
+            var partialWebsites = this.connection.Query<PartialWebsite>(query);
 
-            return output;
+            foreach (var partialWebsite in partialWebsites)
+            {
+                var tags = new List<string>();
+
+                var query2 = @"SELECT * FROM Links WHERE Id = @Id;";
+                var link = this.connection.QueryFirst<Link>(query2, new { Id = partialWebsite.LinkId });
+
+                var query3 = @"SELECT * FROM Links_Tags WHERE LinkId = @Id;";
+                var tagsz = this.connection.Query<LinkTagPair>(query3, new { Id = partialWebsite.LinkId });
+                foreach (var tagz in tagsz)
+                {
+                    var query4 = @"SELECT * FROM Tags WHERE Id = @Id;";
+                    var tag = this.connection.QueryFirst<Tag>(query4, new { Id = tagz.TagId });
+                    tags.Add(tag.Name);
+                }
+
+                var website = new Website
+                {
+                    Id = link.Id,
+                    Url = link.Url,
+                    Category = link.Category,
+                    Description = link.Description,
+                    Tags = tags,
+                    Language = link.Language,
+                    LastVisitAt = link.LastVisitAt,
+                    CreatedAt = link.CreatedAt,
+                    ModifiedAt = link.ModifiedAt,
+                    Name = partialWebsite.Name,
+                    Domain = partialWebsite.Domain,
+                    Aesthetics = partialWebsite.Aesthetics,
+                    IsSubdomain = partialWebsite.IsSubdomain,
+                    IsMultilingual = partialWebsite.IsMultilingual,
+                };
+
+                websites.Add(website);
+            }
+
+            return websites;
         }
 
         /// <inheritdoc/>
-        public Website? GetById(string id)
+        public Website GetById(string id)
         {
-            var query = @"SELECT * FROM Website WHERE Id = " + id;
+            var tags = new List<string>();
 
-            var output = this.connection.Query<Website>(query);
+            var query = @"SELECT * FROM Websites WHERE LinkId = @Id;";
 
-            return output?.FirstOrDefault();
+            var partialWebsite = this.connection.QueryFirst<PartialWebsite>(query, new { Id = id });
+
+            var query2 = @"SELECT * FROM Links WHERE Id = @Id;";
+
+            var link = this.connection.QueryFirst<Link>(query2, new { Id = id });
+
+            var query3 = @"SELECT * FROM Links_Tags WHERE LinkId = @LinkId;";
+
+            var tagsz = this.connection.Query<LinkTagPair>(query3, new { LinkId = id });
+
+            foreach (var tagz in tagsz)
+            {
+                var query4 = @"SELECT * FROM Tags WHERE Id = @Id;";
+                var tag = this.connection.QueryFirst<Tag>(query4, new { Id = tagz.TagId });
+                tags.Add(tag.Name);
+            }
+
+            var website = new Website
+            {
+                Id = link.Id,
+                Url = link.Url,
+                Category = link.Category,
+                Description = link.Description,
+                Tags = tags,
+                Language = link.Language,
+                LastVisitAt = link.LastVisitAt,
+                CreatedAt = link.CreatedAt,
+                ModifiedAt = link.ModifiedAt,
+                Name = partialWebsite.Name,
+                Domain = partialWebsite.Domain,
+                Aesthetics = partialWebsite.Aesthetics,
+                IsSubdomain = partialWebsite.IsSubdomain,
+                IsMultilingual = partialWebsite.IsMultilingual,
+            };
+
+            return website;
         }
 
         /// <inheritdoc/>
         public void Remove(string id)
         {
-            var query = @"DELETE FROM Website WHERE Id = @Id;";
+            var query = @"DELETE FROM Websites WHERE LinkId = @Id;";
+            var query2 = @"DELETE FROM Links WHERE Id = @Id;";
+            var query3 = @"DELETE FROM Links_Tags Where LinkId = @Id;";
             this.connection.Execute(query, new { Id = id });
+            this.connection.Execute(query2, new { Id = id });
+            this.connection.Execute(query3, new { Id = id });
         }
 
         /// <inheritdoc/>
         public void Update(Website item)
         {
-            var query = @"UPDATE Website SET Category = @Category WHERE Id = @Id;";
+            var query = @"
+                UPDATE Websites
+                SET
+                    Name = @Name,
+                    Domain = @Domain,
+                    Aesthetics = @Aesthetics,
+                    IsSubdomain = @IsSubdomain,
+                    IsMultilingual = @IsMultilingual
+                WHERE
+                    LinkId = @Id;
+            ";
 
-            this.Remove(item.Id);
-            this.Add(item);
+            var query2 = @"
+                UPDATE Links
+                SET
+                    Url = @Url,
+                    Category = @Category,
+                    Description = @Description,
+                    Language = @Language,
+                    ModifiedAt = @ModifiedAt
+                WHERE
+                    Id = @Id;
+            ";
+
+            this.connection.Execute(query, new
+            {
+                item.Id,
+                item.Name,
+                item.Domain,
+                Aesthetics = item.Aesthetics.ToString(),
+                item.IsSubdomain,
+                item.IsMultilingual,
+            });
+
+            this.connection.Execute(query2, new
+            {
+                item.Id,
+                item.Url,
+                Category = item.Category.ToString(),
+                item.Description,
+                Language = item.Language.ToString(),
+                ModifiedAt = DateTime.Now,
+            });
+        }
+
+        public void AddLinkTag(string linkId, string tagId)
+        {
+            var query = @"
+                INSERT INTO Links_Tags (
+                    LinkId,
+                    TagId
+                ) VALUES (
+                    @LinkId,
+                    @TagId
+                );
+            ";
+
+            this.connection.Execute(query, new { LinkId = linkId, TagId = tagId });
+        }
+
+        public void DeleteLinkTag(string linkId, string tagId)
+        {
+            var query = @"
+                DELETE FROM Links_Tags
+                WHERE
+                    LinkId = @LinkId,
+                    TagId = @TagId;
+            ";
+
+            this.connection.Execute(query, new { LinkId = linkId, TagId = tagId });
         }
 
         /// <inheritdoc/>
