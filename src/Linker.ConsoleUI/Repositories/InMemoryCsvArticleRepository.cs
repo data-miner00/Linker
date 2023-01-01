@@ -12,7 +12,7 @@
     /// <summary>
     /// The article repository with csv as storage.
     /// </summary>
-    public sealed class InMemoryCsvArticleRepository : IArticleRepository, IInMemoryCsvRepository<Article, CsvArticle>
+    public sealed class InMemoryCsvArticleRepository : ICsvArticleRepository
     {
         private readonly string pathToData;
 

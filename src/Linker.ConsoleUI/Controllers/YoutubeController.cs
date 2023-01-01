@@ -6,16 +6,17 @@
     using Linker.Common.Extensions;
     using Linker.ConsoleUI.Extensions;
     using Linker.Core.Controllers;
+    using Linker.Core.CsvModels;
     using Linker.Core.Models;
     using Linker.Core.Repositories;
 
-    internal class YoutubeController : BaseController<Youtube>, IYoutubeController
+    internal class YoutubeController : BaseController<Youtube, CsvYoutube>, IYoutubeController
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="YoutubeController"/> class.
         /// </summary>
         /// <param name="youtubeRepository">The <see cref="IYoutubeRepository"/> object.</param>
-        public YoutubeController(IYoutubeRepository youtubeRepository)
+        public YoutubeController(ICsvYoutubeRepository youtubeRepository)
             : base(youtubeRepository)
         {
         }

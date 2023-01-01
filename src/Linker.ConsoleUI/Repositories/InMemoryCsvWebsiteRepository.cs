@@ -12,7 +12,7 @@
     /// <summary>
     /// An in-memory website repository using csv as data source.
     /// </summary>
-    public sealed class InMemoryCsvWebsiteRepository : IWebsiteRepository, IInMemoryCsvRepository<Website, CsvWebsite>
+    public sealed class InMemoryCsvWebsiteRepository : ICsvWebsiteRepository
     {
         private readonly string pathToData;
 

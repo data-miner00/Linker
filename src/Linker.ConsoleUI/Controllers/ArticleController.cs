@@ -6,19 +6,20 @@
     using Linker.Common.Extensions;
     using Linker.ConsoleUI.Extensions;
     using Linker.Core.Controllers;
+    using Linker.Core.CsvModels;
     using Linker.Core.Models;
     using Linker.Core.Repositories;
 
     /// <summary>
     /// The controller for the <see cref="Article"/>.
     /// </summary>
-    internal sealed class ArticleController : BaseController<Article>, IArticleController
+    internal sealed class ArticleController : BaseController<Article, CsvArticle>, IArticleController
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ArticleController"/> class.
         /// </summary>
         /// <param name="articleRepository">The <see cref="IArticleRepository"/> object.</param>
-        public ArticleController(IArticleRepository articleRepository)
+        public ArticleController(ICsvArticleRepository articleRepository)
             : base(articleRepository)
         {
         }

@@ -4,6 +4,7 @@
     using EnsureThat;
     using Linker.ConsoleUI.UI;
     using Linker.Core.Controllers;
+    using Linker.Core.Models;
 
     /// <summary>
     /// The actual router that handles the routing between link managers.
@@ -37,127 +38,37 @@
         /// <inheritdoc/>
         public void Website()
         {
-            while (true)
-            {
-                Console.Clear();
-
-                this.menu.DisplayBanner();
-                this.menu.PageHeader("Link Management System", "Website");
-                this.menu.GenerateMenu(new[]
-                {
-                    "View all websites",
-                    "View website by ID",
-                    "Insert a website",
-                    "Update a website",
-                    "Remove a website",
-                    "Return",
-                    "Exit",
-                });
-
-                Console.Write("Your selection: ");
-                var input = Console.ReadLine();
-
-                switch (input)
-                {
-                    case "1":
-                        this.linkController.DisplayAllItems();
-                        break;
-                    case "2":
-                        this.linkController.DisplayItemDetails();
-                        break;
-                    case "3":
-                        this.linkController.InsertItem();
-                        break;
-                    case "4":
-                        this.linkController.UpdateItem();
-                        break;
-                    case "5":
-                        this.linkController.RemoveItem();
-                        break;
-                    case "6":
-                        this.linkController.SaveChanges();
-                        return;
-                    case "7":
-                        this.linkController.SaveChanges();
-                        Environment.Exit(0);
-                        break;
-                    default:
-                        Console.WriteLine("The input is invalid, please provide the correct input.");
-                        break;
-                }
-            }
+            this.Display(this.linkController, "website");
         }
 
         /// <inheritdoc/>
         public void Article()
         {
-            while (true)
-            {
-                Console.Clear();
-
-                this.menu.DisplayBanner();
-                this.menu.PageHeader("Link Management System", "Article");
-                this.menu.GenerateMenu(new[]
-                {
-                    "View all articles",
-                    "View article by ID",
-                    "Insert an article",
-                    "Update an article",
-                    "Remove an article",
-                    "Return",
-                    "Exit",
-                });
-
-                Console.Write("Your selection: ");
-                var input = Console.ReadLine();
-
-                switch (input)
-                {
-                    case "1":
-                        this.articleController.DisplayAllItems();
-                        break;
-                    case "2":
-                        this.articleController.DisplayItemDetails();
-                        break;
-                    case "3":
-                        this.articleController.InsertItem();
-                        break;
-                    case "4":
-                        this.articleController.UpdateItem();
-                        break;
-                    case "5":
-                        this.articleController.RemoveItem();
-                        break;
-                    case "6":
-                        this.articleController.SaveChanges();
-                        return;
-                    case "7":
-                        this.articleController.SaveChanges();
-                        Environment.Exit(0);
-                        break;
-                    default:
-                        Console.WriteLine("The input is invalid, please provide the correct input.");
-                        break;
-                }
-            }
+            this.Display(this.articleController, "article");
         }
 
         /// <inheritdoc/>
         public void Youtube()
+        {
+            this.Display(this.youtubeController, "youtube");
+        }
+
+        private void Display<T>(IController<T> controller, string name)
+            where T : Link
         {
             while (true)
             {
                 Console.Clear();
 
                 this.menu.DisplayBanner();
-                this.menu.PageHeader("Link Management System", "Youtube");
+                this.menu.PageHeader("Link Management System", name);
                 this.menu.GenerateMenu(new[]
                 {
-                    "View all channels",
-                    "View channel by ID",
-                    "Insert a channel",
-                    "Update a channel",
-                    "Remove a channel",
+                    $"View all {name}s",
+                    $"View {name} by ID",
+                    $"Insert a {name}",
+                    $"Update a {name}",
+                    $"Remove a {name}",
                     "Return",
                     "Exit",
                 });
@@ -168,25 +79,25 @@
                 switch (input)
                 {
                     case "1":
-                        this.youtubeController.DisplayAllItems();
+                        controller.DisplayAllItems();
                         break;
                     case "2":
-                        this.youtubeController.DisplayItemDetails();
+                        controller.DisplayItemDetails();
                         break;
                     case "3":
-                        this.youtubeController.InsertItem();
+                        controller.InsertItem();
                         break;
                     case "4":
-                        this.youtubeController.UpdateItem();
+                        controller.UpdateItem();
                         break;
                     case "5":
-                        this.youtubeController.RemoveItem();
+                        controller.RemoveItem();
                         break;
                     case "6":
-                        this.youtubeController.SaveChanges();
+                        controller.SaveChanges();
                         return;
                     case "7":
-                        this.youtubeController.SaveChanges();
+                        controller.SaveChanges();
                         Environment.Exit(0);
                         break;
                     default:

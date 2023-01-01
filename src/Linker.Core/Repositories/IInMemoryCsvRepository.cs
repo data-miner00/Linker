@@ -7,7 +7,7 @@
     /// </summary>
     /// <typeparam name="TModel">The object model itself.</typeparam>
     /// <typeparam name="TCsvModel">The csv counterpart of the model.</typeparam>
-    public interface IInMemoryCsvRepository<TModel, TCsvModel> : IRepository<TModel>
+    public interface IInMemoryCsvRepository<TModel, TCsvModel> : IRepository<TModel>, ITransactionalRepository
         where TModel : Link
     {
         /// <summary>

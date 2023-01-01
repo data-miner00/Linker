@@ -9,7 +9,10 @@
     using Linker.Core.Models;
     using Linker.Core.Repositories;
 
-    public class InMemoryCsvYoutubeRepository : IInMemoryCsvRepository<Youtube, CsvYoutube>, IYoutubeRepository
+    /// <summary>
+    /// An in-memory Youtube repository using csv as data source.
+    /// </summary>
+    public class InMemoryCsvYoutubeRepository : ICsvYoutubeRepository
     {
         private readonly string pathToData;
 

@@ -12,36 +12,37 @@
     /// The base class for <see cref="IController{T}"/> object.
     /// Contains a few common functions.
     /// </summary>
-    /// <typeparam name="T">The <see cref="Link"/> children.</typeparam>
-    internal abstract class BaseController<T> : IController<T>
-        where T : Link
+    /// <typeparam name="TModel">The <see cref="Link"/> children.</typeparam>
+    /// <typeparam name="TCsvModel">The Csv counterpart of <see cref="Link"/> children.</typeparam>
+    internal abstract class BaseController<TModel, TCsvModel> : IController<TModel>
+        where TModel : Link
     {
         /// <summary>
-        /// The repository that is connected to the access data layer of the <typeparamref name="T"/> type.
+        /// The repository that is connected to the access data layer of the <typeparamref name="TModel"/> type.
         /// </summary>
-        protected readonly IRepository<T> repository;
+        protected readonly IInMemoryCsvRepository<TModel, TCsvModel> repository;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BaseController{T}"/> class.
+        /// Initializes a new instance of the <see cref="BaseController{TModel, TCsvModel}"/> class.
         /// </summary>
-        /// <param name="repository">The <see cref="IRepository{T}"/> object.</param>
-        protected BaseController(IRepository<T> repository)
+        /// <param name="repository">The <see cref="IInMemoryCsvRepository{TModel, TCsvModel}"/> object.</param>
+        protected BaseController(IInMemoryCsvRepository<TModel, TCsvModel> repository)
         {
             this.repository = EnsureArg.IsNotNull(repository, nameof(repository));
         }
 
         /// <summary>
-        /// A page to displays all <typeparamref name="T"/> items in a list.
+        /// A page to displays all <typeparamref name="TModel"/> items in a list.
         /// </summary>
         public abstract void DisplayAllItems();
 
         /// <summary>
-        /// A page to displays details of an item of type <typeparamref name="T"/>.
+        /// A page to displays details of an item of type <typeparamref name="TModel"/>.
         /// </summary>
         public abstract void DisplayItemDetails();
 
         /// <summary>
-        /// A page to add a new item of type <typeparamref name="T"/> into the database.
+        /// A page to add a new item of type <typeparamref name="TModel"/> into the database.
         /// </summary>
         public virtual void InsertItem()
         {
@@ -59,7 +60,7 @@
         }
 
         /// <summary>
-        /// A page to delete an item of type <typeparamref name="T"/> from the database.
+        /// A page to delete an item of type <typeparamref name="TModel"/> from the database.
         /// </summary>
         public virtual void RemoveItem()
         {
@@ -139,7 +140,7 @@
         /// Retrieves the input from the user customly.
         /// </summary>
         /// <returns>The built <see cref="Link"/> instance.</returns>
-        protected abstract T GetItemFromInput();
+        protected abstract TModel GetItemFromInput();
 
         /// <summary>
         /// A helper method to display prompt and receive input as string.

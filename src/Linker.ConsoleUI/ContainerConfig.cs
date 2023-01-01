@@ -1,8 +1,8 @@
 ﻿namespace Linker.ConsoleUI
 {
     using Autofac;
-    using Linker.Common.Repositories;
     using Linker.ConsoleUI.Controllers;
+    using Linker.ConsoleUI.Repositories;
     using Linker.ConsoleUI.UI;
     using Linker.Core.Controllers;
     using Linker.Core.Repositories;
@@ -22,11 +22,11 @@
 
             builder.RegisterType<Startup>().As<IStartup>();
             builder.RegisterType<WebsiteController>().As<IWebsiteController>();
-            builder.RegisterType<InMemoryCsvWebsiteRepository>().As<IWebsiteRepository>();
+            builder.RegisterType<InMemoryCsvWebsiteRepository>().As<ICsvWebsiteRepository>();
             builder.RegisterType<ArticleController>().As<IArticleController>();
-            builder.RegisterType<InMemoryCsvArticleRepository>().As<IArticleRepository>();
+            builder.RegisterType<InMemoryCsvArticleRepository>().As<ICsvArticleRepository>();
             builder.RegisterType<YoutubeController>().As<IYoutubeController>();
-            builder.RegisterType<InMemoryCsvYoutubeRepository>().As<IYoutubeRepository>();
+            builder.RegisterType<InMemoryCsvYoutubeRepository>().As<ICsvYoutubeRepository>();
             builder.RegisterType<Router>().As<IRouter>();
 
             // UI

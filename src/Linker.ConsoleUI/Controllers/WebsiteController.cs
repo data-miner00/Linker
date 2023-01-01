@@ -6,19 +6,20 @@
     using Linker.Common.Extensions;
     using Linker.ConsoleUI.Extensions;
     using Linker.Core.Controllers;
+    using Linker.Core.CsvModels;
     using Linker.Core.Models;
     using Linker.Core.Repositories;
 
     /// <summary>
     /// The controller for the <see cref="Website"/>.
     /// </summary>
-    internal sealed class WebsiteController : BaseController<Website>, IWebsiteController
+    internal sealed class WebsiteController : BaseController<Website, CsvWebsite>, IWebsiteController
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="WebsiteController"/> class.
         /// </summary>
         /// <param name="websiteRepository">The <see cref="IWebsiteRepository"/> object.</param>
-        public WebsiteController(IWebsiteRepository websiteRepository)
+        public WebsiteController(ICsvWebsiteRepository websiteRepository)
             : base(websiteRepository)
         {
         }
