@@ -6,10 +6,17 @@
     using Linker.Core.Models;
     using Linker.Core.Repositories;
 
+    /// <summary>
+    /// A repository responsible for Website entity.
+    /// </summary>
     public class WebsiteRepository : IRepository<Website>
     {
         private readonly IDbConnection connection;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebsiteRepository"/> class.
+        /// </summary>
+        /// <param name="connection">The <see cref="IDbConnection"/>.</param>
         public WebsiteRepository(IDbConnection connection)
         {
             this.connection = EnsureArg.IsNotNull(connection, nameof(connection));
@@ -20,7 +27,7 @@
         {
             var randomId = Guid.NewGuid().ToString();
 
-            var operation = @"
+            var insertToLinksOperation = @"
                 INSERT INTO Links (
                     Id,
                     Url,
@@ -42,7 +49,7 @@
                 );
             ";
 
-            var operation2 = @"
+            var insertToWebsitesOperation = @"
                 INSERT INTO Websites (
                     LinkId,
                     Name,
@@ -60,9 +67,9 @@
                 );
             ";
 
-            var query = @"SELECT (Id) FROM Tags WHERE Name = @Name;";
+            var selectIdFromTagsQuery = @"SELECT (Id) FROM Tags WHERE Name = @Name;";
 
-            var operation3 = @"
+            var insertIntoTagsOperation = @"
                 INSERT INTO Tags (
                     Id,
                     Name,
@@ -76,7 +83,7 @@
                 );
             ";
 
-            var operation4 = @"
+            var insertIntoLinkTagsOperation = @"
                 INSERT INTO Links_Tags (
                     LinkId,
                     TagId
@@ -86,7 +93,7 @@
                 );
             ";
 
-            this.connection.Execute(operation, new
+            this.connection.Execute(insertToLinksOperation, new
             {
                 Id = randomId,
                 item.Url,
@@ -98,7 +105,7 @@
                 item.ModifiedAt,
             });
 
-            this.connection.Execute(operation2, new
+            this.connection.Execute(insertToWebsitesOperation, new
             {
                 LinkId = randomId,
                 item.Name,
@@ -110,23 +117,23 @@
 
             foreach (var tag in item.Tags)
             {
-                var result = this.connection.Query<Tag>(query, new { Name = tag });
+                var result = this.connection.Query<Tag>(selectIdFromTagsQuery, new { Name = tag });
 
                 if (!result.Any())
                 {
                     var randomId2 = Guid.NewGuid().ToString();
-                    this.connection.Execute(operation3, new
+                    this.connection.Execute(insertIntoTagsOperation, new
                     {
                         Id = randomId2,
                         Name = tag,
                         item.CreatedAt,
                         item.ModifiedAt,
                     });
-                    this.connection.Execute(operation4, new { LinkId = randomId, TagId = randomId2 });
+                    this.connection.Execute(insertIntoLinkTagsOperation, new { LinkId = randomId, TagId = randomId2 });
                 }
                 else
                 {
-                    this.connection.Execute(operation4, new { LinkId = randomId, TagId = result.FirstOrDefault()?.Id });
+                    this.connection.Execute(insertIntoLinkTagsOperation, new { LinkId = randomId, TagId = result.FirstOrDefault()?.Id });
                 }
             }
         }
@@ -136,23 +143,23 @@
         {
             var websites = new List<Website>();
 
-            var query = @"SELECT * FROM Websites;";
+            var selectFromWebsitesQuery = @"SELECT * FROM Websites;";
 
-            var partialWebsites = this.connection.Query<PartialWebsite>(query);
+            var partialWebsites = this.connection.Query<PartialWebsite>(selectFromWebsitesQuery);
 
             foreach (var partialWebsite in partialWebsites)
             {
                 var tags = new List<string>();
 
-                var query2 = @"SELECT * FROM Links WHERE Id = @Id;";
-                var link = this.connection.QueryFirst<Link>(query2, new { Id = partialWebsite.LinkId });
+                var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id = @Id;";
+                var link = this.connection.QueryFirst<Link>(selectFromLinksQuery, new { Id = partialWebsite.LinkId });
 
-                var query3 = @"SELECT * FROM Links_Tags WHERE LinkId = @Id;";
-                var tagsz = this.connection.Query<LinkTagPair>(query3, new { Id = partialWebsite.LinkId });
+                var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @Id;";
+                var tagsz = this.connection.Query<LinkTagPair>(selectFromLinksTagsQuery, new { Id = partialWebsite.LinkId });
                 foreach (var tagz in tagsz)
                 {
-                    var query4 = @"SELECT * FROM Tags WHERE Id = @Id;";
-                    var tag = this.connection.QueryFirst<Tag>(query4, new { Id = tagz.TagId });
+                    var selectFromTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
+                    var tag = this.connection.QueryFirst<Tag>(selectFromTagsQuery, new { Id = tagz.TagId });
                     tags.Add(tag.Name);
                 }
 
@@ -185,22 +192,22 @@
         {
             var tags = new List<string>();
 
-            var query = @"SELECT * FROM Websites WHERE LinkId = @Id;";
+            var selectFromWebsitesQuery = @"SELECT * FROM Websites WHERE LinkId = @Id;";
 
-            var partialWebsite = this.connection.QueryFirst<PartialWebsite>(query, new { Id = id });
+            var partialWebsite = this.connection.QueryFirst<PartialWebsite>(selectFromWebsitesQuery, new { Id = id });
 
-            var query2 = @"SELECT * FROM Links WHERE Id = @Id;";
+            var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id = @Id;";
 
-            var link = this.connection.QueryFirst<Link>(query2, new { Id = id });
+            var link = this.connection.QueryFirst<Link>(selectFromLinksQuery, new { Id = id });
 
-            var query3 = @"SELECT * FROM Links_Tags WHERE LinkId = @LinkId;";
+            var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @LinkId;";
 
-            var tagsz = this.connection.Query<LinkTagPair>(query3, new { LinkId = id });
+            var tagsz = this.connection.Query<LinkTagPair>(selectFromLinksTagsQuery, new { LinkId = id });
 
             foreach (var tagz in tagsz)
             {
-                var query4 = @"SELECT * FROM Tags WHERE Id = @Id;";
-                var tag = this.connection.QueryFirst<Tag>(query4, new { Id = tagz.TagId });
+                var selectFromTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
+                var tag = this.connection.QueryFirst<Tag>(selectFromTagsQuery, new { Id = tagz.TagId });
                 tags.Add(tag.Name);
             }
 
@@ -228,18 +235,19 @@
         /// <inheritdoc/>
         public void Remove(string id)
         {
-            var query = @"DELETE FROM Websites WHERE LinkId = @Id;";
-            var query2 = @"DELETE FROM Links WHERE Id = @Id;";
-            var query3 = @"DELETE FROM Links_Tags Where LinkId = @Id;";
-            this.connection.Execute(query, new { Id = id });
-            this.connection.Execute(query2, new { Id = id });
-            this.connection.Execute(query3, new { Id = id });
+            var deleteFromWebsitesOperation = @"DELETE FROM Websites WHERE LinkId = @Id;";
+            var deleteFromLinksOperation = @"DELETE FROM Links WHERE Id = @Id;";
+            var deleteFromLinksTagsOperation = @"DELETE FROM Links_Tags Where LinkId = @Id;";
+
+            this.connection.Execute(deleteFromWebsitesOperation, new { Id = id });
+            this.connection.Execute(deleteFromLinksOperation, new { Id = id });
+            this.connection.Execute(deleteFromLinksTagsOperation, new { Id = id });
         }
 
         /// <inheritdoc/>
         public void Update(Website item)
         {
-            var query = @"
+            var updateWebsitesOperation = @"
                 UPDATE Websites
                 SET
                     Name = @Name,
@@ -251,7 +259,7 @@
                     LinkId = @Id;
             ";
 
-            var query2 = @"
+            var updateLinksOperation = @"
                 UPDATE Links
                 SET
                     Url = @Url,
@@ -263,7 +271,7 @@
                     Id = @Id;
             ";
 
-            this.connection.Execute(query, new
+            this.connection.Execute(updateWebsitesOperation, new
             {
                 item.Id,
                 item.Name,
@@ -273,7 +281,7 @@
                 item.IsMultilingual,
             });
 
-            this.connection.Execute(query2, new
+            this.connection.Execute(updateLinksOperation, new
             {
                 item.Id,
                 item.Url,
@@ -309,12 +317,6 @@
             ";
 
             this.connection.Execute(query, new { LinkId = linkId, TagId = tagId });
-        }
-
-        /// <inheritdoc/>
-        public int Commit()
-        {
-            return 0;
         }
     }
 }
