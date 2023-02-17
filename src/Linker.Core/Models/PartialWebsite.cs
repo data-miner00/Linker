@@ -1,7 +1,7 @@
 ﻿namespace Linker.Core.Models
 {
     /// <summary>
-    /// The model for a partial website's read from database.
+    /// The database object model for a intermediary website state without Tags and parent attributes.
     /// </summary>
     public class PartialWebsite
     {
