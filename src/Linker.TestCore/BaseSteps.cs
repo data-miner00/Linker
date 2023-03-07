@@ -80,24 +80,40 @@
             return this.GetSteps();
         }
 
+        /// <summary>
+        /// Expects the result to be null.
+        /// </summary>
+        /// <returns>The step class.</returns>
         public TSteps ThenIExpectResultToBeNull()
         {
             this.Result.Should().BeNull();
             return this.GetSteps();
         }
 
+        /// <summary>
+        /// Expects no exception is thrown.
+        /// </summary>
+        /// <returns>The step class.</returns>
         public TSteps ThenIExpectNoExceptionIsThrown()
         {
             this.Exception.Should().BeNull();
             return this.GetSteps();
         }
 
-        public void ThenIExpectExceptionIsThrown<TException>(TException ex)
+        /// <summary>
+        /// Expects exception of <see cref="TException"/> type to be thrown.
+        /// </summary>
+        /// <typeparam name="TException">The type of exception.</typeparam>
+        public void ThenIExpectExceptionIsThrown<TException>()
             where TException : Exception
         {
             this.Exception.Should().BeOfType<TException>();
         }
 
+        /// <summary>
+        /// Expects exception to be thrown.
+        /// </summary>
+        /// <param name="exceptionType">The raw type of the exception.</param>
         public void ThenIExpectExceptionIsThrown(Type exceptionType)
         {
             exceptionType.Should().BeAssignableTo(typeof(Exception));
