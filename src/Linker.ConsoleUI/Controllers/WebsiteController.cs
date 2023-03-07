@@ -27,7 +27,11 @@
         /// <inheritdoc/>
         public override void DisplayAllItems()
         {
-            Console.Clear();
+            if (!Console.IsOutputRedirected)
+            {
+                Console.Clear();
+            }
+
             Console.WriteLine("List of collected links.");
 
             RenderLinks(this.repository.GetAll());
@@ -75,7 +79,11 @@
         /// <inheritdoc/>
         public override void DisplayItemDetails()
         {
-            Console.Clear();
+            if (!Console.IsOutputRedirected)
+            {
+                Console.Clear();
+            }
+
             var id = this.PromptForInput("Enter the ID of the link: ", string.Empty);
 
             try
