@@ -1,29 +1,33 @@
 ﻿namespace Linker.Data.SQLite
 {
+    using System;
+    using System.Collections.Generic;
     using System.Data;
+    using System.Linq;
     using Dapper;
     using EnsureThat;
     using Linker.Core.Models;
+    using Linker.Core.Models.Dtos;
     using Linker.Core.Repositories;
 
     /// <summary>
-    /// A repository responsible for Website entity.
+    /// A repository for Article entity.
     /// </summary>
-    public class WebsiteRepository : IRepository<Website>
+    public class ArticleRepository : IRepository<Article>
     {
         private readonly IDbConnection connection;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WebsiteRepository"/> class.
+        /// Initializes a new instance of the <see cref="ArticleRepository"/> class.
         /// </summary>
-        /// <param name="connection">The <see cref="IDbConnection"/>.</param>
-        public WebsiteRepository(IDbConnection connection)
+        /// <param name="connection">The <see cref="IDbConnection"/> instance.</param>
+        public ArticleRepository(IDbConnection connection)
         {
             this.connection = EnsureArg.IsNotNull(connection, nameof(connection));
         }
 
         /// <inheritdoc/>
-        public void Add(Website item)
+        public void Add(Article item)
         {
             var randomId = Guid.NewGuid().ToString();
 
@@ -49,21 +53,23 @@
                 );
             ";
 
-            var insertToWebsitesOperation = @"
-                INSERT INTO Websites (
+            var insertToArticleOperation = @"
+                INSERT INTO Articles (
                     LinkId,
-                    Name,
+                    Title,
+                    Author,
+                    Year,
+                    WatchLater,
                     Domain,
-                    Aesthetics,
-                    IsSubdomain,
-                    IsMultilingual
+                    Grammar
                 ) VALUES (
                     @LinkId,
-                    @Name,
+                    @Title,
+                    @Author,
+                    @Year,
+                    @WatchLater,
                     @Domain,
-                    @Aesthetics,
-                    @IsSubdomain,
-                    @IsMultilingual
+                    @Grammar
                 );
             ";
 
@@ -105,14 +111,15 @@
                 item.ModifiedAt,
             });
 
-            this.connection.Execute(insertToWebsitesOperation, new
+            this.connection.Execute(insertToArticleOperation, new
             {
                 LinkId = randomId,
-                item.Name,
+                item.Title,
+                item.Author,
+                item.Year,
+                item.WatchLater,
                 item.Domain,
-                Aesthetics = item.Aesthetics.ToString(),
-                item.IsSubdomain,
-                item.IsMultilingual,
+                Grammar = item.Grammar.ToString(),
             });
 
             foreach (var tag in item.Tags)
@@ -139,23 +146,23 @@
         }
 
         /// <inheritdoc/>
-        public IEnumerable<Website> GetAll()
+        public IEnumerable<Article> GetAll()
         {
-            var websites = new List<Website>();
+            var articles = new List<Article>();
 
-            var selectFromWebsitesQuery = @"SELECT * FROM Websites;";
+            var selectFromArticlesQuery = @"SELECT * FROM Articles;";
 
-            var partialWebsites = this.connection.Query<PartialWebsite>(selectFromWebsitesQuery);
+            var partialArticles = this.connection.Query<PartialArticle>(selectFromArticlesQuery);
 
-            foreach (var partialWebsite in partialWebsites)
+            foreach (var partialArticle in partialArticles)
             {
                 var tags = new List<string>();
 
-                var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id = @Id;";
-                var link = this.connection.QueryFirst<Link>(selectFromLinksQuery, new { Id = partialWebsite.LinkId });
+                var selectFromLinkQuery = @"SELECT * FROM Links WHERE Id = @Id;";
+                var link = this.connection.QueryFirst<Link>(selectFromLinkQuery, new { Id = partialArticle.LinkId });
 
                 var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @Id;";
-                var tagsz = this.connection.Query<LinkTagPair>(selectFromLinksTagsQuery, new { Id = partialWebsite.LinkId });
+                var tagsz = this.connection.Query<LinkTagPair>(selectFromLinksTagsQuery, new { Id = partialArticle.LinkId });
                 foreach (var tagz in tagsz)
                 {
                     var selectFromTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
@@ -163,7 +170,7 @@
                     tags.Add(tag.Name);
                 }
 
-                var website = new Website
+                var article = new Article
                 {
                     Id = link.Id,
                     Url = link.Url,
@@ -174,27 +181,28 @@
                     LastVisitAt = link.LastVisitAt,
                     CreatedAt = link.CreatedAt,
                     ModifiedAt = link.ModifiedAt,
-                    Name = partialWebsite.Name,
-                    Domain = partialWebsite.Domain,
-                    Aesthetics = partialWebsite.Aesthetics,
-                    IsSubdomain = partialWebsite.IsSubdomain,
-                    IsMultilingual = partialWebsite.IsMultilingual,
+                    Title = partialArticle.Title,
+                    Author = partialArticle.Author,
+                    Year = partialArticle.Year,
+                    WatchLater = partialArticle.WatchLater,
+                    Domain = partialArticle.Domain,
+                    Grammar = partialArticle.Grammar,
                 };
 
-                websites.Add(website);
+                articles.Add(article);
             }
 
-            return websites;
+            return articles;
         }
 
         /// <inheritdoc/>
-        public Website GetById(string id)
+        public Article GetById(string id)
         {
             var tags = new List<string>();
 
-            var selectFromWebsitesQuery = @"SELECT * FROM Websites WHERE LinkId = @Id;";
+            var selectFromArticleQuery = @"SELECT * FROM Articles WHERE LinkId = @Id;";
 
-            var partialWebsite = this.connection.QueryFirst<PartialWebsite>(selectFromWebsitesQuery, new { Id = id });
+            var partialArticle = this.connection.QueryFirst<PartialArticle>(selectFromArticleQuery, new { Id = id });
 
             var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id = @Id;";
 
@@ -211,7 +219,7 @@
                 tags.Add(tag.Name);
             }
 
-            var website = new Website
+            var article = new Article
             {
                 Id = link.Id,
                 Url = link.Url,
@@ -222,39 +230,41 @@
                 LastVisitAt = link.LastVisitAt,
                 CreatedAt = link.CreatedAt,
                 ModifiedAt = link.ModifiedAt,
-                Name = partialWebsite.Name,
-                Domain = partialWebsite.Domain,
-                Aesthetics = partialWebsite.Aesthetics,
-                IsSubdomain = partialWebsite.IsSubdomain,
-                IsMultilingual = partialWebsite.IsMultilingual,
+                Title = partialArticle.Title,
+                Author = partialArticle.Author,
+                Year = partialArticle.Year,
+                WatchLater = partialArticle.WatchLater,
+                Domain = partialArticle.Domain,
+                Grammar = partialArticle.Grammar,
             };
 
-            return website;
+            return article;
         }
 
         /// <inheritdoc/>
         public void Remove(string id)
         {
-            var deleteFromWebsitesOperation = @"DELETE FROM Websites WHERE LinkId = @Id;";
+            var deleteFromArticlesOperation = @"DELETE FROM Articles WHERE LinkId = @Id;";
             var deleteFromLinksOperation = @"DELETE FROM Links WHERE Id = @Id;";
-            var deleteFromLinksTagsOperation = @"DELETE FROM Links_Tags Where LinkId = @Id;";
+            var deleteFromLinksTagsOperation = @"DELETE FROM Links_Tags WHERE LinkId = @Id;";
 
-            this.connection.Execute(deleteFromWebsitesOperation, new { Id = id });
+            this.connection.Execute(deleteFromArticlesOperation, new { Id = id });
             this.connection.Execute(deleteFromLinksOperation, new { Id = id });
             this.connection.Execute(deleteFromLinksTagsOperation, new { Id = id });
         }
 
         /// <inheritdoc/>
-        public void Update(Website item)
+        public void Update(Article item)
         {
-            var updateWebsitesOperation = @"
-                UPDATE Websites
+            var updateArticlesOperation = @"
+                UPDATE Articles
                 SET
-                    Name = @Name,
+                    Title = @Title,
+                    Author = @Author,
+                    Year = @Year,
+                    WatchLater = @WatchLater,
                     Domain = @Domain,
-                    Aesthetics = @Aesthetics,
-                    IsSubdomain = @IsSubdomain,
-                    IsMultilingual = @IsMultilingual
+                    Grammar = @Grammar
                 WHERE
                     LinkId = @Id;
             ";
@@ -271,14 +281,15 @@
                     Id = @Id;
             ";
 
-            this.connection.Execute(updateWebsitesOperation, new
+            this.connection.Execute(updateArticlesOperation, new
             {
                 item.Id,
-                item.Name,
+                item.Title,
+                item.Author,
+                item.Year,
+                item.WatchLater,
                 item.Domain,
-                Aesthetics = item.Aesthetics.ToString(),
-                item.IsSubdomain,
-                item.IsMultilingual,
+                Grammar = item.Grammar.ToString(),
             });
 
             this.connection.Execute(updateLinksOperation, new

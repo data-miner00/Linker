@@ -3,7 +3,7 @@
     /// <summary>
     /// The database object model for a intermediary website state without Tags and parent attributes.
     /// </summary>
-    public class PartialWebsite
+    public sealed class PartialWebsite
     {
         /// <summary>
         /// Gets or sets the foreign key that refers to the Link parent.
