@@ -364,3 +364,8 @@ FodyWeavers.xsd
 
 # Local Database
 db.sqlite
+
+# Drawio
+*.drawio.bkp
+*.drawio.dtmp
+
