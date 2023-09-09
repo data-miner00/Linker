@@ -3,7 +3,7 @@
     using System;
     using EnsureThat;
     using Linker.ConsoleUI.UI;
-    using Linker.Core.Controllers;
+    using Linker.Core.Controllers.ConsoleUI;
     using Linker.Core.Models;
 
     /// <summary>

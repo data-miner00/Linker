@@ -1,4 +1,4 @@
-﻿namespace Linker.Core.Controllers
+﻿namespace Linker.Core.Controllers.ConsoleUI
 {
     using Linker.Core.Models;
 

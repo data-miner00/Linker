@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using Linker.ConsoleUI.Controllers;
-    using Linker.Core.Controllers;
+    using Linker.Core.Controllers.ConsoleUI;
     using Linker.Core.Models;
     using Linker.Core.Repositories;
     using Linker.TestCore;

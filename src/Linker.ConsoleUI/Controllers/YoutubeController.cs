@@ -5,7 +5,7 @@
     using System.Linq;
     using Linker.Common.Extensions;
     using Linker.ConsoleUI.Extensions;
-    using Linker.Core.Controllers;
+    using Linker.Core.Controllers.ConsoleUI;
     using Linker.Core.CsvModels;
     using Linker.Core.Models;
     using Linker.Core.Repositories;

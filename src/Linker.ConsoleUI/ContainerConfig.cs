@@ -4,7 +4,7 @@
     using Linker.ConsoleUI.Controllers;
     using Linker.ConsoleUI.Repositories;
     using Linker.ConsoleUI.UI;
-    using Linker.Core.Controllers;
+    using Linker.Core.Controllers.ConsoleUI;
     using Linker.Core.Repositories;
 
     /// <summary>
