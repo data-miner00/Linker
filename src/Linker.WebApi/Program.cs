@@ -1,6 +1,7 @@
 namespace Linker.WebApi
 {
     using System.Data.SQLite;
+    using Linker.Core.Repositories;
     using Linker.Data.SQLite;
 
     public class Program
@@ -17,8 +18,8 @@ namespace Linker.WebApi
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddSingleton(new WebsiteRepository(connection));
-
+            builder.Services.AddSingleton<IWebsiteRepository>(
+                x => new WebsiteRepository(connection));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

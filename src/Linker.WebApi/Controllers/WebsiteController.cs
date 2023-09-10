@@ -4,29 +4,39 @@
     using EnsureThat;
     using Linker.Common;
     using Linker.Core.ApiModels;
+    using Linker.Core.Controllers;
     using Linker.Core.Models;
-    using Linker.Data.SQLite;
+    using Linker.Core.Repositories;
     using Microsoft.AspNetCore.Mvc;
 
+    /// <summary>
+    /// The API controller for <see cref="Website"/>.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class WebsiteController : ControllerBase
+    public class WebsiteController : ControllerBase, IWebsiteController
     {
-        private readonly WebsiteRepository repository;
+        private readonly IWebsiteRepository repository;
 
-        public WebsiteController(WebsiteRepository repository)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebsiteController"/> class.
+        /// </summary>
+        /// <param name="repository">The repository for <see cref="Website"/>.</param>
+        public WebsiteController(IWebsiteRepository repository)
         {
             this.repository = EnsureArg.IsNotNull(repository, nameof(repository));
         }
 
+        /// <inheritdoc/>
         [HttpGet("{id:guid}", Name = "GetWebsite")]
-        public IActionResult Get(Guid id)
+        public IActionResult GetById(Guid id)
         {
             var website = this.repository.GetById(id.ToString());
 
             return this.Ok(website);
         }
 
+        /// <inheritdoc/>
         [HttpGet("", Name = "GetAllWebsites")]
         public IActionResult GetAll()
         {
@@ -34,6 +44,7 @@
             return this.Ok(websites);
         }
 
+        /// <inheritdoc/>
         [HttpPost("", Name = "CreateWebsite")]
         public IActionResult Create([FromBody] CreateWebsiteRequest request)
         {
@@ -58,11 +69,12 @@
             this.repository.Add(website);
 
             return this.CreatedAtAction(
-                actionName: nameof(this.Get),
+                actionName: nameof(this.GetById),
                 routeValues: new { website.Id },
                 value: request);
         }
 
+        /// <inheritdoc/>
         [HttpPut("{id:guid}", Name = "UpdateWebsite")]
         public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateWebsiteRequest request)
         {
@@ -85,6 +97,7 @@
             return this.NoContent();
         }
 
+        /// <inheritdoc/>
         [HttpDelete("{id:guid}", Name = "DeleteWebsite")]
         public IActionResult Delete(Guid id)
         {

@@ -9,7 +9,7 @@
     /// <summary>
     /// A repository responsible for Website entity.
     /// </summary>
-    public class WebsiteRepository : IRepository<Website>
+    public class WebsiteRepository : IWebsiteRepository
     {
         private readonly IDbConnection connection;
 
