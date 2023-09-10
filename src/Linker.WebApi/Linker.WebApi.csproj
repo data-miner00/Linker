@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Linker.Data\Linker.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="SonarAnalyzer.CSharp" Version="9.9.0.77355" />
+  </ItemGroup>
+
 </Project>

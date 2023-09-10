@@ -6,15 +6,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="6.3.0" />
-    <PackageReference Include="CsvHelper" Version="27.2.1" />
+    <PackageReference Include="Autofac" Version="7.1.0" />
+    <PackageReference Include="CsvHelper" Version="30.0.1" />
     <PackageReference Include="Ensure.That" Version="10.1.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Linker.Common\Linker.Common.csproj" />
     <ProjectReference Include="..\Linker.Core\Linker.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="SonarAnalyzer.CSharp" Version="9.9.0.77355" />
   </ItemGroup>
 
 </Project>
