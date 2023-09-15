@@ -193,15 +193,16 @@
             var tags = new List<string>();
 
             var selectFromWebsitesQuery = @"SELECT * FROM Websites WHERE LinkId = @Id;";
-
             var partialWebsite = this.connection.QueryFirst<PartialWebsite>(selectFromWebsitesQuery, new { Id = id });
+            if (partialWebsite == null)
+            {
+                return null;
+            }
 
             var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id = @Id;";
-
             var link = this.connection.QueryFirst<Link>(selectFromLinksQuery, new { Id = id });
 
             var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @LinkId;";
-
             var tagsz = this.connection.Query<LinkTagPair>(selectFromLinksTagsQuery, new { LinkId = id });
 
             foreach (var tagz in tagsz)
@@ -235,6 +236,11 @@
         /// <inheritdoc/>
         public void Remove(string id)
         {
+            if (!this.IsItemExist(id))
+            {
+                throw new InvalidOperationException("The item does not exist.");
+            }
+
             var deleteFromWebsitesOperation = @"DELETE FROM Websites WHERE LinkId = @Id;";
             var deleteFromLinksOperation = @"DELETE FROM Links WHERE Id = @Id;";
             var deleteFromLinksTagsOperation = @"DELETE FROM Links_Tags Where LinkId = @Id;";
@@ -247,6 +253,11 @@
         /// <inheritdoc/>
         public void Update(Website item)
         {
+            if (!this.IsItemExist(item.Id))
+            {
+                throw new InvalidOperationException("The item does not exist.");
+            }
+
             var updateWebsitesOperation = @"
                 UPDATE Websites
                 SET
@@ -290,6 +301,14 @@
                 Language = item.Language.ToString(),
                 ModifiedAt = DateTime.Now,
             });
+        }
+
+        private bool IsItemExist(string id)
+        {
+            var selectFromWebsitesQuery = @"SELECT * FROM Websites WHERE LinkId = @Id;";
+            var partialWebsite = this.connection.QueryFirst<PartialWebsite>(selectFromWebsitesQuery, new { Id = id });
+
+            return partialWebsite != null;
         }
     }
 }
