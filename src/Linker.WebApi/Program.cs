@@ -15,8 +15,13 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IWebsiteRepository>(
-    x => new WebsiteRepository(connection));
+builder.Services
+    .AddSingleton<IWebsiteRepository>(
+        _ => new WebsiteRepository(connection))
+    .AddSingleton<IArticleRepository>(
+        _ => new ArticleRepository(connection))
+    .AddSingleton<IYoutubeRepository>(
+        _ => new YoutubeRepository(connection));
 
 var app = builder.Build();
 

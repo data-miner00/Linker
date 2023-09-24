@@ -192,12 +192,7 @@
         {
             var tags = new List<string>();
 
-            var selectFromWebsitesQuery = @"SELECT * FROM Websites WHERE LinkId = @Id;";
-            var partialWebsite = this.connection.QueryFirst<PartialWebsite>(selectFromWebsitesQuery, new { Id = id });
-            if (partialWebsite == null)
-            {
-                return null;
-            }
+            var partialWebsite = this.TryGetItem(id);
 
             var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id = @Id;";
             var link = this.connection.QueryFirst<Link>(selectFromLinksQuery, new { Id = id });
@@ -236,10 +231,7 @@
         /// <inheritdoc/>
         public void Remove(string id)
         {
-            if (!this.IsItemExist(id))
-            {
-                throw new InvalidOperationException("The item does not exist.");
-            }
+            this.TryGetItem(id);
 
             var deleteFromWebsitesOperation = @"DELETE FROM Websites WHERE LinkId = @Id;";
             var deleteFromLinksOperation = @"DELETE FROM Links WHERE Id = @Id;";
@@ -253,10 +245,7 @@
         /// <inheritdoc/>
         public void Update(Website item)
         {
-            if (!this.IsItemExist(item.Id))
-            {
-                throw new InvalidOperationException("The item does not exist.");
-            }
+            this.TryGetItem(item.Id);
 
             var updateWebsitesOperation = @"
                 UPDATE Websites
@@ -303,12 +292,13 @@
             });
         }
 
-        private bool IsItemExist(string id)
+        private PartialWebsite TryGetItem(string id)
         {
             var selectFromWebsitesQuery = @"SELECT * FROM Websites WHERE LinkId = @Id;";
+
             var partialWebsite = this.connection.QueryFirst<PartialWebsite>(selectFromWebsitesQuery, new { Id = id });
 
-            return partialWebsite != null;
+            return partialWebsite;
         }
     }
 }

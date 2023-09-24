@@ -13,14 +13,14 @@
     /// <summary>
     /// A repository for Youtube entity.
     /// </summary>
-    public class YoutubeRepository : IRepository<Youtube>
+    public class YoutubeRepository : IYoutubeRepository
     {
         private readonly IDbConnection connection;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="YoutubeRepository"/> class.
-        /// <param name="connection">The <see cref="IDbConnection"/>.</param>
         /// </summary>
+        /// <param name="connection">The <see cref="IDbConnection"/>.</param>
         public YoutubeRepository(IDbConnection connection)
         {
             this.connection = EnsureArg.IsNotNull(connection, nameof(connection));
@@ -190,9 +190,7 @@
         {
             var tags = new List<string>();
 
-            var selectFromYoutubeQuery = @"SELECT * FROM Youtube WHERE LinkId = @Id;";
-
-            var partialChannel = this.connection.QueryFirst<PartialYoutube>(selectFromYoutubeQuery, new { Id = id });
+            var partialChannel = this.TryGetItem(id);
 
             var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id = @Id;";
 
@@ -231,6 +229,8 @@
         /// <inheritdoc/>
         public void Remove(string id)
         {
+            this.TryGetItem(id);
+
             var deleteFromYoutubeOperation = @"DELETE FROM Youtube WHERE LinkId = @Id;";
             var deleteFromLinksOperation = @"DELETE FROM Links WHERE Id = @Id;";
             var deleteFromLinksTagsOperation = @"DELETE FROM Links_Tags WHERE LinkId = @Id;";
@@ -243,6 +243,8 @@
         /// <inheritdoc/>
         public void Update(Youtube item)
         {
+            this.TryGetItem(item.Id);
+
             var updateYoutubeOperation = @"
                 UPDATE Youtube
                 SET
@@ -282,6 +284,14 @@
                 Language = item.Language.ToString(),
                 ModifiedAt = DateTime.Now,
             });
+        }
+
+        private PartialYoutube TryGetItem(string id)
+        {
+            var selectFromChannelQuery = @"SELECT * FROM Youtube WHERE LinkId = @Id;";
+            var partialChannel = this.connection.QueryFirst<PartialYoutube>(selectFromChannelQuery, new { Id = id });
+
+            return partialChannel;
         }
     }
 }

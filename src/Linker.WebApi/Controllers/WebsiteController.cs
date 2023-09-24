@@ -31,17 +31,23 @@
         [HttpGet("{id:guid}", Name = "GetWebsite")]
         public IActionResult GetById(Guid id)
         {
-            var website = this.repository.GetById(id.ToString());
-
-            return this.Ok(website);
+            try
+            {
+                var result = this.repository.GetById(id.ToString());
+                return this.Ok(result);
+            }
+            catch (InvalidOperationException)
+            {
+                return this.NotFound();
+            }
         }
 
         /// <inheritdoc/>
         [HttpGet("", Name = "GetAllWebsites")]
         public IActionResult GetAll()
         {
-            var websites = this.repository.GetAll();
-            return this.Ok(websites);
+            var results = this.repository.GetAll();
+            return this.Ok(results);
         }
 
         /// <inheritdoc/>
@@ -92,7 +98,14 @@
                 IsMultilingual = request.IsMultilingual,
             };
 
-            this.repository.Update(website);
+            try
+            {
+                this.repository.Update(website);
+            }
+            catch (InvalidOperationException)
+            {
+                return this.NotFound();
+            }
 
             return this.NoContent();
         }
@@ -101,7 +114,15 @@
         [HttpDelete("{id:guid}", Name = "DeleteWebsite")]
         public IActionResult Delete(Guid id)
         {
-            this.repository.Remove(id.ToString());
+            try
+            {
+                this.repository.Remove(id.ToString());
+            }
+            catch (InvalidOperationException)
+            {
+                return this.NotFound();
+            }
+
             return this.NoContent();
         }
     }

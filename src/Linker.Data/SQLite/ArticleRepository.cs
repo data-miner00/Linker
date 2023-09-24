@@ -13,7 +13,7 @@
     /// <summary>
     /// A repository for Article entity.
     /// </summary>
-    public class ArticleRepository : IRepository<Article>
+    public class ArticleRepository : IArticleRepository
     {
         private readonly IDbConnection connection;
 
@@ -200,9 +200,7 @@
         {
             var tags = new List<string>();
 
-            var selectFromArticleQuery = @"SELECT * FROM Articles WHERE LinkId = @Id;";
-
-            var partialArticle = this.connection.QueryFirst<PartialArticle>(selectFromArticleQuery, new { Id = id });
+            var partialArticle = this.TryGetItem(id);
 
             var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id = @Id;";
 
@@ -244,6 +242,8 @@
         /// <inheritdoc/>
         public void Remove(string id)
         {
+            this.TryGetItem(id);
+
             var deleteFromArticlesOperation = @"DELETE FROM Articles WHERE LinkId = @Id;";
             var deleteFromLinksOperation = @"DELETE FROM Links WHERE Id = @Id;";
             var deleteFromLinksTagsOperation = @"DELETE FROM Links_Tags WHERE LinkId = @Id;";
@@ -256,6 +256,8 @@
         /// <inheritdoc/>
         public void Update(Article item)
         {
+            this.TryGetItem(item.Id);
+
             var updateArticlesOperation = @"
                 UPDATE Articles
                 SET
@@ -301,6 +303,14 @@
                 Language = item.Language.ToString(),
                 ModifiedAt = DateTime.Now,
             });
+        }
+
+        private PartialArticle TryGetItem(string id)
+        {
+            var selectFromArticlesQuery = @"SELECT * FROM Articles WHERE LinkId = @Id;";
+            var partialArticle = this.connection.QueryFirst<PartialArticle>(selectFromArticlesQuery, new { Id = id });
+
+            return partialArticle;
         }
     }
 }
