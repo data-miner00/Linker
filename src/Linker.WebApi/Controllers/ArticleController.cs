@@ -43,6 +43,7 @@
                 LastVisitAt = DateTime.Now,
                 CreatedAt = DateTime.Now,
                 ModifiedAt = DateTime.Now,
+                Domain = UrlParser.ExtractDomainLite(request.Url),
                 Grammar = request.Grammar,
                 Year = request.Year,
                 Author = request.Author,
