@@ -21,7 +21,9 @@ builder.Services
     .AddSingleton<IArticleRepository>(
         _ => new ArticleRepository(connection))
     .AddSingleton<IYoutubeRepository>(
-        _ => new YoutubeRepository(connection));
+        _ => new YoutubeRepository(connection))
+    .AddSingleton<ITagRepository>(
+        _ => new TagRepository(connection));
 
 var app = builder.Build();
 
