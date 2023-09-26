@@ -40,14 +40,24 @@
             var query = @"
                 INSERT INTO Tags (
                     Id,
-                    Name
+                    Name,
+                    CreatedAt,
+                    ModifiedAt
                 ) VALUES (
                     @Id,
-                    @Name
+                    @Name,
+                    @CreatedAt,
+                    @ModifiedAt
                 );
             ";
 
-            this.connection.Execute(query, new { Id = randomId, Name = name });
+            this.connection.Execute(query, new
+            {
+                Id = randomId,
+                Name = name,
+                CreatedAt = DateTime.Now,
+                ModifiedAt = DateTime.Now,
+            });
         }
 
         /// <inheritdoc/>
@@ -69,15 +79,26 @@
         /// <inheritdoc/>
         public void EditName(string id, string newName)
         {
-            var operation = @"UPDATE Tags SET Name = @Name WHERE Id = @Id;";
+            var operation = @"
+                UPDATE Tags
+                SET
+                    Name = @Name,
+                    ModifiedAt = @ModifiedAt
+                WHERE Id = @Id;
+            ";
 
-            this.connection.Execute(operation, new { Id = id, Name = newName });
+            this.connection.Execute(operation, new
+            {
+                Id = id,
+                Name = newName,
+                ModifiedAt = DateTime.Now,
+            });
         }
 
         /// <inheritdoc/>
         public void Delete(string id)
         {
-            var deleteFromLinkTagsOperation = @"DELETE FROM Link_Tags WHERE LinkId = @Id;";
+            var deleteFromLinkTagsOperation = @"DELETE FROM Links_Tags WHERE TagId = @Id;";
             var deleteFromTagsOperation = @"DELETE FROM Tags WHERE Id = @Id;";
 
             this.connection.Execute(deleteFromLinkTagsOperation, new { Id = id });
@@ -90,7 +111,7 @@
             var operation = @"
                 DELETE FROM Links_Tags
                 WHERE
-                    LinkId = @LinkId,
+                    LinkId = @LinkId AND
                     TagId = @TagId;
             ";
 
