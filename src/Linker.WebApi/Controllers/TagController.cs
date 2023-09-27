@@ -1,6 +1,7 @@
 ﻿namespace Linker.WebApi.Controllers
 {
     using System.Data.SQLite;
+    using System.Threading.Tasks;
     using EnsureThat;
     using Linker.Core.ApiModels;
     using Linker.Core.Controllers;
@@ -28,15 +29,15 @@
 
         /// <inheritdoc/>
         [HttpGet("", Name = "GetAllTags")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var results = this.repository.GetAll();
+            var results = await this.repository.GetAllAsync().ConfigureAwait(false);
             return this.Ok(results);
         }
 
         /// <inheritdoc/>
         [HttpGet("query", Name = "GetBy")]
-        public IActionResult GetBy([FromQuery] string? id, [FromQuery] string? name)
+        public async Task<IActionResult> GetByAsync([FromQuery] string? id, [FromQuery] string? name)
         {
             try
             {
@@ -44,11 +45,11 @@
 
                 if (!string.IsNullOrEmpty(id))
                 {
-                    tag = this.repository.GetBy("Id", id);
+                    tag = await this.repository.GetByAsync("Id", id).ConfigureAwait(false);
                 }
                 else if (!string.IsNullOrEmpty(name))
                 {
-                    tag = this.repository.GetBy("Name", name);
+                    tag = await this.repository.GetByAsync("Name", name).ConfigureAwait(false);
                 }
 
                 return this.Ok(tag);
@@ -61,11 +62,11 @@
 
         /// <inheritdoc/>
         [HttpPost("", Name = "CreateTag")]
-        public IActionResult Create([FromBody] CreateTagRequest request)
+        public async Task<IActionResult> CreateAsync([FromBody] CreateTagRequest request)
         {
             try
             {
-                this.repository.Add(request.TagName);
+                await this.repository.AddAsync(request.TagName).ConfigureAwait(false);
                 return this.NoContent();
             }
             catch (SQLiteException ex) when (ex.Message.Equals("constraint failed\r\nUNIQUE constraint failed: Tags.Name"))
@@ -76,33 +77,33 @@
 
         /// <inheritdoc/>
         [HttpPost("linktag/{linkId:guid}/{tagId:guid}", Name = "CreateLinkTag")]
-        public IActionResult CreateLinkTag([FromRoute] Guid linkId, [FromRoute] Guid tagId)
+        public async Task<IActionResult> CreateLinkTagAsync([FromRoute] Guid linkId, [FromRoute] Guid tagId)
         {
-            this.repository.AddLinkTag(linkId.ToString(), tagId.ToString());
+            await this.repository.AddLinkTagAsync(linkId.ToString(), tagId.ToString()).ConfigureAwait(false);
             return this.NoContent();
         }
 
         /// <inheritdoc/>
         [HttpPut("{id:guid}", Name = "UpdateTag")]
-        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateTagRequest request)
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateTagRequest request)
         {
-            this.repository.EditName(id.ToString(), request.NewName);
+            await this.repository.EditNameAsync(id.ToString(), request.NewName).ConfigureAwait(false);
             return this.Ok();
         }
 
         /// <inheritdoc/>
         [HttpDelete("{id:guid}", Name = "DeleteTag")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            this.repository.Delete(id.ToString());
+            await this.repository.DeleteAsync(id.ToString()).ConfigureAwait(false);
             return this.NoContent();
         }
 
         /// <inheritdoc/>
         [HttpDelete("linktag/{linkId:guid}/{tagId:guid}", Name = "DeleteLinkTag")]
-        public IActionResult DeleteLinkTag([FromRoute] Guid linkId, [FromRoute] Guid tagId)
+        public async Task<IActionResult> DeleteLinkTagAsync([FromRoute] Guid linkId, [FromRoute] Guid tagId)
         {
-            this.repository.DeleteLinkTag(linkId.ToString(), tagId.ToString());
+            await this.repository.DeleteLinkTagAsync(linkId.ToString(), tagId.ToString()).ConfigureAwait(false);
             return this.NoContent();
         }
     }

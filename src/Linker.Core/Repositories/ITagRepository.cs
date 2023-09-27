@@ -1,6 +1,7 @@
 ﻿namespace Linker.Core.Repositories
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Linker.Core.Models;
 
     /// <summary>
@@ -12,7 +13,7 @@
         /// Get all existing tags.
         /// </summary>
         /// <returns>The list of tags.</returns>
-        public IEnumerable<Tag> GetAll();
+        public Task<IEnumerable<Tag>> GetAllAsync();
 
         /// <summary>
         /// Get by either name or Id.
@@ -20,39 +21,44 @@
         /// <param name="type">The type of the query.</param>
         /// <param name="value">The value for query.</param>
         /// <returns>The found tag.</returns>
-        public Tag GetBy(string type, string value);
+        public Task<Tag> GetByAsync(string type, string value);
 
         /// <summary>
         /// Adds a new tag.
         /// </summary>
         /// <param name="name">The name of the tag.</param>
-        public void Add(string name);
+        /// <returns>Nothing.</returns>
+        public Task AddAsync(string name);
 
         /// <summary>
         /// Add link tag pairs. Used when creating a new <see cref="Link"/>.
         /// </summary>
         /// <param name="linkId">The link Id.</param>
         /// <param name="tagId">The tag Id.</param>
-        public void AddLinkTag(string linkId, string tagId);
+        /// <returns>Nothing.</returns>
+        public Task AddLinkTagAsync(string linkId, string tagId);
 
         /// <summary>
         /// Edit the name of a tag.
         /// </summary>
         /// <param name="id">The Id of the tag.</param>
         /// <param name="newName">The new name of the tag.</param>
-        public void EditName(string id, string newName);
+        /// <returns>Nothing.</returns>
+        public Task EditNameAsync(string id, string newName);
 
         /// <summary>
         /// Delete the tag from Tags and Link_Tags table.
         /// </summary>
         /// <param name="id">The Id of the tag to be deleted.</param>
-        public void Delete(string id);
+        /// <returns>Nothing.</returns>
+        public Task DeleteAsync(string id);
 
         /// <summary>
         /// Delete link tag. Used when deleting a <see cref="Link"/>.
         /// </summary>
         /// <param name="linkId">The link Id.</param>
         /// <param name="tagId">The tag Id.</param>
-        public void DeleteLinkTag(string linkId, string tagId);
+        /// <returns>Nothing.</returns>
+        public Task DeleteLinkTagAsync(string linkId, string tagId);
     }
 }
