@@ -1,5 +1,6 @@
 ﻿namespace Linker.WebApi.Controllers
 {
+    using System.Data.SQLite;
     using EnsureThat;
     using Linker.Core.ApiModels;
     using Linker.Core.Controllers;
@@ -37,8 +38,15 @@
         [HttpPost("", Name = "CreateTag")]
         public IActionResult Create([FromBody] CreateTagRequest request)
         {
-            this.repository.Add(request.TagName);
-            return this.NoContent();
+            try
+            {
+                this.repository.Add(request.TagName);
+                return this.NoContent();
+            }
+            catch (SQLiteException ex) when (ex.Message.Equals("constraint failed\r\nUNIQUE constraint failed: Tags.Name"))
+            {
+                return this.BadRequest("The tag with the same name already exists.");
+            }
         }
 
         /// <inheritdoc/>
