@@ -35,6 +35,31 @@
         }
 
         /// <inheritdoc/>
+        [HttpGet("query", Name = "GetBy")]
+        public IActionResult GetBy([FromQuery] string? id, [FromQuery] string? name)
+        {
+            try
+            {
+                Tag tag = new();
+
+                if (!string.IsNullOrEmpty(id))
+                {
+                    tag = this.repository.GetBy("Id", id);
+                }
+                else if (!string.IsNullOrEmpty(name))
+                {
+                    tag = this.repository.GetBy("Name", name);
+                }
+
+                return this.Ok(tag);
+            }
+            catch (InvalidOperationException)
+            {
+                return this.NotFound();
+            }
+        }
+
+        /// <inheritdoc/>
         [HttpPost("", Name = "CreateTag")]
         public IActionResult Create([FromBody] CreateTagRequest request)
         {

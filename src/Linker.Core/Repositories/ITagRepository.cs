@@ -15,6 +15,14 @@
         public IEnumerable<Tag> GetAll();
 
         /// <summary>
+        /// Get by either name or Id.
+        /// </summary>
+        /// <param name="type">The type of the query.</param>
+        /// <param name="value">The value for query.</param>
+        /// <returns>The found tag.</returns>
+        public Tag GetBy(string type, string value);
+
+        /// <summary>
         /// Adds a new tag.
         /// </summary>
         /// <param name="name">The name of the tag.</param>

@@ -16,6 +16,14 @@
         public IActionResult GetAll();
 
         /// <summary>
+        /// Gets a tag either by Id or by name.
+        /// </summary>
+        /// <param name="id">The Id of the tag.</param>
+        /// <param name="name">The name of the tag.</param>
+        /// <returns>The Http response with found tag.</returns>
+        public IActionResult GetBy(string? id, string? name);
+
+        /// <summary>
         /// Adds a new tag.
         /// </summary>
         /// <param name="request">The create tag request.</param>

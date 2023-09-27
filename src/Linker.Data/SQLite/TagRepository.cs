@@ -33,6 +33,21 @@
         }
 
         /// <inheritdoc/>
+        public Tag GetBy(string type, string value)
+        {
+            if (!new[] { "Id", "Name" }.Contains(type))
+            {
+                throw new ArgumentException(type, nameof(type));
+            }
+
+            var query = $"SELECT * FROM Tags WHERE {type} = @value;";
+
+            var tag = this.connection.QueryFirst<Tag>(query, new { value });
+
+            return tag;
+        }
+
+        /// <inheritdoc/>
         public void Add(string name)
         {
             var randomId = Guid.NewGuid().ToString();
