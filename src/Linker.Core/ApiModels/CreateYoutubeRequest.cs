@@ -4,29 +4,56 @@
     using System.ComponentModel.DataAnnotations;
     using Linker.Core.Models;
 
+    /// <summary>
+    /// The request object for creating a Youtube record.
+    /// </summary>
     public sealed class CreateYoutubeRequest
     {
+        /// <summary>
+        /// Gets or sets the url of the Youtube channel.
+        /// </summary>
         [Required]
         public string Url { get; set; }
 
+        /// <summary>
+        /// Gets or sets the category of the Youtube channel.
+        /// </summary>
         [Required]
         public Category Category { get; set; }
 
+        /// <summary>
+        /// Gets or sets the description of the Youtube channel.
+        /// </summary>
         [Required]
         public string Description { get; set; }
 
+        /// <summary>
+        /// Gets or sets the language of the Youtube channel.
+        /// </summary>
         [Required]
         public Language Language { get; set; }
 
+        /// <summary>
+        /// Gets or sets the name of the Youtube channel.
+        /// </summary>
         [Required]
         public string Name { get; set; }
 
+        /// <summary>
+        /// Gets or sets the name of the Youtube channel creator.
+        /// </summary>
         [Required]
         public string Youtuber { get; set; }
 
+        /// <summary>
+        /// Gets or sets the country that the Youtube channel based in.
+        /// </summary>
         [Required]
         public string Country { get; set; }
 
+        /// <summary>
+        /// Gets or sets the tags that is related to the Youtube channel.
+        /// </summary>
         [Required]
         public IEnumerable<string> Tags { get; set; }
     }
