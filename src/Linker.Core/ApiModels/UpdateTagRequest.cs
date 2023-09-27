@@ -1,5 +1,7 @@
 ﻿namespace Linker.Core.ApiModels
 {
+    using System.ComponentModel.DataAnnotations;
+
     /// <summary>
     /// The update tag request object.
     /// </summary>
@@ -8,6 +10,7 @@
         /// <summary>
         /// Gets or sets the new name of the targeted tag to change to.
         /// </summary>
+        [Required(AllowEmptyStrings = false)]
         public string NewName { get; set; }
     }
 }

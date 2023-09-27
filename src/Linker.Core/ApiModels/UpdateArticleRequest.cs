@@ -11,13 +11,13 @@
         /// <summary>
         /// Gets or sets the title of the article.
         /// </summary>
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         public string Title { get; set; }
 
         /// <summary>
         /// Gets or sets the url of the article.
         /// </summary>
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         public string Url { get; set; }
 
         /// <summary>
@@ -29,13 +29,11 @@
         /// <summary>
         /// Gets or sets the description of the article.
         /// </summary>
-        [Required]
         public string Description { get; set; }
 
         /// <summary>
         /// Gets or sets the author of the article.
         /// </summary>
-        [Required]
         public string Author { get; set; }
 
         /// <summary>
@@ -43,12 +41,6 @@
         /// </summary>
         [Required]
         public Language Language { get; set; }
-
-        /// <summary>
-        /// Gets or sets the aesthetics of the article.
-        /// </summary>
-        [Required]
-        public Aesthetics Aesthetics { get; set; }
 
         /// <summary>
         /// Gets or sets the grammar of the article.
@@ -65,7 +57,6 @@
         /// <summary>
         /// Gets or sets a value indicating whether the article has been put into watch later list.
         /// </summary>
-        [Required]
         public bool WatchLater { get; set; }
     }
 }

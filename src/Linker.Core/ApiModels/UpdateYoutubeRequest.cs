@@ -11,7 +11,7 @@
         /// <summary>
         /// Gets or sets the url of the Youtube channel to be updated.
         /// </summary>
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         public string Url { get; set; }
 
         /// <summary>
@@ -23,7 +23,6 @@
         /// <summary>
         /// Gets or sets the description of the Youtube channel to be updated.
         /// </summary>
-        [Required]
         public string Description { get; set; }
 
         /// <summary>
@@ -35,19 +34,17 @@
         /// <summary>
         /// Gets or sets the name of the Youtube channel to be updated.
         /// </summary>
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the creator of the Youtube channel to be updated.
         /// </summary>
-        [Required]
         public string Youtuber { get; set; }
 
         /// <summary>
         /// Gets or sets the country of the Youtube channel to be updated.
         /// </summary>
-        [Required]
         public string Country { get; set; }
     }
 }
