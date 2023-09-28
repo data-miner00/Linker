@@ -58,6 +58,7 @@
         /// Records the execution of a piece of code for an exception asynchronously
         /// and assigning the resulting value.
         /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="action">The piece of asynchronous code to execute.</param>
         /// <returns>A <see cref="Task"/>.</returns>
         public async Task RecordExceptionAsync<TResult>(Func<Task<TResult>> action)
