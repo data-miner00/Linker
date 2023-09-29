@@ -105,20 +105,24 @@
         /// Expects exception of <see cref="TException"/> type to be thrown.
         /// </summary>
         /// <typeparam name="TException">The type of exception.</typeparam>
-        public void ThenIExpectExceptionIsThrown<TException>()
+        /// <returns>The step class.</returns>
+        public TSteps ThenIExpectExceptionIsThrown<TException>()
             where TException : Exception
         {
             this.Exception.Should().BeOfType<TException>();
+            return this.GetSteps();
         }
 
         /// <summary>
         /// Expects exception to be thrown.
         /// </summary>
         /// <param name="exceptionType">The raw type of the exception.</param>
-        public void ThenIExpectExceptionIsThrown(Type exceptionType)
+        /// <returns>The step class.</returns>
+        public TSteps ThenIExpectExceptionIsThrown(Type exceptionType)
         {
             exceptionType.Should().BeAssignableTo(typeof(Exception));
             this.Exception.Should().BeOfType(exceptionType);
+            return this.GetSteps();
         }
 
         /// <summary>
