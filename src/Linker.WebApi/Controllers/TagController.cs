@@ -41,7 +41,7 @@
         {
             try
             {
-                Tag tag = new();
+                Tag tag;
 
                 if (!string.IsNullOrEmpty(id))
                 {
@@ -50,6 +50,10 @@
                 else if (!string.IsNullOrEmpty(name))
                 {
                     tag = await this.repository.GetByAsync("Name", name).ConfigureAwait(false);
+                }
+                else
+                {
+                    return this.BadRequest("Either Id or Name must be specified");
                 }
 
                 return this.Ok(tag);
