@@ -23,7 +23,9 @@
             this.controller = new TagController(this.mockRepository.Object);
         }
 
-        public TagControllerSteps GivenIHaveTheTag(Tag tag)
+        #region Given
+
+        public TagControllerSteps GivenRepoGetByAsyncReturns(Tag tag)
         {
             this.mockRepository
                 .Setup(x =>
@@ -32,7 +34,7 @@
             return this;
         }
 
-        public TagControllerSteps GivenGetByThrows<TException>(TException exception)
+        public TagControllerSteps GivenRepoGetByAsyncThrows<TException>(TException exception)
             where TException : Exception
         {
             this.mockRepository
@@ -42,7 +44,7 @@
             return this;
         }
 
-        public TagControllerSteps GivenAddAsyncSuccess()
+        public TagControllerSteps GivenRepoAddAsyncSuccess()
         {
             this.mockRepository
                 .Setup(x => x.AddAsync(It.IsAny<string>()))
@@ -50,7 +52,7 @@
             return this;
         }
 
-        public TagControllerSteps GivenAddAsyncThrows(Exception exception)
+        public TagControllerSteps GivenRepoAddAsyncThrows(Exception exception)
         {
             this.mockRepository
                 .Setup(x => x.AddAsync(It.IsAny<string>()))
@@ -58,7 +60,7 @@
             return this;
         }
 
-        public TagControllerSteps GivenAddLinkTagAsyncSuccess()
+        public TagControllerSteps GivenRepoAddLinkTagAsyncSuccess()
         {
             this.mockRepository
                 .Setup(x => x.AddLinkTagAsync(It.IsAny<string>(), It.IsAny<string>()))
@@ -66,7 +68,7 @@
             return this;
         }
 
-        public TagControllerSteps GivenEditNameAsyncSuccess()
+        public TagControllerSteps GivenRepoEditNameAsyncSuccess()
         {
             this.mockRepository
                 .Setup(x => x.EditNameAsync(It.IsAny<string>(), It.IsAny<string>()))
@@ -74,7 +76,7 @@
             return this;
         }
 
-        public TagControllerSteps GivenDeleteAsyncSuccess()
+        public TagControllerSteps GivenRepoDeleteAsyncSuccess()
         {
             this.mockRepository
                 .Setup(x => x.DeleteAsync(It.IsAny<string>()))
@@ -82,7 +84,7 @@
             return this;
         }
 
-        public TagControllerSteps GivenDeleteLinkTagAsyncSuccess()
+        public TagControllerSteps GivenRepoDeleteLinkTagAsyncSuccess()
         {
             this.mockRepository
                 .Setup(x => x.DeleteLinkTagAsync(It.IsAny<string>(), It.IsAny<string>()))
@@ -90,16 +92,20 @@
             return this;
         }
 
-        public TagControllerSteps WhenIInitWithNull()
-        {
-            this.RecordException(() => new TagController(null));
-            return this;
-        }
-
-        public TagControllerSteps GivenIHaveAllTags(IEnumerable<Tag> tags)
+        public TagControllerSteps GivenRepoGetAllAsyncReturns(IEnumerable<Tag> tags)
         {
             this.mockRepository.Setup(x =>
                 x.GetAllAsync()).ReturnsAsync(tags);
+            return this;
+        }
+
+        #endregion
+
+        #region When
+
+        public TagControllerSteps WhenIInitWithNull()
+        {
+            this.RecordException(() => new TagController(null));
             return this;
         }
 
@@ -155,6 +161,10 @@
                 .DeleteLinkTagAsync(linkId, tagId)
                 .ConfigureAwait(false));
         }
+
+        #endregion
+
+        #region Then
 
         public TagControllerSteps ThenIExpectRepoGetAllAsyncCalled(int times)
         {
@@ -216,6 +226,8 @@
                 Times.Exactly(times));
             return this;
         }
+
+        #endregion
 
         public override TagControllerSteps GetSteps() => this;
     }

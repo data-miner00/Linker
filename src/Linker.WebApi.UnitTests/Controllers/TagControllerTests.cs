@@ -28,7 +28,7 @@ public sealed class TagControllerTests
     public async Task GetAllAsync_RepoReturnTags_Success()
     {
         this.steps
-            .GivenIHaveAllTags(Enumerable.Empty<Tag>());
+            .GivenRepoGetAllAsyncReturns(Enumerable.Empty<Tag>());
 
         await this.steps
             .WhenIGetAllTags()
@@ -43,7 +43,7 @@ public sealed class TagControllerTests
     public async Task GetByAsync_RepoThrowsInvalidOperationException_ExpectNotFound()
     {
         this.steps
-            .GivenGetByThrows(new InvalidOperationException());
+            .GivenRepoGetByAsyncThrows(new InvalidOperationException());
 
         await this.steps
             .WhenIGetByAsync("my_id", null)
@@ -62,15 +62,17 @@ public sealed class TagControllerTests
         var tag = new TagDataBuilder().Build();
 
         this.steps
-            .GivenIHaveTheTag(tag);
+            .GivenRepoGetByAsyncReturns(tag);
 
         await this.steps
             .WhenIGetByAsync(id, name)
             .ConfigureAwait(false);
 
+#pragma warning disable CS8604 // Possible null reference argument.
         this.steps
             .ThenIExpectRepoGetByAsyncCalledWith(expectedType, id ?? name, 1)
             .ThenIExpectResultToBe(new OkObjectResult(tag));
+#pragma warning restore CS8604 // Possible null reference argument.
     }
 
     [Fact]
@@ -91,7 +93,7 @@ public sealed class TagControllerTests
         var request = new CreateTagRequest { TagName = "mytag" };
 
         this.steps
-            .GivenAddAsyncSuccess();
+            .GivenRepoAddAsyncSuccess();
 
         await this.steps
             .WhenICreateAsync(request)
@@ -108,7 +110,7 @@ public sealed class TagControllerTests
         var request = new CreateTagRequest { TagName = "mytag" };
 
         this.steps
-            .GivenAddAsyncThrows(new SQLiteException(SQLiteErrorCode.Constraint, "UNIQUE constraint failed: Tags.Name"));
+            .GivenRepoAddAsyncThrows(new SQLiteException(SQLiteErrorCode.Constraint, "UNIQUE constraint failed: Tags.Name"));
 
         await this.steps
             .WhenICreateAsync(request)
@@ -127,7 +129,7 @@ public sealed class TagControllerTests
         var tagId = Guid.Parse("ba3e784b-5edd-432d-a6fb-5215c27d83d2");
 
         this.steps
-            .GivenAddLinkTagAsyncSuccess();
+            .GivenRepoAddLinkTagAsyncSuccess();
 
         await this.steps
             .WhenICreateLinkTagAsync(linkId, tagId)
@@ -146,7 +148,7 @@ public sealed class TagControllerTests
         var request = new UpdateTagRequest { NewName = "newtag" };
 
         this.steps
-            .GivenEditNameAsyncSuccess();
+            .GivenRepoEditNameAsyncSuccess();
 
         await this.steps
             .WhenIUpdateAsync(id, request)
@@ -164,7 +166,7 @@ public sealed class TagControllerTests
         var id = Guid.Parse("ba3e784b-5edd-432d-a6fb-5215c27d83d2");
 
         this.steps
-            .GivenDeleteAsyncSuccess();
+            .GivenRepoDeleteAsyncSuccess();
 
         await this.steps
             .WhenIDeleteAsync(id)
@@ -183,7 +185,7 @@ public sealed class TagControllerTests
         var tagId = Guid.Parse("ba3e784b-5edd-432d-a6fb-5215c27d83d2");
 
         this.steps
-            .GivenDeleteLinkTagAsyncSuccess();
+            .GivenRepoDeleteLinkTagAsyncSuccess();
 
         await this.steps
             .WhenIDeleteLinkTagAsync(linkId, tagId)
@@ -193,6 +195,5 @@ public sealed class TagControllerTests
             .ThenIExpectNoExceptionIsThrown()
             .ThenIExpectRepoDeleteLinkTagAsyncCalledWith(linkId.ToString(), tagId.ToString(), 1)
             .ThenIExpectResultToBe(new NoContentResult());
-
     }
 }
