@@ -194,8 +194,8 @@
 
             Console.WriteLine();
 
-            var _tags = this.PromptForInput(labelTemplate, "Tags".PadRight(labelPad));
-            var tags = _tags.Split(",").Select(tag => tag.Trim());
+            var tagsInput = this.PromptForInput(labelTemplate, "Tags".PadRight(labelPad));
+            var tags = tagsInput.Split(",").Select(tag => tag.Trim());
 
             return new Youtube
             {

@@ -1,5 +1,7 @@
 ﻿namespace Linker.ConsoleUI.Extensions
 {
+    using System;
+
     /// <summary>
     /// The static class for custom string extension methods for UI formatting.
     /// </summary>
@@ -12,7 +14,7 @@
         /// <param name="length">The threshold of the allowable length.</param>
         /// <returns>The formatted string.</returns>
         public static string TruncateWithEllipsis(this string input, int length = 30) =>
-            input.Length > length ? input.Substring(0, length) + "..." : input;
+            input.Length > length ? string.Concat(input.AsSpan(0, length), "...") : input;
 
         /// <summary>
         /// Pads the string with character of choice from left and right.

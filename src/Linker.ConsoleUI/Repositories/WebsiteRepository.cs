@@ -7,13 +7,21 @@
     using Linker.Core.Models;
     using Linker.Core.Repositories;
 
-    public class WebsiteRepository : IWebsiteRepository
-    {
-        private IList<Website> links;
+    /// <summary>
+    /// Simple in-memory website repository.
+    /// </summary>
+    [Obsolete(message: "This class is not in use.")]
+    public sealed class WebsiteRepository : IRepository<Website>, ITransactionalRepository
+{
+        private readonly IList<Website> links;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebsiteRepository"/> class.
+        /// </summary>
         public WebsiteRepository()
         {
-            links = new List<Website>
+            // Populates 3 dummy records
+            this.links = new List<Website>
             {
                 new Website
                 {
@@ -24,7 +32,7 @@
                     Description = "The world's famous search engine",
                     Tags = new List<string> { "search", "famous" },
                     CreatedAt = DateTime.Now,
-                    ModifiedAt = DateTime.Now
+                    ModifiedAt = DateTime.Now,
                 },
                 new Website
                 {
@@ -35,7 +43,7 @@
                     Description = "The world's famous search engine",
                     Tags = new List<string> { "search", "famous" },
                     CreatedAt = DateTime.Now,
-                    ModifiedAt = DateTime.Now
+                    ModifiedAt = DateTime.Now,
                 },
                 new Website
                 {
@@ -51,6 +59,7 @@
             };
         }
 
+        /// <inheritdoc/>
         public void Add(Website link)
         {
             link.Id = Guid.NewGuid().ToString();
@@ -58,53 +67,57 @@
             link.CreatedAt = DateTime.Now;
             link.ModifiedAt = DateTime.Now;
 
-            links.Add(link);
+            this.links.Add(link);
         }
 
+        /// <inheritdoc/>
         public int Commit()
         {
             return 0;
         }
 
+        /// <inheritdoc/>
         public IEnumerable<Website> GetAll()
         {
-            return from l in links
+            return from l in this.links
                    orderby l.CreatedAt
                    select l;
         }
 
+        /// <inheritdoc/>
         public Website GetById(string id)
         {
-
-            var link = links.FirstOrDefault(x => x.Id == id);
+            var link = this.links.FirstOrDefault(x => x.Id == id);
             return link;
         }
 
+        /// <inheritdoc/>
         public void Remove(string id)
         {
-            var link = links.FirstOrDefault(x => x.Id == id);
+            var link = this.links.FirstOrDefault(x => x.Id == id);
 
             if (link != null)
             {
-                links.Remove(link);
+                this.links.Remove(link);
             }
         }
 
+        /// <inheritdoc/>
         public void Update(Website updatedLink)
         {
-            var link = links.FirstOrDefault(x => x.Id == updatedLink.Id);
+            var link = this.links.FirstOrDefault(x => x.Id == updatedLink.Id);
             if (link != null)
             {
                 link.Name = updatedLink.Name ?? link.Name;
                 link.Url = updatedLink.Url ?? link.Url;
-                link.Domain = updatedLink.Url != "" ? ExtractDomainFromUrl(updatedLink.Url) : link.Domain;
+                link.Domain = updatedLink.Url != string.Empty ? ExtractDomainFromUrl(updatedLink.Url) : link.Domain;
                 link.Description = updatedLink.Description ?? link.Description;
                 link.Tags = updatedLink.Tags ?? link.Tags;
                 link.ModifiedAt = DateTime.Now;
             }
         }
 
-        private string ExtractDomainFromUrl(string url)
+        private static string ExtractDomainFromUrl(string url)
         {
             var urlPattern = @"https?://(.*?)/?w*";
 

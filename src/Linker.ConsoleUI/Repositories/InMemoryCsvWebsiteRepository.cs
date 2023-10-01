@@ -43,7 +43,7 @@
         /// <inheritdoc/>
         public IEnumerable<Website> GetAll()
         {
-            return from l in websites
+            return from l in this.websites
                    orderby l.CreatedAt
                    select l;
         }
@@ -51,7 +51,7 @@
         /// <inheritdoc/>
         public Website GetById(string id)
         {
-            var link = from l in websites
+            var link = from l in this.websites
                        orderby l.CreatedAt
                        where l.Id == id
                        select l;
@@ -62,7 +62,7 @@
         /// <inheritdoc/>
         public void Remove(string id)
         {
-            this.websites = (from l in websites
+            this.websites = (from l in this.websites
                          where l.Id != id
                          select l).ToList();
         }
@@ -70,27 +70,23 @@
         /// <inheritdoc/>
         public void Update(Website item)
         {
-            var _link = this.websites.Where(l => l.Id == item.Id).FirstOrDefault();
+            var link = this.websites.Find(l => l.Id == item.Id)
+                ?? throw new InvalidOperationException("Cannot find the link with id");
 
-            if (_link == null)
-            {
-                throw new InvalidOperationException("Cannot find the link with id");
-            }
+            link.Name = item.Name ?? link.Name;
+            link.Url = item.Url ?? link.Url;
+            link.Domain = item.Domain ?? link.Domain;
+            link.Description = item.Description ?? link.Description;
+            link.Tags = item.Tags ?? link.Tags;
 
-            _link.Name = item.Name ?? _link.Name;
-            _link.Url = item.Url ?? _link.Url;
-            _link.Domain = item.Domain ?? _link.Domain;
-            _link.Description = item.Description ?? _link.Description;
-            _link.Tags = item.Tags ?? _link.Tags;
+            link.Category = item.Category;
+            link.Aesthetics = item.Aesthetics;
+            link.Language = item.Language;
 
-            _link.Category = item.Category;
-            _link.Aesthetics = item.Aesthetics;
-            _link.Language = item.Language;
+            link.IsSubdomain = item.IsSubdomain;
+            link.IsMultilingual = item.IsMultilingual;
 
-            _link.IsSubdomain = item.IsSubdomain;
-            _link.IsMultilingual = item.IsMultilingual;
-
-            _link.ModifiedAt = DateTime.Now;
+            link.ModifiedAt = DateTime.Now;
         }
 
         /// <inheritdoc/>

@@ -149,9 +149,8 @@
         /// <returns>The input obtained.</returns>
         protected string PromptForInput(params object[] prompt)
         {
-            var consoleWrite = typeof(Console)
-                .GetMethods()
-                .FirstOrDefault(x => x.Name == "Write" && x.IsStatic);
+            var consoleMethods = typeof(Console).GetMethods();
+            var consoleWrite = Array.Find(consoleMethods, x => x.Name == "Write" && x.IsStatic);
 
             consoleWrite.Invoke(null, prompt);
 

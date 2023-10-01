@@ -112,12 +112,8 @@
         /// <inheritdoc/>
         public void Update(Youtube item)
         {
-            var link = this.channels.FirstOrDefault(channel => channel.Id == item.Id);
-
-            if (link == null)
-            {
-                throw new InvalidOperationException("Cannot find the link with id");
-            }
+            var link = this.channels.First(channel => channel.Id == item.Id)
+                ?? throw new InvalidOperationException("Cannot find the link with id");
 
             link.Url = item.Url ?? link.Url;
             link.Description = item.Description ?? link.Description;

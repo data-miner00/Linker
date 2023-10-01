@@ -70,25 +70,21 @@
         /// <inheritdoc/>
         public void Update(Article item)
         {
-            var _item = this.articles.FirstOrDefault(l => l.Id == item.Id);
+            var link = this.articles.First(l => l.Id == item.Id)
+                ?? throw new InvalidOperationException("Cannot find the link with id");
 
-            if (_item == null)
-            {
-                throw new InvalidOperationException("Cannot find the link with id");
-            }
+            link.Author = item.Author ?? link.Author;
+            link.Url = item.Url ?? link.Url;
+            link.Title = item.Title ?? link.Title;
+            link.Description = item.Description ?? link.Description;
+            link.Tags = item.Tags ?? link.Tags;
 
-            _item.Author = item.Author ?? _item.Author;
-            _item.Url = item.Url ?? _item.Url;
-            _item.Title = item.Title ?? _item.Title;
-            _item.Description = item.Description ?? _item.Description;
-            _item.Tags = item.Tags ?? _item.Tags;
+            link.Year = item.Year;
+            link.Category = item.Category;
+            link.Language = item.Language;
+            link.Grammar = item.Grammar;
 
-            _item.Year = item.Year;
-            _item.Category = item.Category;
-            _item.Language = item.Language;
-            _item.Grammar = item.Grammar;
-
-            _item.ModifiedAt = DateTime.Now;
+            link.ModifiedAt = DateTime.Now;
         }
 
         /// <inheritdoc/>
