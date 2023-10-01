@@ -46,7 +46,7 @@
                 Country = request.Country,
             };
 
-            this.repository.Add(channel);
+            this.repository.AddAsync(channel).GetAwaiter().GetResult();
 
             return this.CreatedAtAction(
                 actionName: nameof(this.GetById),
@@ -60,7 +60,7 @@
         {
             try
             {
-                this.repository.Remove(id.ToString());
+                this.repository.RemoveAsync(id.ToString()).GetAwaiter().GetResult();
             }
             catch (InvalidOperationException)
             {
@@ -74,7 +74,7 @@
         [HttpGet("", Name = "GetAllYoutubes")]
         public IActionResult GetAll()
         {
-            var results = this.repository.GetAll();
+            var results = this.repository.GetAllAsync().GetAwaiter().GetResult();
             return this.Ok(results);
         }
 
@@ -84,7 +84,7 @@
         {
             try
             {
-                var result = this.repository.GetById(id.ToString());
+                var result = this.repository.GetByIdAsync(id.ToString()).GetAwaiter().GetResult();
                 return this.Ok(result);
             }
             catch (InvalidOperationException)
@@ -111,7 +111,7 @@
 
             try
             {
-                this.repository.Update(channel);
+                this.repository.UpdateAsync(channel).GetAwaiter().GetResult();
             }
             catch (InvalidOperationException)
             {

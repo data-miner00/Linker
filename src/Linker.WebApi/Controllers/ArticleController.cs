@@ -49,7 +49,7 @@
                 Author = request.Author,
             };
 
-            this.repository.Add(article);
+            this.repository.AddAsync(article).GetAwaiter().GetResult();
 
             return this.CreatedAtAction(
                 actionName: nameof(this.GetById),
@@ -63,7 +63,7 @@
         {
             try
             {
-                this.repository.Remove(id.ToString());
+                this.repository.RemoveAsync(id.ToString()).GetAwaiter().GetResult();
             }
             catch (InvalidOperationException)
             {
@@ -77,7 +77,7 @@
         [HttpGet("", Name = "GetAllArticles")]
         public IActionResult GetAll()
         {
-            var results = this.repository.GetAll();
+            var results = this.repository.GetAllAsync().GetAwaiter().GetResult();
             return this.Ok(results);
         }
 
@@ -87,7 +87,7 @@
         {
             try
             {
-                var result = this.repository.GetById(id.ToString());
+                var result = this.repository.GetByIdAsync(id.ToString()).GetAwaiter().GetResult();
                 return this.Ok(result);
             }
             catch (InvalidOperationException)
@@ -117,7 +117,7 @@
 
             try
             {
-                this.repository.Update(article);
+                this.repository.UpdateAsync(article).GetAwaiter().GetResult();
             }
             catch (InvalidOperationException)
             {

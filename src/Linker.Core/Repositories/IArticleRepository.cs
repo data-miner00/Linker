@@ -2,7 +2,10 @@
 {
     using Linker.Core.Models;
 
-    public interface IArticleRepository : IRepository<Article>
+    /// <summary>
+    /// The contract for article repository.
+    /// </summary>
+    public interface IArticleRepository : ILinkRepository<Article>
     {
     }
 }

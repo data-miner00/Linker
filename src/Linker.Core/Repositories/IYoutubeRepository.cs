@@ -2,7 +2,10 @@
 {
     using Linker.Core.Models;
 
-    public interface IYoutubeRepository : IRepository<Youtube>
+    /// <summary>
+    /// The contract for Youtube channel repository.
+    /// </summary>
+    public interface IYoutubeRepository : ILinkRepository<Youtube>
     {
     }
 }

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data;
     using System.Linq;
+    using System.Threading.Tasks;
     using Dapper;
     using EnsureThat;
     using Linker.Core.Models;
@@ -27,7 +28,7 @@
         }
 
         /// <inheritdoc/>
-        public void Add(Article item)
+        public async Task AddAsync(Article item)
         {
             var randomId = Guid.NewGuid().ToString();
 
@@ -99,7 +100,7 @@
                 );
             ";
 
-            this.connection.Execute(insertToLinksOperation, new
+            await this.connection.ExecuteAsync(insertToLinksOperation, new
             {
                 Id = randomId,
                 item.Url,
@@ -111,7 +112,7 @@
                 item.ModifiedAt,
             });
 
-            this.connection.Execute(insertToArticleOperation, new
+            await this.connection.ExecuteAsync(insertToArticleOperation, new
             {
                 LinkId = randomId,
                 item.Title,
@@ -124,49 +125,49 @@
 
             foreach (var tag in item.Tags)
             {
-                var result = this.connection.Query<Tag>(selectIdFromTagsQuery, new { Name = tag });
+                var result = await this.connection.QueryAsync<Tag>(selectIdFromTagsQuery, new { Name = tag });
 
                 if (!result.Any())
                 {
                     var randomId2 = Guid.NewGuid().ToString();
-                    this.connection.Execute(insertIntoTagsOperation, new
+                    await this.connection.ExecuteAsync(insertIntoTagsOperation, new
                     {
                         Id = randomId2,
                         Name = tag,
                         item.CreatedAt,
                         item.ModifiedAt,
                     });
-                    this.connection.Execute(insertIntoLinkTagsOperation, new { LinkId = randomId, TagId = randomId2 });
+                    await this.connection.ExecuteAsync(insertIntoLinkTagsOperation, new { LinkId = randomId, TagId = randomId2 });
                 }
                 else
                 {
-                    this.connection.Execute(insertIntoLinkTagsOperation, new { LinkId = randomId, TagId = result.FirstOrDefault()?.Id });
+                    await this.connection.ExecuteAsync(insertIntoLinkTagsOperation, new { LinkId = randomId, TagId = result.FirstOrDefault()?.Id });
                 }
             }
         }
 
         /// <inheritdoc/>
-        public IEnumerable<Article> GetAll()
+        public async Task<IEnumerable<Article>> GetAllAsync()
         {
             var articles = new List<Article>();
 
             var selectFromArticlesQuery = @"SELECT * FROM Articles;";
 
-            var partialArticles = this.connection.Query<PartialArticle>(selectFromArticlesQuery);
+            var partialArticles = await this.connection.QueryAsync<PartialArticle>(selectFromArticlesQuery);
 
             foreach (var partialArticle in partialArticles)
             {
                 var tags = new List<string>();
 
                 var selectFromLinkQuery = @"SELECT * FROM Links WHERE Id = @Id;";
-                var link = this.connection.QueryFirst<Link>(selectFromLinkQuery, new { Id = partialArticle.LinkId });
+                var link = await this.connection.QueryFirstAsync<Link>(selectFromLinkQuery, new { Id = partialArticle.LinkId });
 
                 var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @Id;";
-                var tagsz = this.connection.Query<LinkTagPair>(selectFromLinksTagsQuery, new { Id = partialArticle.LinkId });
+                var tagsz = await this.connection.QueryAsync<LinkTagPair>(selectFromLinksTagsQuery, new { Id = partialArticle.LinkId });
                 foreach (var tagz in tagsz)
                 {
                     var selectFromTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
-                    var tag = this.connection.QueryFirst<Tag>(selectFromTagsQuery, new { Id = tagz.TagId });
+                    var tag = await this.connection.QueryFirstAsync<Tag>(selectFromTagsQuery, new { Id = tagz.TagId });
                     tags.Add(tag.Name);
                 }
 
@@ -196,24 +197,24 @@
         }
 
         /// <inheritdoc/>
-        public Article GetById(string id)
+        public async Task<Article> GetByIdAsync(string id)
         {
             var tags = new List<string>();
 
-            var partialArticle = this.TryGetItem(id);
+            var partialArticle = await this.TryGetItemAsync(id);
 
             var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id = @Id;";
 
-            var link = this.connection.QueryFirst<Link>(selectFromLinksQuery, new { Id = id });
+            var link = await this.connection.QueryFirstAsync<Link>(selectFromLinksQuery, new { Id = id });
 
             var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @LinkId;";
 
-            var tagsz = this.connection.Query<LinkTagPair>(selectFromLinksTagsQuery, new { LinkId = id });
+            var tagsz = await this.connection.QueryAsync<LinkTagPair>(selectFromLinksTagsQuery, new { LinkId = id });
 
             foreach (var tagz in tagsz)
             {
                 var selectFromTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
-                var tag = this.connection.QueryFirst<Tag>(selectFromTagsQuery, new { Id = tagz.TagId });
+                var tag = await this.connection.QueryFirstAsync<Tag>(selectFromTagsQuery, new { Id = tagz.TagId });
                 tags.Add(tag.Name);
             }
 
@@ -240,23 +241,23 @@
         }
 
         /// <inheritdoc/>
-        public void Remove(string id)
+        public async Task RemoveAsync(string id)
         {
-            this.TryGetItem(id);
+            await this.TryGetItemAsync(id);
 
             var deleteFromArticlesOperation = @"DELETE FROM Articles WHERE LinkId = @Id;";
             var deleteFromLinksOperation = @"DELETE FROM Links WHERE Id = @Id;";
             var deleteFromLinksTagsOperation = @"DELETE FROM Links_Tags WHERE LinkId = @Id;";
 
-            this.connection.Execute(deleteFromArticlesOperation, new { Id = id });
-            this.connection.Execute(deleteFromLinksOperation, new { Id = id });
-            this.connection.Execute(deleteFromLinksTagsOperation, new { Id = id });
+            await this.connection.ExecuteAsync(deleteFromArticlesOperation, new { Id = id });
+            await this.connection.ExecuteAsync(deleteFromLinksOperation, new { Id = id });
+            await this.connection.ExecuteAsync(deleteFromLinksTagsOperation, new { Id = id });
         }
 
         /// <inheritdoc/>
-        public void Update(Article item)
+        public async Task UpdateAsync(Article item)
         {
-            this.TryGetItem(item.Id);
+            await this.TryGetItemAsync(item.Id);
 
             var updateArticlesOperation = @"
                 UPDATE Articles
@@ -283,7 +284,7 @@
                     Id = @Id;
             ";
 
-            this.connection.Execute(updateArticlesOperation, new
+            await this.connection.ExecuteAsync(updateArticlesOperation, new
             {
                 item.Id,
                 item.Title,
@@ -294,7 +295,7 @@
                 Grammar = item.Grammar.ToString(),
             });
 
-            this.connection.Execute(updateLinksOperation, new
+            await this.connection.ExecuteAsync(updateLinksOperation, new
             {
                 item.Id,
                 item.Url,
@@ -305,10 +306,10 @@
             });
         }
 
-        private PartialArticle TryGetItem(string id)
+        private async Task<PartialArticle> TryGetItemAsync(string id)
         {
             var selectFromArticlesQuery = @"SELECT * FROM Articles WHERE LinkId = @Id;";
-            var partialArticle = this.connection.QueryFirst<PartialArticle>(selectFromArticlesQuery, new { Id = id });
+            var partialArticle = await this.connection.QueryFirstAsync<PartialArticle>(selectFromArticlesQuery, new { Id = id });
 
             return partialArticle;
         }

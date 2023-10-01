@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data;
     using System.Linq;
+    using System.Threading.Tasks;
     using Dapper;
     using EnsureThat;
     using Linker.Core.Models;
@@ -27,7 +28,7 @@
         }
 
         /// <inheritdoc/>
-        public void Add(Youtube item)
+        public async Task AddAsync(Youtube item)
         {
             var randomId = Guid.NewGuid().ToString();
 
@@ -93,7 +94,7 @@
                 );
             ";
 
-            this.connection.Execute(insertToLinksOperation, new
+            await this.connection.ExecuteAsync(insertToLinksOperation, new
             {
                 Id = randomId,
                 item.Url,
@@ -105,7 +106,7 @@
                 item.ModifiedAt,
             });
 
-            this.connection.Execute(insertToYoutubeOperation, new
+            await this.connection.ExecuteAsync(insertToYoutubeOperation, new
             {
                 LinkId = randomId,
                 item.Name,
@@ -120,46 +121,46 @@
                 if (!result.Any())
                 {
                     var randomId2 = Guid.NewGuid().ToString();
-                    this.connection.Execute(insertIntoTagsOperation, new
+                    await this.connection.ExecuteAsync(insertIntoTagsOperation, new
                     {
                         Id = randomId2,
                         Name = tag,
                         item.CreatedAt,
                         item.ModifiedAt,
                     });
-                    this.connection.Execute(insertIntoLinkTagsOperation, new { LinkId = randomId, TagId = randomId2 });
+                    await this.connection.ExecuteAsync(insertIntoLinkTagsOperation, new { LinkId = randomId, TagId = randomId2 });
                 }
                 else
                 {
-                    this.connection.Execute(insertIntoLinkTagsOperation, new { LinkId = randomId, TagId = result.FirstOrDefault()?.Id });
+                    await this.connection.ExecuteAsync(insertIntoLinkTagsOperation, new { LinkId = randomId, TagId = result.FirstOrDefault()?.Id });
                 }
             }
         }
 
         /// <inheritdoc/>
-        public IEnumerable<Youtube> GetAll()
+        public async Task<IEnumerable<Youtube>> GetAllAsync()
         {
             var channels = new List<Youtube>();
 
             var selectFromYoutubeQuery = @"SELECT * FROM Youtube;";
 
             var partialChannels =
-                this.connection.Query<PartialYoutube>(selectFromYoutubeQuery);
+                await this.connection.QueryAsync<PartialYoutube>(selectFromYoutubeQuery);
 
             foreach (var partialChannel in partialChannels)
             {
                 var tags = new List<string>();
 
                 var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id =@Id;";
-                var link = this.connection.QueryFirst<Link>(selectFromLinksQuery, new { Id = partialChannel.LinkId });
+                var link = await this.connection.QueryFirstAsync<Link>(selectFromLinksQuery, new { Id = partialChannel.LinkId });
 
                 var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @Id;";
-                var tagsz = this.connection.Query<LinkTagPair>(selectFromLinksTagsQuery, new { Id = partialChannel.LinkId });
+                var tagsz = await this.connection.QueryAsync<LinkTagPair>(selectFromLinksTagsQuery, new { Id = partialChannel.LinkId });
 
                 foreach (var tagz in tagsz)
                 {
                     var selectFromTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
-                    var tag = this.connection.QueryFirst<Tag>(selectFromTagsQuery, new { Id = tagz.TagId });
+                    var tag = await this.connection.QueryFirstAsync<Tag>(selectFromTagsQuery, new { Id = tagz.TagId });
                     tags.Add(tag.Name);
                 }
 
@@ -186,24 +187,24 @@
         }
 
         /// <inheritdoc/>
-        public Youtube GetById(string id)
+        public async Task<Youtube> GetByIdAsync(string id)
         {
             var tags = new List<string>();
 
-            var partialChannel = this.TryGetItem(id);
+            var partialChannel = await this.TryGetItemAsync(id);
 
             var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id = @Id;";
 
-            var link = this.connection.QueryFirst<Link>(selectFromLinksQuery, new { Id = id });
+            var link = await this.connection.QueryFirstAsync<Link>(selectFromLinksQuery, new { Id = id });
 
             var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @LinkId;";
 
-            var tagsz = this.connection.Query<LinkTagPair>(selectFromLinksTagsQuery, new { LinkId = id });
+            var tagsz = await this.connection.QueryAsync<LinkTagPair>(selectFromLinksTagsQuery, new { LinkId = id });
 
             foreach (var tagz in tagsz)
             {
                 var selectFromTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
-                var tag = this.connection.QueryFirst<Tag>(selectFromTagsQuery, new { Id = tagz.TagId });
+                var tag = await this.connection.QueryFirstAsync<Tag>(selectFromTagsQuery, new { Id = tagz.TagId });
                 tags.Add(tag.Name);
             }
 
@@ -227,23 +228,23 @@
         }
 
         /// <inheritdoc/>
-        public void Remove(string id)
+        public async Task RemoveAsync(string id)
         {
-            this.TryGetItem(id);
+            await this.TryGetItemAsync(id);
 
             var deleteFromYoutubeOperation = @"DELETE FROM Youtube WHERE LinkId = @Id;";
             var deleteFromLinksOperation = @"DELETE FROM Links WHERE Id = @Id;";
             var deleteFromLinksTagsOperation = @"DELETE FROM Links_Tags WHERE LinkId = @Id;";
 
-            this.connection.Execute(deleteFromYoutubeOperation, new { Id = id });
-            this.connection.Execute(deleteFromLinksOperation, new { Id = id });
-            this.connection.Execute(deleteFromLinksTagsOperation, new { Id = id });
+            await this.connection.ExecuteAsync(deleteFromYoutubeOperation, new { Id = id });
+            await this.connection.ExecuteAsync(deleteFromLinksOperation, new { Id = id });
+            await this.connection.ExecuteAsync(deleteFromLinksTagsOperation, new { Id = id });
         }
 
         /// <inheritdoc/>
-        public void Update(Youtube item)
+        public async Task UpdateAsync(Youtube item)
         {
-            this.TryGetItem(item.Id);
+            await this.TryGetItemAsync(item.Id);
 
             var updateYoutubeOperation = @"
                 UPDATE Youtube
@@ -267,7 +268,7 @@
                     Id = @Id;
             ";
 
-            this.connection.Execute(updateYoutubeOperation, new
+            await this.connection.ExecuteAsync(updateYoutubeOperation, new
             {
                 item.Id,
                 item.Name,
@@ -275,7 +276,7 @@
                 item.Country,
             });
 
-            this.connection.Execute(updateLinksOperation, new
+            await this.connection.ExecuteAsync(updateLinksOperation, new
             {
                 item.Id,
                 item.Url,
@@ -286,10 +287,10 @@
             });
         }
 
-        private PartialYoutube TryGetItem(string id)
+        private async Task<PartialYoutube> TryGetItemAsync(string id)
         {
             var selectFromChannelQuery = @"SELECT * FROM Youtube WHERE LinkId = @Id;";
-            var partialChannel = this.connection.QueryFirst<PartialYoutube>(selectFromChannelQuery, new { Id = id });
+            var partialChannel = await this.connection.QueryFirstAsync<PartialYoutube>(selectFromChannelQuery, new { Id = id });
 
             return partialChannel;
         }

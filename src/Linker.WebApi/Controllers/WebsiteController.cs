@@ -33,7 +33,7 @@
         {
             try
             {
-                var result = this.repository.GetById(id.ToString());
+                var result = this.repository.GetByIdAsync(id.ToString()).GetAwaiter().GetResult();
                 return this.Ok(result);
             }
             catch (InvalidOperationException)
@@ -46,7 +46,7 @@
         [HttpGet("", Name = "GetAllWebsites")]
         public IActionResult GetAll()
         {
-            var results = this.repository.GetAll();
+            var results = this.repository.GetAllAsync().GetAwaiter().GetResult();
             return this.Ok(results);
         }
 
@@ -72,7 +72,7 @@
                 IsMultilingual = request.IsMultilingual,
             };
 
-            this.repository.Add(website);
+            this.repository.AddAsync(website).GetAwaiter().GetResult();
 
             return this.CreatedAtAction(
                 actionName: nameof(this.GetById),
@@ -100,7 +100,7 @@
 
             try
             {
-                this.repository.Update(website);
+                this.repository.UpdateAsync(website).GetAwaiter().GetResult();
             }
             catch (InvalidOperationException)
             {
@@ -116,7 +116,7 @@
         {
             try
             {
-                this.repository.Remove(id.ToString());
+                this.repository.RemoveAsync(id.ToString()).GetAwaiter().GetResult();
             }
             catch (InvalidOperationException)
             {

@@ -2,7 +2,10 @@
 {
     using Linker.Core.Models;
 
-    public interface IWebsiteRepository: IRepository<Website>
+    /// <summary>
+    /// The contract for website repository.
+    /// </summary>
+    public interface IWebsiteRepository : ILinkRepository<Website>
     {
     }
 }
