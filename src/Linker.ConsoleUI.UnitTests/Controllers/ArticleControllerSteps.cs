@@ -53,9 +53,9 @@
             return this;
         }
 
-        public ArticleControllerSteps ThenIExpectRepositoryGetByIdToBeCalled(Times times)
+        public ArticleControllerSteps ThenIExpectRepositoryGetByIdToBeCalledWith(string id, Times times)
         {
-            this.mockArticleRepository.Verify(x => x.GetById(It.IsAny<string>()), times);
+            this.mockArticleRepository.Verify(x => x.GetById(id), times);
 
             return this;
         }

@@ -53,11 +53,13 @@
         [Fact]
         public void DisplayItemDetails_RepositoryGetByIdCalled()
         {
+            var id = "123";
+
             this.steps
-                .GivenIHaveReadLineInput("Input")
+                .GivenIHaveReadLineInput(id)
                 .WhenIDisplayItemDetails()
                 .ThenIExpectNoExceptionIsThrown()
-                .ThenIExpectRepositoryGetByIdToBeCalled(Times.Once());
+                .ThenIExpectRepositoryGetByIdToBeCalledWith(id, Times.Once());
         }
     }
 }
