@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using Linker.ConsoleUI.Controllers;
     using Linker.Core.Models;
+    using Linker.TestCore.DataBuilders;
     using Moq;
     using Xunit;
 
@@ -22,24 +23,7 @@
         {
             var articles = new List<Article>
             {
-                new Article
-                {
-                    Id = "123",
-                    Url = "https://www.google.com/blog",
-                    Category = Category.Education,
-                    Description = "A long description",
-                    Tags = new List<string> { "Tag" },
-                    Language = Language.English,
-                    LastVisitAt = DateTime.Now,
-                    CreatedAt = DateTime.Now,
-                    ModifiedAt = DateTime.Now,
-                    Title = "mock title",
-                    Author = "mock author",
-                    Year = 1999,
-                    WatchLater = false,
-                    Domain = "www.google.com",
-                    Grammar = Grammar.Unknown,
-                },
+                new ArticleDataBuilder().Build(),
             };
 
             this.steps
