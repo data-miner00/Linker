@@ -29,7 +29,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.Data", "Linker.Data\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.Debugger", "Linker.Debugger\Linker.Debugger.csproj", "{C28E0E46-000D-4901-BEC6-E73147D97FA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linker.WebApi.UnitTests", "Linker.WebApi.UnitTests\Linker.WebApi.UnitTests.csproj", "{24977AFD-468C-4D35-A9F6-2A27F97DB77B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.WebApi.UnitTests", "Linker.WebApi.UnitTests\Linker.WebApi.UnitTests.csproj", "{24977AFD-468C-4D35-A9F6-2A27F97DB77B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linker.Wpf", "Linker.Wpf\Linker.Wpf.csproj", "{3A8A450B-D72E-4898-B6B1-5B4483D27087}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +79,10 @@ Global
 		{24977AFD-468C-4D35-A9F6-2A27F97DB77B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24977AFD-468C-4D35-A9F6-2A27F97DB77B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24977AFD-468C-4D35-A9F6-2A27F97DB77B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A8A450B-D72E-4898-B6B1-5B4483D27087}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A8A450B-D72E-4898-B6B1-5B4483D27087}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A8A450B-D72E-4898-B6B1-5B4483D27087}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A8A450B-D72E-4898-B6B1-5B4483D27087}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
