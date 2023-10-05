@@ -28,7 +28,7 @@
 
         /// <inheritdoc/>
         [HttpPost("", Name = "CreateYoutube")]
-        public IActionResult Create([FromBody] CreateYoutubeRequest request)
+        public async Task<IActionResult> CreateAsync([FromBody] CreateYoutubeRequest request)
         {
             var channel = new Youtube
             {
@@ -46,21 +46,21 @@
                 Country = request.Country,
             };
 
-            this.repository.AddAsync(channel).GetAwaiter().GetResult();
+            await this.repository.AddAsync(channel).ConfigureAwait(false);
 
             return this.CreatedAtAction(
-                actionName: nameof(this.GetById),
+                actionName: nameof(this.GetByIdAsync),
                 routeValues: new { channel.Id },
                 value: request);
         }
 
         /// <inheritdoc/>
         [HttpDelete("{id:guid}", Name = "DeleteYoutube")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> DeleteAsync(Guid id)
         {
             try
             {
-                this.repository.RemoveAsync(id.ToString()).GetAwaiter().GetResult();
+                await this.repository.RemoveAsync(id.ToString()).ConfigureAwait(false);
             }
             catch (InvalidOperationException)
             {
@@ -72,19 +72,19 @@
 
         /// <inheritdoc/>
         [HttpGet("", Name = "GetAllYoutubes")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var results = this.repository.GetAllAsync().GetAwaiter().GetResult();
+            var results = await this.repository.GetAllAsync().ConfigureAwait(false);
             return this.Ok(results);
         }
 
         /// <inheritdoc/>
         [HttpGet("{id:guid}", Name = "GetYoutube")]
-        public IActionResult GetById(Guid id)
+        public async Task<IActionResult> GetByIdAsync(Guid id)
         {
             try
             {
-                var result = this.repository.GetByIdAsync(id.ToString()).GetAwaiter().GetResult();
+                var result = await this.repository.GetByIdAsync(id.ToString()).ConfigureAwait(false);
                 return this.Ok(result);
             }
             catch (InvalidOperationException)
@@ -95,7 +95,7 @@
 
         /// <inheritdoc/>
         [HttpPut("{id:guid}", Name = "UpdateYoutube")]
-        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateYoutubeRequest request)
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateYoutubeRequest request)
         {
             var channel = new Youtube
             {
@@ -111,7 +111,7 @@
 
             try
             {
-                this.repository.UpdateAsync(channel).GetAwaiter().GetResult();
+                await this.repository.UpdateAsync(channel).ConfigureAwait(false);
             }
             catch (InvalidOperationException)
             {

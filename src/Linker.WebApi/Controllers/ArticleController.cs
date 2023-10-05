@@ -1,6 +1,7 @@
 ﻿namespace Linker.WebApi.Controllers
 {
     using System;
+    using System.Threading.Tasks;
     using EnsureThat;
     using Linker.Common;
     using Linker.Core.ApiModels;
@@ -29,7 +30,7 @@
 
         /// <inheritdoc/>
         [HttpPost("", Name = "CreateArticle")]
-        public IActionResult Create([FromBody] CreateArticleRequest request)
+        public async Task<IActionResult> CreateAsync([FromBody] CreateArticleRequest request)
         {
             var article = new Article
             {
@@ -49,21 +50,21 @@
                 Author = request.Author,
             };
 
-            this.repository.AddAsync(article).GetAwaiter().GetResult();
+            await this.repository.AddAsync(article).ConfigureAwait(false);
 
             return this.CreatedAtAction(
-                actionName: nameof(this.GetById),
+                actionName: nameof(this.GetByIdAsync),
                 routeValues: new { article.Id },
                 value: request);
         }
 
         /// <inheritdoc/>
         [HttpDelete("{id:guid}", Name = "DeleteArticle")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> DeleteAsync(Guid id)
         {
             try
             {
-                this.repository.RemoveAsync(id.ToString()).GetAwaiter().GetResult();
+                await this.repository.RemoveAsync(id.ToString()).ConfigureAwait(false);
             }
             catch (InvalidOperationException)
             {
@@ -75,19 +76,19 @@
 
         /// <inheritdoc/>
         [HttpGet("", Name = "GetAllArticles")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var results = this.repository.GetAllAsync().GetAwaiter().GetResult();
+            var results = await this.repository.GetAllAsync().ConfigureAwait(false);
             return this.Ok(results);
         }
 
         /// <inheritdoc/>
         [HttpGet("{id:guid}", Name = "GetArticle")]
-        public IActionResult GetById(Guid id)
+        public async Task<IActionResult> GetByIdAsync(Guid id)
         {
             try
             {
-                var result = this.repository.GetByIdAsync(id.ToString()).GetAwaiter().GetResult();
+                var result = await this.repository.GetByIdAsync(id.ToString()).ConfigureAwait(false);
                 return this.Ok(result);
             }
             catch (InvalidOperationException)
@@ -98,7 +99,7 @@
 
         /// <inheritdoc/>
         [HttpPut("{id:guid}", Name = "UpdateArticle")]
-        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateArticleRequest request)
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateArticleRequest request)
         {
             var article = new Article
             {
@@ -117,7 +118,7 @@
 
             try
             {
-                this.repository.UpdateAsync(article).GetAwaiter().GetResult();
+                await this.repository.UpdateAsync(article).ConfigureAwait(false);
             }
             catch (InvalidOperationException)
             {

@@ -1,6 +1,7 @@
 ﻿namespace Linker.Core.Controllers
 {
     using System;
+    using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
@@ -15,20 +16,20 @@
         /// </summary>
         /// <param name="id">The Id of the link.</param>
         /// <returns>Http response with data.</returns>
-        IActionResult GetById(Guid id);
+        Task<IActionResult> GetByIdAsync(Guid id);
 
         /// <summary>
         /// Gets all link for the variant.
         /// </summary>
         /// <returns>Http response with data.</returns>
-        IActionResult GetAll();
+        Task<IActionResult> GetAllAsync();
 
         /// <summary>
         /// Creates a new link item.
         /// </summary>
         /// <param name="request">The create request.</param>
         /// <returns>Http response.</returns>
-        IActionResult Create(TCreateRequest request);
+        Task<IActionResult> CreateAsync(TCreateRequest request);
 
         /// <summary>
         /// Updates an existing link.
@@ -36,13 +37,13 @@
         /// <param name="id">The Id of the link.</param>
         /// <param name="request">The request.</param>
         /// <returns>Http response.</returns>
-        IActionResult Update(Guid id, TUpdateRequest request);
+        Task<IActionResult> UpdateAsync(Guid id, TUpdateRequest request);
 
         /// <summary>
         /// Deletes an existing link.
         /// </summary>
         /// <param name="id">The Id of the link.</param>
         /// <returns>Http response.</returns>
-        IActionResult Delete(Guid id);
+        Task<IActionResult> DeleteAsync(Guid id);
     }
 }
