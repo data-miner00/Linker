@@ -3,6 +3,7 @@
     using System;
     using System.Threading.Tasks;
     using FluentAssertions;
+    using FluentAssertions.Equivalency;
     using Xunit;
 
     /// <summary>
@@ -78,6 +79,22 @@
         {
             this.Result.Should().NotBeNull();
             this.Result.Should().BeEquivalentTo(obj);
+            return this.GetSteps();
+        }
+
+        /// <summary>
+        /// Expects the result to be the same as the parameter provided along with equivalency options.
+        /// </summary>
+        /// <typeparam name="T">The type of the parameter.</typeparam>
+        /// <param name="obj">The item to compare.</param>
+        /// <param name="opt">The options for comparison.</param>
+        /// <returns>The steps class.</returns>
+        public TSteps ThenIExpectResultToBe<T>(
+            T obj,
+            Func<EquivalencyAssertionOptions<T>, EquivalencyAssertionOptions<T>> opt)
+        {
+            this.Result.Should().NotBeNull();
+            this.Result.Should().BeEquivalentTo(obj, opt);
             return this.GetSteps();
         }
 
