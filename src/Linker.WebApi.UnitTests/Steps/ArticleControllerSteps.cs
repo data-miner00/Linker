@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Linker.Core.ApiModels;
     using Linker.Core.Controllers;
@@ -16,7 +15,7 @@
         private readonly IArticleController controller;
         private readonly Mock<IArticleRepository> mockRepository;
 
-        private Article article;
+        private Article? article;
 
         public ArticleControllerSteps()
         {
