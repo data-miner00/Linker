@@ -1,6 +1,7 @@
 ﻿namespace Linker.WebApi.Controllers
 {
     using System;
+    using System.Net;
     using System.Threading.Tasks;
     using EnsureThat;
     using Linker.Common;
@@ -8,11 +9,15 @@
     using Linker.Core.Controllers;
     using Linker.Core.Models;
     using Linker.Core.Repositories;
+    using Linker.WebApi.Swagger;
     using Microsoft.AspNetCore.Mvc;
+    using Swashbuckle.AspNetCore.Annotations;
+    using Swashbuckle.AspNetCore.Filters;
 
     /// <summary>
     /// The API controller for <see cref="Article"/>.
     /// </summary>
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public sealed class ArticleController : ControllerBase, IArticleController
@@ -30,6 +35,7 @@
 
         /// <inheritdoc/>
         [HttpPost("", Name = "CreateArticle")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Article created")]
         public async Task<IActionResult> CreateAsync([FromBody] CreateArticleRequest request)
         {
             var article = new Article
@@ -60,6 +66,8 @@
 
         /// <inheritdoc/>
         [HttpDelete("{id:guid}", Name = "DeleteArticle")]
+        [SwaggerResponse((int)HttpStatusCode.NoContent, "Article successfully deleted.")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
             try
@@ -76,6 +84,9 @@
 
         /// <inheritdoc/>
         [HttpGet("", Name = "GetAllArticles")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved all articles.")]
+        [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(ArticleResponseCollectionExample))]
+        [ProducesResponseType(typeof(ArticleResponseCollectionExample), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllAsync()
         {
             var results = await this.repository.GetAllAsync().ConfigureAwait(false);
@@ -84,6 +95,10 @@
 
         /// <inheritdoc/>
         [HttpGet("{id:guid}", Name = "GetArticle")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved article.")]
+        [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(ArticleResponseExample))]
+        [ProducesResponseType(typeof(ArticleResponseExample), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
             try
@@ -99,6 +114,8 @@
 
         /// <inheritdoc/>
         [HttpPut("{id:guid}", Name = "UpdateArticle")]
+        [SwaggerResponse((int)HttpStatusCode.NoContent, "Article updated.")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateArticleRequest request)
         {
             var article = new Article

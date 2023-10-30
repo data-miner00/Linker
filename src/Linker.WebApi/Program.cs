@@ -1,6 +1,9 @@
 using System.Data.SQLite;
+using System.Reflection;
 using Linker.Core.Repositories;
 using Linker.Data.SQLite;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +16,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Linker API", Version = "v1" });
+    c.EnableAnnotations();
+    c.ExampleFilters();
+});
+
+builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
 
 builder.Services
     .AddSingleton<IWebsiteRepository>(
