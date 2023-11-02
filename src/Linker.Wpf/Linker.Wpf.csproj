@@ -9,6 +9,13 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="7.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Linker.Core\Linker.Core.csproj" />
+    <ProjectReference Include="..\Linker.Data\Linker.Data.csproj" />
   </ItemGroup>
 
 </Project>
