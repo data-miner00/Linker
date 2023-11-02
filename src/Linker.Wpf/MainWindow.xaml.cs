@@ -14,15 +14,27 @@
     using System.Windows.Media.Imaging;
     using System.Windows.Navigation;
     using System.Windows.Shapes;
+    using Linker.Core.Repositories;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private readonly IArticleRepository articleRepository;
+
+        public MainWindow(IArticleRepository articleRepository)
         {
-            InitializeComponent();
+            this.InitializeComponent();
+
+            this.articleRepository = articleRepository;
+
+            var articles = this.articleRepository.GetAllAsync().GetAwaiter().GetResult();
+
+            foreach (var article in articles)
+            {
+                this.sampleList.Items.Add(article.Title);
+            }
         }
     }
 }

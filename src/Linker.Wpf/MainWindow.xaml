@@ -8,6 +8,7 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Label x:Name="lblHello" Content="Hello World" HorizontalAlignment="Left" Margin="234,124,0,0" VerticalAlignment="Top"/>
+        <ListBox x:Name="sampleList" Margin="400,107,52,167"/>
 
     </Grid>
 </Window>
