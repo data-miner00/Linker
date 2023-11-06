@@ -1,7 +1,7 @@
-﻿namespace Linker.Core.Models
+﻿#nullable disable
+namespace Linker.Core.Models
 {
     using System;
-    using System.Collections.Generic;
 
     /// <summary>
     /// The user of the application.
@@ -19,9 +19,14 @@
         public string Username { get; set; }
 
         /// <summary>
-        /// Gets or sets the roles associated with the user.
+        /// Gets or sets the password of the user.
         /// </summary>
-        public IEnumerable<Role> Roles { get; set; }
+        public string Password { get; set; }
+
+        /// <summary>
+        /// Gets or sets the role associated with the user.
+        /// </summary>
+        public Role Role { get; set; }
 
         /// <summary>
         /// Gets or sets the status of the user.
