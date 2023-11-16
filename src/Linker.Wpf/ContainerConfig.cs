@@ -1,13 +1,13 @@
 ﻿namespace Linker.Wpf
 {
+    using System.Data;
+    using System.Data.SQLite;
     using Autofac;
     using Autofac.Configuration;
     using Linker.Core.Repositories;
     using Linker.Data.SQLite;
     using Linker.Wpf.Options;
     using Microsoft.Extensions.Configuration;
-    using System.Data;
-    using System.Data.SQLite;
 
     /// <summary>
     /// A static class that contains logics for container registration.
@@ -31,7 +31,7 @@
 
             builder.RegisterModule(module);
 
-            var sqliteOptions = config.GetSection(typeof(SQLiteOptions).Name).Get<SQLiteOptions>();
+            var sqliteOptions = config.GetSection(typeof(SQLiteOption).Name).Get<SQLiteOption>();
 
             var connection = new SQLiteConnection(sqliteOptions.ConnectionString);
 
