@@ -1,3 +1,4 @@
+using System.Data;
 using System.Data.SQLite;
 using System.Reflection;
 using Linker.Core.Repositories;
@@ -26,14 +27,13 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
 
 builder.Services
-    .AddSingleton<IWebsiteRepository>(
-        _ => new WebsiteRepository(connection))
-    .AddSingleton<IArticleRepository>(
-        _ => new ArticleRepository(connection))
-    .AddSingleton<IYoutubeRepository>(
-        _ => new YoutubeRepository(connection))
-    .AddSingleton<ITagRepository>(
-        _ => new TagRepository(connection));
+    .AddSingleton<IDbConnection>(
+        _ => connection)
+    .AddSingleton<IWebsiteRepository, WebsiteRepository>()
+    .AddSingleton<IArticleRepository, ArticleRepository>()
+    .AddSingleton<IYoutubeRepository, YoutubeRepository>()
+    .AddSingleton<ITagRepository, TagRepository>()
+    .AddSingleton<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
