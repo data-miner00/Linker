@@ -41,7 +41,8 @@
                     Language,
                     LastVisitAt,
                     CreatedAt,
-                    ModifiedAt
+                    ModifiedAt,
+                    CreatedBy
                 ) VALUES (
                     @Id,
                     @Url,
@@ -50,7 +51,8 @@
                     @Language,
                     @LastVisitAt,
                     @CreatedAt,
-                    @ModifiedAt
+                    @ModifiedAt,
+                    @CreatedBy
                 );
             ";
 
@@ -104,6 +106,7 @@
                 item.LastVisitAt,
                 item.CreatedAt,
                 item.ModifiedAt,
+                item.CreatedBy,
             });
 
             await this.connection.ExecuteAsync(insertToYoutubeOperation, new
@@ -175,6 +178,7 @@
                     LastVisitAt = link.LastVisitAt,
                     CreatedAt = link.CreatedAt,
                     ModifiedAt = link.ModifiedAt,
+                    CreatedBy = link.CreatedBy,
                     Name = partialChannel.Name,
                     Youtuber = partialChannel.Youtuber,
                     Country = partialChannel.Country,
@@ -219,6 +223,7 @@
                 LastVisitAt = link.LastVisitAt,
                 CreatedAt = link.CreatedAt,
                 ModifiedAt = link.ModifiedAt,
+                CreatedBy = link.CreatedBy,
                 Name = partialChannel.Name,
                 Youtuber = partialChannel.Youtuber,
                 Country = partialChannel.Country,

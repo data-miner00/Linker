@@ -38,7 +38,8 @@
                     Language,
                     LastVisitAt,
                     CreatedAt,
-                    ModifiedAt
+                    ModifiedAt,
+                    CreatedBy
                 ) VALUES (
                     @Id,
                     @Url,
@@ -47,7 +48,8 @@
                     @Language,
                     @LastVisitAt,
                     @CreatedAt,
-                    @ModifiedAt
+                    @ModifiedAt,
+                    @CreatedBy
                 );
             ";
 
@@ -105,6 +107,7 @@
                 item.LastVisitAt,
                 item.CreatedAt,
                 item.ModifiedAt,
+                item.CreatedBy,
             });
 
             await this.connection.ExecuteAsync(insertToWebsitesOperation, new
@@ -176,6 +179,7 @@
                     LastVisitAt = link.LastVisitAt,
                     CreatedAt = link.CreatedAt,
                     ModifiedAt = link.ModifiedAt,
+                    CreatedBy = link.CreatedBy,
                     Name = partialWebsite.Name,
                     Domain = partialWebsite.Domain,
                     Aesthetics = partialWebsite.Aesthetics,
@@ -220,6 +224,7 @@
                 LastVisitAt = link.LastVisitAt,
                 CreatedAt = link.CreatedAt,
                 ModifiedAt = link.ModifiedAt,
+                CreatedBy = link.CreatedBy,
                 Name = partialWebsite.Name,
                 Domain = partialWebsite.Domain,
                 Aesthetics = partialWebsite.Aesthetics,

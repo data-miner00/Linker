@@ -54,6 +54,7 @@
                 Grammar = request.Grammar,
                 Year = request.Year,
                 Author = request.Author,
+                CreatedBy = request.CreatedBy,
             };
 
             await this.repository.AddAsync(article).ConfigureAwait(false);

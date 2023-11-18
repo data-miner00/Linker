@@ -6,6 +6,7 @@
     using Linker.Core.Controllers;
     using Linker.Core.Models;
     using Linker.Core.Repositories;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
@@ -42,6 +43,7 @@
                 LastVisitAt = DateTime.Now,
                 CreatedAt = DateTime.Now,
                 ModifiedAt = DateTime.Now,
+                CreatedBy = request.CreatedBy,
                 Youtuber = request.Youtuber,
                 Country = request.Country,
             };

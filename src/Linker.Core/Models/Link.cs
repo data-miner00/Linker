@@ -52,5 +52,10 @@
         /// Gets or sets the modified date of the link entry.
         /// </summary>
         public DateTime ModifiedAt { get; set; }
+
+        /// <summary>
+        /// Gets or sets the creator of the link.
+        /// </summary>
+        public string CreatedBy { get; set; }
     }
 }

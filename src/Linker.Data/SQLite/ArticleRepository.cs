@@ -41,7 +41,8 @@
                     Language,
                     LastVisitAt,
                     CreatedAt,
-                    ModifiedAt
+                    ModifiedAt,
+                    CreatedBy
                 ) VALUES (
                     @Id,
                     @Url,
@@ -50,7 +51,8 @@
                     @Language,
                     @LastVisitAt,
                     @CreatedAt,
-                    @ModifiedAt
+                    @ModifiedAt,
+                    @CreatedBy
                 );
             ";
 
@@ -110,6 +112,7 @@
                 item.LastVisitAt,
                 item.CreatedAt,
                 item.ModifiedAt,
+                item.CreatedBy,
             });
 
             await this.connection.ExecuteAsync(insertToArticleOperation, new
@@ -182,6 +185,7 @@
                     LastVisitAt = link.LastVisitAt,
                     CreatedAt = link.CreatedAt,
                     ModifiedAt = link.ModifiedAt,
+                    CreatedBy = link.CreatedBy,
                     Title = partialArticle.Title,
                     Author = partialArticle.Author,
                     Year = partialArticle.Year,
@@ -229,6 +233,7 @@
                 LastVisitAt = link.LastVisitAt,
                 CreatedAt = link.CreatedAt,
                 ModifiedAt = link.ModifiedAt,
+                CreatedBy = link.CreatedBy,
                 Title = partialArticle.Title,
                 Author = partialArticle.Author,
                 Year = partialArticle.Year,

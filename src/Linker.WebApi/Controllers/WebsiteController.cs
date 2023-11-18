@@ -66,6 +66,7 @@
                 LastVisitAt = DateTime.Now,
                 CreatedAt = DateTime.Now,
                 ModifiedAt = DateTime.Now,
+                CreatedBy = request.CreatedBy,
                 Domain = UrlParser.ExtractDomainLite(request.Url),
                 Aesthetics = request.Aesthetics,
                 IsSubdomain = request.IsSubdomain,
