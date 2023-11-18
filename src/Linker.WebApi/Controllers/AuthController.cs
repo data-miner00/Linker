@@ -1,10 +1,13 @@
 ﻿namespace Linker.WebApi.Controllers
 {
+    using System.Security.Claims;
     using System.Threading.Tasks;
+    using EnsureThat;
     using Linker.Core.ApiModels;
     using Linker.Core.Controllers;
     using Linker.Core.Models;
     using Linker.Core.Repositories;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
@@ -13,15 +16,18 @@
     [ApiController]
     public sealed class AuthController : ControllerBase, IAuthController
     {
+        private static readonly string AuthScheme = "cookie";
         private readonly IUserRepository repository;
+        private readonly IHttpContextAccessor context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthController"/> class.
         /// </summary>
         /// <param name="repository">The user repository.</param>
-        public AuthController(IUserRepository repository)
+        public AuthController(IUserRepository repository, IHttpContextAccessor context)
         {
-            this.repository = repository;
+            this.repository = EnsureArg.IsNotNull(repository, nameof(repository));
+            this.context = EnsureArg.IsNotNull(context, nameof(context));
         }
 
         /// <inheritdoc/>
@@ -35,12 +41,20 @@
                 var user = await this.repository.GetByUsernameAsync(request.Username, cancellationToken)
                     .ConfigureAwait(false);
 
+                var claims = new Claim[]
+                {
+                    new(ClaimTypes.NameIdentifier, user.Id),
+                    new(ClaimTypes.Role, user.Role.ToString()),
+                };
+                var claimsIdentity = new ClaimsIdentity(claims, AuthScheme);
+                var principal = new ClaimsPrincipal(claimsIdentity);
+
                 if (user.Password != request.Password)
                 {
                     return this.BadRequest("Wrong password");
                 }
 
-                return this.Ok();
+                return this.SignIn(principal, AuthScheme);
             }
             catch (InvalidOperationException)
             {
@@ -70,6 +84,14 @@
 
             var response = new CreateUserResponse(user.Id, user.Username, user.Role, user.Status, user.CreatedAt, user.ModifiedAt);
             return this.Ok(response);
+        }
+
+        [HttpGet("/is_authenticated")]
+        [Authorize("minimum_role")]
+        public IActionResult IsAuthenticated()
+        {
+            var result = this.context.HttpContext.User;
+            return this.Ok();
         }
     }
 }

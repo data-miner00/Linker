@@ -1,10 +1,13 @@
 using System.Data;
 using System.Data.SQLite;
 using System.Reflection;
+using System.Security.Claims;
 using Linker.Core.Repositories;
 using Linker.Data.SQLite;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+
+const string AuthScheme = "cookie";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +16,8 @@ var sqliteConnectionString = builder.Configuration["SQLite:ConnectionString"];
 using var connection = new SQLiteConnection(sqliteConnectionString);
 
 builder.Services.AddControllers();
+
+builder.Services.AddHttpContextAccessor();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -25,6 +30,20 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
+
+builder.Services.AddAuthentication()
+    .AddCookie(AuthScheme);
+
+builder.Services.AddAuthorization(builder =>
+{
+    builder.AddPolicy("minimum_role", pb =>
+    {
+        pb
+            .RequireAuthenticatedUser()
+            .AddAuthenticationSchemes(AuthScheme)
+            .RequireClaim(ClaimTypes.Role, "User");
+    });
+});
 
 builder.Services
     .AddSingleton<IDbConnection>(
@@ -48,6 +67,7 @@ if (app.Environment.IsDevelopment())
 app
     .UseExceptionHandler("/error")
     .UseHttpsRedirection()
+    .UseAuthentication()
     .UseAuthorization();
 
 app.MapControllers();
