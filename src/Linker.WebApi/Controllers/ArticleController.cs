@@ -3,6 +3,7 @@
     using System;
     using System.Net;
     using System.Threading.Tasks;
+    using AutoMapper;
     using EnsureThat;
     using Linker.Common;
     using Linker.Core.ApiModels;
@@ -23,14 +24,17 @@
     public sealed class ArticleController : ControllerBase, IArticleController
     {
         private readonly IArticleRepository repository;
+        private readonly IMapper mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ArticleController"/> class.
         /// </summary>
         /// <param name="repository">The repository for <see cref="Article"/>.</param>
-        public ArticleController(IArticleRepository repository)
+        /// <param name="mapper">The mapper instance.</param>
+        public ArticleController(IArticleRepository repository, IMapper mapper)
         {
             this.repository = EnsureArg.IsNotNull(repository, nameof(repository));
+            this.mapper = EnsureArg.IsNotNull(mapper, nameof(mapper));
         }
 
         /// <inheritdoc/>
@@ -38,24 +42,7 @@
         [SwaggerResponse((int)HttpStatusCode.OK, "Article created")]
         public async Task<IActionResult> CreateAsync([FromBody] CreateArticleRequest request)
         {
-            var article = new Article
-            {
-                Id = Guid.NewGuid().ToString(),
-                Url = request.Url,
-                Title = request.Title,
-                Category = request.Category,
-                Description = request.Description,
-                Tags = request.Tags,
-                Language = request.Language,
-                LastVisitAt = DateTime.Now,
-                CreatedAt = DateTime.Now,
-                ModifiedAt = DateTime.Now,
-                Domain = UrlParser.ExtractDomainLite(request.Url),
-                Grammar = request.Grammar,
-                Year = request.Year,
-                Author = request.Author,
-                CreatedBy = request.CreatedBy,
-            };
+            var article = this.mapper.Map<Article>(request);
 
             await this.repository.AddAsync(article).ConfigureAwait(false);
 

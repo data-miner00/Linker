@@ -2,8 +2,10 @@ using System.Data;
 using System.Data.SQLite;
 using System.Reflection;
 using System.Security.Claims;
+using AutoMapper;
 using Linker.Core.Repositories;
 using Linker.Data.SQLite;
+using Linker.WebApi.Mappers;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -53,6 +55,14 @@ builder.Services
     .AddSingleton<IYoutubeRepository, YoutubeRepository>()
     .AddSingleton<ITagRepository, TagRepository>()
     .AddSingleton<IUserRepository, UserRepository>();
+
+builder.Services
+    .AddSingleton<IMapper>(c => new MapperConfiguration(config =>
+    {
+        config.AllowNullCollections = false;
+        config.AddProfile<ArticleMapperProfile>();
+    })
+    .CreateMapper());
 
 var app = builder.Build();
 
