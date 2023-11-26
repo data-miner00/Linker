@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
     using AutoMapper;
     using EnsureThat;
-    using Linker.Common;
     using Linker.Core.ApiModels;
     using Linker.Core.Controllers;
     using Linker.Core.Models;
@@ -106,20 +105,8 @@
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateArticleRequest request)
         {
-            var article = new Article
-            {
-                Id = id.ToString(),
-                Url = request.Url,
-                Title = request.Title,
-                Category = request.Category,
-                Description = request.Description,
-                Language = request.Language,
-                Grammar = request.Grammar,
-                WatchLater = request.WatchLater,
-                Domain = UrlParser.ExtractDomainLite(request.Url),
-                Author = request.Author,
-                Year = request.Year,
-            };
+            var article = this.mapper.Map<Article>(request);
+            article.Id = id.ToString();
 
             try
             {

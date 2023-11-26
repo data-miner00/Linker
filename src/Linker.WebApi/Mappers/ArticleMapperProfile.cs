@@ -16,6 +16,7 @@
         public ArticleMapperProfile()
         {
             this.ConfigureMapFromPostRequestToArticle();
+            this.ConfigureMapFromPutRequestToArticle();
         }
 
         /// <summary>
@@ -28,6 +29,15 @@
                 .ForMember(dest => dest.LastVisitAt, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.ModifiedAt, opt => opt.MapFrom(src => DateTime.Now))
+                .ForMember(dest => dest.Domain, opt => opt.MapFrom(src => UrlParser.ExtractDomainLite(src.Url)));
+        }
+
+        /// <summary>
+        /// Configure the mappings from <see cref="UpdateArticleRequest"/> to <see cref="Article"/>.
+        /// </summary>
+        public void ConfigureMapFromPutRequestToArticle()
+        {
+            this.CreateMap<UpdateArticleRequest, Article>(MemberList.Source)
                 .ForMember(dest => dest.Domain, opt => opt.MapFrom(src => UrlParser.ExtractDomainLite(src.Url)));
         }
     }

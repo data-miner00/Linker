@@ -54,7 +54,7 @@
 
             this.steps
                 .GivenRepoAddAsyncCompleted()
-                .GivenMapperReturnArticle(expected);
+                .GivenPostRequestMapToArticle(expected);
 
             await this.steps
                 .WhenICreateAsync(request)
@@ -195,7 +195,8 @@
                 .Build();
 
             this.steps
-                .GivenRepoUpdateAsyncCompleted();
+                .GivenRepoUpdateAsyncCompleted()
+                .GivenPutRequestMapToArticle(article);
 
             await this.steps
                 .WhenIUpdateAsync(guid, request)
@@ -203,6 +204,7 @@
 
             this.steps
                 .ThenIExpectNoExceptionIsThrown()
+                .ThenIExpectMapperToBeCalledWith(request, 1)
                 .ThenIExpectRepoUpdateAsyncToBeCalledWith(article, 1)
                 .ThenIExpectResultToBe(new NoContentResult());
         }
@@ -233,7 +235,8 @@
                 .Build();
 
             this.steps
-                .GivenRepoUpdateAsyncThrows(new InvalidOperationException());
+                .GivenRepoUpdateAsyncThrows(new InvalidOperationException())
+                .GivenPutRequestMapToArticle(article);
 
             await this.steps
                 .WhenIUpdateAsync(guid, request)
@@ -241,6 +244,7 @@
 
             this.steps
                 .ThenIExpectNoExceptionIsThrown()
+                .ThenIExpectMapperToBeCalledWith(request, 1)
                 .ThenIExpectRepoUpdateAsyncToBeCalledWith(article, 1)
                 .ThenIExpectResultToBe(new NotFoundResult());
         }

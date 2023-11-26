@@ -19,6 +19,7 @@
 
         private Article? article;
         private CreateArticleRequest? createArticleRequest;
+        private UpdateArticleRequest? updateArticleRequest;
 
         public ArticleControllerSteps()
         {
@@ -46,7 +47,7 @@
             return this;
         }
 
-        public ArticleControllerSteps GivenMapperReturnArticle(Article article)
+        public ArticleControllerSteps GivenPostRequestMapToArticle(Article article)
         {
             this.mockMapper
                 .Setup(x => x.Map<Article>(It.IsAny<CreateArticleRequest>()))
@@ -56,11 +57,31 @@
             return this;
         }
 
-        public ArticleControllerSteps GivenMapperThrows(Exception exception)
+        public ArticleControllerSteps GivenMapperPostRequestThrows(Exception exception)
         {
             this.mockMapper
                 .Setup(x => x.Map<Article>(It.IsAny<CreateArticleRequest>()))
                 .Callback((CreateArticleRequest request) => this.createArticleRequest = request)
+                .Throws(exception);
+
+            return this;
+        }
+
+        public ArticleControllerSteps GivenPutRequestMapToArticle(Article article)
+        {
+            this.mockMapper
+                .Setup(x => x.Map<Article>(It.IsAny<UpdateArticleRequest>()))
+                .Callback((object request) => this.updateArticleRequest = request as UpdateArticleRequest)
+                .Returns(article);
+
+            return this;
+        }
+
+        public ArticleControllerSteps GivenMapperPutRequestThrows(Exception exception)
+        {
+            this.mockMapper
+                .Setup(x => x.Map<Article>(It.IsAny<UpdateArticleRequest>()))
+                .Callback((object request) => this.updateArticleRequest = request as UpdateArticleRequest)
                 .Throws(exception);
 
             return this;
@@ -178,6 +199,17 @@
 
             this.createArticleRequest.Should().NotBeNull();
             this.createArticleRequest.Should().BeEquivalentTo(request);
+
+            return this;
+        }
+
+        public ArticleControllerSteps ThenIExpectMapperToBeCalledWith(UpdateArticleRequest request, int times)
+        {
+            this.mockMapper
+                .Verify(x => x.Map<Article>(It.IsAny<UpdateArticleRequest>()), Times.Exactly(times));
+
+            this.updateArticleRequest.Should().NotBeNull();
+            this.updateArticleRequest.Should().BeEquivalentTo(request);
 
             return this;
         }
