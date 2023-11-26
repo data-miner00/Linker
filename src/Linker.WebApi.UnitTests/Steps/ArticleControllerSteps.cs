@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using AutoMapper;
     using Linker.Core.ApiModels;
     using Linker.Core.Controllers;
     using Linker.Core.Models;
@@ -14,13 +15,16 @@
     {
         private readonly IArticleController controller;
         private readonly Mock<IArticleRepository> mockRepository;
+        private readonly Mock<IMapper> mockMapper;
 
         private Article? article;
+        private CreateArticleRequest? createArticleRequest;
 
         public ArticleControllerSteps()
         {
             this.mockRepository = new Mock<IArticleRepository>();
-            this.controller = new ArticleController(this.mockRepository.Object);
+            this.mockMapper = new Mock<IMapper>();
+            this.controller = new ArticleController(this.mockRepository.Object, this.mockMapper.Object);
         }
 
         #region Given
@@ -39,6 +43,26 @@
             this.mockRepository
                 .Setup(x => x.RemoveAsync(It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
+            return this;
+        }
+
+        public ArticleControllerSteps GivenMapperReturnArticle(Article article)
+        {
+            this.mockMapper
+                .Setup(x => x.Map<Article>(It.IsAny<CreateArticleRequest>()))
+                .Callback((object request) => this.createArticleRequest = request as CreateArticleRequest)
+                .Returns(article);
+
+            return this;
+        }
+
+        public ArticleControllerSteps GivenMapperThrows(Exception exception)
+        {
+            this.mockMapper
+                .Setup(x => x.Map<Article>(It.IsAny<CreateArticleRequest>()))
+                .Callback((CreateArticleRequest request) => this.createArticleRequest = request)
+                .Throws(exception);
+
             return this;
         }
 
@@ -96,9 +120,13 @@
 
         #region When
 
-        public ArticleControllerSteps WhenIInitWithNullRepo()
+        public ArticleControllerSteps WhenIInitWith(bool isRepoNull, bool isMapperNull)
         {
-            this.RecordException(() => new ArticleController(null));
+            var repo = isRepoNull ? null : this.mockRepository.Object;
+            var mapper = isMapperNull ? null : this.mockMapper.Object;
+
+            this.RecordException(() => new ArticleController(repo, mapper));
+
             return this;
         }
 
@@ -120,10 +148,7 @@
 
         public Task WhenIGetAllAsync()
         {
-            return this.RecordExceptionAsync(
-                async () => await this.controller
-                .GetAllAsync()
-                .ConfigureAwait(false));
+            return this.RecordExceptionAsync(this.controller.GetAllAsync);
         }
 
         public Task WhenIGetByIdAsync(Guid id)
@@ -145,6 +170,17 @@
         #endregion
 
         #region Then
+
+        public ArticleControllerSteps ThenIExpectMapperToBeCalledWith(CreateArticleRequest request, int times)
+        {
+            this.mockMapper
+                .Verify(x => x.Map<Article>(It.IsAny<CreateArticleRequest>()), Times.Exactly(times));
+
+            this.createArticleRequest.Should().NotBeNull();
+            this.createArticleRequest.Should().BeEquivalentTo(request);
+
+            return this;
+        }
 
         public ArticleControllerSteps ThenIExpectRepoAddAsyncToBeCalledWith(Article article, int times)
         {

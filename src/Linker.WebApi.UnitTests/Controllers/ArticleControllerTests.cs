@@ -18,11 +18,13 @@
             this.steps = new ArticleControllerSteps();
         }
 
-        [Fact]
-        public void Constructor_InitWithInvalidParams_ThrowsException()
+        [Theory]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        public void Constructor_InitWithInvalidParams_ThrowsException(bool isRepoNull, bool isMapperNull)
         {
             this.steps
-                .WhenIInitWithNullRepo()
+                .WhenIInitWith(isRepoNull, isMapperNull)
                 .ThenIExpectExceptionIsThrown(typeof(ArgumentNullException));
         }
 
@@ -51,7 +53,8 @@
                 value: request);
 
             this.steps
-                .GivenRepoAddAsyncCompleted();
+                .GivenRepoAddAsyncCompleted()
+                .GivenMapperReturnArticle(expected);
 
             await this.steps
                 .WhenICreateAsync(request)
@@ -59,6 +62,7 @@
 
             this.steps
                 .ThenIExpectNoExceptionIsThrown()
+                .ThenIExpectMapperToBeCalledWith(request, 1)
                 .ThenIExpectRepoAddAsyncToBeCalledWith(expected, 1)
                 .ThenIExpectResultToBe(
                     expectedResult,
