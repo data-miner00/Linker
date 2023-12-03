@@ -1,6 +1,8 @@
 ﻿namespace Linker.WebApi.Controllers
 {
     using System;
+    using System.Security.Claims;
+    using AutoMapper;
     using EnsureThat;
     using Linker.Common;
     using Linker.Core.ApiModels;
@@ -17,14 +19,23 @@
     public class WebsiteController : ControllerBase, IWebsiteController
     {
         private readonly IWebsiteRepository repository;
+        private readonly IMapper mapper;
+        private readonly IHttpContextAccessor context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebsiteController"/> class.
         /// </summary>
         /// <param name="repository">The repository for <see cref="Website"/>.</param>
-        public WebsiteController(IWebsiteRepository repository)
+        /// <param name="mapper">The mapper instance.</param>
+        /// <param name="context">The HTTP context accessor.</param>
+        public WebsiteController(
+            IWebsiteRepository repository,
+            IMapper mapper,
+            IHttpContextAccessor context)
         {
             this.repository = EnsureArg.IsNotNull(repository, nameof(repository));
+            this.mapper = EnsureArg.IsNotNull(mapper, nameof(mapper));
+            this.context = EnsureArg.IsNotNull(context, nameof(context));
         }
 
         /// <inheritdoc/>
@@ -54,24 +65,9 @@
         [HttpPost("", Name = "CreateWebsite")]
         public async Task<IActionResult> CreateAsync([FromBody] CreateWebsiteRequest request)
         {
-            var website = new Website
-            {
-                Id = Guid.NewGuid().ToString(),
-                Url = request.Url,
-                Name = request.Name,
-                Category = request.Category,
-                Description = request.Description,
-                Tags = request.Tags,
-                Language = request.Language,
-                LastVisitAt = DateTime.Now,
-                CreatedAt = DateTime.Now,
-                ModifiedAt = DateTime.Now,
-                CreatedBy = request.CreatedBy,
-                Domain = UrlParser.ExtractDomainLite(request.Url),
-                Aesthetics = request.Aesthetics,
-                IsSubdomain = request.IsSubdomain,
-                IsMultilingual = request.IsMultilingual,
-            };
+            EnsureArg.IsNotNull(request, nameof(request));
+
+            var website = this.mapper.Map<Website>(request);
 
             await this.repository.AddAsync(website).ConfigureAwait(false);
 
@@ -85,28 +81,28 @@
         [HttpPut("{id:guid}", Name = "UpdateWebsite")]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateWebsiteRequest request)
         {
-            var website = new Website
-            {
-                Id = id.ToString(),
-                Url = request.Url,
-                Name = request.Name,
-                Category = request.Category,
-                Description = request.Description,
-                Language = request.Language,
-                Domain = UrlParser.ExtractDomainLite(request.Url),
-                Aesthetics = request.Aesthetics,
-                IsSubdomain = request.IsSubdomain,
-                IsMultilingual = request.IsMultilingual,
-            };
+            EnsureArg.IsNotNull(request, nameof(request));
+
+            var userId = this.context.HttpContext?.User
+                .FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
 
             try
             {
-                await this.repository.UpdateAsync(website).ConfigureAwait(false);
+                var existing = await this.repository.GetByIdAsync(id.ToString()).ConfigureAwait(false);
+                if (userId != existing.CreatedBy)
+                {
+                    return this.Forbid();
+                }
             }
             catch (InvalidOperationException)
             {
                 return this.NotFound();
             }
+
+            var website = this.mapper.Map<Website>(request);
+            website.Id = id.ToString();
+
+            await this.repository.UpdateAsync(website).ConfigureAwait(false);
 
             return this.NoContent();
         }

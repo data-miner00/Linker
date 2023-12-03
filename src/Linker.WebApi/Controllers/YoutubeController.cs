@@ -1,6 +1,8 @@
 ﻿namespace Linker.WebApi.Controllers
 {
     using System;
+    using System.Security.Claims;
+    using AutoMapper;
     using EnsureThat;
     using Linker.Core.ApiModels;
     using Linker.Core.Controllers;
@@ -17,36 +19,40 @@
     public sealed class YoutubeController : ControllerBase, IYoutubeController
     {
         private readonly IYoutubeRepository repository;
+        private readonly IMapper mapper;
+        private readonly IHttpContextAccessor context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="YoutubeController"/> class.
         /// </summary>
         /// <param name="repository">The repository for <see cref="Youtube"/>.</param>
-        public YoutubeController(IYoutubeRepository repository)
+        /// <param name="mapper">The mapper instance.</param>
+        /// <param name="context">The HTTP context accessor.</param>
+        public YoutubeController(
+            IYoutubeRepository repository,
+            IMapper mapper,
+            IHttpContextAccessor context)
         {
             this.repository = EnsureArg.IsNotNull(repository, nameof(repository));
+            this.mapper = EnsureArg.IsNotNull(mapper, nameof(mapper));
+            this.context = EnsureArg.IsNotNull(context, nameof(context));
         }
 
         /// <inheritdoc/>
         [HttpPost("", Name = "CreateYoutube")]
         public async Task<IActionResult> CreateAsync([FromBody] CreateYoutubeRequest request)
         {
-            var channel = new Youtube
+            EnsureArg.IsNotNull(request, nameof(request));
+
+            var userId = this.context.HttpContext?.User
+                .FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+            if (userId != request.CreatedBy)
             {
-                Id = Guid.NewGuid().ToString(),
-                Url = request.Url,
-                Name = request.Name,
-                Category = request.Category,
-                Description = request.Description,
-                Tags = request.Tags,
-                Language = request.Language,
-                LastVisitAt = DateTime.Now,
-                CreatedAt = DateTime.Now,
-                ModifiedAt = DateTime.Now,
-                CreatedBy = request.CreatedBy,
-                Youtuber = request.Youtuber,
-                Country = request.Country,
-            };
+                return this.Forbid();
+            }
+
+            var channel = this.mapper.Map<Youtube>(request);
 
             await this.repository.AddAsync(channel).ConfigureAwait(false);
 
@@ -99,26 +105,29 @@
         [HttpPut("{id:guid}", Name = "UpdateYoutube")]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateYoutubeRequest request)
         {
-            var channel = new Youtube
-            {
-                Id = id.ToString(),
-                Url = request.Url,
-                Name = request.Name,
-                Category = request.Category,
-                Description = request.Description,
-                Language = request.Language,
-                Youtuber = request.Youtuber,
-                Country = request.Country,
-            };
+            EnsureArg.IsNotNull(request, nameof(request));
+
+            var userId = this.context.HttpContext?.User
+                .FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
 
             try
             {
-                await this.repository.UpdateAsync(channel).ConfigureAwait(false);
+                var existing = await this.repository.GetByIdAsync(id.ToString()).ConfigureAwait(false);
+
+                if (userId != existing.CreatedBy)
+                {
+                    return this.Forbid();
+                }
             }
             catch (InvalidOperationException)
             {
                 return this.NotFound();
             }
+
+            var channel = this.mapper.Map<Youtube>(request);
+            channel.Id = id.ToString();
+
+            await this.repository.UpdateAsync(channel).ConfigureAwait(false);
 
             return this.NoContent();
         }

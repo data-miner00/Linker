@@ -2,6 +2,7 @@
 {
     using System;
     using System.Net;
+    using System.Security.Claims;
     using System.Threading.Tasks;
     using AutoMapper;
     using EnsureThat;
@@ -24,16 +25,22 @@
     {
         private readonly IArticleRepository repository;
         private readonly IMapper mapper;
+        private readonly IHttpContextAccessor context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ArticleController"/> class.
         /// </summary>
         /// <param name="repository">The repository for <see cref="Article"/>.</param>
         /// <param name="mapper">The mapper instance.</param>
-        public ArticleController(IArticleRepository repository, IMapper mapper)
+        /// <param name="context">The HTTP context accessor.</param>
+        public ArticleController(
+            IArticleRepository repository,
+            IMapper mapper,
+            IHttpContextAccessor context)
         {
             this.repository = EnsureArg.IsNotNull(repository, nameof(repository));
             this.mapper = EnsureArg.IsNotNull(mapper, nameof(mapper));
+            this.context = EnsureArg.IsNotNull(context, nameof(context));
         }
 
         /// <inheritdoc/>
@@ -41,6 +48,16 @@
         [SwaggerResponse((int)HttpStatusCode.OK, "Article created")]
         public async Task<IActionResult> CreateAsync([FromBody] CreateArticleRequest request)
         {
+            EnsureArg.IsNotNull(request, nameof(request));
+
+            var userId = this.context.HttpContext?.User
+                .FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+            if (userId != request.CreatedBy)
+            {
+                return this.Forbid();
+            }
+
             var article = this.mapper.Map<Article>(request);
 
             await this.repository.AddAsync(article).ConfigureAwait(false);
@@ -105,17 +122,29 @@
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateArticleRequest request)
         {
-            var article = this.mapper.Map<Article>(request);
-            article.Id = id.ToString();
+            EnsureArg.IsNotNull(request, nameof(request));
+
+            var userId = this.context.HttpContext?.User
+                .FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
 
             try
             {
-                await this.repository.UpdateAsync(article).ConfigureAwait(false);
+                var existing = await this.repository.GetByIdAsync(id.ToString()).ConfigureAwait(false);
+
+                if (userId != existing.CreatedBy)
+                {
+                    return this.Forbid();
+                }
             }
             catch (InvalidOperationException)
             {
                 return this.NotFound();
             }
+
+            var article = this.mapper.Map<Article>(request);
+            article.Id = id.ToString();
+
+            await this.repository.UpdateAsync(article).ConfigureAwait(false);
 
             return this.NoContent();
         }
