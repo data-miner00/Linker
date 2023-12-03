@@ -11,12 +11,7 @@
 
     public sealed class ArticleControllerTests
     {
-        private readonly ArticleControllerSteps steps;
-
-        public ArticleControllerTests()
-        {
-            this.steps = new ArticleControllerSteps();
-        }
+        private readonly ArticleControllerSteps steps = new();
 
         [Theory]
         [InlineData(true, false)]
@@ -56,9 +51,7 @@
                 .GivenRepoAddAsyncCompleted()
                 .GivenPostRequestMapToArticle(expected);
 
-            await this.steps
-                .WhenICreateAsync(request)
-                .ConfigureAwait(false);
+            await this.steps.WhenICreateAsync(request);
 
             this.steps
                 .ThenIExpectNoExceptionIsThrown()
@@ -79,9 +72,7 @@
             this.steps
                 .GivenRepoRemoveAsyncCompleted();
 
-            await this.steps
-                .WhenIDeleteAsync(guid)
-                .ConfigureAwait(false);
+            await this.steps.WhenIDeleteAsync(guid);
 
             this.steps
                 .ThenIExpectNoExceptionIsThrown()
@@ -98,9 +89,7 @@
             this.steps
                 .GivenRepoRemoveAsyncThrows(new InvalidOperationException());
 
-            await this.steps
-                .WhenIDeleteAsync(guid)
-                .ConfigureAwait(false);
+            await this.steps.WhenIDeleteAsync(guid);
 
             this.steps
                 .ThenIExpectNoExceptionIsThrown()
@@ -120,9 +109,7 @@
             this.steps
                 .GivenRepoGetAllAsyncReturns(articles);
 
-            await this.steps
-                .WhenIGetAllAsync()
-                .ConfigureAwait(false);
+            await this.steps.WhenIGetAllAsync();
 
             this.steps
                 .ThenIExpectNoExceptionIsThrown()
@@ -140,9 +127,7 @@
             this.steps
                 .GivenRepoGetByIdAsyncReturns(article);
 
-            await this.steps
-                .WhenIGetByIdAsync(guid)
-                .ConfigureAwait(false);
+            await this.steps.WhenIGetByIdAsync(guid);
 
             this.steps
                 .ThenIExpectNoExceptionIsThrown()
@@ -159,9 +144,7 @@
             this.steps
                 .GivenRepoGetByIdAsyncThrows(new InvalidOperationException());
 
-            await this.steps
-                .WhenIGetByIdAsync(guid)
-                .ConfigureAwait(false);
+            await this.steps.WhenIGetByIdAsync(guid);
 
             this.steps
                 .ThenIExpectNoExceptionIsThrown()
@@ -198,9 +181,7 @@
                 .GivenRepoUpdateAsyncCompleted()
                 .GivenPutRequestMapToArticle(article);
 
-            await this.steps
-                .WhenIUpdateAsync(guid, request)
-                .ConfigureAwait(false);
+            await this.steps.WhenIUpdateAsync(guid, request);
 
             this.steps
                 .ThenIExpectNoExceptionIsThrown()
@@ -238,9 +219,7 @@
                 .GivenRepoUpdateAsyncThrows(new InvalidOperationException())
                 .GivenPutRequestMapToArticle(article);
 
-            await this.steps
-                .WhenIUpdateAsync(guid, request)
-                .ConfigureAwait(false);
+            await this.steps.WhenIUpdateAsync(guid, request);
 
             this.steps
                 .ThenIExpectNoExceptionIsThrown()
