@@ -61,6 +61,8 @@ builder.Services
     {
         config.AllowNullCollections = false;
         config.AddProfile<ArticleMapperProfile>();
+        config.AddProfile<WebsiteMapperProfile>();
+        config.AddProfile<YoutubeMapperProfile>();
     })
     .CreateMapper());
 
