@@ -24,6 +24,7 @@
         /// Initializes a new instance of the <see cref="AuthController"/> class.
         /// </summary>
         /// <param name="repository">The user repository.</param>
+        /// <param name="context">The http context accessor.</param>
         public AuthController(IUserRepository repository, IHttpContextAccessor context)
         {
             this.repository = EnsureArg.IsNotNull(repository, nameof(repository));
@@ -44,6 +45,7 @@
                 var claims = new Claim[]
                 {
                     new(ClaimTypes.NameIdentifier, user.Id),
+                    new(ClaimTypes.Name, user.Username),
                     new(ClaimTypes.Role, user.Role.ToString()),
                 };
                 var claimsIdentity = new ClaimsIdentity(claims, AuthScheme);
@@ -83,7 +85,17 @@
                 .ConfigureAwait(false);
 
             var response = new CreateUserResponse(user.Id, user.Username, user.Role, user.Status, user.CreatedAt, user.ModifiedAt);
-            return this.Ok(response);
+            return this.Created("/login", response);
+        }
+
+        /// <inheritdoc/>
+        [HttpPost("/logout", Name = "Logout")]
+        [Authorize]
+        public async Task<IActionResult> LogoutAsync(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return this.SignOut();
         }
 
         [HttpGet("/is_authenticated")]

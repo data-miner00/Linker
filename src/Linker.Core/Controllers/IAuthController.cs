@@ -25,5 +25,12 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The action result.</returns>
         Task<IActionResult> RegisterAsync(CreateUserRequest request, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Logout as a user.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The action result.</returns>
+        Task<IActionResult> LogoutAsync(CancellationToken cancellationToken);
     }
 }
