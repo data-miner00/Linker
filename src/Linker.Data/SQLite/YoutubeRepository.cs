@@ -28,8 +28,10 @@
         }
 
         /// <inheritdoc/>
-        public async Task AddAsync(Youtube item)
+        public async Task AddAsync(Youtube item, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var randomId = Guid.NewGuid().ToString();
 
             var insertToLinksOperation = @"
@@ -141,8 +143,10 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<Youtube>> GetAllAsync()
+        public async Task<IEnumerable<Youtube>> GetAllAsync(CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var channels = new List<Youtube>();
 
             var selectFromYoutubeQuery = @"SELECT * FROM Youtube;";
@@ -191,8 +195,10 @@
         }
 
         /// <inheritdoc/>
-        public async Task<Youtube> GetByIdAsync(string id)
+        public async Task<Youtube> GetByIdAsync(string id, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var tags = new List<string>();
 
             var partialChannel = await this.TryGetItemAsync(id);
@@ -233,8 +239,10 @@
         }
 
         /// <inheritdoc/>
-        public async Task RemoveAsync(string id)
+        public async Task RemoveAsync(string id, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             await this.TryGetItemAsync(id);
 
             var deleteFromYoutubeOperation = @"DELETE FROM Youtube WHERE LinkId = @Id;";
@@ -247,8 +255,10 @@
         }
 
         /// <inheritdoc/>
-        public async Task UpdateAsync(Youtube item)
+        public async Task UpdateAsync(Youtube item, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             await this.TryGetItemAsync(item.Id);
 
             var updateYoutubeOperation = @"

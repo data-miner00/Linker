@@ -1,6 +1,7 @@
 ﻿namespace Linker.Core.Repositories
 {
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
     using Linker.Core.Models;
 
@@ -15,34 +16,39 @@
         /// Add a new item into the database.
         /// </summary>
         /// <param name="item">The item to be added.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The task.</returns>
-        Task AddAsync(T item);
+        Task AddAsync(T item, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieves all the available data from the database.
         /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The entire list of data.</returns>
-        Task<IEnumerable<T>> GetAllAsync();
+        Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieves the item by ID.
         /// </summary>
         /// <param name="id">The id of the item.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The item itself.</returns>
-        Task<T> GetByIdAsync(string id);
+        Task<T> GetByIdAsync(string id, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Deletes an item from the database with the given id.
         /// </summary>
         /// <param name="id">The id of the item to be removed.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The awaitable task.</returns>
-        Task RemoveAsync(string id);
+        Task RemoveAsync(string id, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Updates an item with the new details provided.
         /// </summary>
         /// <param name="item">The item with updated details.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The awaitable task.</returns>
-        Task UpdateAsync(T item);
+        Task UpdateAsync(T item, CancellationToken cancellationToken = default);
     }
 }

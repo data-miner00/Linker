@@ -28,8 +28,10 @@
         }
 
         /// <inheritdoc/>
-        public async Task AddAsync(Article item)
+        public async Task AddAsync(Article item, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var randomId = Guid.NewGuid().ToString();
 
             var insertToLinksOperation = @"
@@ -150,8 +152,10 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<Article>> GetAllAsync()
+        public async Task<IEnumerable<Article>> GetAllAsync(CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var articles = new List<Article>();
 
             var selectFromArticlesQuery = @"SELECT * FROM Articles;";
@@ -201,8 +205,10 @@
         }
 
         /// <inheritdoc/>
-        public async Task<Article> GetByIdAsync(string id)
+        public async Task<Article> GetByIdAsync(string id, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var tags = new List<string>();
 
             var partialArticle = await this.TryGetItemAsync(id);
@@ -246,8 +252,10 @@
         }
 
         /// <inheritdoc/>
-        public async Task RemoveAsync(string id)
+        public async Task RemoveAsync(string id, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             await this.TryGetItemAsync(id);
 
             var deleteFromArticlesOperation = @"DELETE FROM Articles WHERE LinkId = @Id;";
@@ -260,8 +268,10 @@
         }
 
         /// <inheritdoc/>
-        public async Task UpdateAsync(Article item)
+        public async Task UpdateAsync(Article item, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             await this.TryGetItemAsync(item.Id);
 
             var updateArticlesOperation = @"

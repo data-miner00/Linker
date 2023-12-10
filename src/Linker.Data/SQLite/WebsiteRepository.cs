@@ -25,8 +25,10 @@
         }
 
         /// <inheritdoc/>
-        public async Task AddAsync(Website item)
+        public async Task AddAsync(Website item, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var randomId = Guid.NewGuid().ToString();
 
             var insertToLinksOperation = @"
@@ -144,8 +146,10 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<Website>> GetAllAsync()
+        public async Task<IEnumerable<Website>> GetAllAsync(CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var websites = new List<Website>();
 
             var selectFromWebsitesQuery = @"SELECT * FROM Websites;";
@@ -194,8 +198,10 @@
         }
 
         /// <inheritdoc/>
-        public async Task<Website> GetByIdAsync(string id)
+        public async Task<Website> GetByIdAsync(string id, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var tags = new List<string>();
 
             var partialWebsite = await this.TryGetItemAsync(id);
@@ -236,8 +242,10 @@
         }
 
         /// <inheritdoc/>
-        public async Task RemoveAsync(string id)
+        public async Task RemoveAsync(string id, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             await this.TryGetItemAsync(id);
 
             var deleteFromWebsitesOperation = @"DELETE FROM Websites WHERE LinkId = @Id;";
@@ -250,8 +258,10 @@
         }
 
         /// <inheritdoc/>
-        public async Task UpdateAsync(Website item)
+        public async Task UpdateAsync(Website item, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             await this.TryGetItemAsync(item.Id);
 
             var updateWebsitesOperation = @"
