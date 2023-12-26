@@ -18,14 +18,14 @@
         /// <param name="item">The item to be added.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The task.</returns>
-        Task AddAsync(T item, CancellationToken cancellationToken = default);
+        Task AddAsync(T item, CancellationToken cancellationToken);
 
         /// <summary>
         /// Retrieves all the available data from the database.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The entire list of data.</returns>
-        Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// Retrieves the item by ID.
@@ -33,7 +33,7 @@
         /// <param name="id">The id of the item.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The item itself.</returns>
-        Task<T> GetByIdAsync(string id, CancellationToken cancellationToken = default);
+        Task<T> GetByIdAsync(string id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Deletes an item from the database with the given id.
@@ -41,7 +41,7 @@
         /// <param name="id">The id of the item to be removed.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The awaitable task.</returns>
-        Task RemoveAsync(string id, CancellationToken cancellationToken = default);
+        Task RemoveAsync(string id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Updates an item with the new details provided.
@@ -49,6 +49,6 @@
         /// <param name="item">The item with updated details.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The awaitable task.</returns>
-        Task UpdateAsync(T item, CancellationToken cancellationToken = default);
+        Task UpdateAsync(T item, CancellationToken cancellationToken);
     }
 }

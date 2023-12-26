@@ -4,7 +4,6 @@
     using System.Security.Claims;
     using AutoMapper;
     using EnsureThat;
-    using Linker.Common;
     using Linker.Core.ApiModels;
     using Linker.Core.Controllers;
     using Linker.Core.Models;
@@ -44,7 +43,10 @@
         {
             try
             {
-                var result = await this.repository.GetByIdAsync(id.ToString()).ConfigureAwait(false);
+                var result = await this.repository
+                    .GetByIdAsync(id.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
+
                 return this.Ok(result);
             }
             catch (InvalidOperationException)
@@ -57,7 +59,10 @@
         [HttpGet("", Name = "GetAllWebsites")]
         public async Task<IActionResult> GetAllAsync()
         {
-            var results = await this.repository.GetAllAsync().ConfigureAwait(false);
+            var results = await this.repository
+                .GetAllAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
             return this.Ok(results);
         }
 
@@ -69,12 +74,11 @@
 
             var website = this.mapper.Map<Website>(request);
 
-            await this.repository.AddAsync(website).ConfigureAwait(false);
+            await this.repository
+                .AddAsync(website, CancellationToken.None)
+                .ConfigureAwait(false);
 
-            return this.CreatedAtAction(
-                actionName: nameof(this.GetByIdAsync),
-                routeValues: new { website.Id },
-                value: request);
+            return this.Created();
         }
 
         /// <inheritdoc/>
@@ -88,7 +92,10 @@
 
             try
             {
-                var existing = await this.repository.GetByIdAsync(id.ToString()).ConfigureAwait(false);
+                var existing = await this.repository
+                    .GetByIdAsync(id.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
+
                 if (userId != existing.CreatedBy)
                 {
                     return this.Forbid();
@@ -102,7 +109,9 @@
             var website = this.mapper.Map<Website>(request);
             website.Id = id.ToString();
 
-            await this.repository.UpdateAsync(website).ConfigureAwait(false);
+            await this.repository
+                .UpdateAsync(website, CancellationToken.None)
+                .ConfigureAwait(false);
 
             return this.NoContent();
         }
@@ -113,7 +122,9 @@
         {
             try
             {
-                await this.repository.RemoveAsync(id.ToString()).ConfigureAwait(false);
+                await this.repository
+                    .RemoveAsync(id.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
             }
             catch (InvalidOperationException)
             {

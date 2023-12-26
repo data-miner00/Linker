@@ -28,7 +28,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task AddAsync(Article item, CancellationToken cancellationToken = default)
+        public async Task AddAsync(Article item, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -152,7 +152,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<Article>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Article>> GetAllAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -205,7 +205,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<Article> GetByIdAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<Article> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -252,7 +252,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task RemoveAsync(string id, CancellationToken cancellationToken = default)
+        public async Task RemoveAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -268,7 +268,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task UpdateAsync(Article item, CancellationToken cancellationToken = default)
+        public async Task UpdateAsync(Article item, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 

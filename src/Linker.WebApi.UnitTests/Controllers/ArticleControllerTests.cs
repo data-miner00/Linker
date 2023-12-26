@@ -14,12 +14,13 @@
         private readonly ArticleControllerSteps steps = new();
 
         [Theory]
-        [InlineData(true, false)]
-        [InlineData(false, true)]
-        public void Constructor_InitWithInvalidParams_ThrowsException(bool isRepoNull, bool isMapperNull)
+        [InlineData(true, false, false)]
+        [InlineData(false, true, false)]
+        [InlineData(false, false, true)]
+        public void Constructor_InitWithInvalidParams_ThrowsException(bool isRepoNull, bool isMapperNull, bool isAccessorNull)
         {
             this.steps
-                .WhenIInitWith(isRepoNull, isMapperNull)
+                .WhenIInitWith(isRepoNull, isMapperNull, isAccessorNull)
                 .ThenIExpectExceptionIsThrown(typeof(ArgumentNullException));
         }
 
@@ -39,15 +40,13 @@
                 .WithYear(request.Year)
                 .WithWatchLater(request.WatchLater)
                 .WithDomain("google.com")
+                .WithCreatedBy(request.CreatedBy)
                 .Build();
 
-            var expectedResult = new CreatedAtActionResult(
-                actionName: "GetByIdAsync",
-                controllerName: null,
-                routeValues: new { expected.Id },
-                value: request);
+            var result = new CreatedResult();
 
             this.steps
+                .GivenUserLoggedIn(expected.CreatedBy)
                 .GivenRepoAddAsyncCompleted()
                 .GivenPostRequestMapToArticle(expected);
 
@@ -57,10 +56,7 @@
                 .ThenIExpectNoExceptionIsThrown()
                 .ThenIExpectMapperToBeCalledWith(request, 1)
                 .ThenIExpectRepoAddAsyncToBeCalledWith(expected, 1)
-                .ThenIExpectResultToBe(
-                    expectedResult,
-                    opt =>
-                        opt.Excluding(result => result.RouteValues));
+                .ThenIExpectResultToBe(result);
         }
 
         [Fact]
@@ -158,6 +154,8 @@
             var guidStr = "ba3e784b-5edd-432d-a6fb-5215c27d83d2";
             var guid = Guid.Parse(guidStr);
 
+            var userId = Guid.NewGuid().ToString();
+
             var request = new UpdateArticleRequestDataBuilder().Build();
             var article = new ArticleDataBuilder()
                 .WithId(guidStr)
@@ -175,10 +173,13 @@
                 .WithLastVisitAt(new DateTime(1, 1, 1))
                 .WithModifiedAt(new DateTime(1, 1, 1))
                 .WithCreatedAt(new DateTime(1, 1, 1))
+                .WithCreatedBy(userId)
                 .Build();
 
             this.steps
+                .GivenUserLoggedIn(userId)
                 .GivenRepoUpdateAsyncCompleted()
+                .GivenRepoGetByIdAsyncReturns(article)
                 .GivenPutRequestMapToArticle(article);
 
             await this.steps.WhenIUpdateAsync(guid, request);
@@ -196,6 +197,8 @@
             var guidStr = "ba3e784b-5edd-432d-a6fb-5215c27d83d2";
             var guid = Guid.Parse(guidStr);
 
+            var userId = Guid.NewGuid().ToString();
+
             var request = new UpdateArticleRequestDataBuilder().Build();
             var article = new ArticleDataBuilder()
                 .WithId(guidStr)
@@ -213,11 +216,14 @@
                 .WithLastVisitAt(new DateTime(1, 1, 1))
                 .WithModifiedAt(new DateTime(1, 1, 1))
                 .WithCreatedAt(new DateTime(1, 1, 1))
+                .WithCreatedBy(userId)
                 .Build();
 
             this.steps
+                .GivenUserLoggedIn(userId)
                 .GivenRepoUpdateAsyncThrows(new InvalidOperationException())
-                .GivenPutRequestMapToArticle(article);
+                .GivenPutRequestMapToArticle(article)
+                .GivenRepoGetByIdAsyncReturns(article);
 
             await this.steps.WhenIUpdateAsync(guid, request);
 

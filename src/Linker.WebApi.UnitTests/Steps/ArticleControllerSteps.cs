@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Security.Claims;
     using System.Threading.Tasks;
     using AutoMapper;
     using Linker.Core.ApiModels;
@@ -10,12 +11,14 @@
     using Linker.Core.Repositories;
     using Linker.TestCore;
     using Linker.WebApi.Controllers;
+    using Microsoft.AspNetCore.Http;
 
     public sealed class ArticleControllerSteps : BaseSteps<ArticleControllerSteps>
     {
         private readonly IArticleController controller;
         private readonly Mock<IArticleRepository> mockRepository;
         private readonly Mock<IMapper> mockMapper;
+        private readonly Mock<IHttpContextAccessor> mockHttpContextAccessor;
 
         private Article? article;
         private CreateArticleRequest? createArticleRequest;
@@ -25,7 +28,8 @@
         {
             this.mockRepository = new Mock<IArticleRepository>();
             this.mockMapper = new Mock<IMapper>();
-            this.controller = new ArticleController(this.mockRepository.Object, this.mockMapper.Object);
+            this.mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
+            this.controller = new ArticleController(this.mockRepository.Object, this.mockMapper.Object, this.mockHttpContextAccessor.Object);
         }
 
         #region Given
@@ -33,8 +37,8 @@
         public ArticleControllerSteps GivenRepoAddAsyncCompleted()
         {
             this.mockRepository
-                .Setup(x => x.AddAsync(It.IsAny<Article>()))
-                .Callback<Article>(article => this.article = article)
+                .Setup(x => x.AddAsync(It.IsAny<Article>(), It.IsAny<CancellationToken>()))
+                .Callback<Article, CancellationToken>((article, _) => this.article = article)
                 .Returns(Task.CompletedTask);
             return this;
         }
@@ -42,7 +46,7 @@
         public ArticleControllerSteps GivenRepoRemoveAsyncCompleted()
         {
             this.mockRepository
-                .Setup(x => x.RemoveAsync(It.IsAny<string>()))
+                .Setup(x => x.RemoveAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
             return this;
         }
@@ -90,7 +94,7 @@
         public ArticleControllerSteps GivenRepoRemoveAsyncThrows(Exception exception)
         {
             this.mockRepository
-                .Setup(x => x.RemoveAsync(It.IsAny<string>()))
+                .Setup(x => x.RemoveAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(exception);
             return this;
         }
@@ -98,8 +102,8 @@
         public ArticleControllerSteps GivenRepoUpdateAsyncCompleted()
         {
             this.mockRepository
-                .Setup(x => x.UpdateAsync(It.IsAny<Article>()))
-                .Callback<Article>(article => this.article = article)
+                .Setup(x => x.UpdateAsync(It.IsAny<Article>(), It.IsAny<CancellationToken>()))
+                .Callback<Article, CancellationToken>((article, _) => this.article = article)
                 .Returns(Task.CompletedTask);
             return this;
         }
@@ -107,8 +111,8 @@
         public ArticleControllerSteps GivenRepoUpdateAsyncThrows(Exception exception)
         {
             this.mockRepository
-                .Setup(x => x.UpdateAsync(It.IsAny<Article>()))
-                .Callback<Article>(article => this.article = article)
+                .Setup(x => x.UpdateAsync(It.IsAny<Article>(), It.IsAny<CancellationToken>()))
+                .Callback<Article, CancellationToken>((article, _) => this.article = article)
                 .ThrowsAsync(exception);
             return this;
         }
@@ -116,7 +120,7 @@
         public ArticleControllerSteps GivenRepoGetAllAsyncReturns(IEnumerable<Article> articles)
         {
             this.mockRepository
-                .Setup(x => x.GetAllAsync())
+                .Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(articles);
             return this;
         }
@@ -124,7 +128,7 @@
         public ArticleControllerSteps GivenRepoGetByIdAsyncReturns(Article article)
         {
             this.mockRepository
-                .Setup(x => x.GetByIdAsync(It.IsAny<string>()))
+                .Setup(x => x.GetByIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(article);
             return this;
         }
@@ -132,8 +136,24 @@
         public ArticleControllerSteps GivenRepoGetByIdAsyncThrows(Exception exception)
         {
             this.mockRepository
-                .Setup(x => x.GetByIdAsync(It.IsAny<string>()))
+                .Setup(x => x.GetByIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(exception);
+            return this;
+        }
+
+        public ArticleControllerSteps GivenUserLoggedIn(string userId)
+        {
+            var mockHttpContext = new Mock<HttpContext>();
+
+            var claim = new Claim(ClaimTypes.NameIdentifier, userId);
+            var claimsIdentity = new ClaimsIdentity([claim]);
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            mockHttpContext.SetupGet(x => x.User).Returns(claimsPrincipal);
+
+            this.mockHttpContextAccessor.SetupGet(x => x.HttpContext)
+                .Returns(mockHttpContext.Object);
+
             return this;
         }
 
@@ -141,12 +161,13 @@
 
         #region When
 
-        public ArticleControllerSteps WhenIInitWith(bool isRepoNull, bool isMapperNull)
+        public ArticleControllerSteps WhenIInitWith(bool isRepoNull, bool isMapperNull, bool isHttpAccessorNull)
         {
             var repo = isRepoNull ? null : this.mockRepository.Object;
             var mapper = isMapperNull ? null : this.mockMapper.Object;
+            var httpAccessor = isHttpAccessorNull ? null : this.mockHttpContextAccessor.Object;
 
-            this.RecordException(() => new ArticleController(repo, mapper));
+            this.RecordException(() => new ArticleController(repo, mapper, httpAccessor));
 
             return this;
         }
@@ -217,7 +238,7 @@
         public ArticleControllerSteps ThenIExpectRepoAddAsyncToBeCalledWith(Article article, int times)
         {
             this.mockRepository
-                .Verify(x => x.AddAsync(It.IsAny<Article>()), Times.Exactly(times));
+                .Verify(x => x.AddAsync(It.IsAny<Article>(), It.IsAny<CancellationToken>()), Times.Exactly(times));
             this.article.Should().BeEquivalentTo(
                 article,
                 options =>
@@ -232,21 +253,21 @@
         public ArticleControllerSteps ThenIExpectRepoRemoveAsyncToBeCalledWith(string id, int times)
         {
             this.mockRepository
-                .Verify(x => x.RemoveAsync(id), Times.Exactly(times));
+                .Verify(x => x.RemoveAsync(id, It.IsAny<CancellationToken>()), Times.Exactly(times));
             return this;
         }
 
         public ArticleControllerSteps ThenIExpectRepoGetAllAsyncToBeCalled(int times)
         {
             this.mockRepository
-                .Verify(x => x.GetAllAsync(), Times.Exactly(times));
+                .Verify(x => x.GetAllAsync(It.IsAny<CancellationToken>()), Times.Exactly(times));
             return this;
         }
 
         public ArticleControllerSteps ThenIExpectRepoUpdateAsyncToBeCalledWith(Article article, int times)
         {
             this.mockRepository
-                .Verify(x => x.UpdateAsync(It.IsAny<Article>()), Times.Exactly(times));
+                .Verify(x => x.UpdateAsync(It.IsAny<Article>(), It.IsAny<CancellationToken>()), Times.Exactly(times));
             this.article.Should().BeEquivalentTo(article);
             return this;
         }
@@ -254,7 +275,7 @@
         public ArticleControllerSteps ThenIExpectRepoGetByIdAsyncToBeCalledWith(string id, int times)
         {
             this.mockRepository
-                .Verify(x => x.GetByIdAsync(id), Times.Exactly(times));
+                .Verify(x => x.GetByIdAsync(id, It.IsAny<CancellationToken>()), Times.Exactly(times));
             return this;
         }
 

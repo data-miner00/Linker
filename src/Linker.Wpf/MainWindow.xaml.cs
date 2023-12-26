@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
@@ -29,7 +30,7 @@
 
             this.articleRepository = articleRepository;
 
-            var articles = this.articleRepository.GetAllAsync().GetAwaiter().GetResult();
+            var articles = this.articleRepository.GetAllAsync(CancellationToken.None).GetAwaiter().GetResult();
 
             foreach (var article in articles)
             {

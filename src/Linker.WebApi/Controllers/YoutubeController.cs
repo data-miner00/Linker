@@ -8,7 +8,6 @@
     using Linker.Core.Controllers;
     using Linker.Core.Models;
     using Linker.Core.Repositories;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
@@ -54,12 +53,11 @@
 
             var channel = this.mapper.Map<Youtube>(request);
 
-            await this.repository.AddAsync(channel).ConfigureAwait(false);
+            await this.repository
+                .AddAsync(channel, CancellationToken.None)
+                .ConfigureAwait(false);
 
-            return this.CreatedAtAction(
-                actionName: nameof(this.GetByIdAsync),
-                routeValues: new { channel.Id },
-                value: request);
+            return this.Created();
         }
 
         /// <inheritdoc/>
@@ -68,7 +66,9 @@
         {
             try
             {
-                await this.repository.RemoveAsync(id.ToString()).ConfigureAwait(false);
+                await this.repository
+                    .RemoveAsync(id.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
             }
             catch (InvalidOperationException)
             {
@@ -82,7 +82,10 @@
         [HttpGet("", Name = "GetAllYoutubes")]
         public async Task<IActionResult> GetAllAsync()
         {
-            var results = await this.repository.GetAllAsync().ConfigureAwait(false);
+            var results = await this.repository
+                .GetAllAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
             return this.Ok(results);
         }
 
@@ -92,7 +95,10 @@
         {
             try
             {
-                var result = await this.repository.GetByIdAsync(id.ToString()).ConfigureAwait(false);
+                var result = await this.repository
+                    .GetByIdAsync(id.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
+
                 return this.Ok(result);
             }
             catch (InvalidOperationException)
@@ -112,7 +118,9 @@
 
             try
             {
-                var existing = await this.repository.GetByIdAsync(id.ToString()).ConfigureAwait(false);
+                var existing = await this.repository
+                    .GetByIdAsync(id.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 if (userId != existing.CreatedBy)
                 {
@@ -127,7 +135,9 @@
             var channel = this.mapper.Map<Youtube>(request);
             channel.Id = id.ToString();
 
-            await this.repository.UpdateAsync(channel).ConfigureAwait(false);
+            await this.repository
+                .UpdateAsync(channel, CancellationToken.None)
+                .ConfigureAwait(false);
 
             return this.NoContent();
         }

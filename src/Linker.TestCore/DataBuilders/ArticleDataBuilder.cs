@@ -21,6 +21,7 @@
         private bool watchLater = false;
         private string domain = "www.google.com";
         private Grammar grammar = Grammar.Unknown;
+        private string createdBy = "creator_id";
 
         public ArticleDataBuilder WithId(string id)
         {
@@ -112,6 +113,12 @@
             return this;
         }
 
+        public ArticleDataBuilder WithCreatedBy(string createdBy)
+        {
+            this.createdBy = createdBy;
+            return this;
+        }
+
         public Article Build()
         {
             return new Article
@@ -131,6 +138,7 @@
                 WatchLater = this.watchLater,
                 Domain = this.domain,
                 Grammar = this.grammar,
+                CreatedBy = this.createdBy,
             };
         }
     }

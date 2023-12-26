@@ -16,6 +16,7 @@
         private Grammar grammar = default;
         private int year = 2000;
         private bool watchLater = false;
+        private string createdBy = "creater_id";
 
         public CreateArticleRequestDataBuilder WithTitle(string title)
         {
@@ -77,6 +78,12 @@
             return this;
         }
 
+        public CreateArticleRequestDataBuilder WithCreatedBy(string createdBy)
+        {
+            this.createdBy = createdBy;
+            return this;
+        }
+
         public CreateArticleRequest Build()
         {
             return new CreateArticleRequest
@@ -91,6 +98,7 @@
                 Grammar = this.grammar,
                 Year = this.year,
                 WatchLater = this.watchLater,
+                CreatedBy = this.createdBy,
             };
         }
     }

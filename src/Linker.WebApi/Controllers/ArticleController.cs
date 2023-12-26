@@ -60,12 +60,11 @@
 
             var article = this.mapper.Map<Article>(request);
 
-            await this.repository.AddAsync(article).ConfigureAwait(false);
+            await this.repository
+                .AddAsync(article, CancellationToken.None)
+                .ConfigureAwait(false);
 
-            return this.CreatedAtAction(
-                actionName: nameof(this.GetByIdAsync),
-                routeValues: new { article.Id },
-                value: request);
+            return this.Created();
         }
 
         /// <inheritdoc/>
@@ -76,7 +75,9 @@
         {
             try
             {
-                await this.repository.RemoveAsync(id.ToString()).ConfigureAwait(false);
+                await this.repository
+                    .RemoveAsync(id.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
             }
             catch (InvalidOperationException)
             {
@@ -93,7 +94,10 @@
         [ProducesResponseType(typeof(ArticleResponseCollectionExample), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllAsync()
         {
-            var results = await this.repository.GetAllAsync().ConfigureAwait(false);
+            var results = await this.repository
+                .GetAllAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
             return this.Ok(results);
         }
 
@@ -107,7 +111,10 @@
         {
             try
             {
-                var result = await this.repository.GetByIdAsync(id.ToString()).ConfigureAwait(false);
+                var result = await this.repository
+                    .GetByIdAsync(id.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
+
                 return this.Ok(result);
             }
             catch (InvalidOperationException)
@@ -129,24 +136,28 @@
 
             try
             {
-                var existing = await this.repository.GetByIdAsync(id.ToString()).ConfigureAwait(false);
+                var existing = await this.repository
+                    .GetByIdAsync(id.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 if (userId != existing.CreatedBy)
                 {
                     return this.Forbid();
                 }
+
+                var article = this.mapper.Map<Article>(request);
+                article.Id = id.ToString();
+
+                await this.repository
+                    .UpdateAsync(article, CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                return this.NoContent();
             }
             catch (InvalidOperationException)
             {
                 return this.NotFound();
             }
-
-            var article = this.mapper.Map<Article>(request);
-            article.Id = id.ToString();
-
-            await this.repository.UpdateAsync(article).ConfigureAwait(false);
-
-            return this.NoContent();
         }
     }
 }

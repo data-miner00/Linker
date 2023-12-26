@@ -28,7 +28,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task AddAsync(Youtube item, CancellationToken cancellationToken = default)
+        public async Task AddAsync(Youtube item, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -143,7 +143,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<Youtube>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Youtube>> GetAllAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -195,7 +195,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<Youtube> GetByIdAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<Youtube> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -239,7 +239,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task RemoveAsync(string id, CancellationToken cancellationToken = default)
+        public async Task RemoveAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -255,7 +255,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task UpdateAsync(Youtube item, CancellationToken cancellationToken = default)
+        public async Task UpdateAsync(Youtube item, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
