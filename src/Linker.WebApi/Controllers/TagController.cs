@@ -73,7 +73,7 @@
                 await this.repository.AddAsync(request.TagName).ConfigureAwait(false);
                 return this.NoContent();
             }
-            catch (SQLiteException ex) when (ex.Message.Equals("constraint failed\r\nUNIQUE constraint failed: Tags.Name"))
+            catch (SQLiteException ex) when (ex.Message.Contains("UNIQUE constraint failed: Tags.Name"))
             {
                 return this.BadRequest("The tag with the same name already exists.");
             }
