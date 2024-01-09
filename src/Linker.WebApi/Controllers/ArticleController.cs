@@ -102,9 +102,23 @@
         }
 
         /// <inheritdoc/>
-        [HttpGet("{id:guid}", Name = "GetArticle")]
+        [HttpGet("byuser/{userId:guid}", Name = "GetAllArticlesByUser")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved all articles by user.")]
+        [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(ArticleResponseCollectionExample))]
+        [ProducesResponseType(typeof(ArticleResponseCollectionExample), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetAllByUserAsync(Guid userId)
+        {
+            var results = await this.repository
+                .GetAllByUserAsync(userId.ToString(), CancellationToken.None)
+                .ConfigureAwait(false);
+
+            return this.Ok(results);
+        }
+
+        /// <inheritdoc/>
+        [HttpGet("{id:guid}", Name = "GetArticleByUser")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
-        [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved article.")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved article by user.")]
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(ArticleResponseExample))]
         [ProducesResponseType(typeof(ArticleResponseExample), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetByIdAsync(Guid id)
@@ -113,6 +127,28 @@
             {
                 var result = await this.repository
                     .GetByIdAsync(id.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                return this.Ok(result);
+            }
+            catch (InvalidOperationException)
+            {
+                return this.NotFound();
+            }
+        }
+
+        /// <inheritdoc/>
+        [HttpGet("byuser/{userId:guid}/{linkId:guid}", Name = "GetArticle")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved article.")]
+        [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(ArticleResponseExample))]
+        [ProducesResponseType(typeof(ArticleResponseExample), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetByUserAsync(Guid userId, Guid linkId)
+        {
+            try
+            {
+                var result = await this.repository
+                    .GetByUserAsync(userId.ToString(), linkId.ToString(), CancellationToken.None)
                     .ConfigureAwait(false);
 
                 return this.Ok(result);

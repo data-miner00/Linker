@@ -198,6 +198,16 @@
         }
 
         /// <inheritdoc/>
+        public async Task<IEnumerable<Website>> GetAllByUserAsync(string userId, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var websites = await this.GetAllAsync(cancellationToken).ConfigureAwait(false);
+
+            return websites.Where(x => x.CreatedBy.Equals(userId, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <inheritdoc/>
         public async Task<Website> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -237,6 +247,22 @@
                 IsSubdomain = partialWebsite.IsSubdomain,
                 IsMultilingual = partialWebsite.IsMultilingual,
             };
+
+            return website;
+        }
+
+        /// <inheritdoc/>
+        public async Task<Website> GetByUserAsync(string userId, string linkId, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var website = await this.GetByIdAsync(linkId, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (!website.CreatedBy.Equals(userId, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException("User not found");
+            }
 
             return website;
         }

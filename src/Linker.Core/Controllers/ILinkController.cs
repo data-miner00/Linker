@@ -45,5 +45,20 @@
         /// <param name="id">The Id of the link.</param>
         /// <returns>Http response.</returns>
         Task<IActionResult> DeleteAsync(Guid id);
+
+        /// <summary>
+        /// Get all links by a user.
+        /// </summary>
+        /// <param name="userId">The user links to retrieve.</param>
+        /// <returns>A list of links.</returns>
+        Task<IActionResult> GetAllByUserAsync(Guid userId);
+
+        /// <summary>
+        /// Gets a single link by a user.
+        /// </summary>
+        /// <param name="userId">The user Id.</param>
+        /// <param name="linkId">The link Id.</param>
+        /// <returns>The found link.</returns>
+        Task<IActionResult> GetByUserAsync(Guid userId, Guid linkId);
     }
 }

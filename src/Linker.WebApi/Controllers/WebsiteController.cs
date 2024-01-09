@@ -133,5 +133,34 @@
 
             return this.NoContent();
         }
+
+        /// <inheritdoc/>
+        [HttpGet("byuser/{userId:guid}", Name = "GetAllWebsitesByUser")]
+        public async Task<IActionResult> GetAllByUserAsync(Guid userId)
+        {
+            var results = await this.repository
+                .GetAllByUserAsync(userId.ToString(), CancellationToken.None)
+                .ConfigureAwait(false);
+
+            return this.Ok(results);
+        }
+
+        /// <inheritdoc/>
+        [HttpGet("byuser/{userId:guid}/{linkId:guid}", Name = "GetWebsiteByUser")]
+        public async Task<IActionResult> GetByUserAsync(Guid userId, Guid linkId)
+        {
+            try
+            {
+                var result = await this.repository
+                    .GetByUserAsync(userId.ToString(), linkId.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                return this.Ok(result);
+            }
+            catch (InvalidOperationException)
+            {
+                return this.NotFound();
+            }
+        }
     }
 }

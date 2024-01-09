@@ -50,5 +50,22 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The awaitable task.</returns>
         Task UpdateAsync(T item, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Retrieves all items that is owned by the user.
+        /// </summary>
+        /// <param name="userId">Ths user ID.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>A collection of items that the user owns.</returns>
+        Task<IEnumerable<T>> GetAllByUserAsync(string userId, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Retrieves a particular item that is owned by the user.
+        /// </summary>
+        /// <param name="userId">The user ID.</param>
+        /// <param name="linkId">The link ID.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The found item.</returns>
+        Task<T> GetByUserAsync(string userId, string linkId, CancellationToken cancellationToken);
     }
 }

@@ -205,6 +205,16 @@
         }
 
         /// <inheritdoc/>
+        public async Task<IEnumerable<Article>> GetAllByUserAsync(string userId, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var articles = await this.GetAllAsync(cancellationToken).ConfigureAwait(false);
+
+            return articles.Where(x => x.CreatedBy.Equals(userId, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <inheritdoc/>
         public async Task<Article> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -247,6 +257,22 @@
                 Domain = partialArticle.Domain,
                 Grammar = partialArticle.Grammar,
             };
+
+            return article;
+        }
+
+        /// <inheritdoc/>
+        public async Task<Article> GetByUserAsync(string userId, string linkId, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var article = await this.GetByIdAsync(linkId, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (!article.CreatedBy.Equals(userId, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException("User not found");
+            }
 
             return article;
         }

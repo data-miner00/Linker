@@ -195,6 +195,16 @@
         }
 
         /// <inheritdoc/>
+        public async Task<IEnumerable<Youtube>> GetAllByUserAsync(string userId, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var channels = await this.GetAllAsync(cancellationToken).ConfigureAwait(false);
+
+            return channels.Where(x => x.CreatedBy.Equals(userId, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <inheritdoc/>
         public async Task<Youtube> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -234,6 +244,22 @@
                 Youtuber = partialChannel.Youtuber,
                 Country = partialChannel.Country,
             };
+
+            return youtube;
+        }
+
+        /// <inheritdoc/>
+        public async Task<Youtube> GetByUserAsync(string userId, string linkId, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var youtube = await this.GetByIdAsync(linkId, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (!youtube.CreatedBy.Equals(userId, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException("User not found");
+            }
 
             return youtube;
         }
