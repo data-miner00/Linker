@@ -91,11 +91,11 @@
         /// <inheritdoc/>
         [HttpPost("/logout", Name = "Logout")]
         [Authorize]
-        public async Task<IActionResult> LogoutAsync(CancellationToken cancellationToken)
+        public Task<IActionResult> LogoutAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return this.SignOut();
+            return Task.FromResult(this.SignOut() as IActionResult);
         }
 
         [HttpGet("/is_authenticated")]
