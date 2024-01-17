@@ -10,7 +10,9 @@
     using Linker.Core.Controllers;
     using Linker.Core.Models;
     using Linker.Core.Repositories;
+    using Linker.WebApi.Filters;
     using Linker.WebApi.Swagger;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Swashbuckle.AspNetCore.Annotations;
     using Swashbuckle.AspNetCore.Filters;
@@ -102,6 +104,7 @@
         }
 
         /// <inheritdoc/>
+        [AccountAuthorize]
         [HttpGet("byuser/{userId:guid}", Name = "GetAllArticlesByUser")]
         [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved all articles by user.")]
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(ArticleResponseCollectionExample))]
@@ -116,7 +119,7 @@
         }
 
         /// <inheritdoc/>
-        [HttpGet("{id:guid}", Name = "GetArticleByUser")]
+        [HttpGet("{id:guid}", Name = "GetArticle")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
         [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved article by user.")]
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(ArticleResponseExample))]
@@ -138,7 +141,8 @@
         }
 
         /// <inheritdoc/>
-        [HttpGet("byuser/{userId:guid}/{linkId:guid}", Name = "GetArticle")]
+        [AccountAuthorize]
+        [HttpGet("byuser/{userId:guid}/{linkId:guid}", Name = "GetArticleByUser")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
         [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved article.")]
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(ArticleResponseExample))]
@@ -160,6 +164,7 @@
         }
 
         /// <inheritdoc/>
+        [Authorize]
         [HttpPut("{id:guid}", Name = "UpdateArticle")]
         [SwaggerResponse((int)HttpStatusCode.NoContent, "Article updated.")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
@@ -178,11 +183,49 @@
 
                 if (userId != existing.CreatedBy)
                 {
-                    return this.Forbid();
+                    return this.Unauthorized();
                 }
 
                 var article = this.mapper.Map<Article>(request);
                 article.Id = id.ToString();
+
+                await this.repository
+                    .UpdateAsync(article, CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                return this.NoContent();
+            }
+            catch (InvalidOperationException)
+            {
+                return this.NotFound();
+            }
+        }
+
+        [AccountAuthorize]
+        [HttpPut("/byuser/{userId:guid}/{linkId:guid}", Name = "UpdateArticleByUser")]
+        [SwaggerResponse((int)HttpStatusCode.NoContent, "Article updated.")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
+        public async Task<IActionResult> UpdateByUserAsync(
+            [FromRoute] Guid userId,
+            [FromRoute] Guid linkId,
+            [FromBody] UpdateArticleRequest request)
+        {
+            EnsureArg.IsNotNull(request, nameof(request));
+
+            try
+            {
+                var strUserId = userId.ToString();
+                var existing = await this.repository
+                    .GetByIdAsync(strUserId, CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                if (strUserId != existing.CreatedBy)
+                {
+                    return this.Unauthorized();
+                }
+
+                var article = this.mapper.Map<Article>(request);
+                article.Id = linkId.ToString();
 
                 await this.repository
                     .UpdateAsync(article, CancellationToken.None)
