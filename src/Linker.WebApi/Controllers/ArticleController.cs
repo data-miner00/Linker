@@ -20,6 +20,7 @@
     /// <summary>
     /// The API controller for <see cref="Article"/>.
     /// </summary>
+    [Authorize]
     [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
@@ -69,7 +70,10 @@
             return this.Created();
         }
 
+        #region Priviledge
+
         /// <inheritdoc/>
+        [RoleAuthorize(Role.Administrator)]
         [HttpDelete("{id:guid}", Name = "DeleteArticle")]
         [SwaggerResponse((int)HttpStatusCode.NoContent, "Article successfully deleted.")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
@@ -90,6 +94,7 @@
         }
 
         /// <inheritdoc/>
+        [RoleAuthorize(Role.Administrator)]
         [HttpGet("", Name = "GetAllArticles")]
         [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved all articles.")]
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(ArticleResponseCollectionExample))]
@@ -104,21 +109,7 @@
         }
 
         /// <inheritdoc/>
-        [AccountAuthorize]
-        [HttpGet("byuser/{userId:guid}", Name = "GetAllArticlesByUser")]
-        [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved all articles by user.")]
-        [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(ArticleResponseCollectionExample))]
-        [ProducesResponseType(typeof(ArticleResponseCollectionExample), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAllByUserAsync(Guid userId)
-        {
-            var results = await this.repository
-                .GetAllByUserAsync(userId.ToString(), CancellationToken.None)
-                .ConfigureAwait(false);
-
-            return this.Ok(results);
-        }
-
-        /// <inheritdoc/>
+        [RoleAuthorize(Role.Administrator)]
         [HttpGet("{id:guid}", Name = "GetArticle")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
         [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved article by user.")]
@@ -141,30 +132,7 @@
         }
 
         /// <inheritdoc/>
-        [AccountAuthorize]
-        [HttpGet("byuser/{userId:guid}/{linkId:guid}", Name = "GetArticleByUser")]
-        [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
-        [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved article.")]
-        [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(ArticleResponseExample))]
-        [ProducesResponseType(typeof(ArticleResponseExample), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetByUserAsync(Guid userId, Guid linkId)
-        {
-            try
-            {
-                var result = await this.repository
-                    .GetByUserAsync(userId.ToString(), linkId.ToString(), CancellationToken.None)
-                    .ConfigureAwait(false);
-
-                return this.Ok(result);
-            }
-            catch (InvalidOperationException)
-            {
-                return this.NotFound();
-            }
-        }
-
-        /// <inheritdoc/>
-        [Authorize]
+        [RoleAuthorize(Role.Administrator)]
         [HttpPut("{id:guid}", Name = "UpdateArticle")]
         [SwaggerResponse((int)HttpStatusCode.NoContent, "Article updated.")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
@@ -200,7 +168,49 @@
                 return this.NotFound();
             }
         }
+        #endregion
 
+        #region User
+
+        /// <inheritdoc/>
+        [AccountAuthorize]
+        [HttpGet("byuser/{userId:guid}", Name = "GetAllArticlesByUser")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved all articles by user.")]
+        [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(ArticleResponseCollectionExample))]
+        [ProducesResponseType(typeof(ArticleResponseCollectionExample), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetAllByUserAsync(Guid userId)
+        {
+            var results = await this.repository
+                .GetAllByUserAsync(userId.ToString(), CancellationToken.None)
+                .ConfigureAwait(false);
+
+            return this.Ok(results);
+        }
+
+        /// <inheritdoc/>
+        [AccountAuthorize]
+        [HttpGet("byuser/{userId:guid}/{linkId:guid}", Name = "GetArticleByUser")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved article.")]
+        [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(ArticleResponseExample))]
+        [ProducesResponseType(typeof(ArticleResponseExample), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetByUserAsync(Guid userId, Guid linkId)
+        {
+            try
+            {
+                var result = await this.repository
+                    .GetByUserAsync(userId.ToString(), linkId.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                return this.Ok(result);
+            }
+            catch (InvalidOperationException)
+            {
+                return this.NotFound();
+            }
+        }
+
+        /// <inheritdoc/>
         [AccountAuthorize]
         [HttpPut("/byuser/{userId:guid}/{linkId:guid}", Name = "UpdateArticleByUser")]
         [SwaggerResponse((int)HttpStatusCode.NoContent, "Article updated.")]
@@ -238,5 +248,37 @@
                 return this.NotFound();
             }
         }
+
+        /// <inheritdoc/>
+        [HttpDelete("/byuser/{userId:guid}/{linkId:guid}", Name = "DeleteByUser")]
+        [SwaggerResponse((int)HttpStatusCode.NoContent, "Article successfully deleted.")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
+        public async Task<IActionResult> DeleteByUserAsync(
+            [FromRoute] Guid userId,
+            [FromRoute] Guid linkId)
+        {
+            try
+            {
+                var existingLink = await this.repository
+                    .GetByIdAsync(linkId.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                if (!existingLink.CreatedBy.Equals(userId.ToString()))
+                {
+                    return this.Unauthorized();
+                }
+
+                await this.repository
+                    .RemoveAsync(linkId.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
+            }
+            catch (InvalidOperationException)
+            {
+                return this.NotFound();
+            }
+
+            return this.NoContent();
+        }
+        #endregion
     }
 }
