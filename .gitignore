@@ -369,3 +369,5 @@ FodyWeavers.xsd
 *.bkp
 *.dtmp
 
+# Report Generator
+coveragereport/
