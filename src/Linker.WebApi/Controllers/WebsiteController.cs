@@ -8,11 +8,14 @@
     using Linker.Core.Controllers;
     using Linker.Core.Models;
     using Linker.Core.Repositories;
+    using Linker.WebApi.Filters;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
     /// The API controller for <see cref="Website"/>.
     /// </summary>
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class WebsiteController : ControllerBase, IWebsiteController
@@ -38,6 +41,24 @@
         }
 
         /// <inheritdoc/>
+        [HttpPost("", Name = "CreateWebsite")]
+        public async Task<IActionResult> CreateAsync([FromBody] CreateWebsiteRequest request)
+        {
+            EnsureArg.IsNotNull(request, nameof(request));
+
+            var website = this.mapper.Map<Website>(request);
+
+            await this.repository
+                .AddAsync(website, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            return this.Created();
+        }
+
+        #region Privilege
+
+        /// <inheritdoc/>
+        [RoleAuthorize(Role.Administrator)]
         [HttpGet("{id:guid}", Name = "GetWebsite")]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
@@ -56,6 +77,7 @@
         }
 
         /// <inheritdoc/>
+        [RoleAuthorize(Role.Administrator)]
         [HttpGet("", Name = "GetAllWebsites")]
         public async Task<IActionResult> GetAllAsync()
         {
@@ -67,21 +89,7 @@
         }
 
         /// <inheritdoc/>
-        [HttpPost("", Name = "CreateWebsite")]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateWebsiteRequest request)
-        {
-            EnsureArg.IsNotNull(request, nameof(request));
-
-            var website = this.mapper.Map<Website>(request);
-
-            await this.repository
-                .AddAsync(website, CancellationToken.None)
-                .ConfigureAwait(false);
-
-            return this.Created();
-        }
-
-        /// <inheritdoc/>
+        [RoleAuthorize(Role.Administrator)]
         [HttpPut("{id:guid}", Name = "UpdateWebsite")]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateWebsiteRequest request)
         {
@@ -117,6 +125,7 @@
         }
 
         /// <inheritdoc/>
+        [RoleAuthorize(Role.Administrator)]
         [HttpDelete("{id:guid}", Name = "DeleteWebsite")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
@@ -133,8 +142,12 @@
 
             return this.NoContent();
         }
+        #endregion
+
+        #region User
 
         /// <inheritdoc/>
+        [AccountAuthorize]
         [HttpGet("byuser/{userId:guid}", Name = "GetAllWebsitesByUser")]
         public async Task<IActionResult> GetAllByUserAsync(Guid userId)
         {
@@ -146,6 +159,7 @@
         }
 
         /// <inheritdoc/>
+        [AccountAuthorize]
         [HttpGet("byuser/{userId:guid}/{linkId:guid}", Name = "GetWebsiteByUser")]
         public async Task<IActionResult> GetByUserAsync(Guid userId, Guid linkId)
         {
@@ -162,5 +176,73 @@
                 return this.NotFound();
             }
         }
+
+        /// <inheritdoc/>
+        [AccountAuthorize]
+        [HttpPut("/byuser/{userId:guid}/{linkId:guid}", Name = "UpdateWebsiteByUser")]
+        public async Task<IActionResult> UpdateByUserAsync(
+            [FromRoute] Guid userId,
+            [FromRoute] Guid linkId,
+            [FromBody] UpdateWebsiteRequest request)
+        {
+            EnsureArg.IsNotNull(request, nameof(request));
+
+            try
+            {
+                var strUserId = userId.ToString();
+                var existing = await this.repository
+                    .GetByIdAsync(linkId.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                if (strUserId != existing.CreatedBy)
+                {
+                    return this.Unauthorized();
+                }
+
+                var website = this.mapper.Map<Website>(request);
+                website.Id = linkId.ToString();
+
+                await this.repository
+                    .UpdateAsync(website, CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                return this.NoContent();
+            }
+            catch (InvalidOperationException)
+            {
+                return this.NotFound();
+            }
+        }
+
+        /// <inheritdoc/>
+        [AccountAuthorize]
+        [HttpDelete("/byuser/{userId:guid}/{linkId:guid}", Name = "DeleteWebsiteByUser")]
+        public async Task<IActionResult> DeleteByUserAsync(
+            [FromRoute] Guid userId,
+            [FromRoute] Guid linkId)
+        {
+            try
+            {
+                var existingLink = await this.repository
+                    .GetByIdAsync(linkId.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                if (!existingLink.CreatedBy.Equals(userId.ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    return this.Unauthorized();
+                }
+
+                await this.repository
+                    .RemoveAsync(linkId.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                return this.NoContent();
+            }
+            catch (InvalidOperationException)
+            {
+                return this.NotFound();
+            }
+        }
+        #endregion
     }
 }

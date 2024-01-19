@@ -60,5 +60,22 @@
         /// <param name="linkId">The link Id.</param>
         /// <returns>The found link.</returns>
         Task<IActionResult> GetByUserAsync(Guid userId, Guid linkId);
+
+        /// <summary>
+        /// Updates a link owned by a user.
+        /// </summary>
+        /// <param name="userId">The user Id.</param>
+        /// <param name="linkId">The link Id.</param>
+        /// <param name="request">The update request.</param>
+        /// <returns>Http response.</returns>
+        Task<IActionResult> UpdateByUserAsync(Guid userId, Guid linkId, TUpdateRequest request);
+
+        /// <summary>
+        /// Deletes a link owned by a user.
+        /// </summary>
+        /// <param name="userId">The user Id.</param>
+        /// <param name="linkId">The link Id.</param>
+        /// <returns>Http response.</returns>
+        Task<IActionResult> DeleteByUserAsync(Guid userId, Guid linkId);
     }
 }

@@ -8,11 +8,14 @@
     using Linker.Core.Controllers;
     using Linker.Core.Models;
     using Linker.Core.Repositories;
+    using Linker.WebApi.Filters;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
     /// The API controller for <see cref="Youtube"/>.
     /// </summary>
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public sealed class YoutubeController : ControllerBase, IYoutubeController
@@ -43,14 +46,6 @@
         {
             EnsureArg.IsNotNull(request, nameof(request));
 
-            var userId = this.context.HttpContext?.User
-                .FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
-
-            if (userId != request.CreatedBy)
-            {
-                return this.Forbid();
-            }
-
             var channel = this.mapper.Map<Youtube>(request);
 
             await this.repository
@@ -60,7 +55,10 @@
             return this.Created();
         }
 
+        #region Privilege
+
         /// <inheritdoc/>
+        [RoleAuthorize(Role.Administrator)]
         [HttpDelete("{id:guid}", Name = "DeleteYoutube")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
@@ -79,6 +77,7 @@
         }
 
         /// <inheritdoc/>
+        [RoleAuthorize(Role.Administrator)]
         [HttpGet("", Name = "GetAllYoutubes")]
         public async Task<IActionResult> GetAllAsync()
         {
@@ -90,17 +89,7 @@
         }
 
         /// <inheritdoc/>
-        [HttpGet("byuser/{userId:guid}", Name = "GetAllYoutubesByUser")]
-        public async Task<IActionResult> GetAllByUserAsync(Guid userId)
-        {
-            var results = await this.repository
-                .GetAllByUserAsync(userId.ToString(), CancellationToken.None)
-                .ConfigureAwait(false);
-
-            return this.Ok(results);
-        }
-
-        /// <inheritdoc/>
+        [RoleAuthorize(Role.Administrator)]
         [HttpGet("{id:guid}", Name = "GetYoutube")]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
@@ -119,6 +108,87 @@
         }
 
         /// <inheritdoc/>
+        [RoleAuthorize(Role.Administrator)]
+        [HttpPut("{id:guid}", Name = "UpdateYoutube")]
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateYoutubeRequest request)
+        {
+            EnsureArg.IsNotNull(request, nameof(request));
+
+            var userId = this.context.HttpContext?.User
+                .FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+            try
+            {
+                var existing = await this.repository
+                    .GetByIdAsync(id.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                if (userId != existing.CreatedBy)
+                {
+                    return this.Unauthorized();
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                return this.NotFound();
+            }
+
+            var channel = this.mapper.Map<Youtube>(request);
+            channel.Id = id.ToString();
+
+            await this.repository
+                .UpdateAsync(channel, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            return this.NoContent();
+        }
+
+        #endregion
+
+        #region User
+
+        /// <inheritdoc/>
+        [AccountAuthorize]
+        [HttpDelete("/byuser/{userId:guid}/{linkId:guid}", Name = "DeleteYoutubeByUser")]
+        public async Task<IActionResult> DeleteByUserAsync(Guid userId, Guid linkId)
+        {
+            try
+            {
+                var existingLink = await this.repository
+                    .GetByIdAsync(linkId.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                if (!existingLink.CreatedBy.Equals(userId.ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    return this.Unauthorized();
+                }
+
+                await this.repository
+                    .RemoveAsync(linkId.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                return this.NoContent();
+            }
+            catch (InvalidOperationException)
+            {
+                return this.NotFound();
+            }
+        }
+
+        /// <inheritdoc/>
+        [AccountAuthorize]
+        [HttpGet("byuser/{userId:guid}", Name = "GetAllYoutubesByUser")]
+        public async Task<IActionResult> GetAllByUserAsync(Guid userId)
+        {
+            var results = await this.repository
+                .GetAllByUserAsync(userId.ToString(), CancellationToken.None)
+                .ConfigureAwait(false);
+
+            return this.Ok(results);
+        }
+
+        /// <inheritdoc/>
+        [AccountAuthorize]
         [HttpGet("byuser/{userId:guid}/{linkId:guid}", Name = "GetYoutubeByUser")]
         public async Task<IActionResult> GetByUserAsync(Guid userId, Guid linkId)
         {
@@ -137,38 +207,41 @@
         }
 
         /// <inheritdoc/>
-        [HttpPut("{id:guid}", Name = "UpdateYoutube")]
-        public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateYoutubeRequest request)
+        [AccountAuthorize]
+        [HttpPut("/byuser/{userId:guid}/{linkId:guid}", Name = "UpdateYoutubeByUser")]
+        public async Task<IActionResult> UpdateByUserAsync(
+            [FromRoute] Guid userId,
+            [FromRoute] Guid linkId,
+            [FromBody] UpdateYoutubeRequest request)
         {
             EnsureArg.IsNotNull(request, nameof(request));
 
-            var userId = this.context.HttpContext?.User
-                .FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
-
             try
             {
+                var strUserId = userId.ToString();
                 var existing = await this.repository
-                    .GetByIdAsync(id.ToString(), CancellationToken.None)
+                    .GetByIdAsync(linkId.ToString(), CancellationToken.None)
                     .ConfigureAwait(false);
 
-                if (userId != existing.CreatedBy)
+                if (strUserId != existing.CreatedBy)
                 {
-                    return this.Forbid();
+                    return this.Unauthorized();
                 }
+
+                var youtube = this.mapper.Map<Youtube>(request);
+                youtube.Id = linkId.ToString();
+
+                await this.repository
+                    .UpdateAsync(youtube, CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                return this.NoContent();
             }
             catch (InvalidOperationException)
             {
                 return this.NotFound();
             }
-
-            var channel = this.mapper.Map<Youtube>(request);
-            channel.Id = id.ToString();
-
-            await this.repository
-                .UpdateAsync(channel, CancellationToken.None)
-                .ConfigureAwait(false);
-
-            return this.NoContent();
         }
+        #endregion
     }
 }

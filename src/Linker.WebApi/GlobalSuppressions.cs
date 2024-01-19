@@ -6,3 +6,4 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1124:Do not use regions", Justification = "It is useful for grouping and folding.")]
+[assembly: SuppressMessage("Major Code Smell", "S907:\"goto\" statement should not be used", Justification = "I know what I'm doing")]

@@ -70,7 +70,7 @@
             return this.Created();
         }
 
-        #region Priviledge
+        #region Privilege
 
         /// <inheritdoc/>
         [RoleAuthorize(Role.Administrator)]
@@ -226,7 +226,7 @@
             {
                 var strUserId = userId.ToString();
                 var existing = await this.repository
-                    .GetByIdAsync(strUserId, CancellationToken.None)
+                    .GetByIdAsync(linkId.ToString(), CancellationToken.None)
                     .ConfigureAwait(false);
 
                 if (strUserId != existing.CreatedBy)
@@ -250,7 +250,8 @@
         }
 
         /// <inheritdoc/>
-        [HttpDelete("/byuser/{userId:guid}/{linkId:guid}", Name = "DeleteByUser")]
+        [AccountAuthorize]
+        [HttpDelete("/byuser/{userId:guid}/{linkId:guid}", Name = "DeleteArticleByUser")]
         [SwaggerResponse((int)HttpStatusCode.NoContent, "Article successfully deleted.")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Article not found.")]
         public async Task<IActionResult> DeleteByUserAsync(
