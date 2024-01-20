@@ -5,7 +5,9 @@ using System.Security.Claims;
 using AutoMapper;
 using Linker.Core.Repositories;
 using Linker.Data.SQLite;
+using Linker.WebApi.Filters;
 using Linker.WebApi.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -55,6 +57,9 @@ builder.Services
     .AddSingleton<IYoutubeRepository, YoutubeRepository>()
     .AddSingleton<ITagRepository, TagRepository>()
     .AddSingleton<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<IAuthorizationHandler, MinimumAgeHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, MinimumAgePolicyProvider>();
 
 builder.Services
     .AddSingleton<IMapper>(c => new MapperConfiguration(config =>

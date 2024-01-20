@@ -7,6 +7,7 @@
     using Linker.Core.Controllers;
     using Linker.Core.Models;
     using Linker.Core.Repositories;
+    using Linker.WebApi.Filters;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
@@ -104,6 +105,13 @@
         {
             var result = this.context.HttpContext.User;
             return this.Ok();
+        }
+
+        [HttpGet("/is_old")]
+        [MinimumAgeAuthorize(18)]
+        public IActionResult IsOldEnough()
+        {
+            return this.Ok("ok");
         }
     }
 }
