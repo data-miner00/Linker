@@ -34,6 +34,11 @@ namespace Linker.Core.Models
         public Status Status { get; set; }
 
         /// <summary>
+        /// Gets or sets the age of the user.
+        /// </summary>
+        public DateTime DateOfBirth { get; set; }
+
+        /// <summary>
         /// Gets or sets the date that the user was created.
         /// </summary>
         public DateTime CreatedAt { get; set; }

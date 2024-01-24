@@ -48,6 +48,7 @@
                     new(ClaimTypes.NameIdentifier, user.Id),
                     new(ClaimTypes.Name, user.Username),
                     new(ClaimTypes.Role, user.Role.ToString()),
+                    new(ClaimTypes.DateOfBirth, user.DateOfBirth.ToShortDateString()),
                 };
                 var claimsIdentity = new ClaimsIdentity(claims, AuthScheme);
                 var principal = new ClaimsPrincipal(claimsIdentity);
@@ -78,6 +79,7 @@
                 Password = request.Password,
                 Role = Role.User,
                 Status = Status.Active,
+                DateOfBirth = request.DateOfBirth,
                 CreatedAt = DateTime.Now,
                 ModifiedAt = DateTime.Now,
             };
@@ -85,7 +87,15 @@
             await this.repository.AddAsync(user, cancellationToken)
                 .ConfigureAwait(false);
 
-            var response = new CreateUserResponse(user.Id, user.Username, user.Role, user.Status, user.CreatedAt, user.ModifiedAt);
+            var response = new CreateUserResponse(
+                user.Id,
+                user.Username,
+                user.Role,
+                user.Status,
+                user.DateOfBirth,
+                user.CreatedAt,
+                user.ModifiedAt);
+
             return this.Created("/login", response);
         }
 
