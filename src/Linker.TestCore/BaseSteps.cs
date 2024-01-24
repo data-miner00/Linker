@@ -109,6 +109,28 @@
         }
 
         /// <summary>
+        /// Expect the result to be the same type.
+        /// </summary>
+        /// <typeparam name="TType">The generic type.</typeparam>
+        /// <returns>The step class.</returns>
+        public TSteps ThenIExpectResultToBeOfType<TType>()
+        {
+            this.Result.Should().BeOfType<TType>();
+            return this.GetSteps();
+        }
+
+        /// <summary>
+        /// Expect the result to be the same type.
+        /// </summary>
+        /// <param name="type">The raw type.</param>
+        /// <returns>The step class.</returns>
+        public TSteps ThenIExpectResultToBeOfType(Type type)
+        {
+            this.Result.Should().BeOfType(type);
+            return this.GetSteps();
+        }
+
+        /// <summary>
         /// Expects no exception is thrown.
         /// </summary>
         /// <returns>The step class.</returns>
