@@ -4,8 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
+/// <summary>
+/// The minimum age authorization handler.
+/// </summary>
 public sealed class MinimumAgeHandler : AuthorizationHandler<MinimumAgeRequirement>
 {
+    /// <inheritdoc/>
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, MinimumAgeRequirement requirement)
     {
         var dateOfBirthClaim = context.User.FindFirst(
@@ -13,7 +17,7 @@ public sealed class MinimumAgeHandler : AuthorizationHandler<MinimumAgeRequireme
 
         if (dateOfBirthClaim is null)
         {
-            return Task.CompletedTask;
+            goto ending;
         }
 
         var dateOfBirth = Convert.ToDateTime(dateOfBirthClaim.Value);
@@ -28,6 +32,7 @@ public sealed class MinimumAgeHandler : AuthorizationHandler<MinimumAgeRequireme
             context.Succeed(requirement);
         }
 
+    ending:
         return Task.CompletedTask;
     }
 }
