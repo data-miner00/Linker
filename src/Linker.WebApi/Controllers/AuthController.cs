@@ -40,7 +40,8 @@
 
             try
             {
-                var user = await this.repository.GetByUsernameAsync(request.Username, cancellationToken)
+                var user = await this.repository
+                    .GetByUsernameAndPasswordAsync(request.Username, request.Password, cancellationToken)
                     .ConfigureAwait(false);
 
                 var claims = new Claim[]
@@ -53,16 +54,11 @@
                 var claimsIdentity = new ClaimsIdentity(claims, AuthScheme);
                 var principal = new ClaimsPrincipal(claimsIdentity);
 
-                if (user.Password != request.Password)
-                {
-                    return this.BadRequest("Wrong password");
-                }
-
                 return this.SignIn(principal, AuthScheme);
             }
             catch (InvalidOperationException)
             {
-                return this.BadRequest("User not found");
+                return this.BadRequest("Invalid username or password.");
             }
         }
 

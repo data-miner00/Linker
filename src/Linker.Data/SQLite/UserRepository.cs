@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Data;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Dapper;
@@ -43,6 +42,7 @@
                     Password,
                     Role,
                     Status,
+                    DateOfBirth,
                     CreatedAt,
                     ModifiedAt
                 ) VALUES (
@@ -51,6 +51,7 @@
                     @Password,
                     @Role,
                     @Status,
+                    @DateOfBirth,
                     @CreatedAt,
                     @ModifiedAt
                 );
@@ -63,6 +64,7 @@
                 user.Password,
                 Role = user.Role.ToString(),
                 Status = user.Status.ToString(),
+                user.DateOfBirth,
                 user.CreatedAt,
                 user.ModifiedAt,
             });
@@ -153,6 +155,27 @@
                 Status = user.Status.ToString(),
                 ModifiedAt = DateTime.Now,
             });
+        }
+
+        /// <inheritdoc/>
+        public async Task<User> GetByUsernameAndPasswordAsync(string username, string password, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var selectFromUsersQuery = @"
+                SELECT * FROM Users
+                WHERE
+                    Username = @Username AND
+                    Password = @Password;
+            ";
+
+            var user = await this.connection.QueryFirstAsync<User>(selectFromUsersQuery, param: new
+            {
+                Username = username,
+                Password = password,
+            });
+
+            return user;
         }
     }
 }
