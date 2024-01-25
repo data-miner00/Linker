@@ -39,6 +39,11 @@
         public Language Language { get; set; }
 
         /// <summary>
+        /// Gets or sets the rating of the link.
+        /// </summary>
+        public Rating Rating { get; set; }
+
+        /// <summary>
         /// Gets or sets the last visit of the link.
         /// </summary>
         public DateTime LastVisitAt { get; set; }

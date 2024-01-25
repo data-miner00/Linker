@@ -8,7 +8,6 @@
     using Dapper;
     using EnsureThat;
     using Linker.Core.Models;
-    using Linker.Core.Models.Dtos;
     using Linker.Core.Repositories;
 
     /// <summary>
@@ -34,13 +33,20 @@
 
             var randomId = Guid.NewGuid().ToString();
 
-            var insertToLinksOperation = @"
-                INSERT INTO Links (
+            var insertToArticlesOperation = @"
+                INSERT INTO Articles (
                     Id,
                     Url,
                     Category,
                     Description,
                     Language,
+                    Rating,
+                    Title,
+                    Author,
+                    Year,
+                    WatchLater,
+                    Domain,
+                    Grammar,
                     LastVisitAt,
                     CreatedAt,
                     ModifiedAt,
@@ -51,30 +57,17 @@
                     @Category,
                     @Description,
                     @Language,
-                    @LastVisitAt,
-                    @CreatedAt,
-                    @ModifiedAt,
-                    @CreatedBy
-                );
-            ";
-
-            var insertToArticleOperation = @"
-                INSERT INTO Articles (
-                    LinkId,
-                    Title,
-                    Author,
-                    Year,
-                    WatchLater,
-                    Domain,
-                    Grammar
-                ) VALUES (
-                    @LinkId,
+                    @Rating,
                     @Title,
                     @Author,
                     @Year,
                     @WatchLater,
                     @Domain,
-                    @Grammar
+                    @Grammar,
+                    @LastVisitAt,
+                    @CreatedAt,
+                    @ModifiedAt,
+                    @CreatedBy
                 );
             ";
 
@@ -104,28 +97,24 @@
                 );
             ";
 
-            await this.connection.ExecuteAsync(insertToLinksOperation, new
+            await this.connection.ExecuteAsync(insertToArticlesOperation, new
             {
                 Id = randomId,
                 item.Url,
                 Category = item.Category.ToString(),
                 item.Description,
                 Language = item.Language.ToString(),
-                item.LastVisitAt,
-                item.CreatedAt,
-                item.ModifiedAt,
-                item.CreatedBy,
-            });
-
-            await this.connection.ExecuteAsync(insertToArticleOperation, new
-            {
-                LinkId = randomId,
+                Rating = item.Rating.ToString(),
                 item.Title,
                 item.Author,
                 item.Year,
                 item.WatchLater,
                 item.Domain,
                 Grammar = item.Grammar.ToString(),
+                item.LastVisitAt,
+                item.CreatedAt,
+                item.ModifiedAt,
+                item.CreatedBy,
             });
 
             foreach (var tag in item.Tags)
@@ -156,21 +145,17 @@
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var articles = new List<Article>();
-
             var selectFromArticlesQuery = @"SELECT * FROM Articles;";
 
-            var partialArticles = await this.connection.QueryAsync<PartialArticle>(selectFromArticlesQuery);
+            var articles = await this.connection.QueryAsync<Article>(selectFromArticlesQuery);
 
-            foreach (var partialArticle in partialArticles)
+            foreach (var article in articles)
             {
                 var tags = new List<string>();
 
-                var selectFromLinkQuery = @"SELECT * FROM Links WHERE Id = @Id;";
-                var link = await this.connection.QueryFirstAsync<Link>(selectFromLinkQuery, new { Id = partialArticle.LinkId });
+                var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @LinkId;";
+                var tagsz = await this.connection.QueryAsync<LinkTagPair>(selectFromLinksTagsQuery, new { LinkId = article.Id });
 
-                var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @Id;";
-                var tagsz = await this.connection.QueryAsync<LinkTagPair>(selectFromLinksTagsQuery, new { Id = partialArticle.LinkId });
                 foreach (var tagz in tagsz)
                 {
                     var selectFromTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
@@ -178,27 +163,7 @@
                     tags.Add(tag.Name);
                 }
 
-                var article = new Article
-                {
-                    Id = link.Id,
-                    Url = link.Url,
-                    Category = link.Category,
-                    Description = link.Description,
-                    Tags = tags,
-                    Language = link.Language,
-                    LastVisitAt = link.LastVisitAt,
-                    CreatedAt = link.CreatedAt,
-                    ModifiedAt = link.ModifiedAt,
-                    CreatedBy = link.CreatedBy,
-                    Title = partialArticle.Title,
-                    Author = partialArticle.Author,
-                    Year = partialArticle.Year,
-                    WatchLater = partialArticle.WatchLater,
-                    Domain = partialArticle.Domain,
-                    Grammar = partialArticle.Grammar,
-                };
-
-                articles.Add(article);
+                article.Tags = tags;
             }
 
             return articles;
@@ -221,11 +186,9 @@
 
             var tags = new List<string>();
 
-            var partialArticle = await this.TryGetItemAsync(id);
+            var selectFromArticlesQuery = @"SELECT * FROM Articles WHERE Id = @Id;";
 
-            var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id = @Id;";
-
-            var link = await this.connection.QueryFirstAsync<Link>(selectFromLinksQuery, new { Id = id });
+            var article = await this.connection.QueryFirstAsync<Article>(selectFromArticlesQuery, new { Id = id });
 
             var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @LinkId;";
 
@@ -238,25 +201,7 @@
                 tags.Add(tag.Name);
             }
 
-            var article = new Article
-            {
-                Id = link.Id,
-                Url = link.Url,
-                Category = link.Category,
-                Description = link.Description,
-                Tags = tags,
-                Language = link.Language,
-                LastVisitAt = link.LastVisitAt,
-                CreatedAt = link.CreatedAt,
-                ModifiedAt = link.ModifiedAt,
-                CreatedBy = link.CreatedBy,
-                Title = partialArticle.Title,
-                Author = partialArticle.Author,
-                Year = partialArticle.Year,
-                WatchLater = partialArticle.WatchLater,
-                Domain = partialArticle.Domain,
-                Grammar = partialArticle.Grammar,
-            };
+            article.Tags = tags;
 
             return article;
         }
@@ -284,12 +229,10 @@
 
             await this.TryGetItemAsync(id);
 
-            var deleteFromArticlesOperation = @"DELETE FROM Articles WHERE LinkId = @Id;";
-            var deleteFromLinksOperation = @"DELETE FROM Links WHERE Id = @Id;";
+            var deleteFromArticlesOperation = @"DELETE FROM Articles WHERE Id = @Id;";
             var deleteFromLinksTagsOperation = @"DELETE FROM Links_Tags WHERE LinkId = @Id;";
 
             await this.connection.ExecuteAsync(deleteFromArticlesOperation, new { Id = id });
-            await this.connection.ExecuteAsync(deleteFromLinksOperation, new { Id = id });
             await this.connection.ExecuteAsync(deleteFromLinksTagsOperation, new { Id = id });
         }
 
@@ -308,18 +251,12 @@
                     Year = @Year,
                     WatchLater = @WatchLater,
                     Domain = @Domain,
-                    Grammar = @Grammar
-                WHERE
-                    LinkId = @Id;
-            ";
-
-            var updateLinksOperation = @"
-                UPDATE Links
-                SET
+                    Grammar = @Grammar,
                     Url = @Url,
                     Category = @Category,
                     Description = @Description,
                     Language = @Language,
+                    Rating = @Rating,
                     ModifiedAt = @ModifiedAt
                 WHERE
                     Id = @Id;
@@ -334,25 +271,21 @@
                 item.WatchLater,
                 item.Domain,
                 Grammar = item.Grammar.ToString(),
-            });
-
-            await this.connection.ExecuteAsync(updateLinksOperation, new
-            {
-                item.Id,
                 item.Url,
                 Category = item.Category.ToString(),
                 item.Description,
                 Language = item.Language.ToString(),
+                Rating = item.Rating.ToString(),
                 ModifiedAt = DateTime.Now,
             });
         }
 
-        private async Task<PartialArticle> TryGetItemAsync(string id)
+        private async Task<Article> TryGetItemAsync(string id)
         {
-            var selectFromArticlesQuery = @"SELECT * FROM Articles WHERE LinkId = @Id;";
-            var partialArticle = await this.connection.QueryFirstAsync<PartialArticle>(selectFromArticlesQuery, new { Id = id });
+            var selectFromArticlesQuery = @"SELECT * FROM Articles WHERE Id = @Id;";
+            var article = await this.connection.QueryFirstAsync<Article>(selectFromArticlesQuery, new { Id = id });
 
-            return partialArticle;
+            return article;
         }
     }
 }

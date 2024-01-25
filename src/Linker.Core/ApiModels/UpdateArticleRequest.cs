@@ -1,4 +1,5 @@
-﻿namespace Linker.Core.ApiModels
+﻿#nullable disable
+namespace Linker.Core.ApiModels
 {
     using System.ComponentModel.DataAnnotations;
     using Linker.Core.Models;
@@ -41,6 +42,12 @@
         /// </summary>
         [Required]
         public Language Language { get; set; }
+
+        /// <summary>
+        /// Gets or sets the rating of the article.
+        /// </summary>
+        [Required]
+        public Rating Rating { get; set; }
 
         /// <summary>
         /// Gets or sets the grammar of the article.

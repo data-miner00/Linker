@@ -8,7 +8,6 @@
     using Dapper;
     using EnsureThat;
     using Linker.Core.Models;
-    using Linker.Core.Models.Dtos;
     using Linker.Core.Repositories;
 
     /// <summary>
@@ -34,13 +33,17 @@
 
             var randomId = Guid.NewGuid().ToString();
 
-            var insertToLinksOperation = @"
-                INSERT INTO Links (
+            var insertToYoutubeOperation = @"
+                INSERT INTO Youtube (
                     Id,
                     Url,
                     Category,
                     Description,
                     Language,
+                    Rating,
+                    Name,
+                    Youtuber,
+                    Country,
                     LastVisitAt,
                     CreatedAt,
                     ModifiedAt,
@@ -51,24 +54,14 @@
                     @Category,
                     @Description,
                     @Language,
+                    @Rating,
+                    @Name,
+                    @Youtuber,
+                    @Country,
                     @LastVisitAt,
                     @CreatedAt,
                     @ModifiedAt,
                     @CreatedBy
-                );
-            ";
-
-            var insertToYoutubeOperation = @"
-                INSERT INTO Youtube (
-                    LinkId,
-                    Name,
-                    Youtuber,
-                    Country
-                ) VALUES (
-                    @LinkId,
-                    @Name,
-                    @Youtuber,
-                    @Country
                 );
             ";
 
@@ -98,25 +91,21 @@
                 );
             ";
 
-            await this.connection.ExecuteAsync(insertToLinksOperation, new
+            await this.connection.ExecuteAsync(insertToYoutubeOperation, new
             {
                 Id = randomId,
                 item.Url,
                 Category = item.Category.ToString(),
                 item.Description,
                 Language = item.Language.ToString(),
+                Rating = item.Rating.ToString(),
+                item.Name,
+                item.Youtuber,
+                item.Country,
                 item.LastVisitAt,
                 item.CreatedAt,
                 item.ModifiedAt,
                 item.CreatedBy,
-            });
-
-            await this.connection.ExecuteAsync(insertToYoutubeOperation, new
-            {
-                LinkId = randomId,
-                item.Name,
-                item.Youtuber,
-                item.Country,
             });
 
             foreach (var tag in item.Tags)
@@ -147,22 +136,17 @@
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var channels = new List<Youtube>();
-
             var selectFromYoutubeQuery = @"SELECT * FROM Youtube;";
 
-            var partialChannels =
-                await this.connection.QueryAsync<PartialYoutube>(selectFromYoutubeQuery);
+            var channels =
+                await this.connection.QueryAsync<Youtube>(selectFromYoutubeQuery);
 
-            foreach (var partialChannel in partialChannels)
+            foreach (var channel in channels)
             {
                 var tags = new List<string>();
 
-                var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id =@Id;";
-                var link = await this.connection.QueryFirstAsync<Link>(selectFromLinksQuery, new { Id = partialChannel.LinkId });
-
-                var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @Id;";
-                var tagsz = await this.connection.QueryAsync<LinkTagPair>(selectFromLinksTagsQuery, new { Id = partialChannel.LinkId });
+                var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @LinkId;";
+                var tagsz = await this.connection.QueryAsync<LinkTagPair>(selectFromLinksTagsQuery, new { LinkId = channel.Id });
 
                 foreach (var tagz in tagsz)
                 {
@@ -171,24 +155,7 @@
                     tags.Add(tag.Name);
                 }
 
-                var youtube = new Youtube
-                {
-                    Id = link.Id,
-                    Url = link.Url,
-                    Category = link.Category,
-                    Description = link.Description,
-                    Tags = tags,
-                    Language = link.Language,
-                    LastVisitAt = link.LastVisitAt,
-                    CreatedAt = link.CreatedAt,
-                    ModifiedAt = link.ModifiedAt,
-                    CreatedBy = link.CreatedBy,
-                    Name = partialChannel.Name,
-                    Youtuber = partialChannel.Youtuber,
-                    Country = partialChannel.Country,
-                };
-
-                channels.Add(youtube);
+                channel.Tags = tags;
             }
 
             return channels;
@@ -211,11 +178,9 @@
 
             var tags = new List<string>();
 
-            var partialChannel = await this.TryGetItemAsync(id);
+            var selectFromLYoutubeQuery = @"SELECT * FROM Youtube WHERE Id = @Id;";
 
-            var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id = @Id;";
-
-            var link = await this.connection.QueryFirstAsync<Link>(selectFromLinksQuery, new { Id = id });
+            var youtube = await this.connection.QueryFirstAsync<Youtube>(selectFromLYoutubeQuery, new { Id = id });
 
             var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @LinkId;";
 
@@ -228,22 +193,7 @@
                 tags.Add(tag.Name);
             }
 
-            var youtube = new Youtube
-            {
-                Id = link.Id,
-                Url = link.Url,
-                Category = link.Category,
-                Description = link.Description,
-                Tags = tags,
-                Language = link.Language,
-                LastVisitAt = link.LastVisitAt,
-                CreatedAt = link.CreatedAt,
-                ModifiedAt = link.ModifiedAt,
-                CreatedBy = link.CreatedBy,
-                Name = partialChannel.Name,
-                Youtuber = partialChannel.Youtuber,
-                Country = partialChannel.Country,
-            };
+            youtube.Tags = tags;
 
             return youtube;
         }
@@ -271,17 +221,15 @@
 
             await this.TryGetItemAsync(id);
 
-            var deleteFromYoutubeOperation = @"DELETE FROM Youtube WHERE LinkId = @Id;";
-            var deleteFromLinksOperation = @"DELETE FROM Links WHERE Id = @Id;";
+            var deleteFromYoutubeOperation = @"DELETE FROM Youtube WHERE Id = @Id;";
             var deleteFromLinksTagsOperation = @"DELETE FROM Links_Tags WHERE LinkId = @Id;";
 
             await this.connection.ExecuteAsync(deleteFromYoutubeOperation, new { Id = id });
-            await this.connection.ExecuteAsync(deleteFromLinksOperation, new { Id = id });
             await this.connection.ExecuteAsync(deleteFromLinksTagsOperation, new { Id = id });
         }
 
         /// <inheritdoc/>
-        public async Task UpdateAsync(Youtube item, CancellationToken cancellationToken)
+        public async Task UpdateAsync(Core.Models.Youtube item, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -292,18 +240,12 @@
                 SET
                     Name = @Name,
                     Youtuber = @Youtuber,
-                    Country = @Country
-                WHERE
-                    LinkId = @Id;
-            ";
-
-            var updateLinksOperation = @"
-                UPDATE Links
-                SET
+                    Country = @Country,
                     Url = @Url,
                     Category = @Category,
                     Description = @Description,
                     Language = @Language,
+                    Rating = @Rating,
                     ModifiedAt = @ModifiedAt
                 WHERE
                     Id = @Id;
@@ -315,25 +257,21 @@
                 item.Name,
                 item.Youtuber,
                 item.Country,
-            });
-
-            await this.connection.ExecuteAsync(updateLinksOperation, new
-            {
-                item.Id,
                 item.Url,
                 Category = item.Category.ToString(),
                 item.Description,
                 Language = item.Language.ToString(),
+                Rating = item.Rating.ToString(),
                 ModifiedAt = DateTime.Now,
             });
         }
 
-        private async Task<PartialYoutube> TryGetItemAsync(string id)
+        private async Task<Youtube> TryGetItemAsync(string id)
         {
-            var selectFromChannelQuery = @"SELECT * FROM Youtube WHERE LinkId = @Id;";
-            var partialChannel = await this.connection.QueryFirstAsync<PartialYoutube>(selectFromChannelQuery, new { Id = id });
+            var selectFromChannelQuery = @"SELECT * FROM Youtube WHERE Id = @Id;";
+            var channel = await this.connection.QueryFirstAsync<Youtube>(selectFromChannelQuery, new { Id = id });
 
-            return partialChannel;
+            return channel;
         }
     }
 }

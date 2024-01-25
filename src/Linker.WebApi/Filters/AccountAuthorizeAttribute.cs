@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Security.Claims;
 
+/// <summary>
+/// Authorize the resource that can only be accessed by the owner.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
 public sealed class AccountAuthorizeAttribute : Attribute, IAuthorizationFilter
 {
     /// <inheritdoc/>

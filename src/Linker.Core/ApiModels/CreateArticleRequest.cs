@@ -56,6 +56,12 @@
         public Grammar Grammar { get; set; }
 
         /// <summary>
+        /// Gets or sets the rating of the article.
+        /// </summary>
+        [Required]
+        public Rating Rating { get; set; }
+
+        /// <summary>
         /// Gets or sets year published of the article.
         /// </summary>
         [Range(1970, 2100)]

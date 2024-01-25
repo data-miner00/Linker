@@ -13,6 +13,7 @@
     /// </summary>
     public class TagRepository : ITagRepository
     {
+        private static readonly string[] Columns = ["Id", "Name"];
         private readonly IDbConnection connection;
 
         /// <summary>
@@ -38,7 +39,7 @@
         /// <inheritdoc/>
         public async Task<Tag> GetByAsync(string type, string value)
         {
-            if (!new[] { "Id", "Name" }.Contains(type))
+            if (!Columns.Contains(type))
             {
                 throw new ArgumentException(type, nameof(type));
             }

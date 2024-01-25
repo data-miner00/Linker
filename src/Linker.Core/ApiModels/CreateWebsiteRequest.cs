@@ -13,13 +13,13 @@
         /// Gets or sets the name of the website.
         /// </summary>
         [Required(AllowEmptyStrings = false)]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the url of the website.
         /// </summary>
         [Required(AllowEmptyStrings = false)]
-        public string Url { get; set; }
+        public string Url { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the category of the website.
@@ -30,19 +30,25 @@
         /// <summary>
         /// Gets or sets the description of the website.
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the tags of the website.
         /// </summary>
         [Required]
-        public IEnumerable<string> Tags { get; set; }
+        public IEnumerable<string> Tags { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the language of the website.
         /// </summary>
         [Required]
         public Language Language { get; set; }
+
+        /// <summary>
+        /// Gets or sets the rating of the article.
+        /// </summary>
+        [Required]
+        public Rating Rating { get; set; }
 
         /// <summary>
         /// Gets or sets the aesthetics of the website.
@@ -66,6 +72,6 @@
         /// Gets or sets the creator of the link.
         /// </summary>
         [Required]
-        public string CreatedBy { get; set; }
+        public string CreatedBy { get; set; } = null!;
     }
 }

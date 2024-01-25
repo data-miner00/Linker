@@ -13,7 +13,7 @@
         /// Gets or sets the url of the Youtube channel.
         /// </summary>
         [Required(AllowEmptyStrings = false)]
-        public string Url { get; set; }
+        public string Url { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the category of the Youtube channel.
@@ -24,7 +24,7 @@
         /// <summary>
         /// Gets or sets the description of the Youtube channel.
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the language of the Youtube channel.
@@ -33,31 +33,37 @@
         public Language Language { get; set; }
 
         /// <summary>
+        /// Gets or sets the rating of the article.
+        /// </summary>
+        [Required]
+        public Rating Rating { get; set; }
+
+        /// <summary>
         /// Gets or sets the name of the Youtube channel.
         /// </summary>
         [Required(AllowEmptyStrings = false)]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the name of the Youtube channel creator.
         /// </summary>
-        public string Youtuber { get; set; }
+        public string Youtuber { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the country that the Youtube channel based in.
         /// </summary>
-        public string Country { get; set; }
+        public string Country { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the tags that is related to the Youtube channel.
         /// </summary>
         [Required]
-        public IEnumerable<string> Tags { get; set; }
+        public IEnumerable<string> Tags { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the creator of the link.
         /// </summary>
         [Required]
-        public string CreatedBy { get; set; }
+        public string CreatedBy { get; set; } = null!;
     }
 }

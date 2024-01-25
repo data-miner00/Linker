@@ -31,13 +31,19 @@
 
             var randomId = Guid.NewGuid().ToString();
 
-            var insertToLinksOperation = @"
-                INSERT INTO Links (
+            var insertToWebsitesOperation = @"
+                INSERT INTO Websites (
                     Id,
                     Url,
                     Category,
                     Description,
                     Language,
+                    Rating,
+                    Name,
+                    Domain,
+                    Aesthetics,
+                    IsSubdomain,
+                    IsMultilingual,
                     LastVisitAt,
                     CreatedAt,
                     ModifiedAt,
@@ -48,28 +54,16 @@
                     @Category,
                     @Description,
                     @Language,
-                    @LastVisitAt,
-                    @CreatedAt,
-                    @ModifiedAt,
-                    @CreatedBy
-                );
-            ";
-
-            var insertToWebsitesOperation = @"
-                INSERT INTO Websites (
-                    LinkId,
-                    Name,
-                    Domain,
-                    Aesthetics,
-                    IsSubdomain,
-                    IsMultilingual
-                ) VALUES (
-                    @LinkId,
+                    @Rating,
                     @Name,
                     @Domain,
                     @Aesthetics,
                     @IsSubdomain,
-                    @IsMultilingual
+                    @IsMultilingual,
+                    @LastVisitAt,
+                    @CreatedAt,
+                    @ModifiedAt,
+                    @CreatedBy
                 );
             ";
 
@@ -99,27 +93,23 @@
                 );
             ";
 
-            await this.connection.ExecuteAsync(insertToLinksOperation, new
+            await this.connection.ExecuteAsync(insertToWebsitesOperation, new
             {
                 Id = randomId,
                 item.Url,
                 Category = item.Category.ToString(),
                 item.Description,
                 Language = item.Language.ToString(),
-                item.LastVisitAt,
-                item.CreatedAt,
-                item.ModifiedAt,
-                item.CreatedBy,
-            });
-
-            await this.connection.ExecuteAsync(insertToWebsitesOperation, new
-            {
-                LinkId = randomId,
+                Rating = item.Rating.ToString(),
                 item.Name,
                 item.Domain,
                 Aesthetics = item.Aesthetics.ToString(),
                 item.IsSubdomain,
                 item.IsMultilingual,
+                item.LastVisitAt,
+                item.CreatedAt,
+                item.ModifiedAt,
+                item.CreatedBy,
             });
 
             foreach (var tag in item.Tags)
@@ -150,21 +140,17 @@
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var websites = new List<Website>();
-
             var selectFromWebsitesQuery = @"SELECT * FROM Websites;";
 
-            var partialWebsites = await this.connection.QueryAsync<PartialWebsite>(selectFromWebsitesQuery);
+            var websites = await this.connection.QueryAsync<Website>(selectFromWebsitesQuery);
 
-            foreach (var partialWebsite in partialWebsites)
+            foreach (var website in websites)
             {
                 var tags = new List<string>();
 
-                var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id = @Id;";
-                var link = await this.connection.QueryFirstAsync<Link>(selectFromLinksQuery, new { Id = partialWebsite.LinkId });
+                var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @LinkId;";
+                var tagsz = await this.connection.QueryAsync<LinkTagPair>(selectFromLinksTagsQuery, new { LinkId = website.Id });
 
-                var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @Id;";
-                var tagsz = await this.connection.QueryAsync<LinkTagPair>(selectFromLinksTagsQuery, new { Id = partialWebsite.LinkId });
                 foreach (var tagz in tagsz)
                 {
                     var selectFromTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
@@ -172,26 +158,7 @@
                     tags.Add(tag.Name);
                 }
 
-                var website = new Website
-                {
-                    Id = link.Id,
-                    Url = link.Url,
-                    Category = link.Category,
-                    Description = link.Description,
-                    Tags = tags,
-                    Language = link.Language,
-                    LastVisitAt = link.LastVisitAt,
-                    CreatedAt = link.CreatedAt,
-                    ModifiedAt = link.ModifiedAt,
-                    CreatedBy = link.CreatedBy,
-                    Name = partialWebsite.Name,
-                    Domain = partialWebsite.Domain,
-                    Aesthetics = partialWebsite.Aesthetics,
-                    IsSubdomain = partialWebsite.IsSubdomain,
-                    IsMultilingual = partialWebsite.IsMultilingual,
-                };
-
-                websites.Add(website);
+                website.Tags = tags;
             }
 
             return websites;
@@ -214,10 +181,8 @@
 
             var tags = new List<string>();
 
-            var partialWebsite = await this.TryGetItemAsync(id);
-
-            var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id = @Id;";
-            var link = await this.connection.QueryFirstAsync<Link>(selectFromLinksQuery, new { Id = id });
+            var selectFromWebsitesQuery = @"SELECT * FROM Websites WHERE Id = @Id;";
+            var website = await this.connection.QueryFirstAsync<Website>(selectFromWebsitesQuery, new { Id = id });
 
             var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @LinkId;";
             var tagsz = await this.connection.QueryAsync<LinkTagPair>(selectFromLinksTagsQuery, new { LinkId = id });
@@ -229,24 +194,7 @@
                 tags.Add(tag.Name);
             }
 
-            var website = new Website
-            {
-                Id = link.Id,
-                Url = link.Url,
-                Category = link.Category,
-                Description = link.Description,
-                Tags = tags,
-                Language = link.Language,
-                LastVisitAt = link.LastVisitAt,
-                CreatedAt = link.CreatedAt,
-                ModifiedAt = link.ModifiedAt,
-                CreatedBy = link.CreatedBy,
-                Name = partialWebsite.Name,
-                Domain = partialWebsite.Domain,
-                Aesthetics = partialWebsite.Aesthetics,
-                IsSubdomain = partialWebsite.IsSubdomain,
-                IsMultilingual = partialWebsite.IsMultilingual,
-            };
+            website.Tags = tags;
 
             return website;
         }
@@ -274,12 +222,10 @@
 
             await this.TryGetItemAsync(id);
 
-            var deleteFromWebsitesOperation = @"DELETE FROM Websites WHERE LinkId = @Id;";
-            var deleteFromLinksOperation = @"DELETE FROM Links WHERE Id = @Id;";
+            var deleteFromWebsitesOperation = @"DELETE FROM Websites WHERE Id = @Id;";
             var deleteFromLinksTagsOperation = @"DELETE FROM Links_Tags Where LinkId = @Id;";
 
             await this.connection.ExecuteAsync(deleteFromWebsitesOperation, new { Id = id });
-            await this.connection.ExecuteAsync(deleteFromLinksOperation, new { Id = id });
             await this.connection.ExecuteAsync(deleteFromLinksTagsOperation, new { Id = id });
         }
 
@@ -297,18 +243,12 @@
                     Domain = @Domain,
                     Aesthetics = @Aesthetics,
                     IsSubdomain = @IsSubdomain,
-                    IsMultilingual = @IsMultilingual
-                WHERE
-                    LinkId = @Id;
-            ";
-
-            var updateLinksOperation = @"
-                UPDATE Links
-                SET
+                    IsMultilingual = @IsMultilingual,
                     Url = @Url,
                     Category = @Category,
                     Description = @Description,
                     Language = @Language,
+                    Rating = @Rating,
                     ModifiedAt = @ModifiedAt
                 WHERE
                     Id = @Id;
@@ -322,26 +262,22 @@
                 Aesthetics = item.Aesthetics.ToString(),
                 item.IsSubdomain,
                 item.IsMultilingual,
-            });
-
-            await this.connection.ExecuteAsync(updateLinksOperation, new
-            {
-                item.Id,
                 item.Url,
                 Category = item.Category.ToString(),
                 item.Description,
                 Language = item.Language.ToString(),
+                Rating = item.Rating.ToString(),
                 ModifiedAt = DateTime.Now,
             });
         }
 
-        private async Task<PartialWebsite> TryGetItemAsync(string id)
+        private async Task<Website> TryGetItemAsync(string id)
         {
-            var selectFromWebsitesQuery = @"SELECT * FROM Websites WHERE LinkId = @Id;";
+            var selectFromWebsitesQuery = @"SELECT * FROM Websites WHERE Id = @Id;";
 
-            var partialWebsite = await this.connection.QueryFirstAsync<PartialWebsite>(selectFromWebsitesQuery, new { Id = id });
+            var website = await this.connection.QueryFirstAsync<Website>(selectFromWebsitesQuery, new { Id = id });
 
-            return partialWebsite;
+            return website;
         }
     }
 }
