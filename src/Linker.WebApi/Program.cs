@@ -56,7 +56,8 @@ builder.Services
     .AddSingleton<IArticleRepository, ArticleRepository>()
     .AddSingleton<IYoutubeRepository, YoutubeRepository>()
     .AddSingleton<ITagRepository, TagRepository>()
-    .AddSingleton<IUserRepository, UserRepository>();
+    .AddSingleton<IUserRepository, UserRepository>()
+    .AddScoped<IWorkspaceRepository, WorkspaceRepository>();
 
 builder.Services.AddScoped<IAuthorizationHandler, MinimumAgeHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, MinimumAgePolicyProvider>();
@@ -68,6 +69,7 @@ builder.Services
         config.AddProfile<ArticleMapperProfile>();
         config.AddProfile<WebsiteMapperProfile>();
         config.AddProfile<YoutubeMapperProfile>();
+        config.AddProfile<WorkspaceMapperProfile>();
     })
     .CreateMapper());
 

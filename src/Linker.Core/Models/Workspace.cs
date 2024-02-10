@@ -1,6 +1,8 @@
 ﻿#nullable disable
 namespace Linker.Core.Models;
 
+using System;
+
 /// <summary>
 /// Allow users to create meaningful collection and making sense of the links.
 /// </summary>
@@ -34,10 +36,10 @@ public class Workspace
     /// <summary>
     /// Gets or sets the creation date.
     /// </summary>
-    public string CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     /// <summary>
     /// Gets or sets the last modified date.
     /// </summary>
-    public string ModifiedAt { get; set; }
+    public DateTime ModifiedAt { get; set; }
 }
