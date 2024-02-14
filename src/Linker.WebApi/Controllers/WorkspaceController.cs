@@ -11,6 +11,7 @@ using System;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using EnsureThat;
+using Linker.WebApi.Filters;
 
 /// <summary>
 /// The workspace controller for Http requests.
@@ -44,6 +45,8 @@ public class WorkspaceController : ControllerBase, IWorkspaceController
     [HttpPost("", Name = "CreateWorkspace")]
     public async Task<IActionResult> CreateAsync([FromBody] CreateWorkspaceRequest request)
     {
+        EnsureArg.IsNotNull(request, nameof(request));
+
         var userId = this.context.HttpContext?.User
             .FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
 
@@ -56,17 +59,28 @@ public class WorkspaceController : ControllerBase, IWorkspaceController
     }
 
     /// <inheritdoc/>
+    [MinimumRoleAuthorize(Role.Administrator)]
     [HttpDelete("{id:guid}", Name = "DeleteWorkspace")]
     public async Task<IActionResult> DeleteAsync(Guid id)
     {
-        await this.repository
-            .RemoveAsync(id.ToString(), default)
-            .ConfigureAwait(false);
+        EnsureArg.IsNotDefault(id, nameof(id));
 
-        return this.NoContent();
+        try
+        {
+            await this.repository
+                .RemoveAsync(id.ToString(), default)
+                .ConfigureAwait(false);
+
+            return this.NoContent();
+        }
+        catch (InvalidOperationException)
+        {
+            return this.NotFound();
+        }
     }
 
     /// <inheritdoc/>
+    [MinimumRoleAuthorize(Role.Administrator)]
     [HttpGet("", Name = "GetAllWorkspaces")]
     public async Task<IActionResult> GetAllAsync()
     {
@@ -78,14 +92,24 @@ public class WorkspaceController : ControllerBase, IWorkspaceController
     }
 
     /// <inheritdoc/>
+    [MinimumRoleAuthorize(Role.Administrator)]
     [HttpGet("{id:guid}", Name = "GetWorkspaceById")]
     public async Task<IActionResult> GetByIdAsync(Guid id)
     {
-        var workspace = await this.repository
-            .GetByIdAsync(id.ToString(), default)
-            .ConfigureAwait(false);
+        EnsureArg.IsNotDefault(id, nameof(id));
 
-        return this.Ok(workspace);
+        try
+        {
+            var workspace = await this.repository
+                .GetByIdAsync(id.ToString(), default)
+                .ConfigureAwait(false);
+
+            return this.Ok(workspace);
+        }
+        catch (InvalidOperationException)
+        {
+            return this.NotFound(id);
+        }
     }
 
     /// <inheritdoc/>
@@ -117,20 +141,32 @@ public class WorkspaceController : ControllerBase, IWorkspaceController
     }
 
     /// <inheritdoc/>
+    [AccountAuthorize]
     [HttpGet("byuser/{userId:guid}", Name = "GetWorkspacesByUser")]
     public async Task<IActionResult> GetWorkspaceByUserAsync(Guid userId)
     {
-        var workspaces = await this.repository
-            .GetAllByUserAsync(userId.ToString(), default)
-            .ConfigureAwait(false);
+        EnsureArg.IsNotDefault(userId, nameof(userId));
 
-        return this.Ok(workspaces);
+        try
+        {
+            var workspaces = await this.repository
+                .GetAllByUserAsync(userId.ToString(), default)
+                .ConfigureAwait(false);
+
+            return this.Ok(workspaces);
+        }
+        catch (InvalidOperationException)
+        {
+            return this.NotFound();
+        }
     }
 
     /// <inheritdoc/>
     [HttpPost("membership", Name = "AddWorkspaceMembership")]
     public async Task<IActionResult> AddWorkspaceMembershipAsync(CreateWorkspaceMembershipRequest request)
     {
+        EnsureArg.IsNotNull(request, nameof(request));
+
         var membership = this.mapper.Map<WorkspaceMembership>(request);
 
         await this.repository
@@ -141,31 +177,54 @@ public class WorkspaceController : ControllerBase, IWorkspaceController
     }
 
     /// <inheritdoc/>
+    [AccountAuthorize]
     [HttpDelete("membership/{workspaceId:guid}/{userId:guid}", Name = "DeleteWorkspaceMembership")]
     public async Task<IActionResult> DeleteWorkspaceMembershipAsync(Guid workspaceId, Guid userId)
     {
-        await this.repository
-            .DeleteWorkspaceMembershipAsync(workspaceId.ToString(), userId.ToString(), default)
-            .ConfigureAwait(false);
+        EnsureArg.IsNotDefault(workspaceId, nameof(workspaceId));
+        EnsureArg.IsNotDefault(userId, nameof(userId));
 
-        return this.NoContent();
+        try
+        {
+            await this.repository
+                .DeleteWorkspaceMembershipAsync(workspaceId.ToString(), userId.ToString(), default)
+                .ConfigureAwait(false);
+
+            return this.NoContent();
+        }
+        catch (InvalidOperationException)
+        {
+            return this.NotFound();
+        }
     }
 
     /// <inheritdoc/>
     [HttpGet("article/{workspaceId:guid}", Name = "GetWorkspaceArticles")]
     public async Task<IActionResult> GetWorkspaceArticlesAsync(Guid workspaceId)
     {
-        var articles = await this.repository
-            .GetWorkspaceArticlesAsync(workspaceId.ToString(), default)
-            .ConfigureAwait(false);
+        EnsureArg.IsNotDefault(workspaceId, nameof(workspaceId));
 
-        return this.Ok(articles);
+        try
+        {
+            var articles = await this.repository
+                .GetWorkspaceArticlesAsync(workspaceId.ToString(), default)
+                .ConfigureAwait(false);
+
+            return this.Ok(articles);
+        }
+        catch (InvalidOperationException)
+        {
+            return this.NotFound();
+        }
     }
 
     /// <inheritdoc/>
     [HttpPost("article/{workspaceId:guid}/{articleId:guid}", Name = "AddWorkspaceArticle")]
     public async Task<IActionResult> AddWorkspaceArticleAsync(Guid workspaceId, Guid articleId)
     {
+        EnsureArg.IsNotDefault(workspaceId, nameof(workspaceId));
+        EnsureArg.IsNotDefault(articleId, nameof(articleId));
+
         await this.repository
             .AddWorkspaceArticleAsync(workspaceId.ToString(), articleId.ToString(), default)
             .ConfigureAwait(false);
@@ -177,28 +236,50 @@ public class WorkspaceController : ControllerBase, IWorkspaceController
     [HttpDelete("article/{workspaceId:guid}/{articleId:guid}", Name = "DeleteWorkspaceArticle")]
     public async Task<IActionResult> DeleteWorkspaceArticleAsync(Guid workspaceId, Guid articleId)
     {
-        await this.repository
-            .RemoveWorkspaceArticleAsync(workspaceId.ToString(), articleId.ToString(), default)
-            .ConfigureAwait(false);
+        EnsureArg.IsNotDefault(workspaceId, nameof(workspaceId));
+        EnsureArg.IsNotDefault(articleId, nameof(articleId));
 
-        return this.NoContent();
+        try
+        {
+            await this.repository
+                .RemoveWorkspaceArticleAsync(workspaceId.ToString(), articleId.ToString(), default)
+                .ConfigureAwait(false);
+
+            return this.NoContent();
+        }
+        catch (InvalidOperationException)
+        {
+            return this.NotFound();
+        }
     }
 
     /// <inheritdoc/>
     [HttpGet("website/{workspaceId:guid}", Name = "GetWorkspaceWebsites")]
     public async Task<IActionResult> GetWorkspaceWebsitesAsync(Guid workspaceId)
     {
-        var websites = await this.repository
-            .GetWorkspaceWebsitesAsync(workspaceId.ToString(), default)
-            .ConfigureAwait(false);
+        EnsureArg.IsNotDefault(workspaceId, nameof(workspaceId));
 
-        return this.Ok(websites);
+        try
+        {
+            var websites = await this.repository
+                .GetWorkspaceWebsitesAsync(workspaceId.ToString(), default)
+                .ConfigureAwait(false);
+
+            return this.Ok(websites);
+        }
+        catch (InvalidOperationException)
+        {
+            return this.NotFound();
+        }
     }
 
     /// <inheritdoc/>
     [HttpPost("website/{workspaceId:guid}/{websiteId:guid}", Name = "AddWorkspaceWebsite")]
     public async Task<IActionResult> AddWorkspaceWebsiteAsync(Guid workspaceId, Guid websiteId)
     {
+        EnsureArg.IsNotDefault(workspaceId, nameof(workspaceId));
+        EnsureArg.IsNotDefault(websiteId, nameof(websiteId));
+
         await this.repository
             .AddWorkspaceWebsiteAsync(workspaceId.ToString(), websiteId.ToString(), default)
             .ConfigureAwait(false);
@@ -210,28 +291,50 @@ public class WorkspaceController : ControllerBase, IWorkspaceController
     [HttpDelete("website/{workspaceId:guid}/{websiteId:guid}", Name = "DeleteWorkspaceWebsite")]
     public async Task<IActionResult> DeleteWorkspaceWebsiteAsync(Guid workspaceId, Guid websiteId)
     {
-        await this.repository
-            .RemoveWorkspaceWebsiteAsync(workspaceId.ToString(), websiteId.ToString(), default)
-            .ConfigureAwait(false);
+        EnsureArg.IsNotDefault(workspaceId, nameof(workspaceId));
+        EnsureArg.IsNotDefault(websiteId, nameof(websiteId));
 
-        return this.NoContent();
+        try
+        {
+            await this.repository
+                .RemoveWorkspaceWebsiteAsync(workspaceId.ToString(), websiteId.ToString(), default)
+                .ConfigureAwait(false);
+
+            return this.NoContent();
+        }
+        catch (InvalidOperationException)
+        {
+            return this.NotFound();
+        }
     }
 
     /// <inheritdoc/>
     [HttpGet("youtube/{workspaceId:guid}", Name = "GetWorkspaceYoutubes")]
     public async Task<IActionResult> GetWorkspaceYoutubesAsync(Guid workspaceId)
     {
-        var youtubes = await this.repository
-            .GetWorkspaceYoutubesAsync(workspaceId.ToString(), default)
-            .ConfigureAwait(false);
+        EnsureArg.IsNotDefault(workspaceId, nameof(workspaceId));
 
-        return this.Ok(youtubes);
+        try
+        {
+            var youtubes = await this.repository
+                .GetWorkspaceYoutubesAsync(workspaceId.ToString(), default)
+                .ConfigureAwait(false);
+
+            return this.Ok(youtubes);
+        }
+        catch (InvalidOperationException)
+        {
+            return this.NotFound();
+        }
     }
 
     /// <inheritdoc/>
     [HttpPost("youtube/{workspaceId:guid}/{youtubeId:guid}", Name = "AddWorkspaceYoutube")]
     public async Task<IActionResult> AddWorkspaceYoutubeAsync(Guid workspaceId, Guid youtubeId)
     {
+        EnsureArg.IsNotDefault(workspaceId, nameof(workspaceId));
+        EnsureArg.IsNotDefault(youtubeId, nameof(youtubeId));
+
         await this.repository
             .AddWorkspaceYoutubeAsync(workspaceId.ToString(), youtubeId.ToString(), default)
             .ConfigureAwait(false);
@@ -243,10 +346,20 @@ public class WorkspaceController : ControllerBase, IWorkspaceController
     [HttpDelete("youtube/{workspaceId:guid}/{youtubeId:guid}", Name = "DeleteWorkspaceYoutube")]
     public async Task<IActionResult> DeleteWorkspaceYoutubeAsync(Guid workspaceId, Guid youtubeId)
     {
-        await this.repository
-            .RemoveWorkspaceYoutubeAsync(workspaceId.ToString(), youtubeId.ToString(), default)
-            .ConfigureAwait(false);
+        EnsureArg.IsNotDefault(workspaceId, nameof(workspaceId));
+        EnsureArg.IsNotDefault(youtubeId, nameof(youtubeId));
 
-        return this.NoContent();
+        try
+        {
+            await this.repository
+                .RemoveWorkspaceYoutubeAsync(workspaceId.ToString(), youtubeId.ToString(), default)
+                .ConfigureAwait(false);
+
+            return this.NoContent();
+        }
+        catch (InvalidOperationException)
+        {
+            return this.NotFound();
+        }
     }
 }

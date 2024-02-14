@@ -6,7 +6,7 @@
 public sealed class UpdateWorkspaceRequest
 {
     /// <summary>
-    /// The unique handle of the workspace.
+    /// Gets or sets the unique handle of the workspace.
     /// </summary>
     required public string Handle { get; set; }
 
