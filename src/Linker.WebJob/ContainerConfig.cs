@@ -1,0 +1,101 @@
+﻿namespace Linker.WebJob;
+
+using Autofac;
+using Autofac.Configuration;
+using Linker.WebJob.Jobs;
+using Linker.WebJob.Models;
+using Linker.WebJob.Options;
+using Microsoft.Extensions.Configuration;
+using Quartz;
+using Quartz.Impl;
+using System.Data;
+using System.Data.SQLite;
+
+internal static class ContainerConfig
+{
+    public static IContainer Configure()
+    {
+        var builder = new ContainerBuilder();
+
+        builder
+            .RegisterOptions()
+            .RegisterSQLiteConnection()
+            .RegisterUrlHealthCheck();
+
+        return builder.Build();
+    }
+
+    private static ContainerBuilder RegisterOptions(this ContainerBuilder builder)
+    {
+        var configBuilder = new ConfigurationBuilder();
+        configBuilder.AddJsonFile("settings.json");
+
+        var config = configBuilder.Build();
+
+        var module = new ConfigurationModule(config);
+
+        builder.RegisterModule(module);
+
+        var sqliteOptions = config
+            .GetSection(nameof(SQLiteOption))
+            .Get<SQLiteOption>();
+
+        var urlHealthCheckOption = config
+            .GetSection(nameof(UrlHealthCheckOption))
+            .Get<UrlHealthCheckOption>();
+
+        builder.RegisterInstance(sqliteOptions).SingleInstance();
+        builder.RegisterInstance(urlHealthCheckOption).SingleInstance();
+
+        return builder;
+    }
+
+    private static ContainerBuilder RegisterSQLiteConnection(this ContainerBuilder builder)
+    {
+        builder
+            .Register(ctx =>
+            {
+                var option = ctx.Resolve<SQLiteOption>();
+
+                var connection = new SQLiteConnection(option.ConnectionString);
+
+                return connection;
+            })
+            .As<IDbConnection>()
+            .SingleInstance();
+
+        return builder;
+    }
+
+    private static ContainerBuilder RegisterUrlHealthCheck(this ContainerBuilder builder)
+    {
+        builder
+            .Register(ctx =>
+            {
+                var option = ctx.Resolve<UrlHealthCheckOption>();
+
+                var jobDescriptors = new List<JobDescriptor>
+                {
+                    new()
+                    {
+                        JobType = typeof(UrlHealthCheckJob),
+                        Description = "Regularly checks on the status of url links.",
+                        CronExpression = option.CronExpression,
+                    },
+                };
+
+                return jobDescriptors;
+            })
+            .As<IEnumerable<JobDescriptor>>()
+            .SingleInstance();
+
+        var defaultScheduler = StdSchedulerFactory.GetDefaultScheduler().GetAwaiter().GetResult();
+
+        builder.RegisterType<UrlHealthCheckJob>().SingleInstance();
+        builder.RegisterInstance(defaultScheduler).As<IScheduler>().SingleInstance();
+        builder.RegisterType<JobScheduler>().SingleInstance();
+        builder.RegisterType<WebJobService>().SingleInstance();
+
+        return builder;
+    }
+}
