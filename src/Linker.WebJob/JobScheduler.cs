@@ -16,9 +16,10 @@ internal class JobScheduler
         this.jobDescriptors = jobDescriptors;
     }
 
-    public Task StartAsync()
+    public Task StartAsync(CancellationToken cancellationToken)
     {
-        return Task.WhenAll(this.scheduler.Start(), this.ScheduleJobsAsync());
+        cancellationToken.ThrowIfCancellationRequested();
+        return Task.WhenAll(this.scheduler.Start(cancellationToken), this.ScheduleJobsAsync(cancellationToken));
     }
 
     public Task StopAsync()
@@ -26,8 +27,10 @@ internal class JobScheduler
         return this.scheduler.Shutdown();
     }
 
-    private async Task ScheduleJobsAsync()
+    private async Task ScheduleJobsAsync(CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         foreach (var jobDescriptor in this.jobDescriptors)
         {
             var job = JobBuilder.Create()
@@ -42,7 +45,7 @@ internal class JobScheduler
                 .WithCronSchedule(jobDescriptor.CronExpression)
                 .Build();
 
-            await this.scheduler.ScheduleJob(job, trigger).ConfigureAwait(false);
+            await this.scheduler.ScheduleJob(job, trigger, cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -8,6 +8,8 @@ internal class UrlHealthCheckJob : IJob
 {
     public Task Execute(IJobExecutionContext context)
     {
+        context.CancellationToken.ThrowIfCancellationRequested();
+
         Console.WriteLine("Hello");
 
         return Task.CompletedTask;

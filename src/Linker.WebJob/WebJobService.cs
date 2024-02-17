@@ -1,13 +1,15 @@
 ﻿namespace Linker.WebJob;
 
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
-internal class WebJobService : ServiceBase
+internal class WebJobService : BackgroundService
 {
     private readonly JobScheduler jobScheduler;
 
@@ -16,29 +18,15 @@ internal class WebJobService : ServiceBase
         this.jobScheduler = jobScheduler;
     }
 
-    protected override void OnStart(string[] args)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        try
-        {
-            this.jobScheduler
-                .StartAsync()
-                .GetAwaiter()
-                .GetResult();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-    }
+        stoppingToken.ThrowIfCancellationRequested();
 
-    protected override void OnShutdown()
-    {
         try
         {
-            this.jobScheduler
-                .StopAsync()
-                .GetAwaiter()
-                .GetResult();
+            await this.jobScheduler
+                .StartAsync(stoppingToken)
+                .ConfigureAwait(false);
         }
         catch (Exception ex)
         {

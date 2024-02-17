@@ -2,17 +2,31 @@
 using System.ServiceProcess;
 using Autofac;
 using Linker.WebJob;
+using Microsoft.Extensions.Hosting;
 
 var container = ContainerConfig.Configure();
 
-var service = container.Resolve<WebJobService>();
+var service = container.Resolve<IHostedService>();
 
-var methodInfo = service.GetType().GetMethod("OnStart", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-methodInfo.Invoke(service, new object[] { Array.Empty<string>() });
+var cancellationTokenSource = new CancellationTokenSource();
 
-//ServiceBase.Run(service);
+Console.CancelKeyPress += new ConsoleCancelEventHandler(CancelKeyPress);
 
-while (true)
+await service.StartAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+while (!cancellationTokenSource.IsCancellationRequested)
 {
     await Task.Delay(TimeSpan.FromSeconds(200));
+}
+
+await service.StopAsync(default).ConfigureAwait(false);
+
+Console.WriteLine("Program stopped...");
+
+void CancelKeyPress(object sender, ConsoleCancelEventArgs e)
+{
+    Console.WriteLine("CTRL+C pressed, cancelling operation");
+    cancellationTokenSource.Cancel();
+
+    e.Cancel = true;
 }

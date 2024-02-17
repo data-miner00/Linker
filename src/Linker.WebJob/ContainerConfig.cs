@@ -6,6 +6,7 @@ using Linker.WebJob.Jobs;
 using Linker.WebJob.Models;
 using Linker.WebJob.Options;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Quartz;
 using Quartz.Impl;
 using System.Data;
@@ -94,7 +95,7 @@ internal static class ContainerConfig
         builder.RegisterType<UrlHealthCheckJob>().SingleInstance();
         builder.RegisterInstance(defaultScheduler).As<IScheduler>().SingleInstance();
         builder.RegisterType<JobScheduler>().SingleInstance();
-        builder.RegisterType<WebJobService>().SingleInstance();
+        builder.RegisterType<WebJobService>().As<IHostedService>().SingleInstance();
 
         return builder;
     }
