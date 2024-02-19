@@ -2,23 +2,27 @@
 
 using Linker.WebJob.Models;
 using Quartz;
+using Quartz.Spi;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 internal class JobScheduler
 {
     private readonly IEnumerable<JobDescriptor> jobDescriptors;
+    private readonly IJobFactory jobFactory;
     private readonly IScheduler scheduler;
 
-    public JobScheduler(IScheduler scheduler, IEnumerable<JobDescriptor> jobDescriptors)
+    public JobScheduler(IScheduler scheduler, IEnumerable<JobDescriptor> jobDescriptors, IJobFactory jobFactory)
     {
         this.scheduler = scheduler;
         this.jobDescriptors = jobDescriptors;
+        this.jobFactory = jobFactory;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        this.scheduler.JobFactory = this.jobFactory;
         return Task.WhenAll(this.scheduler.Start(cancellationToken), this.ScheduleJobsAsync(cancellationToken));
     }
 

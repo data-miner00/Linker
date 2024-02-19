@@ -2,6 +2,8 @@
 
 using Autofac;
 using Autofac.Configuration;
+using Linker.Core.Repositories;
+using Linker.Data.SQLite;
 using Linker.WebJob.Jobs;
 using Linker.WebJob.Models;
 using Linker.WebJob.Options;
@@ -9,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Quartz;
 using Quartz.Impl;
+using Quartz.Spi;
 using System.Data;
 using System.Data.SQLite;
 
@@ -20,6 +23,7 @@ internal static class ContainerConfig
 
         builder
             .RegisterOptions()
+            .RegisterRepositories()
             .RegisterSQLiteConnection()
             .RegisterUrlHealthCheck();
 
@@ -92,10 +96,23 @@ internal static class ContainerConfig
 
         var defaultScheduler = StdSchedulerFactory.GetDefaultScheduler().GetAwaiter().GetResult();
 
+        builder.RegisterInstance(new HttpClient()).SingleInstance();
+        builder.RegisterType<JobFactory>().As<IJobFactory>();
+        builder.RegisterType<UrlHealthChecker>().As<IUrlHealthChecker>().SingleInstance();
         builder.RegisterType<UrlHealthCheckJob>().SingleInstance();
         builder.RegisterInstance(defaultScheduler).As<IScheduler>().SingleInstance();
         builder.RegisterType<JobScheduler>().SingleInstance();
         builder.RegisterType<WebJobService>().As<IHostedService>().SingleInstance();
+
+        return builder;
+    }
+
+    private static ContainerBuilder RegisterRepositories(this ContainerBuilder builder)
+    {
+        builder.RegisterType<ArticleRepository>().As<IArticleRepository>().SingleInstance();
+        builder.RegisterType<WebsiteRepository>().As<IWebsiteRepository>().SingleInstance();
+        builder.RegisterType<YoutubeRepository>().As<IYoutubeRepository>().SingleInstance();
+        builder.RegisterType<HealthCheckRepository>().As<IHealthCheckRepository>().SingleInstance();
 
         return builder;
     }

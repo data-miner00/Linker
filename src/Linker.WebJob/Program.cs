@@ -16,7 +16,7 @@ await service.StartAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
 while (!cancellationTokenSource.IsCancellationRequested)
 {
-    await Task.Delay(TimeSpan.FromSeconds(200));
+    await Task.Delay(TimeSpan.FromSeconds(10));
 }
 
 await service.StopAsync(default).ConfigureAwait(false);

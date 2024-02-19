@@ -10,12 +10,18 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="8.0.0" />
     <PackageReference Include="Autofac.Configuration" Version="6.0.0" />
+    <PackageReference Include="Ensure.That" Version="10.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
     <PackageReference Include="Quartz" Version="3.8.0" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Linker.Core\Linker.Core.csproj" />
+    <ProjectReference Include="..\Linker.Data\Linker.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>
