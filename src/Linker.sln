@@ -37,7 +37,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.Preprocess", "Linker
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{C091C279-4ADF-467E-8986-79FE7414B1D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linker.WebJob", "Linker.WebJob\Linker.WebJob.csproj", "{7AA93315-4ED3-4386-8A37-150527C190E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.WebJob", "Linker.WebJob\Linker.WebJob.csproj", "{7AA93315-4ED3-4386-8A37-150527C190E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linker.WebApi.IntegrationTests", "Linker.WebApi.IntegrationTests\Linker.WebApi.IntegrationTests.csproj", "{E290C6CC-BDD1-4FDC-B546-E0E9854F0D6D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +99,10 @@ Global
 		{7AA93315-4ED3-4386-8A37-150527C190E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AA93315-4ED3-4386-8A37-150527C190E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AA93315-4ED3-4386-8A37-150527C190E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E290C6CC-BDD1-4FDC-B546-E0E9854F0D6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E290C6CC-BDD1-4FDC-B546-E0E9854F0D6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E290C6CC-BDD1-4FDC-B546-E0E9854F0D6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E290C6CC-BDD1-4FDC-B546-E0E9854F0D6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,6 +113,7 @@ Global
 		{8AAFBE41-410A-4970-BCCF-ED4CF74F0450} = {BBC61F6D-2D80-4378-838C-293E555DC3A4}
 		{24977AFD-468C-4D35-A9F6-2A27F97DB77B} = {BBC61F6D-2D80-4378-838C-293E555DC3A4}
 		{C462614C-3BDF-49CC-A362-4C5C3C3430D2} = {C091C279-4ADF-467E-8986-79FE7414B1D2}
+		{E290C6CC-BDD1-4FDC-B546-E0E9854F0D6D} = {BBC61F6D-2D80-4378-838C-293E555DC3A4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3DB3E075-46BF-4E1A-A501-A235EABA9D54}
