@@ -4,25 +4,33 @@ using Autofac;
 using Quartz;
 using Quartz.Spi;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
+/// <summary>
+/// Custom DI aware job provider for Quartz.
+/// </summary>
 internal class JobFactory : IJobFactory
 {
     private readonly IComponentContext contextAccessor;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JobFactory"/> class.
+    /// </summary>
+    /// <param name="contextAccessor">The DI context accessor.</param>
     public JobFactory(IComponentContext contextAccessor)
     {
         this.contextAccessor = contextAccessor;
     }
 
+    /// <inheritdoc/>
     public IJob NewJob(TriggerFiredBundle bundle, IScheduler scheduler)
     {
-        return this.contextAccessor.Resolve(bundle.JobDetail.JobType) as IJob;
+        var resolvedJob = this.contextAccessor.Resolve(bundle.JobDetail.JobType) as IJob;
+        ArgumentNullException.ThrowIfNull(resolvedJob);
+
+        return resolvedJob;
     }
 
+    /// <inheritdoc/>
     public void ReturnJob(IJob job)
     {
         (job as IDisposable)?.Dispose();
