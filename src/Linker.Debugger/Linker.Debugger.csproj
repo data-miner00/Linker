@@ -8,16 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Linker.Common\Linker.Common.csproj" />
     <ProjectReference Include="..\Linker.Data\Linker.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="SonarAnalyzer.CSharp" Version="9.12.0.78982" />
+    <PackageReference Update="SonarAnalyzer.CSharp" Version="9.20.0.85982" />
   </ItemGroup>
 
 </Project>
