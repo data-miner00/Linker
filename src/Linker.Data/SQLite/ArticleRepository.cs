@@ -30,6 +30,7 @@
         public async Task AddAsync(Article item, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            ArgumentNullException.ThrowIfNull(item);
 
             var randomId = Guid.NewGuid().ToString();
 

@@ -49,8 +49,11 @@ internal static class ContainerConfig
             .GetSection(nameof(UrlHealthCheckOption))
             .Get<UrlHealthCheckOption>();
 
-        builder.RegisterInstance(sqliteOptions).SingleInstance();
-        builder.RegisterInstance(urlHealthCheckOption).SingleInstance();
+        ArgumentNullException.ThrowIfNull(sqliteOptions);
+        ArgumentNullException.ThrowIfNull(urlHealthCheckOption);
+
+        builder.RegisterInstance(sqliteOptions);
+        builder.RegisterInstance(urlHealthCheckOption);
 
         return builder;
     }

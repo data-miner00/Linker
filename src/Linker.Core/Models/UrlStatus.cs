@@ -6,6 +6,11 @@
 public enum UrlStatus
 {
     /// <summary>
+    /// The default value.
+    /// </summary>
+    None,
+
+    /// <summary>
     /// Indicates that the Url is still accessible on last check.
     /// </summary>
     Alive,
