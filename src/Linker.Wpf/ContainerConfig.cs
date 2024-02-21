@@ -35,8 +35,10 @@
 
             var connection = new SQLiteConnection(sqliteOptions.ConnectionString);
 
-            builder.RegisterInstance(connection).As<IDbConnection>().SingleInstance();
+            builder.RegisterInstance(connection).As<IDbConnection>();
             builder.RegisterType<ArticleRepository>().As<IArticleRepository>().SingleInstance();
+            builder.RegisterType<WebsiteRepository>().As<IWebsiteRepository>().SingleInstance();
+            builder.RegisterType<YoutubeRepository>().As<IYoutubeRepository>().SingleInstance();
             builder.RegisterType<MainWindow>().SingleInstance();
 
             return builder.Build();

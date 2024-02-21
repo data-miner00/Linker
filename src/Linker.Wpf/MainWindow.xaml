@@ -7,8 +7,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Label x:Name="lblHello" Content="Hello World" HorizontalAlignment="Left" Margin="234,124,0,0" VerticalAlignment="Top"/>
-        <ListBox x:Name="sampleList" Margin="400,107,52,167"/>
+        <Label x:Name="lblLogo" Content="Linker" HorizontalAlignment="Left" Margin="30,20,0,0" VerticalAlignment="Top" FontSize="24"/>
+        <ListBox x:Name="sampleList" Margin="30,132,105,112"/>
+        <Button x:Name="btnLoadArticle" Content="Load Articles" HorizontalAlignment="Left" Margin="30,84,0,0" VerticalAlignment="Top" Click="btnLoadArticle_Click"/>
+        <Button x:Name="btnLoadWebsites" Content="Load Websites" HorizontalAlignment="Left" Margin="119,84,0,0" VerticalAlignment="Top" Click="btnLoadWebsites_Click"/>
+        <Button x:Name="btnLoadYoutube" Content="Load Youtube" HorizontalAlignment="Left" Margin="219,84,0,0" VerticalAlignment="Top" Click="btnLoadYoutube_Click"/>
 
     </Grid>
 </Window>
