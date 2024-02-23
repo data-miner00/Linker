@@ -1,0 +1,16 @@
+{
+  "name": "linker.mvc",
+  "version": "1.0.0",
+  "description": "The MVC .NET Core application that store links.",
+  "scripts": {
+    "watch:css": "tailwindcss -i ./wwwroot/lib/tailwindcss/index.css -o ./wwwroot/lib/tailwindcss/dist/styles.css --watch",
+    "build:css": "tailwindcss -i ./wwwroot/lib/tailwindcss/index.css -o ./wwwroot/lib/tailwindcss/dist/styles.css",
+    "release:css": "tailwindcss -i ./wwwroot/lib/tailwindcss/index.css -o ./wwwroot/lib/tailwindcss/dist/styles.css --minify"
+  },
+  "keywords": [],
+  "author": "Shaun Chong <mumk0313@gmail.com>",
+  "license": "WTFPL",
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}

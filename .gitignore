@@ -371,3 +371,6 @@ FodyWeavers.xsd
 
 # Report Generator
 coveragereport/
+
+# Javascript build
+dist/

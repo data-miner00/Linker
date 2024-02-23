@@ -1,0 +1,8 @@
+{
+  "name": "linker",
+  "version": "1.0.0",
+  "description": "The application that store links.",
+  "keywords": [],
+  "author": "Shaun Chong <mumk0313@gmail.com>",
+  "license": "WTFPL"
+}
