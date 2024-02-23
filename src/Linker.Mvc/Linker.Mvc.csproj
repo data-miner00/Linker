@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <UpToDateCheckBuilt Include="wwwroot/lib/tailwindcss/index.css" Set="Css" />
+    <UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
   </ItemGroup>
 
   <Target Name="Tailwind" BeforeTargets="Build">
