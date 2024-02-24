@@ -50,4 +50,61 @@ public sealed class Mutation
             return false;
         }
     }
+
+    /// <summary>
+    /// Updates an existing article.
+    /// </summary>
+    /// <param name="articleId">The article Id.</param>
+    /// <param name="request">The update request.</param>
+    /// <returns>True if success.</returns>
+    /// <exception cref="GraphQLException">The GraphQL exception.</exception>
+    public async Task<bool> UpdateArticleAsync(string articleId, UpdateArticleRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        var article = this.mapper.Map<Article>(request);
+
+        try
+        {
+            var existing = await this.articleRepository
+                .GetByIdAsync(articleId, default)
+                .ConfigureAwait(false);
+
+            article.Id = existing.Id;
+
+            await this.articleRepository
+                .UpdateAsync(article, default)
+                .ConfigureAwait(false);
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            throw new GraphQLException(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Deletes an existing article.
+    /// </summary>
+    /// <param name="articleId">The article ID.</param>
+    /// <returns>True if success.</returns>
+    /// <exception cref="GraphQLException">The GraphQL exception.</exception>
+    public async Task<bool> DeleteArticleAsync(string articleId)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(articleId);
+
+        try
+        {
+            await this.articleRepository
+                .RemoveAsync(articleId, default)
+                .ConfigureAwait(false);
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            throw new GraphQLException(ex.Message);
+        }
+    }
 }
