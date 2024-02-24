@@ -1,0 +1,29 @@
+﻿@using Linker.Core.Models
+@model IEnumerable<Article>
+@{
+    ViewData["Title"] = "All Articles";
+}
+
+<table>
+    <thead>
+        <tr>
+            <td>Title</td>
+            <td>Url</td>
+            <td>Description</td>
+            <td>Author</td>
+            <td>Year</td>
+        </tr>    
+    </thead>
+    <tbody>
+        @foreach (var article in Model)
+        {
+            <tr>
+                <td>@article.Title</td>
+                <td>@article.Url</td>
+                <td>@article.Description</td>
+                <td>@article.Author</td>
+                <td>@article.Year</td>
+            </tr>
+        }
+    </tbody>
+</table>

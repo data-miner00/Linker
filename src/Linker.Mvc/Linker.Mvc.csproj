@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Linker.Data\Linker.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <UpToDateCheckBuilt Include="wwwroot/lib/tailwindcss/index.css" Set="Css" />
     <UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
   </ItemGroup>

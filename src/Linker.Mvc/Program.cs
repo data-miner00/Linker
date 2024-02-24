@@ -1,7 +1,18 @@
+using System.Data;
+using System.Data.SQLite;
+using Linker.Core.Repositories;
+using Linker.Data.SQLite;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+var sqliteConnectionString = builder.Configuration["SQLiteOption:ConnectionString"];
+
+using var connection = new SQLiteConnection(sqliteConnectionString);
 builder.Services.AddControllersWithViews();
+
+builder.Services
+    .AddSingleton<IDbConnection>(connection)
+    .AddSingleton<IArticleRepository, ArticleRepository>();
 
 var app = builder.Build();
 

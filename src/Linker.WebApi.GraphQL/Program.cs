@@ -9,7 +9,7 @@ using Linker.WebApi.Mappers;
 {
     var builder = WebApplication.CreateBuilder(args);
     var sqliteConnectionString = builder.Configuration["SQLiteOption:ConnectionString"];
-    var connection = new SQLiteConnection(sqliteConnectionString);
+    using var connection = new SQLiteConnection(sqliteConnectionString);
 
     builder.Services.AddSingleton<IDbConnection>(connection);
     builder.Services.AddSingleton<IArticleRepository, ArticleRepository>();
