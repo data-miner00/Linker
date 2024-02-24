@@ -1,0 +1,10 @@
+@Linker.WebApi.GraphQL_HostAddress = http://localhost:5245
+
+POST {{Linker.WebApi.GraphQL_HostAddress}}/graphql
+Accept: application/json
+
+{
+    "query": "query {\n    book {\n        name\n        author\n    }\n}"
+}
+
+###

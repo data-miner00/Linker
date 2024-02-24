@@ -45,6 +45,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.WebApi.IntegrationTe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.Mvc", "Linker.Mvc\Linker.Mvc.csproj", "{60034221-727B-49A6-BA27-C8D7CB5AE784}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linker.WebApi.GraphQL", "Linker.WebApi.GraphQL\Linker.WebApi.GraphQL.csproj", "{F585C28D-A62C-4E36-AC93-3C77A93FAC15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{60034221-727B-49A6-BA27-C8D7CB5AE784}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60034221-727B-49A6-BA27-C8D7CB5AE784}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60034221-727B-49A6-BA27-C8D7CB5AE784}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F585C28D-A62C-4E36-AC93-3C77A93FAC15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F585C28D-A62C-4E36-AC93-3C77A93FAC15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F585C28D-A62C-4E36-AC93-3C77A93FAC15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F585C28D-A62C-4E36-AC93-3C77A93FAC15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

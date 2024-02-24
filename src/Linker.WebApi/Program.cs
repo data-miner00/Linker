@@ -50,8 +50,7 @@ builder.Services.AddAuthorization(builder =>
 });
 
 builder.Services
-    .AddSingleton<IDbConnection>(
-        _ => connection)
+    .AddSingleton<IDbConnection>(connection)
     .AddSingleton<IWebsiteRepository, WebsiteRepository>()
     .AddSingleton<IArticleRepository, ArticleRepository>()
     .AddSingleton<IYoutubeRepository, YoutubeRepository>()
