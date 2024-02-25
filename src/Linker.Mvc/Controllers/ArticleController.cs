@@ -25,9 +25,13 @@ public class ArticleController : Controller
     }
 
     // GET: ArticleController/Details/5
-    public IActionResult Details(int id)
+    public async Task<IActionResult> Details(string id)
     {
-        return View();
+        var article = await this.repository
+            .GetByIdAsync(id, default)
+            .ConfigureAwait(false);
+
+        return View(article);
     }
 
     // GET: ArticleController/Create

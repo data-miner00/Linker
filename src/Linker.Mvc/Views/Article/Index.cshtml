@@ -12,6 +12,7 @@
             <td>Description</td>
             <td>Author</td>
             <td>Year</td>
+            <td></td>
         </tr>    
     </thead>
     <tbody>
@@ -23,6 +24,7 @@
                 <td>@article.Description</td>
                 <td>@article.Author</td>
                 <td>@article.Year</td>
+                <td><a asp-controller="Article" asp-action="Details" asp-route-id="@article.Id">Details</a></td>
             </tr>
         }
     </tbody>
