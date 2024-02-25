@@ -9,6 +9,7 @@ using Linker.WebApi.Filters;
 using Linker.WebApi.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Metrics;
 using Swashbuckle.AspNetCore.Filters;
 
 const string AuthScheme = "cookie";
@@ -34,6 +35,13 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
+
+builder.Services.AddOpenTelemetry()
+    .WithMetrics(x =>
+    {
+        x.AddPrometheusExporter();
+        x.AddMeter("Microsoft.AspNetCore.Hosting", "Microsoft.AspNetCore.Server.Kestrel");
+    });
 
 builder.Services.AddAuthentication()
     .AddCookie(AuthScheme);
@@ -87,6 +95,8 @@ app
     .UseHttpsRedirection()
     .UseAuthentication()
     .UseAuthorization();
+
+app.MapPrometheusScrapingEndpoint();
 
 app.MapControllers();
 
