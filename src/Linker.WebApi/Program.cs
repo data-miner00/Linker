@@ -40,7 +40,10 @@ builder.Services.AddOpenTelemetry()
     .WithMetrics(x =>
     {
         x.AddPrometheusExporter();
-        x.AddMeter("Microsoft.AspNetCore.Hosting", "Microsoft.AspNetCore.Server.Kestrel");
+        x.AddMeter(
+            "Microsoft.AspNetCore.Hosting",
+            "Microsoft.AspNetCore.Server.Kestrel",
+            "Linker");
     });
 
 builder.Services.AddAuthentication()
@@ -79,6 +82,8 @@ builder.Services
         config.AddProfile<WorkspaceMapperProfile>();
     })
     .CreateMapper());
+
+builder.Services.AddMetrics();
 
 var app = builder.Build();
 

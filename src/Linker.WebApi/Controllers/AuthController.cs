@@ -1,5 +1,6 @@
 ﻿namespace Linker.WebApi.Controllers
 {
+    using System.Diagnostics.Metrics;
     using System.Security.Claims;
     using System.Threading.Tasks;
     using EnsureThat;
@@ -20,16 +21,19 @@
         private static readonly string AuthScheme = "cookie";
         private readonly IUserRepository repository;
         private readonly IHttpContextAccessor context;
+        private readonly IMeterFactory meterFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthController"/> class.
         /// </summary>
         /// <param name="repository">The user repository.</param>
         /// <param name="context">The http context accessor.</param>
-        public AuthController(IUserRepository repository, IHttpContextAccessor context)
+        /// <param name="meterFactory">The meter factory.</param>
+        public AuthController(IUserRepository repository, IHttpContextAccessor context, IMeterFactory meterFactory)
         {
             this.repository = EnsureArg.IsNotNull(repository, nameof(repository));
             this.context = EnsureArg.IsNotNull(context, nameof(context));
+            this.meterFactory = EnsureArg.IsNotNull(meterFactory, nameof(meterFactory));
         }
 
         /// <inheritdoc/>
@@ -37,6 +41,10 @@
         public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            var meter = this.meterFactory.Create("Linker");
+            var instrument = meter.CreateCounter<int>("login_counter");
+            instrument.Add(1);
 
             try
             {
