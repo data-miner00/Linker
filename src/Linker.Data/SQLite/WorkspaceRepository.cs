@@ -29,7 +29,7 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
     }
 
     /// <inheritdoc/>
-    public async Task AddWorkspaceArticleAsync(string workspaceId, string articleId, CancellationToken cancellationToken)
+    public Task AddWorkspaceArticleAsync(string workspaceId, string articleId, CancellationToken cancellationToken)
     {
         var addWorkspaceArticle = @"
             INSERT INTO Workspace_Articles (
@@ -42,16 +42,16 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
                 @CreatedAt
             );";
 
-        await this.connection.ExecuteAsync(addWorkspaceArticle, new
+        return this.connection.ExecuteAsync(addWorkspaceArticle, new
         {
             WorkspaceId = workspaceId,
             ArticleId = articleId,
             CreatedAt = DateTime.Now,
-        }).ConfigureAwait(false);
+        });
     }
 
     /// <inheritdoc/>
-    public async Task AddWorkspaceWebsiteAsync(string workspaceId, string websiteId, CancellationToken cancellationToken)
+    public Task AddWorkspaceWebsiteAsync(string workspaceId, string websiteId, CancellationToken cancellationToken)
     {
         var addWorkspaceWebsite = @"
             INSERT INTO Workspace_Websites (
@@ -64,16 +64,16 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
                 @CreatedAt
             );";
 
-        await this.connection.ExecuteAsync(addWorkspaceWebsite, new
+        return this.connection.ExecuteAsync(addWorkspaceWebsite, new
         {
             WorkspaceId = workspaceId,
             WebsiteId = websiteId,
             CreatedAt = DateTime.Now,
-        }).ConfigureAwait(false);
+        });
     }
 
     /// <inheritdoc/>
-    public async Task AddWorkspaceYoutubeAsync(string workspaceId, string youtubeId, CancellationToken cancellationToken)
+    public Task AddWorkspaceYoutubeAsync(string workspaceId, string youtubeId, CancellationToken cancellationToken)
     {
         var addWorkspaceYoutube = @"
             INSERT INTO Workspace_Youtube (
@@ -86,12 +86,12 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
                 @CreatedAt
             );";
 
-        await this.connection.ExecuteAsync(addWorkspaceYoutube, new
+        return this.connection.ExecuteAsync(addWorkspaceYoutube, new
         {
             WorkspaceId = workspaceId,
             YoutubeId = youtubeId,
             CreatedAt = DateTime.Now,
-        }).ConfigureAwait(false);
+        });
     }
 
     /// <inheritdoc/>
@@ -200,15 +200,13 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<Workspace>> GetAllAsync(CancellationToken cancellationToken)
+    public Task<IEnumerable<Workspace>> GetAllAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
         var query = "SELECT * FROM Workspaces;";
 
-        var workspaces = await this.connection.QueryAsync<Workspace>(query).ConfigureAwait(false);
-
-        return workspaces;
+        return this.connection.QueryAsync<Workspace>(query);
     }
 
     /// <inheritdoc/>
@@ -281,6 +279,24 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
 
         var articles = await this.connection.QueryAsync<Article>(queryArticles).ConfigureAwait(false);
 
+        var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @LinkId;";
+        var selectFromTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
+
+        foreach (var article in articles)
+        {
+            var tags = new List<string>();
+
+            var tagsz = await this.connection.QueryAsync<LinkTagPair>(selectFromLinksTagsQuery, new { LinkId = article.Id });
+
+            foreach (var tagz in tagsz)
+            {
+                var tag = await this.connection.QueryFirstAsync<Tag>(selectFromTagsQuery, new { Id = tagz.TagId });
+                tags.Add(tag.Name);
+            }
+
+            article.Tags = tags;
+        }
+
         return articles;
     }
 
@@ -322,6 +338,24 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
 
         var websites = await this.connection.QueryAsync<Website>(queryWebsites).ConfigureAwait(false);
 
+        var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @LinkId;";
+        var selectFromTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
+
+        foreach (var website in websites)
+        {
+            var tags = new List<string>();
+
+            var tagsz = await this.connection.QueryAsync<LinkTagPair>(selectFromLinksTagsQuery, new { LinkId = website.Id });
+
+            foreach (var tagz in tagsz)
+            {
+                var tag = await this.connection.QueryFirstAsync<Tag>(selectFromTagsQuery, new { Id = tagz.TagId });
+                tags.Add(tag.Name);
+            }
+
+            website.Tags = tags;
+        }
+
         return websites;
     }
 
@@ -334,25 +368,44 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
             SELECT YoutubeId FROM Workspace_Youtube
             WHERE WorkspaceId = @Id;";
 
-        var websiteIds = await this.connection.QueryAsync<string>(query, new { Id = id }).ConfigureAwait(false);
+        var youtubeIds = await this.connection.QueryAsync<string>(query, new { Id = id }).ConfigureAwait(false);
 
         var queryBuilder = new StringBuilder();
 
-        foreach (var websiteId in websiteIds.SkipLast(1))
+        foreach (var youtubeId in youtubeIds.SkipLast(1))
         {
-            queryBuilder.Append($"Id = \"{websiteId}\" OR ");
+            queryBuilder.Append($"Id = \"{youtubeId}\" OR ");
         }
 
-        var queryYoutubes = $"SELECT * FROM Youtube WHERE {queryBuilder}Id = \"{websiteIds.Last()}\";";
+        var queryYoutubes = $"SELECT * FROM Youtube WHERE {queryBuilder}Id = \"{youtubeIds.Last()}\";";
 
-        var websites = await this.connection.QueryAsync<Youtube>(queryYoutubes).ConfigureAwait(false);
+        var youtubes = await this.connection.QueryAsync<Youtube>(queryYoutubes).ConfigureAwait(false);
 
-        return websites;
+        var selectFromLinksTagsQuery = @"SELECT * FROM Links_Tags WHERE LinkId = @LinkId;";
+        var selectFromTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
+
+        foreach (var youtube in youtubes)
+        {
+            var tags = new List<string>();
+
+            var tagsz = await this.connection.QueryAsync<LinkTagPair>(selectFromLinksTagsQuery, new { LinkId = youtube.Id });
+
+            foreach (var tagz in tagsz)
+            {
+                var tag = await this.connection.QueryFirstAsync<Tag>(selectFromTagsQuery, new { Id = tagz.TagId });
+                tags.Add(tag.Name);
+            }
+
+            youtube.Tags = tags;
+        }
+
+        return youtubes;
     }
 
     /// <inheritdoc/>
     public async Task RemoveAsync(string id, CancellationToken cancellationToken)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(id);
         cancellationToken.ThrowIfCancellationRequested();
 
         var deleteWorkspaceOperation = @"DELETE FROM Workspaces WHERE Id = @Id;";
@@ -361,57 +414,53 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
         var deleteWorkspaceWebsite = @"DELETE FROM Workspace_Websites WHERE WorkspaceId = @Id;";
         var deleteWorkspaceYoutube = @"DELETE FROM Workspace_Youtube WHERE WorkspaceId = @Id;";
 
-        await this.connection
-            .ExecuteAsync(deleteWorkspaceMember, new { Id = id })
-            .ConfigureAwait(false);
-        await this.connection
-            .ExecuteAsync(deleteWorkspaceArticle, new { Id = id })
-            .ConfigureAwait(false);
-        await this.connection
-            .ExecuteAsync(deleteWorkspaceWebsite, new { Id = id })
-            .ConfigureAwait(false);
-        await this.connection
-            .ExecuteAsync(deleteWorkspaceYoutube, new { Id = id })
-            .ConfigureAwait(false);
+        IEnumerable<Task> tasks = [
+            this.connection.ExecuteAsync(deleteWorkspaceMember, new { Id = id }),
+            this.connection.ExecuteAsync(deleteWorkspaceArticle, new { Id = id }),
+            this.connection.ExecuteAsync(deleteWorkspaceWebsite, new { Id = id }),
+            this.connection.ExecuteAsync(deleteWorkspaceYoutube, new { Id = id }),
+        ];
+
+        await Task.WhenAll(tasks).ConfigureAwait(false);
         await this.connection
             .ExecuteAsync(deleteWorkspaceOperation, new { Id = id })
             .ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public async Task RemoveWorkspaceArticleAsync(string workspaceId, string articleId, CancellationToken cancellationToken)
+    public Task RemoveWorkspaceArticleAsync(string workspaceId, string articleId, CancellationToken cancellationToken)
     {
         var deleteOperation = @"DELETE FROM Workspace_Articles WHERE WorkspaceId = @WorkspaceId AND ArticleId = @ArticleId;";
 
-        await this.connection.ExecuteAsync(deleteOperation, new
+        return this.connection.ExecuteAsync(deleteOperation, new
         {
             WorkspaceId = workspaceId,
             ArticleId = articleId,
-        }).ConfigureAwait(false);
+        });
     }
 
     /// <inheritdoc/>
-    public async Task RemoveWorkspaceWebsiteAsync(string workspaceId, string websiteId, CancellationToken cancellationToken)
+    public Task RemoveWorkspaceWebsiteAsync(string workspaceId, string websiteId, CancellationToken cancellationToken)
     {
         var deleteOperation = @"DELETE FROM Workspace_Websites WHERE WorkspaceId = @WorkspaceId AND WebsiteId = @WebsiteId;";
 
-        await this.connection.ExecuteAsync(deleteOperation, new
+        return this.connection.ExecuteAsync(deleteOperation, new
         {
             WorkspaceId = workspaceId,
             WebsiteId = websiteId,
-        }).ConfigureAwait(false);
+        });
     }
 
     /// <inheritdoc/>
-    public async Task RemoveWorkspaceYoutubeAsync(string workspaceId, string youtubeId, CancellationToken cancellationToken)
+    public Task RemoveWorkspaceYoutubeAsync(string workspaceId, string youtubeId, CancellationToken cancellationToken)
     {
         var deleteOperation = @"DELETE FROM Workspace_Youtube WHERE WorkspaceId = @WorkspaceId AND YoutubeId = @YoutubeId;";
 
-        await this.connection.ExecuteAsync(deleteOperation, new
+        return this.connection.ExecuteAsync(deleteOperation, new
         {
             WorkspaceId = workspaceId,
             YoutubeId = youtubeId,
-        }).ConfigureAwait(false);
+        });
     }
 
     /// <inheritdoc/>
