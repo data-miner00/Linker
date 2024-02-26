@@ -7,9 +7,9 @@
     <partial name="_CssTagsPartial" />
 </head>
 <body>
-    <header class="flex justify-between px-20 py-4 border-b border-solid border-gray-300 drop-shadow">
+    <header class="flex justify-between px-20 py-4 border-b border-solid border-gray-300 drop-shadow items-center">
         <div>
-            <a asp-controller="Home" asp-action="Index">Linker</a>
+            <a asp-controller="Home" asp-action="Index" class="text-3xl font-semibold tracking-wide">Linker</a>
         </div>
         <nav>
             <ul class="flex gap-4">
@@ -38,7 +38,7 @@
         </main>
     </div>
 
-    <footer>
+    <footer class="absolute h-[100px] bg-gray-100 flex items-center justify-center bottom-0 left-0 w-full">
         <div class="container">
             &copy; 2024 - Linker.Mvc - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>

@@ -1,5 +1,6 @@
 ﻿namespace Linker.Mvc.Controllers;
 
+using Linker.Core.ApiModels;
 using Linker.Core.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ public class ArticleController : Controller
 
     public ArticleController(IArticleRepository repository)
     {
+        ArgumentNullException.ThrowIfNull(repository);
         this.repository = repository;
     }
 
@@ -43,15 +45,25 @@ public class ArticleController : Controller
     // POST: ArticleController/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(IFormCollection collection)
+    public IActionResult Create(CreateArticleRequest request)
     {
         try
         {
-            return RedirectToAction(nameof(Index));
+            if (request.Url == "s")
+            {
+                this.ModelState.AddModelError("Error", "I hate you");
+            }
+
+            if (this.ModelState.IsValid)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return this.View(request);
         }
         catch
         {
-            return View();
+            return View(request);
         }
     }
 
