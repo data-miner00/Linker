@@ -4,12 +4,28 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<article class="mb-10">
+    <header class="mb-2">
+        <p class="uppercase tracking-wide font-bold text-sm text-gray-300">
+            @Html.DisplayFor(model => model.Category)
+        </p>
+        <h1 class="text-2xl font-bold">
+            @Html.DisplayFor(model => model.Title)
+        </h1>
+    </header>
+    <div class="flex gap-4 mb-4">
+        <div><span>By</span> @Html.DisplayFor(model => model.Author)</div>
+        <div>@Html.DisplayFor(model => model.Year)</div>
+        <div>Link created at <time>@Html.DisplayFor(model => model.CreatedAt)</time></div>
+        <div>@Html.DisplayFor(model => model.Language)</div>
+    </div>
+    <div>
+        <p class="text-gray-700">@Html.DisplayFor(model => model.Description)</p>
+    </div>
+</article>
 
 <div>
-    <h4>Article</h4>
-    <hr />
-    <dl class="row">
+    <dl class="hidden">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
         </dt>
@@ -110,5 +126,5 @@
 </div>
 <div>
     @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
+    <a class="px-4 py-2 bg-black text-white rounded" asp-action="Index">Back to List</a>
 </div>

@@ -8,32 +8,41 @@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
-    <header class="flex justify-between px-20 py-4 border-b border-solid border-gray-300 drop-shadow items-center">
-        <div>
-            <a asp-controller="Home" asp-action="Index" class="text-3xl font-semibold tracking-wide">Linker</a>
+    <div>
+        <header class="flex justify-between px-2 py-1 border-b border-solid border-black items-center uppercase text-sm">
+            <nav class="flex-1">
+                <ul class="flex gap-4">
+                    <li>
+                        <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li>
+                        <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    </li>
+                    <li>
+                        <a asp-area="" asp-controller="Article" asp-action="Index">Articles</a>
+                    </li>
+                    <li>
+                        <a asp-area="" asp-controller="Website" asp-action="Index">Websites</a>
+                    </li>
+                    <li>
+                        <a asp-area="" asp-controller="Youtube" asp-action="Index">Articles</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="flex-1 flex justify-center">
+                <a asp-controller="Home" asp-action="Index" class="block text-2xl font-bold tracking-wide">Linker</a>
+            </div>
+            <div class="flex-1 flex justify-end">
+                <a>Login</a>
+            </div>
+        </header>
+        <div class="border-b border-solid border-black flex px-2 gap-4 text-sm">
+            <button class="block py-2">Search</button>
+            <input class="block w-full py-2 outline-none" placeholder="WHAT ARE YOU LOOKING FOR?" />
         </div>
-        <nav>
-            <ul class="flex gap-4">
-                <li>
-                    <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                </li>
-                <li>
-                    <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                </li>
-                <li>
-                    <a asp-area="" asp-controller="Article" asp-action="Index">Articles</a>
-                </li>
-                <li>
-                    <a asp-area="" asp-controller="Website" asp-action="Index">Websites</a>
-                </li>
-                <li>
-                    <a asp-area="" asp-controller="Youtube" asp-action="Index">Articles</a>
-                </li>
-            </ul>
-        </nav>
-    </header>
+    </div>
 
-    <div class="container">
+    <div class="max-w-screen-2xl mx-auto mt-5">
         <main role="main">
             @RenderBody()
         </main>

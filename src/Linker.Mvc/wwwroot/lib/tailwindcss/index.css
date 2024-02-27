@@ -1,3 +1,12 @@
 ﻿@import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+table th td,
+table tr td {
+    @apply py-3 px-2;
+}
+
+header nav ul li a {
+    @apply block px-2 py-1 border border-solid border-transparent hover:border-black rounded;
+}

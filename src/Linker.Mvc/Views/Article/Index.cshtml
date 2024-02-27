@@ -6,11 +6,13 @@
 
 <partial name="_Notification" />
 
-<a asp-controller="Article" asp-action="Create">Create a new article</a>
+<div class="flex mb-4">
+    <a class="block px-4 py-2 bg-black text-white rounded" asp-controller="Article" asp-action="Create">Create a new article</a>
+</div>
 
 <table>
     <thead>
-        <tr>
+        <tr class="border-b-2 border-t-2 border-solid border-gray-600">
             <td>Title</td>
             <td>Url</td>
             <td>Description</td>
@@ -22,13 +24,15 @@
     <tbody>
         @foreach (var article in Model)
         {
-            <tr>
+            <tr class="border-b border-solid border-gray-400 py-2">
                 <td>@article.Title</td>
-                <td>@article.Url</td>
+                <td class="max-w-[300px] truncate ...">@article.Url</td>
                 <td>@article.Description</td>
                 <td>@article.Author</td>
                 <td>@article.Year</td>
-                <td><a asp-controller="Article" asp-action="Details" asp-route-id="@article.Id">Details</a></td>
+                <td>
+                    <a class="border rounded border-solid border-gray-400 block px-4 py-2" asp-controller="Article" asp-action="Details" asp-route-id="@article.Id">Details</a>
+                </td>
             </tr>
         }
     </tbody>
