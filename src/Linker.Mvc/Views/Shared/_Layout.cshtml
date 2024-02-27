@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Linker.Mvc</title>
     <partial name="_CssTagsPartial" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header class="flex justify-between px-20 py-4 border-b border-solid border-gray-300 drop-shadow items-center">
@@ -40,7 +41,7 @@
 
     <footer class="absolute h-[100px] bg-gray-100 flex items-center justify-center bottom-0 left-0 w-full">
         <div class="container">
-            &copy; 2024 - Linker.Mvc - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - Linker.Mvc - <a bold asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> - <email recipient="mumk0313"></email>
         </div>
     </footer>
 
