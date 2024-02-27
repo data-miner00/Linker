@@ -502,7 +502,7 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
 
         return this.connection.ExecuteAsync(updateOperation, new
         {
-            WorkspaceRole = nameof(workspaceMembership.WorkspaceRole),
+            WorkspaceRole = workspaceMembership.WorkspaceRole.ToString(),
             workspaceMembership.WorkspaceId,
             workspaceMembership.UserId,
         });
