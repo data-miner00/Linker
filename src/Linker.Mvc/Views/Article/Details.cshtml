@@ -4,126 +4,38 @@
     ViewData["Title"] = "Details";
 }
 
-<article class="mb-10">
+<article class="mb-10" id="@Html.DisplayFor(model => model.Id)">
     <header class="mb-2">
         <p class="uppercase tracking-wide font-bold text-sm text-gray-300">
             @Html.DisplayFor(model => model.Category)
         </p>
-        <h1 class="text-2xl font-bold">
-            @Html.DisplayFor(model => model.Title)
-        </h1>
+        
+        <a
+            class="flex gap-2 items-center"
+            href="@Html.DisplayFor(model => model.Url)"
+            target="_blank"
+        >
+            <h1 class="text-2xl font-bold block">
+                @Html.DisplayFor(model => model.Title)
+            </h1>
+            <div>
+                <i class="bi bi-box-arrow-up-right"></i>
+            </div>
+        </a>
     </header>
     <div class="flex gap-4 mb-4">
         <div><span>By</span> @Html.DisplayFor(model => model.Author)</div>
         <div>@Html.DisplayFor(model => model.Year)</div>
-        <div>Link created at <time>@Html.DisplayFor(model => model.CreatedAt)</time></div>
+        <div>Linked at <time>@Html.DisplayFor(model => model.CreatedAt)</time></div>
         <div>@Html.DisplayFor(model => model.Language)</div>
+        <div>@Html.DisplayFor(model => model.Grammar)</div>
+        <div>@Html.DisplayFor(model => model.Rating)</div>
     </div>
     <div>
         <p class="text-gray-700">@Html.DisplayFor(model => model.Description)</p>
     </div>
 </article>
 
-<div>
-    <dl class="hidden">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Author)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Author)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Year)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Year)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.WatchLater)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.WatchLater)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Domain)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Domain)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Grammar)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Grammar)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Url)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Url)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Language)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Language)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Rating)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Rating)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastVisitAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastVisitAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ModifiedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ModifiedAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedBy)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedBy)
-        </dd>
-    </dl>
-</div>
 <div>
     @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
     <a class="px-4 py-2 bg-black text-white rounded" asp-action="Index">Back to List</a>
