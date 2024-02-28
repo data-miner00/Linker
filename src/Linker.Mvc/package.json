@@ -11,6 +11,7 @@
   "author": "Shaun Chong <mumk0313@gmail.com>",
   "license": "WTFPL",
   "devDependencies": {
+    "bootstrap-icons": "^1.11.3",
     "tailwindcss": "^3.4.1"
   }
 }
