@@ -5,7 +5,8 @@
   "scripts": {
     "watch:css": "tailwindcss -i ./wwwroot/lib/tailwindcss/index.css -o ./wwwroot/lib/tailwindcss/dist/styles.css --watch",
     "build:css": "tailwindcss -i ./wwwroot/lib/tailwindcss/index.css -o ./wwwroot/lib/tailwindcss/dist/styles.css",
-    "release:css": "tailwindcss -i ./wwwroot/lib/tailwindcss/index.css -o ./wwwroot/lib/tailwindcss/dist/styles.css --minify"
+    "release:css": "tailwindcss -i ./wwwroot/lib/tailwindcss/index.css -o ./wwwroot/lib/tailwindcss/dist/styles.css --minify",
+    "copy:bicon": "./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/bootstrap-icons/font/* -DestinationFolder ./wwwroot/lib/bootstrap-icon/"
   },
   "keywords": [],
   "author": "Shaun Chong <mumk0313@gmail.com>",

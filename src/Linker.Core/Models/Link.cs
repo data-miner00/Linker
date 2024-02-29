@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
 
     /// <summary>
     /// The base model for all of the link related objects.
@@ -51,6 +52,7 @@
         /// <summary>
         /// Gets or sets the creation date of the link entry.
         /// </summary>
+        [DisplayFormat(DataFormatString = "{0:d MMMM, yyyy}")]
         public DateTime CreatedAt { get; set; }
 
         /// <summary>

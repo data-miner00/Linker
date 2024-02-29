@@ -27,9 +27,11 @@
         <div><span>By</span> @Html.DisplayFor(model => model.Author)</div>
         <div>@Html.DisplayFor(model => model.Year)</div>
         <div>Linked at <time>@Html.DisplayFor(model => model.CreatedAt)</time></div>
-        <div>@Html.DisplayFor(model => model.Language)</div>
+        <div class="bg-white border border-solid border-black text-xs uppercase rounded flex items-center justify-center px-1">
+            <span class="block">@Html.DisplayFor(model => model.Language)</span>
+        </div>
         <div>@Html.DisplayFor(model => model.Grammar)</div>
-        <div>@Html.DisplayFor(model => model.Rating)</div>
+        <div><i class="bi bi-explicit"></i> @Html.DisplayFor(model => model.Rating)</div>
     </div>
     <div>
         <p class="text-gray-700">@Html.DisplayFor(model => model.Description)</p>
