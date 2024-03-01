@@ -2,6 +2,9 @@
 {
     using Linker.Core.Models;
 
+    /// <summary>
+    /// The abstraction for article controller in ConsoleUI.
+    /// </summary>
     public interface IArticleController : IController<Article>
     {
     }

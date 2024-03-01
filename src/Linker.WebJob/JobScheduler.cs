@@ -6,12 +6,21 @@ using Quartz.Spi;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+/// <summary>
+/// Schedules all jobs and starts the scheduler.
+/// </summary>
 internal class JobScheduler
 {
     private readonly IEnumerable<JobDescriptor> jobDescriptors;
     private readonly IJobFactory jobFactory;
     private readonly IScheduler scheduler;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JobScheduler"/> class.
+    /// </summary>
+    /// <param name="scheduler">The actual scheduler from Quartz.</param>
+    /// <param name="jobDescriptors">The list of job descriptors.</param>
+    /// <param name="jobFactory">The custom IoC-aware job factory.</param>
     public JobScheduler(IScheduler scheduler, IEnumerable<JobDescriptor> jobDescriptors, IJobFactory jobFactory)
     {
         this.scheduler = scheduler;
@@ -19,6 +28,11 @@ internal class JobScheduler
         this.jobFactory = jobFactory;
     }
 
+    /// <summary>
+    /// Starts the scheduler and schedule registered jobs.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The task itself.</returns>
     public Task StartAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -26,16 +40,20 @@ internal class JobScheduler
         return Task.WhenAll(this.scheduler.Start(cancellationToken), this.ScheduleJobsAsync(cancellationToken));
     }
 
+    /// <summary>
+    /// Stops the running scheduler.
+    /// </summary>
+    /// <returns>The task.</returns>
     public Task StopAsync()
     {
         return this.scheduler.Shutdown();
     }
 
-    private async Task ScheduleJobsAsync(CancellationToken cancellationToken)
+    private Task ScheduleJobsAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        foreach (var jobDescriptor in this.jobDescriptors)
+        var jobSchedulingTasks = this.jobDescriptors.Select(jobDescriptor =>
         {
             var job = JobBuilder.Create()
                 .OfType(jobDescriptor.JobType)
@@ -49,7 +67,9 @@ internal class JobScheduler
                 .WithCronSchedule(jobDescriptor.CronExpression)
                 .Build();
 
-            await this.scheduler.ScheduleJob(job, trigger, cancellationToken).ConfigureAwait(false);
-        }
+            return this.scheduler.ScheduleJob(job, trigger, cancellationToken);
+        });
+
+        return Task.WhenAll(jobSchedulingTasks);
     }
 }

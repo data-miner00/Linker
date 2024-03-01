@@ -3,7 +3,7 @@
     using Linker.Core.Models;
 
     /// <summary>
-    /// The base interface for link controllers.
+    /// The base interface for link controllers in ConsoleUI.
     /// </summary>
     /// <typeparam name="T">The object that extends <see cref="Link"/>.</typeparam>
     public interface IController<T>

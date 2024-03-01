@@ -15,8 +15,15 @@ using Quartz.Spi;
 using System.Data;
 using System.Data.SQLite;
 
+/// <summary>
+/// The IoC container configurations. Registers all dependencies of the program.
+/// </summary>
 internal static class ContainerConfig
 {
+    /// <summary>
+    /// Registers the dependencies accordingly.
+    /// </summary>
+    /// <returns>The IoC container.</returns>
     public static IContainer Configure()
     {
         var builder = new ContainerBuilder();

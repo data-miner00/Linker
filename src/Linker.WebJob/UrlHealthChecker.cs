@@ -28,9 +28,11 @@ public sealed class UrlHealthChecker : IUrlHealthChecker
 
         try
         {
+            await Console.Out.WriteLineAsync($"Pinging {url}");
             await this.httpClient
                 .SendAsync(new HttpRequestMessage(HttpMethod.Get, url), cancellationToken)
                 .ConfigureAwait(false);
+            await Console.Out.WriteLineAsync($"Done pinging {url}");
 
             return new HealthCheckResult
             {

@@ -1,6 +1,4 @@
-﻿using System.Data;
-using System.ServiceProcess;
-using Autofac;
+﻿using Autofac;
 using Linker.WebJob;
 using Microsoft.Extensions.Hosting;
 
@@ -8,7 +6,7 @@ var container = ContainerConfig.Configure();
 
 var service = container.Resolve<IHostedService>();
 
-var cancellationTokenSource = new CancellationTokenSource();
+using var cancellationTokenSource = new CancellationTokenSource();
 
 Console.CancelKeyPress += new ConsoleCancelEventHandler(CancelKeyPress);
 

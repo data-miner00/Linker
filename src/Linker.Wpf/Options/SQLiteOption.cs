@@ -1,7 +1,12 @@
-﻿namespace Linker.Wpf.Options
+﻿namespace Linker.Wpf.Options;
+
+/// <summary>
+/// The options required for SQLite.
+/// </summary>
+internal sealed class SQLiteOption
 {
-    internal sealed class SQLiteOption
-    {
-        public required string ConnectionString { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets the connection string for SQLite database.
+    /// </summary>
+    required public string ConnectionString { get; set; }
 }

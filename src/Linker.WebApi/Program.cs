@@ -73,7 +73,7 @@ builder.Services.AddScoped<IAuthorizationHandler, MinimumAgeHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, MinimumAgePolicyProvider>();
 
 builder.Services
-    .AddSingleton<IMapper>(c => new MapperConfiguration(config =>
+    .AddSingleton(c => new MapperConfiguration(config =>
     {
         config.AllowNullCollections = false;
         config.AddProfile<ArticleMapperProfile>();
