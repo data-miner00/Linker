@@ -19,6 +19,22 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
+    - name: Install Pnpm
+      run: npm i -g pnpm
+    - name: Restore Node dependencies
+      run: pnpm i
+    - name: Copy Bootstrap Icon to lib folder
+      shell: pwsh
+      working-directory: ./src/Linker.Mvc
+      run: ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/bootstrap-icons/font/* -DestinationFolder ./wwwroot/lib/bootstrap-icon/
+    - name: Copy jQuery to lib folder
+      shell: pwsh
+      working-directory: ./src/Linker.Mvc
+      run: ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/jquery/dist/* -DestinationFolder ./wwwroot/lib/jquery/
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
