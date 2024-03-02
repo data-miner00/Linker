@@ -1,10 +1,10 @@
 using System.Data;
 using System.Data.SQLite;
 using AutoMapper;
+using Linker.Common.Mappers;
 using Linker.Core.Repositories;
 using Linker.Data.SQLite;
 using Linker.WebApi.GraphQL;
-using Linker.WebApi.Mappers;
 
 {
     var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +14,7 @@ using Linker.WebApi.Mappers;
     builder.Services.AddSingleton<IDbConnection>(connection);
     builder.Services.AddSingleton<IArticleRepository, ArticleRepository>();
     builder.Services
-        .AddSingleton<IMapper>(c => new MapperConfiguration(config =>
+        .AddSingleton(c => new MapperConfiguration(config =>
         {
             config.AllowNullCollections = false;
             config.AddProfile<ArticleMapperProfile>();

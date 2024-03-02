@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Linker.Common\Linker.Common.csproj" />
     <ProjectReference Include="..\Linker.Data\Linker.Data.csproj" />
-    <ProjectReference Include="..\Linker.WebApi\Linker.WebApi.csproj" />
   </ItemGroup>
 
 </Project>

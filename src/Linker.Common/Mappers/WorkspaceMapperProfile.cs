@@ -1,5 +1,6 @@
-﻿namespace Linker.WebApi.Mappers;
+﻿namespace Linker.Common.Mappers;
 
+using System;
 using AutoMapper;
 using Linker.Core.ApiModels;
 using Linker.Core.Models;

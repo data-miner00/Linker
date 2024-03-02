@@ -1,5 +1,7 @@
 using System.Data;
 using System.Data.SQLite;
+using AutoMapper;
+using Linker.Common.Mappers;
 using Linker.Core.Repositories;
 using Linker.Data.SQLite;
 
@@ -12,7 +14,18 @@ builder.Services.AddControllersWithViews();
 
 builder.Services
     .AddSingleton<IDbConnection>(connection)
-    .AddSingleton<IArticleRepository, ArticleRepository>();
+    .AddSingleton<IArticleRepository, ArticleRepository>()
+    .AddSingleton<IWebsiteRepository, WebsiteRepository>()
+    .AddSingleton<IYoutubeRepository, YoutubeRepository>();
+
+builder.Services
+    .AddSingleton(new MapperConfiguration(config =>
+    {
+        config.AllowNullCollections = false;
+        config.AddProfile<ArticleMapperProfile>();
+        config.AddProfile<WebsiteMapperProfile>();
+        config.AddProfile<YoutubeMapperProfile>();
+    }).CreateMapper());
 
 var app = builder.Build();
 
