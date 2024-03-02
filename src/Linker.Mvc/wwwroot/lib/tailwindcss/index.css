@@ -10,3 +10,20 @@ table tr td {
 header nav ul li a {
     @apply block px-2 py-1 border border-solid border-transparent hover:border-black rounded;
 }
+
+.form-group {
+    @apply flex flex-col gap-1;
+}
+
+.form-group.form-check {
+    @apply border border-solid border-gray-200 rounded px-3 py-1;
+}
+
+.form-group input,
+.form-group select {
+    @apply border border-solid border-gray-200 rounded px-3 py-1;
+}
+
+.form-group > * {
+    @apply block;
+}

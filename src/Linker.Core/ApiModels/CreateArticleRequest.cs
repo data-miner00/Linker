@@ -25,6 +25,7 @@
         /// Gets or sets the category of the article.
         /// </summary>
         [Required]
+        [EnumDataType(typeof(Category))]
         public Category Category { get; set; }
 
         /// <summary>
@@ -47,18 +48,21 @@
         /// Gets or sets language of the article.
         /// </summary>
         [Required]
+        [EnumDataType(typeof(Language))]
         public Language Language { get; set; }
 
         /// <summary>
         /// Gets or sets grammar of the article.
         /// </summary>
         [Required]
+        [EnumDataType(typeof(Grammar))]
         public Grammar Grammar { get; set; }
 
         /// <summary>
         /// Gets or sets the rating of the article.
         /// </summary>
         [Required]
+        [EnumDataType(typeof(Rating))]
         public Rating Rating { get; set; }
 
         /// <summary>

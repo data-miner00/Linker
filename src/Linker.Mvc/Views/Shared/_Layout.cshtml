@@ -32,23 +32,27 @@
             <div class="flex-1 flex justify-center">
                 <a asp-controller="Home" asp-action="Index" class="block text-2xl font-bold tracking-wide">Linker</a>
             </div>
-            <div class="flex-1 flex justify-end">
-                <a>Login</a>
+            <div class="flex-1 flex justify-end gap-4 items-center">
+                <div><a>Login</a></div>
+                <div class="text-xl"><i class="bi bi-bookmark"></i></div>
+                <div class="text-xl"><i class="bi bi-briefcase"></i></div>
             </div>
         </header>
         <div class="border-b border-solid border-black flex px-2 gap-4 text-sm">
-            <button class="block py-2">Search</button>
+            <button class="block py-2">
+                <i class="bi bi-search"></i>
+            </button>
             <input class="block w-full py-2 outline-none" placeholder="WHAT ARE YOU LOOKING FOR?" />
         </div>
     </div>
 
-    <div class="max-w-screen-2xl mx-auto mt-5">
+    <div class="max-w-screen-2xl mx-auto my-5">
         <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="absolute h-[100px] bg-gray-100 flex items-center justify-center bottom-0 left-0 w-full">
+    <footer class="flex items-center justify-center border-t border-solid border-black py-3">
         <div class="container">
             &copy; 2024 - Linker.Mvc - <a bold asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> - <email recipient="mumk0313"></email>
         </div>

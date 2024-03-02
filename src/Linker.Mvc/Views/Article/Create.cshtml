@@ -1,16 +1,19 @@
-﻿@model Linker.Core.ApiModels.CreateArticleRequest
+﻿@using Linker.Core.Models
+@model Linker.Core.ApiModels.CreateArticleRequest
 
 @{
     ViewData["Title"] = "Create Article";
 }
 
-<h1>Create An Article</h1>
+<h1 class="text-lg">Create Article Link</h1>
+<p class="text-gray-700">Enter the details below to create a new entry.</p>
+
+<div asp-validation-summary="All" class="text-violet-300"></div>
+<div asp-validation-summary="ModelOnly" class="text-red-300"></div>
 
 <div class="my-12">
-    <div class="border border-solid border-gray-300 bg-gray-50">
-        <form asp-action="Create">
-            <div asp-validation-summary="All" class="text-violet-300"></div>
-            <div asp-validation-summary="ModelOnly" class="text-red-300"></div>
+    <div>
+        <form asp-action="Create" class="max-w-screen-md">
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -23,7 +26,9 @@
             </div>
             <div class="form-group">
                 <label asp-for="Category" class="control-label"></label>
-                <input asp-for="Category" class="form-control" />
+                <select asp-for="Category" asp-items="Html.GetEnumSelectList<Category>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
                 <span asp-validation-for="Category" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -38,41 +43,52 @@
             </div>
             <div class="form-group">
                 <label asp-for="Language" class="control-label"></label>
-                <input asp-for="Language" class="form-control" />
+                <select asp-for="Language" asp-items="Html.GetEnumSelectList<Language>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
                 <span asp-validation-for="Language" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Grammar" class="control-label"></label>
-                <input asp-for="Grammar" class="form-control" />
+                <select asp-for="Grammar" asp-items="Html.GetEnumSelectList<Grammar>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
                 <span asp-validation-for="Grammar" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Rating" class="control-label"></label>
-                <input asp-for="Rating" class="form-control" />
+                <select asp-for="Rating" asp-items="Html.GetEnumSelectList<Rating>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
                 <span asp-validation-for="Rating" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Year" class="control-label"></label>
-                <input asp-for="Year" class="form-control" />
+                <input asp-for="Year" class="form-control" value="2022" />
                 <span asp-validation-for="Year" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="WatchLater" /> @Html.DisplayNameFor(model => model.WatchLater)
+                    <input class="form-check-input" asp-for="WatchLater" />
+                    <span>@Html.DisplayNameFor(model => model.WatchLater)</span>
                 </label>
             </div>
-            <div class="form-group">
-                <label asp-for="CreatedBy" class="control-label"></label>
-                <input asp-for="CreatedBy" class="form-control" />
-                <span asp-validation-for="CreatedBy" class="text-danger"></span>
+            <div class="hidden">
+                <input asp-for="CreatedBy" value="mvc-user-temp" />
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="my-3 flex">
+                <button class="px-4 py-2 bg-black text-white rounded block">
+                    Create
+                </button>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index" class="px-4 py-2 bg-black text-white rounded">Back to List</a>
+<div class="flex">
+    <a asp-action="Index" class="px-4 py-2 bg-black text-white rounded block">Back to List</a>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
