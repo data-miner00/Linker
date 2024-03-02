@@ -60,6 +60,8 @@
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- Even though libraries like jQuery are included here, it is not available for other individual pages to use, which is weird. -->
     <partial name="_SomeScriptsPartial" />
 </body>
 </html>

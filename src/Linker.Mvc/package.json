@@ -6,13 +6,15 @@
     "watch:css": "tailwindcss -i ./wwwroot/lib/tailwindcss/index.css -o ./wwwroot/lib/tailwindcss/dist/styles.css --watch",
     "build:css": "tailwindcss -i ./wwwroot/lib/tailwindcss/index.css -o ./wwwroot/lib/tailwindcss/dist/styles.css",
     "release:css": "tailwindcss -i ./wwwroot/lib/tailwindcss/index.css -o ./wwwroot/lib/tailwindcss/dist/styles.css --minify",
-    "copy:bicon": "./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/bootstrap-icons/font/* -DestinationFolder ./wwwroot/lib/bootstrap-icon/"
+    "copy:bicon": "./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/bootstrap-icons/font/* -DestinationFolder ./wwwroot/lib/bootstrap-icon/",
+    "copy:jquery": "./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/jquery/dist/* -DestinationFolder ./wwwroot/lib/jquery/"
   },
   "keywords": [],
   "author": "Shaun Chong <mumk0313@gmail.com>",
   "license": "WTFPL",
   "devDependencies": {
     "bootstrap-icons": "^1.11.3",
+    "jquery": "^3.7.1",
     "tailwindcss": "^3.4.1"
   }
 }

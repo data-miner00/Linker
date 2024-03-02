@@ -377,3 +377,6 @@ dist/
 
 # MVC Bootstrap Icon source
 bootstrap-icon/
+
+# jQuery from node
+jquery/
