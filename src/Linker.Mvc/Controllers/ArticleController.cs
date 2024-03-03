@@ -4,7 +4,6 @@ using AutoMapper;
 using Linker.Core.ApiModels;
 using Linker.Core.Models;
 using Linker.Core.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 public sealed class ArticleController : Controller
@@ -128,24 +127,28 @@ public sealed class ArticleController : Controller
         }
     }
 
-    // GET: ArticleController/Delete/5
-    public IActionResult Delete(int id)
-    {
-        return View();
-    }
-
     // POST: ArticleController/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Delete(int id, IFormCollection collection)
+    public async Task<IActionResult> Delete(Guid id)
     {
         try
         {
-            return RedirectToAction(nameof(Index));
+            await this.repository
+                .RemoveAsync(id.ToString(), default)
+                .ConfigureAwait(false);
+
+            this.TempData["success"] = "Article deleted successfully.";
+
+            return this.RedirectToAction(nameof(this.Index));
+        }
+        catch (InvalidOperationException)
+        {
+            return this.NotFound();
         }
         catch
         {
-            return View();
+            return this.View();
         }
     }
 }

@@ -19,6 +19,7 @@
             <td>Author</td>
             <td>Year</td>
             <td></td>
+            <td></td>
         </tr>    
     </thead>
     <tbody>
@@ -39,6 +40,16 @@
                     >
                         Details
                     </a>
+                </td>
+                <td>
+                    <form method="post" asp-action="Delete" asp-route-id="@article.Id">
+                        <button
+                            class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                            onclick="return confirm('Are you sure to delete this article?')"
+                        >
+                            Delete
+                        </button>
+                    </form>
                 </td>
             </tr>
         }
