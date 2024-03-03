@@ -1,19 +1,23 @@
 ﻿namespace Linker.Mvc.Controllers;
 
+using AutoMapper;
 using Linker.Core.ApiModels;
+using Linker.Core.Models;
 using Linker.Core.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
-public class ArticleController : Controller
+public sealed class ArticleController : Controller
 {
     private readonly IArticleRepository repository;
+    private readonly IMapper mapper;
 
-    public ArticleController(IArticleRepository repository)
+    public ArticleController(IArticleRepository repository, IMapper mapper)
     {
         ArgumentNullException.ThrowIfNull(repository);
+        ArgumentNullException.ThrowIfNull(mapper);
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     // GET: ArticleController
@@ -45,8 +49,12 @@ public class ArticleController : Controller
     // POST: ArticleController/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(CreateArticleRequest request)
+    public async Task<IActionResult> Create(CreateArticleRequest request)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
+        var article = this.mapper.Map<Article>(request);
+
         try
         {
             if (request.Url == "s")
@@ -56,35 +64,67 @@ public class ArticleController : Controller
 
             if (this.ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                await this.repository
+                    .AddAsync(article, default)
+                    .ConfigureAwait(false);
+
+                this.TempData["success"] = "Article created successfully!";
+
+                return this.RedirectToAction(nameof(this.Index));
             }
 
             return this.View(request);
         }
         catch
         {
-            return View(request);
+            this.TempData["error"] = "Something failed.";
+
+            return this.View(request);
         }
     }
 
     // GET: ArticleController/Edit/5
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(Guid id)
     {
-        return View();
+        try
+        {
+            var article = await this.repository
+                .GetByIdAsync(id.ToString(), default)
+                .ConfigureAwait(false);
+
+            return this.View(article);
+        }
+        catch (InvalidOperationException)
+        {
+            return this.NotFound();
+        }
     }
 
     // POST: ArticleController/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(int id, IFormCollection collection)
+    public async Task<IActionResult> Edit(Guid id, UpdateArticleRequest request)
     {
         try
         {
-            return RedirectToAction(nameof(Index));
+            var article = this.mapper.Map<Article>(request);
+            article.Id = id.ToString();
+
+            await this.repository
+                .UpdateAsync(article, default)
+                .ConfigureAwait(false);
+
+            this.TempData["success"] = "Successfully updated article.";
+
+            return this.RedirectToAction(nameof(this.Index));
+        }
+        catch (InvalidOperationException)
+        {
+            return this.NotFound();
         }
         catch
         {
-            return View();
+            return this.View();
         }
     }
 

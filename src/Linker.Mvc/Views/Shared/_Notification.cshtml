@@ -1,9 +1,13 @@
 ﻿@if(TempData["success"] != null)
 {
-    <h2>@TempData["success"]</h2>
+    <h2 class="mb-4 bg-green-200 border border-solid border-green-400 py-1 px-3 rounded">
+        @TempData["success"]
+    </h2>
 }
 
 @if(TempData["error"] != null)
 {
-    <h2>@TempData["error"]</h2>
+    <h2 class="mb-4 bg-red-200 border border-solid border-red-400 py-1 px-3 rounded">
+        @TempData["error"]
+    </h2>
 }

@@ -27,3 +27,7 @@ header nav ul li a {
 .form-group > * {
     @apply block;
 }
+
+.text-danger {
+    @apply text-sm text-red-500 mb-2;
+}

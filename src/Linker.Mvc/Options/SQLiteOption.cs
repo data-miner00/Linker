@@ -1,4 +1,4 @@
-﻿namespace Linker.WebApi.GraphQL.Options;
+﻿namespace Linker.Mvc.Options;
 
 /// <summary>
 /// The options required for SQLite.
