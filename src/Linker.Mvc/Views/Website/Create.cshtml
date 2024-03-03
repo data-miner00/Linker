@@ -1,0 +1,93 @@
+﻿@using Linker.Core.Models
+@model Linker.Core.ApiModels.CreateWebsiteRequest
+
+@{
+    ViewData["Name"] = "Create Website";
+}
+
+<h1 class="text-lg">Create Website Link</h1>
+<p class="text-gray-700">Enter the details below to create a new entry.</p>
+
+<div class="my-12">
+    <div>
+        <form asp-action="Create" class="max-w-screen-md">
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Url" class="control-label"></label>
+                <input asp-for="Url" class="form-control" />
+                <span asp-validation-for="Url" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Category" class="control-label"></label>
+                <select asp-for="Category" asp-items="Html.GetEnumSelectList<Category>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Language" class="control-label"></label>
+                <select asp-for="Language" asp-items="Html.GetEnumSelectList<Language>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+                <span asp-validation-for="Language" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Aesthetics" class="control-label"></label>
+                <select asp-for="Aesthetics" asp-items="Html.GetEnumSelectList<Aesthetics>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+                <span asp-validation-for="Aesthetics" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rating" class="control-label"></label>
+                <select asp-for="Rating" asp-items="Html.GetEnumSelectList<Rating>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+                <span asp-validation-for="Rating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tags" class="control-label"></label>
+                <div id="tags-container" class="flex flex-wrap">
+                    <input asp-for="Tags" class="form-control" placeholder="compsci" />
+                    <input asp-for="Tags" class="form-control" placeholder="algo" />
+                    <input asp-for="Tags" class="form-control" placeholder="book" />
+                    <button id="add-tag-btn" type="button">Add</button>
+                </div>
+                <span asp-validation-for="Tags" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsSubdomain" />
+                    <span>@Html.DisplayNameFor(model => model.IsSubdomain)</span>
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsMultilingual" />
+                    <span>@Html.DisplayNameFor(model => model.IsMultilingual)</span>
+                </label>
+            </div>
+            <div class="hidden">
+                <input asp-for="CreatedBy" value="mvc-user-temp" />
+            </div>
+            <div class="my-3 flex">
+                <button class="px-4 py-2 bg-black text-white rounded block">
+                    Create
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="flex">
+    <a asp-action="Index" class="px-4 py-2 bg-black text-white rounded block">Back to List</a>
+</div>

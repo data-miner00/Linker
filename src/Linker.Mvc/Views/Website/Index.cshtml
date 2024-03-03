@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Linker.Core.Models.Website>
+
+@{
+    ViewData["Title"] = "All websites";
+}
+
+<partial name="_Notification" />
+
+<div class="flex mb-4">
+    <a class="block px-4 py-2 bg-black text-white rounded" asp-controller="Website" asp-action="Create">Create a new website</a>
+</div>
+
+<table>
+    <thead>
+        <tr class="border-b-2 border-t-2 border-solid border-gray-600">
+            <td>Name</td>
+            <td>Url</td>
+            <td>Description</td>
+            <td>Aesthetics</td>
+            <td>Category</td>
+            <td></td>
+            <td></td>
+        </tr>    
+    </thead>
+    <tbody>
+        @foreach (var website in Model)
+        {
+            <tr class="border-b border-solid border-gray-400 py-2">
+                <td>@website.Name</td>
+                <td class="max-w-[300px] truncate ...">@website.Url</td>
+                <td>@website.Description</td>
+                <td>@website.Aesthetics</td>
+                <td>@website.Category</td>
+                <td>
+                    <a
+                        class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                        asp-controller="Website"
+                        asp-action="Details"
+                        asp-route-id="@website.Id"
+                    >
+                        Details
+                    </a>
+                </td>
+                <td>
+                    <form method="post" asp-action="Delete" asp-route-id="@website.Id">
+                        <button
+                            class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                            onclick="return confirm('Are you sure to delete this website?')"
+                        >
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

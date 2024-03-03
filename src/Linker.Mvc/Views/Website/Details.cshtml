@@ -1,0 +1,44 @@
+﻿@model Linker.Core.Models.Website
+
+@{
+    ViewData["Title"] = Model.Name ?? "Website Details";
+}
+
+<article class="mb-10" id="@Html.DisplayFor(model => model.Id)">
+    <header class="mb-2">
+        <p class="uppercase tracking-wide font-bold text-sm text-gray-300">
+            @Html.DisplayFor(model => model.Category)
+        </p>
+        
+        <a
+            class="flex gap-2 items-center"
+            href="@Html.DisplayFor(model => model.Url)"
+            target="_blank"
+        >
+            <h1 class="text-2xl font-bold block">
+                @Html.DisplayFor(model => model.Name)
+            </h1>
+            <div>
+                <i class="bi bi-box-arrow-up-right"></i>
+            </div>
+        </a>
+    </header>
+    <div class="flex gap-4 mb-4">
+        <div>@Html.DisplayFor(model => model.Domain)</div>
+        <div>@Html.DisplayFor(model => model.IsSubdomain)</div>
+        <div>Linked at <time>@Html.DisplayFor(model => model.CreatedAt)</time></div>
+        <div class="bg-white border border-solid border-black text-xs uppercase rounded flex items-center justify-center px-1">
+            <span class="block">@Html.DisplayFor(model => model.Language)</span>
+        </div>
+        <div>@Html.DisplayFor(model => model.Aesthetics)</div>
+        <div><i class="bi bi-explicit"></i> @Html.DisplayFor(model => model.Rating)</div>
+    </div>
+    <div>
+        <p class="text-gray-700">@Html.DisplayFor(model => model.Description)</p>
+    </div>
+</article>
+
+<div>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    <a class="px-4 py-2 bg-black text-white rounded" asp-action="Index">Back to List</a>
+</div>
