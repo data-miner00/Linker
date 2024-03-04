@@ -1,3 +1,14 @@
+<#
+.Synopsis
+    Copy files and folders
+.Description
+    Copy files and folders under a certain directory and place to a destination directory.
+.Example
+	Copy-FolderItems -SourceFolder myFolder/* -DestinationFolder secondFolder
+.Example
+	Copy-FolderItems -SourceFolder ~/rootFolder/* -DestinationFolder .
+#>
+
 param (
 	[Parameter(Mandatory = $true)]
 	[String] $SourceFolder,
