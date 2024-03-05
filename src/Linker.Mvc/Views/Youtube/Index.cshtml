@@ -1,0 +1,56 @@
+﻿@model IEnumerable<Linker.Core.Models.Youtube>
+@{
+    ViewData["Title"] = "All Youtube Channels";
+}
+
+<partial name="_Notification" />
+
+<div class="flex mb-4">
+    <a class="block px-4 py-2 bg-black text-white rounded" asp-controller="Youtube" asp-action="Create">Create a new youtube</a>
+</div>
+
+<table>
+    <thead>
+        <tr class="border-b-2 border-t-2 border-solid border-gray-600">
+            <td>Name</td>
+            <td>Url</td>
+            <td>Description</td>
+            <td>Author</td>
+            <td>Year</td>
+            <td></td>
+            <td></td>
+        </tr>    
+    </thead>
+    <tbody>
+        @foreach (var youtube in Model)
+        {
+            <tr class="border-b border-solid border-gray-400 py-2">
+                <td>@youtube.Name</td>
+                <td class="max-w-[300px] truncate ...">@youtube.Url</td>
+                <td>@youtube.Description</td>
+                <td>@youtube.Youtuber</td>
+                <td>@youtube.Category</td>
+                <td>
+                    <a
+                        class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                        asp-controller="Youtube"
+                        asp-action="Details"
+                        asp-route-id="@youtube.Id"
+                    >
+                        Details
+                    </a>
+                </td>
+                <td>
+                    <form method="post" asp-action="Delete" asp-route-id="@youtube.Id">
+                        <button
+                            class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                            onclick="return confirm('Are you sure to delete this youtube?')"
+                        >
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

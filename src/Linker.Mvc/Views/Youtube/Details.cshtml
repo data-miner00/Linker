@@ -1,4 +1,4 @@
-﻿@model Linker.Core.Models.Article
+﻿@model Linker.Core.Models.Youtube
 
 @{
     ViewData["Title"] = "Details";
@@ -16,7 +16,7 @@
             target="_blank"
         >
             <h1 class="text-2xl font-bold block">
-                @Html.DisplayFor(model => model.Title)
+                @Html.DisplayFor(model => model.Name)
             </h1>
             <div>
                 <i class="bi bi-box-arrow-up-right"></i>
@@ -24,13 +24,12 @@
         </a>
     </header>
     <div class="flex gap-4 mb-4">
-        <div><span>By</span> @Html.DisplayFor(model => model.Author)</div>
-        <div>@Html.DisplayFor(model => model.Year)</div>
+        <div><span>By</span> @Html.DisplayFor(model => model.Youtuber)</div>
+        <div>@Html.DisplayFor(model => model.Country)</div>
         <div>Linked at <time>@Html.DisplayFor(model => model.CreatedAt)</time></div>
         <div class="bg-white border border-solid border-black text-xs uppercase rounded flex items-center justify-center px-1">
             <span class="block">@Html.DisplayFor(model => model.Language)</span>
         </div>
-        <div>@Html.DisplayFor(model => model.Grammar)</div>
         <div><i class="bi bi-explicit"></i> @Html.DisplayFor(model => model.Rating)</div>
     </div>
     <div>
