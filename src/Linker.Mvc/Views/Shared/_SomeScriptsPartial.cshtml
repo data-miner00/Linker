@@ -1,2 +1,11 @@
 ﻿<script src="~/lib/loaded.js"></script>
-<script src="~/lib/jquery/jquery.min.js"></script>
+<environment names="Development">
+    <script src="~/lib/jquery/jquery.min.js"></script>
+</environment>
+<environment names="Staging,Production">
+    <script
+        src="https://www.unpkg.com/jquery@3.7.1/dist/jquery.min.js"
+        asp-fallback-src="~/lib/jquery/jquery.min.js"
+        asp-fallback-test="window.jQuery"
+    ></script>
+</environment>
