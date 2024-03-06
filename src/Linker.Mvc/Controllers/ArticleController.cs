@@ -4,8 +4,10 @@ using AutoMapper;
 using Linker.Core.ApiModels;
 using Linker.Core.Models;
 using Linker.Core.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+[Authorize]
 public sealed class ArticleController : Controller
 {
     private readonly IArticleRepository repository;

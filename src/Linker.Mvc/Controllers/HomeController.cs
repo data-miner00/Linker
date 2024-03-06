@@ -2,8 +2,12 @@ namespace Linker.Mvc.Controllers;
 
 using Linker.Mvc.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using System.Diagnostics;
 
+[Authorize]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;

@@ -4,9 +4,11 @@ using AutoMapper;
 using Linker.Core.ApiModels;
 using Linker.Core.Models;
 using Linker.Core.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+[Authorize]
 public sealed class YoutubeController : Controller
 {
     private readonly IYoutubeRepository repository;
