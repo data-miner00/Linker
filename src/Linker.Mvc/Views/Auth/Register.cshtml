@@ -1,0 +1,13 @@
+﻿@model Linker.Core.ApiModels.CreateUserRequest
+@{
+    ViewData["Title"] = "Register";
+}
+
+<partial name="_Notification" />
+
+<form asp-action="Register" method="post">
+    <input asp-for="Username" placeholder="Username" />
+    <input asp-for="Password" placeholder="Password" type="password" />
+    <input asp-for="DateOfBirth" placeholder="Date of birth" />
+    <button type="submit">Register</button>
+</form>

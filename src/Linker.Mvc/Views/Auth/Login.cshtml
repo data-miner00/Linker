@@ -1,0 +1,14 @@
+﻿@model Linker.Core.ApiModels.LoginRequest
+@{
+    ViewData["Title"] = "Login";
+}
+
+<partial name="_Notification" />
+
+<form asp-action="Login" method="post">
+    <input asp-for="Username" placeholder="Username" />
+    <input asp-for="Password" placeholder="Password" type="password" />
+    <button type="submit">Login</button>
+</form>
+
+<a asp-action="Register">Register</a>

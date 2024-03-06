@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    var httpContext = httpContextAccessor.HttpContext;
+    var isLoggedIn = httpContext?.User.Identity?.IsAuthenticated ?? false;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -33,7 +40,16 @@
                 <a asp-controller="Home" asp-action="Index" class="block text-2xl font-bold tracking-wide">Linker</a>
             </div>
             <div class="flex-1 flex justify-end gap-4 items-center">
-                <div><a>Login</a></div>
+                <div>
+                    @if (isLoggedIn)
+                    {
+                        <a asp-area="" asp-controller="Auth" asp-action="Logout">Logout</a>
+                    }
+                    else
+                    {
+                        <a asp-area="" asp-controller="Auth" asp-action="Login">Login</a>
+                    }
+                </div>
                 <div class="text-xl"><i class="bi bi-bookmark"></i></div>
                 <div class="text-xl"><i class="bi bi-briefcase"></i></div>
             </div>
