@@ -19,11 +19,13 @@ public sealed class WebsiteController : Controller
         this.mapper = mapper;
     }
 
+    public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
+
     // GET: WebsiteController
     public async Task<IActionResult> Index()
     {
         var websites = await this.repository
-            .GetAllAsync(default)
+            .GetAllAsync(this.CancellationToken)
             .ConfigureAwait(false);
 
         return this.View(websites);
@@ -35,7 +37,7 @@ public sealed class WebsiteController : Controller
         try
         {
             var website = await this.repository
-                .GetByIdAsync(id.ToString(), default)
+                .GetByIdAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
             return this.View(website);
@@ -70,7 +72,7 @@ public sealed class WebsiteController : Controller
             if (this.ModelState.IsValid)
             {
                 await this.repository
-                    .AddAsync(website, default)
+                    .AddAsync(website, this.CancellationToken)
                     .ConfigureAwait(false);
 
                 this.TempData["success"] = "Website added successfully.";
@@ -94,7 +96,7 @@ public sealed class WebsiteController : Controller
         try
         {
             var website = await this.repository
-                .GetByIdAsync(id.ToString(), default)
+                .GetByIdAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
             return this.View(website);
@@ -122,7 +124,7 @@ public sealed class WebsiteController : Controller
         try
         {
             await this.repository
-                .UpdateAsync(website, default)
+                .UpdateAsync(website, this.CancellationToken)
                 .ConfigureAwait(false);
 
             this.TempData["success"] = "Website updated successfully.";
@@ -147,7 +149,7 @@ public sealed class WebsiteController : Controller
         try
         {
             await this.repository
-                .RemoveAsync(id.ToString(), default)
+                .RemoveAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
             this.TempData["success"] = "Website deleted successfully.";

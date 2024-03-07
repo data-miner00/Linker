@@ -22,11 +22,13 @@ public sealed class YoutubeController : Controller
         this.mapper = mapper;
     }
 
+    public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
+
     // GET: YoutubeController
     public async Task<IActionResult> Index()
     {
         var youtubes = await this.repository
-            .GetAllAsync(default)
+            .GetAllAsync(this.CancellationToken)
             .ConfigureAwait(false);
 
         return this.View(youtubes);
@@ -38,7 +40,7 @@ public sealed class YoutubeController : Controller
         try
         {
             var youtube = await this.repository
-                .GetByIdAsync(id.ToString(), default)
+                .GetByIdAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
             return this.View(youtube);
@@ -73,7 +75,7 @@ public sealed class YoutubeController : Controller
             if (this.ModelState.IsValid)
             {
                 await this.repository
-                    .AddAsync(youtube, default)
+                    .AddAsync(youtube, this.CancellationToken)
                     .ConfigureAwait(false);
 
                 this.TempData["success"] = "Youtube created successfully!";
@@ -97,7 +99,7 @@ public sealed class YoutubeController : Controller
         try
         {
             var youtube = await this.repository
-                .GetByIdAsync(id.ToString(), default)
+                .GetByIdAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
             return this.View(youtube);
@@ -125,7 +127,7 @@ public sealed class YoutubeController : Controller
             youtube.Id = id.ToString();
 
             await this.repository
-                .UpdateAsync(youtube, default)
+                .UpdateAsync(youtube, this.CancellationToken)
                 .ConfigureAwait(false);
 
             this.TempData["success"] = "Successfully updated youtube.";
@@ -150,7 +152,7 @@ public sealed class YoutubeController : Controller
         try
         {
             await this.repository
-                .RemoveAsync(id.ToString(), default)
+                .RemoveAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
             this.TempData["success"] = "Youtube deleted successfully.";

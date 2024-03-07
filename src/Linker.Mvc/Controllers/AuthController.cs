@@ -1,6 +1,5 @@
 ﻿namespace Linker.Mvc.Controllers;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -23,6 +22,8 @@ public sealed class AuthController : Controller
         this.mapper = mapper;
     }
 
+    public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
+
     // GET: AuthController/Login
     public IActionResult Login()
     {
@@ -44,7 +45,10 @@ public sealed class AuthController : Controller
         try
         {
             var user = await this.repository
-                .GetByUsernameAndPasswordAsync(request.Username, request.Password, default)
+                .GetByUsernameAndPasswordAsync(
+                    request.Username,
+                    request.Password,
+                    this.CancellationToken)
                 .ConfigureAwait(false);
 
             Claim[] claims = [
@@ -106,7 +110,7 @@ public sealed class AuthController : Controller
         try
         {
             await this.repository
-                .AddAsync(user, default)
+                .AddAsync(user, this.CancellationToken)
                 .ConfigureAwait(false);
 
             this.TempData["success"] = "Successfully registered.";

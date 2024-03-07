@@ -21,6 +21,8 @@ public sealed class ArticleController : Controller
         this.mapper = mapper;
     }
 
+    public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
+
     // GET: ArticleController
     public async Task<IActionResult> Index()
     {
@@ -35,7 +37,7 @@ public sealed class ArticleController : Controller
     public async Task<IActionResult> Details(string id)
     {
         var article = await this.repository
-            .GetByIdAsync(id, default)
+            .GetByIdAsync(id, this.CancellationToken)
             .ConfigureAwait(false);
 
         return View(article);
@@ -66,7 +68,7 @@ public sealed class ArticleController : Controller
             if (this.ModelState.IsValid)
             {
                 await this.repository
-                    .AddAsync(article, default)
+                    .AddAsync(article, this.CancellationToken)
                     .ConfigureAwait(false);
 
                 this.TempData["success"] = "Article created successfully!";
@@ -90,7 +92,7 @@ public sealed class ArticleController : Controller
         try
         {
             var article = await this.repository
-                .GetByIdAsync(id.ToString(), default)
+                .GetByIdAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
             return this.View(article);
@@ -112,7 +114,7 @@ public sealed class ArticleController : Controller
             article.Id = id.ToString();
 
             await this.repository
-                .UpdateAsync(article, default)
+                .UpdateAsync(article, this.CancellationToken)
                 .ConfigureAwait(false);
 
             this.TempData["success"] = "Successfully updated article.";
@@ -137,7 +139,7 @@ public sealed class ArticleController : Controller
         try
         {
             await this.repository
-                .RemoveAsync(id.ToString(), default)
+                .RemoveAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
             this.TempData["success"] = "Article deleted successfully.";
