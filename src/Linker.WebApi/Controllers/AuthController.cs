@@ -10,6 +10,7 @@
     using Linker.Core.Repositories;
     using Linker.WebApi.Filters;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http.Timeouts;
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
@@ -20,19 +21,16 @@
     {
         private static readonly string AuthScheme = "cookie";
         private readonly IUserRepository repository;
-        private readonly IHttpContextAccessor context;
         private readonly IMeterFactory meterFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthController"/> class.
         /// </summary>
         /// <param name="repository">The user repository.</param>
-        /// <param name="context">The http context accessor.</param>
         /// <param name="meterFactory">The meter factory.</param>
-        public AuthController(IUserRepository repository, IHttpContextAccessor context, IMeterFactory meterFactory)
+        public AuthController(IUserRepository repository, IMeterFactory meterFactory)
         {
             this.repository = EnsureArg.IsNotNull(repository, nameof(repository));
-            this.context = EnsureArg.IsNotNull(context, nameof(context));
             this.meterFactory = EnsureArg.IsNotNull(meterFactory, nameof(meterFactory));
         }
 
@@ -115,10 +113,13 @@
 
         [HttpGet("/is_authenticated")]
         [Authorize("minimum_role")]
-        public IActionResult IsAuthenticated()
+        [RequestTimeout("MoreThanTenSeconds")]
+        public async Task<IActionResult> IsAuthenticated()
         {
-            var result = this.context.HttpContext.User;
-            return this.Ok();
+            await Task.Delay(TimeSpan.FromSeconds(8));
+
+            var user = this.HttpContext.User;
+            return this.Ok(user.Identity?.IsAuthenticated);
         }
 
         [HttpGet("/is_old")]

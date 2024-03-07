@@ -1,5 +1,6 @@
 using System.Data;
 using System.Data.SQLite;
+using System.Net;
 using System.Reflection;
 using System.Security.Claims;
 using AutoMapper;
@@ -8,6 +9,7 @@ using Linker.Core.Repositories;
 using Linker.Data.SQLite;
 using Linker.WebApi.Filters;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Metrics;
 using Swashbuckle.AspNetCore.Filters;
@@ -60,7 +62,16 @@ builder.Services.AddAuthorization(builder =>
     });
 });
 
-builder.Services.AddRequestTimeouts();
+builder.Services.AddRequestTimeouts(opt =>
+{
+    opt.DefaultPolicy = new RequestTimeoutPolicy
+    {
+        Timeout = TimeSpan.FromSeconds(5),
+        TimeoutStatusCode = (int)HttpStatusCode.RequestTimeout,
+    };
+
+    opt.AddPolicy("MoreThanTenSeconds", TimeSpan.FromSeconds(10));
+});
 
 builder.Services
     .AddSingleton<IDbConnection>(connection)
@@ -75,7 +86,7 @@ builder.Services.AddScoped<IAuthorizationHandler, MinimumAgeHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, MinimumAgePolicyProvider>();
 
 builder.Services
-    .AddSingleton(c => new MapperConfiguration(config =>
+    .AddSingleton(new MapperConfiguration(config =>
     {
         config.AllowNullCollections = false;
         config.AddProfile<ArticleMapperProfile>();
