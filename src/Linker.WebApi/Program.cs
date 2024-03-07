@@ -60,6 +60,8 @@ builder.Services.AddAuthorization(builder =>
     });
 });
 
+builder.Services.AddRequestTimeouts();
+
 builder.Services
     .AddSingleton<IDbConnection>(connection)
     .AddSingleton<IWebsiteRepository, WebsiteRepository>()
@@ -98,6 +100,7 @@ if (app.Environment.IsDevelopment())
 app
     .UseExceptionHandler("/error")
     .UseHttpsRedirection()
+    .UseRequestTimeouts()
     .UseAuthentication()
     .UseAuthorization();
 

@@ -13,6 +13,7 @@
     using Linker.WebApi.Filters;
     using Linker.WebApi.Swagger;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http.Timeouts;
     using Microsoft.AspNetCore.Mvc;
     using Swashbuckle.AspNetCore.Annotations;
     using Swashbuckle.AspNetCore.Filters;
@@ -22,6 +23,7 @@
     /// </summary>
     [Authorize]
     [Produces("application/json")]
+    [RequestTimeout(Timeout.Infinite)]
     [Route("api/[controller]")]
     [ApiController]
     public sealed class ArticleController : ControllerBase, IArticleController
