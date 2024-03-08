@@ -1,0 +1,43 @@
+﻿@model Linker.Core.ApiModels.CreateWorkspaceRequest
+@{
+    ViewData["Title"] = "Create new workspace";
+}
+
+<partial name="_Notification" />
+
+<h1 class="text-lg">Create Workspace</h1>
+<p class="text-gray-700">Enter the details below to create a new entry.</p>
+
+<div asp-validation-summary="ModelOnly" class="text-red-300"></div>
+
+<div class="my-12">
+    <div>
+        <form asp-action="Create" class="max-w-screen-md">
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Handle" class="control-label"></label>
+                <input asp-for="Handle" class="form-control" />
+                <span asp-validation-for="Handle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="my-3 flex">
+                <button class="px-4 py-2 bg-black text-white rounded block">
+                    Create
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="flex">
+    <a asp-action="Index" class="px-4 py-2 bg-black text-white rounded block">Back to List</a>
+</div>
+

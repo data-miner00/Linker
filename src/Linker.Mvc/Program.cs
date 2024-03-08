@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 var sqliteConnectionString = builder.Configuration["SQLiteOption:ConnectionString"];
 
 using var connection = new SQLiteConnection(sqliteConnectionString);
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -25,7 +26,8 @@ builder.Services
     .AddSingleton<IArticleRepository, ArticleRepository>()
     .AddSingleton<IWebsiteRepository, WebsiteRepository>()
     .AddSingleton<IYoutubeRepository, YoutubeRepository>()
-    .AddSingleton<IUserRepository, UserRepository>();
+    .AddSingleton<IUserRepository, UserRepository>()
+    .AddSingleton<IWorkspaceRepository, WorkspaceRepository>();
 
 builder.Services
     .AddSingleton(new MapperConfiguration(config =>
@@ -35,6 +37,7 @@ builder.Services
         config.AddProfile<WebsiteMapperProfile>();
         config.AddProfile<YoutubeMapperProfile>();
         config.AddProfile<UserMapperProfile>();
+        config.AddProfile<WorkspaceMapperProfile>();
     }).CreateMapper());
 
 builder.Services.AddHttpContextAccessor();
@@ -45,11 +48,13 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();

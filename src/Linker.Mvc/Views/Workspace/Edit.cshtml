@@ -1,0 +1,35 @@
+﻿@using Linker.Core.Models
+@model Workspace
+@{
+    ViewData["Title"] = $"Edit {Model.Name}";
+}
+
+<h1 class="text-lg">Edit Workspace</h1>
+<p class="text-gray-700">Update the details below to for the workspace.</p>
+
+<div class="my-12">
+    <div>
+        <form asp-action="Edit" class="max-w-screen-md">
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Handle" class="control-label"></label>
+                <input asp-for="Handle" class="form-control" />
+                <span asp-validation-for="Handle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="my-3 flex">
+                <button class="px-4 py-2 bg-black text-white rounded block">
+                    Save changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

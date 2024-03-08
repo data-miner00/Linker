@@ -1,0 +1,61 @@
+﻿@using Linker.Core.Models
+@model IEnumerable<Workspace>
+@{
+    ViewData["Title"] = "Workspace";
+}
+
+<partial name="_Notification" />
+
+<div class="flex mb-4">
+    <a class="block px-4 py-2 bg-black text-white rounded" asp-controller="Workspace" asp-action="Create">Create a new workspace</a>
+</div>
+
+@if (Model.Count() > 0)
+{
+   <table>
+        <thead>
+            <tr class="border-b-2 border-t-2 border-solid border-gray-600">
+                <td>Name</td>
+                <td>Handle</td>
+                <td>Description</td>
+                <td></td>
+                <td></td>
+            </tr>    
+        </thead>
+        <tbody>
+            @foreach (var workspace in Model)
+            {
+                <tr class="border-b border-solid border-gray-400 py-2">
+                    <td>@workspace.Name</td>
+                    <td>@@@workspace.Handle</td>
+                    <td>@workspace.Description</td>
+                    <td>
+                        <a
+                            class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                            asp-action="Details"
+                            asp-route-id="@workspace.Id"
+                        >
+                            Details
+                        </a>
+                    </td>
+                    <td>
+                        <form method="post" asp-action="Delete" asp-route-id="@workspace.Id">
+                            <button
+                                class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                                onclick="return confirm('Are you sure to delete this workspace?')"
+                            >
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table> 
+}
+else
+{
+    <div class="p-4 border border-black border-solid rounded">
+        There are no Workspaces.
+    </div>
+}
