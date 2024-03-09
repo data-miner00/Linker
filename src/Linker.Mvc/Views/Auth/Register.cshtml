@@ -1,13 +1,50 @@
 ﻿@model Linker.Core.ApiModels.CreateUserRequest
 @{
+    Layout = "_AuthLayout";
     ViewData["Title"] = "Register";
 }
 
-<partial name="_Notification" />
+<div id="register-illustration" class="relative flex-1 border-r-2 border-solid border-black ">
+    <div class="absolute left-16 top-16 border-2 border-solid border-black bg-white px-4 py-4 text-4xl uppercase tracking-wide font-bold">Linker</div>
+</div>
+<section class="flex-1 flex items-center justify-center">
+    <div>
+        <partial name="_Notification" />
+        <p class="text-5xl font-bold tracking-tight mb-4">Link your way to success.</p>
+        <p class="mb-8">Register now to harness the full power of internet links.</p>
+        <form
+            class="w-[700px]"
+            asp-action="Register"
+            method="post"
+            autocomplete="off"
+        >
+            <div class="flex border-2 border-solid border-black items-center gap-4 px-4 mb-4 rounded">
+                <i class="bi bi-person block text-xl"></i>
+                <input
+                    class="block p-4 outline-none w-full"
+                    asp-for="Username"
+                    placeholder="Username"
+                />
+            </div>
+            <div class="flex border-2 border-solid border-black items-center gap-4 px-4 mb-4 rounded">
+                <i class="bi bi-key block text-xl"></i>
+                <input
+                    class="block p-4 outline-none w-full"
+                    asp-for="Password"
+                    placeholder="Password"
+                    type="password"
+                />
+            </div>
+            <div class="flex border-2 border-solid border-black items-center gap-4 px-4 mb-4 rounded">
+                <i class="bi bi-cake2 block text-xl"></i>
+                <input
+                    class="block p-4 outline-none w-full"
+                    asp-for="DateOfBirth"
+                    placeholder="Birthday"
+                />
+            </div>
+            <button class="bg-black text-white p-4 block text-center rounded w-full mb-4" type="submit">Register</button>
+        </form>
+    </div>
+</section>
 
-<form asp-action="Register" method="post">
-    <input asp-for="Username" placeholder="Username" />
-    <input asp-for="Password" placeholder="Password" type="password" />
-    <input asp-for="DateOfBirth" placeholder="Date of birth" />
-    <button type="submit">Register</button>
-</form>

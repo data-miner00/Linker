@@ -4,13 +4,12 @@
     ViewData["Title"] = "Login";
 }
 
-<partial name="_Notification" />
-
 <div id="login-illustration" class="relative flex-1 border-r-2 border-solid border-black ">
     <div class="absolute left-16 top-16 border-2 border-solid border-black bg-white px-4 py-4 text-4xl uppercase tracking-wide font-bold">Linker</div>
 </div>
 <section class="flex-1 flex items-center justify-center">
     <div>
+        <partial name="_Notification" />
         <p class="text-5xl font-bold tracking-tight mb-4">Link your way to success.</p>
         <p class="mb-8">Sign in to harness the full power of internet links.</p>
         <form
@@ -43,6 +42,8 @@
         <a
             class="border-2 border-solid border-black p-4 block text-center rounded w-full"
             asp-action="Register"
-        >Register</a>
+        >
+            Register
+        </a>
     </div>
 </section>

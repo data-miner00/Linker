@@ -109,13 +109,18 @@ public sealed class AuthController : Controller
 
         try
         {
-            await this.repository
-                .AddAsync(user, this.CancellationToken)
-                .ConfigureAwait(false);
+            if (this.ModelState.IsValid)
+            {
+                await this.repository
+                    .AddAsync(user, this.CancellationToken)
+                    .ConfigureAwait(false);
 
-            this.TempData["success"] = "Successfully registered.";
+                this.TempData["success"] = "Successfully registered.";
 
-            return this.RedirectToAction(nameof(this.Login));
+                return this.RedirectToAction(nameof(this.Login));
+            }
+
+            return this.View(request);
         }
         catch (InvalidOperationException)
         {
