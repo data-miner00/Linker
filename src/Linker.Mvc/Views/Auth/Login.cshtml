@@ -1,14 +1,48 @@
 ﻿@model Linker.Core.ApiModels.LoginRequest
 @{
+    Layout = "_AuthLayout";
     ViewData["Title"] = "Login";
 }
 
 <partial name="_Notification" />
 
-<form asp-action="Login" method="post">
-    <input asp-for="Username" placeholder="Username" />
-    <input asp-for="Password" placeholder="Password" type="password" />
-    <button type="submit">Login</button>
-</form>
-
-<a asp-action="Register">Register</a>
+<div id="login-illustration" class="relative flex-1 border-r-2 border-solid border-black ">
+    <div class="absolute left-16 top-16 border-2 border-solid border-black bg-white px-4 py-4 text-4xl uppercase tracking-wide font-bold">Linker</div>
+</div>
+<section class="flex-1 flex items-center justify-center">
+    <div>
+        <p class="text-5xl font-bold tracking-tight mb-4">Link your way to success.</p>
+        <p class="mb-8">Sign in to harness the full power of internet links.</p>
+        <form
+            class="w-[700px]"
+            asp-action="Login"
+            method="post"
+            autocomplete="off"
+        >
+            <div class="flex border-2 border-solid border-black items-center gap-4 px-4 mb-4 rounded">
+                <i class="bi bi-person block text-xl"></i>
+                <input
+                    class="block p-4 outline-none w-full"
+                    asp-for="Username"
+                    placeholder="Username"
+                />
+            </div>
+            <div class="flex border-2 border-solid border-black items-center gap-4 px-4 mb-4 rounded">
+                <i class="bi bi-key block text-xl"></i>
+                <input
+                    class="block p-4 outline-none w-full"
+                    asp-for="Password"
+                    placeholder="Password"
+                    type="password"
+                />
+            </div>
+            <button class="bg-black text-white p-4 block text-center rounded w-full mb-4" type="submit">Login</button>
+            <p>Forgot your password? <a href="" class="text-sky-600 hover:underline">Reset password</a></p>
+        </form>
+        <hr class="bg-gray-200 my-8" />
+        <a
+            class="border-2 border-solid border-black p-4 block text-center rounded w-full"
+            asp-action="Register"
+        >Register</a>
+    </div>
+</section>
