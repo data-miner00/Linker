@@ -176,4 +176,12 @@ public interface IWorkspaceRepository
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The task.</returns>
     Task DeleteWorkspaceMembershipAsync(string workspaceId, string userId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Retrieves the members of a workspace.
+    /// </summary>
+    /// <param name="workspaceId">The workspace ID.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The list of members.</returns>
+    Task<IEnumerable<User>> GetWorkspaceMembersAsync(string workspaceId, CancellationToken cancellationToken);
 }

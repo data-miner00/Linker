@@ -507,4 +507,24 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
             workspaceMembership.UserId,
         });
     }
+
+    /// <inheritdoc/>
+    public async Task<IEnumerable<User>> GetWorkspaceMembersAsync(string workspaceId, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var queryMemberships = "SELECT UserId FROM Workspace_Memberships WHERE WorkspaceId = @WorkspaceId;";
+
+        var userIds = await this.connection
+            .QueryAsync<string>(queryMemberships, new { WorkspaceId = workspaceId })
+            .ConfigureAwait(false);
+
+        var queryUser = "SELECT * FROM Users WHERE Id = @Id;";
+
+        var userTasks = userIds.Select(id => this.connection.QueryFirstAsync<User>(queryUser, new { Id = id }));
+
+        var users = await Task.WhenAll(userTasks).ConfigureAwait(false);
+
+        return users;
+    }
 }

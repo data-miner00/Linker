@@ -4,6 +4,7 @@ using AutoMapper;
 using Linker.Core.ApiModels;
 using Linker.Core.Models;
 using Linker.Core.Repositories;
+using Linker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -29,7 +30,27 @@ public sealed class WorkspaceController : Controller
             .GetAllAsync(this.CancellationToken)
             .ConfigureAwait(false);
 
-        return this.View(workspaces);
+        var viewModel = new List<WorkspaceIndexViewModel>();
+
+        foreach (var workspace in workspaces)
+        {
+            var members = await this.repository
+                .GetAllWorkspaceMembershipsAsync(workspace.Id, this.CancellationToken)
+                .ConfigureAwait(false);
+
+            var model = new WorkspaceIndexViewModel
+            {
+                Id = workspace.Id,
+                Handle = workspace.Id,
+                Name = workspace.Name,
+                Description = workspace.Description,
+                MemberCounts = members.Count(),
+            };
+
+            viewModel.Add(model);
+        }
+
+        return this.View(viewModel);
     }
 
     // GET: WorkspaceController/Details/5
@@ -41,7 +62,22 @@ public sealed class WorkspaceController : Controller
                 .GetByIdAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
-            return this.View(workspace);
+            var users = await this.repository
+                .GetWorkspaceMembersAsync(id.ToString(), this.CancellationToken)
+                .ConfigureAwait(false);
+
+            var viewModel = new WorkspaceDetailsViewModel
+            {
+                WorkspaceId = workspace.Id,
+                WorkspaceHandle = workspace.Handle,
+                WorkspaceDescription = workspace.Description,
+                WorkspaceName = workspace.Name,
+                WorkspaceCreatedAt = workspace.CreatedAt,
+                WorkspaceOwnerUsername = users.FirstOrDefault(x => x.Id == workspace.OwnerId)!.Username,
+                Members = users,
+            };
+
+            return this.View(viewModel);
         }
         catch (InvalidOperationException)
         {

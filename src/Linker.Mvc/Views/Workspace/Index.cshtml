@@ -1,5 +1,5 @@
-﻿@using Linker.Core.Models
-@model IEnumerable<Workspace>
+﻿@using Linker.Mvc.Models
+@model IEnumerable<WorkspaceIndexViewModel>
 @{
     ViewData["Title"] = "Workspace";
 }
@@ -18,6 +18,7 @@
                 <td>Name</td>
                 <td>Handle</td>
                 <td>Description</td>
+                <td>Members</td>
                 <td></td>
                 <td></td>
             </tr>    
@@ -29,6 +30,7 @@
                     <td>@workspace.Name</td>
                     <td>@@@workspace.Handle</td>
                     <td>@workspace.Description</td>
+                    <td>@workspace.MemberCounts</td>
                     <td>
                         <a
                             class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"

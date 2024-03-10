@@ -1,27 +1,58 @@
-﻿@model Linker.Core.Models.Workspace
+﻿@model Linker.Mvc.Models.WorkspaceDetailsViewModel
 @{
     ViewData["Title"] = "Workspace details";
+    var memberCount = Model.Members.Count();
 }
 
 <partial name="_Notification" />
 
-<article class="mb-10" id="@Html.DisplayFor(model => model.Id)">
+<article class="mb-10" id="@Html.DisplayFor(model => model.WorkspaceId)">
     <header class="mb-2">
         <p class="uppercase tracking-wide font-bold text-sm text-gray-300">
-            @@@Html.DisplayFor(model => model.Handle)
+            @@@Html.DisplayFor(model => model.WorkspaceHandle)
         </p>
 
         <h1 class="text-2xl font-bold block">
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.WorkspaceName)
         </h1>
     </header>
+    <div class="flex gap-4 items-center">
+        <div><i class="bi bi-people-fill"></i> @memberCount</div>
+        <div><span class="text-xs text-gray-500">Owned by</span> @Model.WorkspaceOwnerUsername</div>
+    </div>
+    <div class="mb-10">
+        <p class="text-gray-700">@Html.DisplayFor(model => model.WorkspaceDescription)</p>
+    </div>
+
     <div>
-        <p class="text-gray-700">@Html.DisplayFor(model => model.Description)</p>
+        <p class="font-bold">Workspace members</p>
+        <table>
+            <thead>
+                <tr class="border-b-2 border-t-2 border-solid border-gray-600">
+                    <td>No.</td>
+                    <td>Username</td>
+                    <td>Role</td>
+                    <td>Status</td>
+                    <td>Birthday</td>
+                </tr>
+            </thead>
+            <tbody>
+                @for (var i = 0; i < memberCount; i++)
+                {
+                    <tr class="border-b border-solid border-gray-400 py-2">
+                        <td>@(i + 1)</td>
+                        <td>@Model.Members.ElementAt(i).Username</td>
+                        <td>@Model.Members.ElementAt(i).Role</td>
+                        <td>@Model.Members.ElementAt(i).Status</td>
+                        <td>@Model.Members.ElementAt(i).DateOfBirth</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </article>
 
 <div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.WorkspaceId }) |
     <a class="px-4 py-2 bg-black text-white rounded" asp-action="Index">Back to List</a>
 </div>
-
