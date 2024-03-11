@@ -220,6 +220,11 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
             .QueryAsync<string>(getMemberships, new { UserId = userId })
             .ConfigureAwait(false);
 
+        if (!workspaceIds.Any())
+        {
+            return Enumerable.Empty<Workspace>();
+        }
+
         var queryBuilder = new StringBuilder();
 
         foreach (var workspaceId in workspaceIds.SkipLast(1))
