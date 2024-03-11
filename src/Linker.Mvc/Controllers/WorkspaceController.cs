@@ -23,34 +23,35 @@ public sealed class WorkspaceController : Controller
 
     public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
 
-    // GET: WorkspaceController
+    // GET: WorkspaceController/Explore
     public async Task<IActionResult> Index()
+    {
+        var userId = this.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return this.RedirectToAction(nameof(this.Explore));
+        }
+
+        var workspaces = await this.repository
+            .GetAllByUserAsync(userId, this.CancellationToken)
+            .ConfigureAwait(false);
+
+        var viewModels = await this.ConvertWorkspacesToViewModelsAsync(workspaces);
+
+        return this.View(viewModels);
+    }
+
+    // GET: WorkspaceController/Explore
+    public async Task<IActionResult> Explore()
     {
         var workspaces = await this.repository
             .GetAllAsync(this.CancellationToken)
             .ConfigureAwait(false);
 
-        var viewModel = new List<WorkspaceIndexViewModel>();
+        var viewModels = await this.ConvertWorkspacesToViewModelsAsync(workspaces);
 
-        foreach (var workspace in workspaces)
-        {
-            var members = await this.repository
-                .GetAllWorkspaceMembershipsAsync(workspace.Id, this.CancellationToken)
-                .ConfigureAwait(false);
-
-            var model = new WorkspaceIndexViewModel
-            {
-                Id = workspace.Id,
-                Handle = workspace.Id,
-                Name = workspace.Name,
-                Description = workspace.Description,
-                MemberCounts = members.Count(),
-            };
-
-            viewModel.Add(model);
-        }
-
-        return this.View(viewModel);
+        return this.View(viewModels);
     }
 
     // GET: WorkspaceController/Details/5
@@ -189,5 +190,31 @@ public sealed class WorkspaceController : Controller
             this.TempData["error"] = "Something wrong.";
             return this.RedirectToAction(nameof(this.Index));
         }
+    }
+
+    private async Task<IEnumerable<WorkspaceIndexViewModel>> ConvertWorkspacesToViewModelsAsync(IEnumerable<Workspace> workspaces)
+    {
+        var viewModel = new List<WorkspaceIndexViewModel>();
+
+        foreach (var workspace in workspaces)
+        {
+            var members = await this.repository
+                .GetAllWorkspaceMembershipsAsync(workspace.Id, this.CancellationToken)
+                .ConfigureAwait(false);
+
+            var model = new WorkspaceIndexViewModel
+            {
+                Id = workspace.Id,
+                Handle = workspace.Handle,
+                Name = workspace.Name,
+                Description = workspace.Description,
+                OwnerId = workspace.OwnerId,
+                MemberCounts = members.Count(),
+            };
+
+            viewModel.Add(model);
+        }
+
+        return viewModel;
     }
 }

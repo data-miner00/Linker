@@ -1,13 +1,20 @@
-﻿@using Linker.Mvc.Models
+﻿@using Microsoft.AspNetCore.Http
+@using Linker.Mvc.Models
+@using System.Security.Claims
+@inject IHttpContextAccessor httpContextAccessor
 @model IEnumerable<WorkspaceIndexViewModel>
 @{
     ViewData["Title"] = "Workspace";
+    var httpContext = httpContextAccessor.HttpContext;
+    var isLoggedIn = httpContext?.User.Identity?.IsAuthenticated ?? false;
+    var userId = httpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 }
 
 <partial name="_Notification" />
 
-<div class="flex mb-4">
+<div class="flex mb-4 gap-4">
     <a class="block px-4 py-2 bg-black text-white rounded" asp-controller="Workspace" asp-action="Create">Create a new workspace</a>
+    <button id="join-workspace-btn" class="block px-4 py-2 bg-black text-white rounded" asp-controller="Workspace" asp-action="Join">Join</button>
 </div>
 
 @if (Model.Count() > 0)
@@ -41,14 +48,17 @@
                         </a>
                     </td>
                     <td>
-                        <form method="post" asp-action="Delete" asp-route-id="@workspace.Id">
-                            <button
-                                class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
-                                onclick="return confirm('Are you sure to delete this workspace?')"
-                            >
-                                Delete
-                            </button>
-                        </form>
+                        @if (workspace.OwnerId.Equals(userId, StringComparison.OrdinalIgnoreCase))
+                        {
+                            <form method="post" asp-action="Delete" asp-route-id="@workspace.Id">
+                                <button
+                                    class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                                    onclick="return confirm('Are you sure to delete this workspace?')"
+                                >
+                                    Delete
+                                </button>
+                            </form>
+                        }
                     </td>
                 </tr>
             }
@@ -58,6 +68,25 @@
 else
 {
     <div class="p-4 border border-black border-solid rounded">
-        There are no Workspaces.
+        You have no workspaces yet. Create or Join one!
     </div>
+}
+
+<dialog class="bg-white border-solid border border-black rounded p-5 w-[500px]">
+    <p class="text-2xl font-semibold text-center mb-4">Join a workspace</p>
+    <div>
+        <form method="post" asp-action="Join">
+            <input name="workspaceId" placeholder="Workspace Id" />
+            <button type="submit">Join</button>
+        </form>
+    </div>
+</dialog>
+
+@section Scripts {
+    <partial name="_SomeScriptsPartial" />
+    <script>
+        $("#join-workspace-btn").on("click", () => {
+            $("dialog").toggle();
+        });
+    </script>
 }

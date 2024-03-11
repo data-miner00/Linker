@@ -10,5 +10,7 @@ public sealed class WorkspaceIndexViewModel
 
     required public string Description { get; set; }
 
+    required public string OwnerId { get; set; }
+
     required public int MemberCounts { get; set; }
 }
