@@ -23,6 +23,9 @@ public sealed class WorkspaceController : Controller
 
     public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
 
+    public string? UserId =>
+        this.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
     // GET: WorkspaceController/Explore
     public async Task<IActionResult> Index()
     {
@@ -119,6 +122,41 @@ public sealed class WorkspaceController : Controller
         catch
         {
             return this.View(request);
+        }
+    }
+
+    // GET: WorkspaceController/Join
+    public async Task<IActionResult> Join(Guid workspaceId)
+    {
+        if (string.IsNullOrEmpty(this.UserId))
+        {
+            return this.RedirectToAction(nameof(this.Index));
+        }
+
+        try
+        {
+            var membership = new WorkspaceMembership
+            {
+                CreatedAt = DateTime.UtcNow,
+                ModifiedAt = DateTime.UtcNow,
+                UserId = this.UserId,
+                WorkspaceId = workspaceId.ToString(),
+                WorkspaceRole = WorkspaceRole.User,
+            };
+
+            await this.repository
+                .AddWorkspaceMembershipAsync(membership, this.CancellationToken)
+                .ConfigureAwait(false);
+
+            this.TempData["success"] = "Successfully joined";
+
+            return this.RedirectToAction(nameof(this.Index));
+        }
+        catch (InvalidOperationException)
+        {
+            this.TempData["error"] = "The workspace does not exist.";
+
+            return this.RedirectToAction(nameof(this.Index));
         }
     }
 

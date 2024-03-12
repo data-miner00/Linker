@@ -72,12 +72,21 @@ else
     </div>
 }
 
-<dialog class="bg-white border-solid border border-black rounded p-5 w-[500px]">
+<dialog class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg">
     <p class="text-2xl font-semibold text-center mb-4">Join a workspace</p>
     <div>
-        <form method="post" asp-action="Join">
-            <input name="workspaceId" placeholder="Workspace Id" />
-            <button type="submit">Join</button>
+        <form method="post" asp-action="Join" autocomplete="off" spellcheck="false">
+            <div>
+                <input
+                    name="workspaceId"
+                    placeholder="Workspace Id"
+                    class="block p-4 outline-none w-full"
+                />
+            </div>
+            <div class="flex gap-4 justify-end">
+                <button type="submit" class="px-4 py-2 bg-black text-white rounded">Join</button>
+                <button type="button" class="px-4 py-2 border border-solid border-black rounded">Cancel</button>
+            </div>
         </form>
     </div>
 </dialog>
@@ -87,6 +96,12 @@ else
     <script>
         $("#join-workspace-btn").on("click", () => {
             $("dialog").toggle();
+            $('[name="workspaceId"]').focus();
+        });
+
+        $('[type="button"]').on("click", () => {
+            $("dialog").toggle();
+            $('[name="workspaceId"]').focus();
         });
     </script>
 }
