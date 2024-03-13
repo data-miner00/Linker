@@ -14,7 +14,7 @@
 
 <div class="flex mb-4 gap-4">
     <a class="block px-4 py-2 bg-black text-white rounded" asp-controller="Workspace" asp-action="Create">Create a new workspace</a>
-    <button id="join-workspace-btn" class="block px-4 py-2 bg-black text-white rounded" asp-controller="Workspace" asp-action="Join">Join</button>
+    <button onclick="toggleDialog(); focusWorkspaceInput()" class="block px-4 py-2 bg-black text-white rounded" asp-controller="Workspace" asp-action="Join">Join</button>
 </div>
 
 @if (Model.Count() > 0)
@@ -85,7 +85,13 @@ else
             </div>
             <div class="flex gap-4 justify-end">
                 <button type="submit" class="px-4 py-2 bg-black text-white rounded">Join</button>
-                <button type="button" class="px-4 py-2 border border-solid border-black rounded">Cancel</button>
+                <button
+                    type="button"
+                    class="px-4 py-2 border border-solid border-black rounded"
+                    onclick="toggleDialog()"
+                >
+                    Cancel
+                </button>
             </div>
         </form>
     </div>
@@ -94,14 +100,12 @@ else
 @section Scripts {
     <partial name="_SomeScriptsPartial" />
     <script>
-        $("#join-workspace-btn").on("click", () => {
+        function toggleDialog() {
             $("dialog").toggle();
-            $('[name="workspaceId"]').focus();
-        });
+        }
 
-        $('[type="button"]').on("click", () => {
-            $("dialog").toggle();
+        function focusWorkspaceInput() {
             $('[name="workspaceId"]').focus();
-        });
+        }
     </script>
 }
