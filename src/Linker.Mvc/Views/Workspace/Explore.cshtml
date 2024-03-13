@@ -4,7 +4,7 @@
 @inject IHttpContextAccessor httpContextAccessor
 @model IEnumerable<WorkspaceIndexViewModel>
 @{
-    ViewData["Title"] = "Workspace";
+    ViewData["Title"] = "Explore Workspace";
     var httpContext = httpContextAccessor.HttpContext;
     var isLoggedIn = httpContext?.User.Identity?.IsAuthenticated ?? false;
     var userId = httpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
@@ -14,7 +14,6 @@
 
 <div class="flex mb-4 gap-4">
     <a class="block px-4 py-2 bg-black text-white rounded" asp-controller="Workspace" asp-action="Create">Create a new workspace</a>
-    <a class="block px-4 py-2 bg-black text-white rounded" asp-controller="Workspace" asp-action="Explore">Explore</a>
     <button onclick="toggleDialog(); focusWorkspaceInput()" class="block px-4 py-2 bg-black text-white rounded" asp-controller="Workspace" asp-action="Join">Join</button>
 </div>
 
@@ -27,6 +26,7 @@
                 <td>Handle</td>
                 <td>Description</td>
                 <td>Members</td>
+                <td></td>
                 <td></td>
                 <td></td>
             </tr>    
@@ -60,6 +60,15 @@
                                 </button>
                             </form>
                         }
+                    </td>
+                    <td>
+                        @{
+                            var joinFormId = "join-" + workspace.Id;
+                        }
+                        <form id="@joinFormId" method="get" asp-action="Join" asp-route-id="@workspace.Id" onsubmit="handleJoinSubmission(event, '@workspace.Id')">
+                            <input name="workspaceId" hidden value="@workspace.Id" />
+                            <button>Join</button>
+                        </form>
                     </td>
                 </tr>
             }
@@ -107,6 +116,17 @@ else
 
         function focusWorkspaceInput() {
             $('[name="workspaceId"]').focus();
+        }
+
+        function handleJoinSubmission(event, workspaceId) {
+            event.preventDefault();
+
+            console.log("Trying to join " + workspaceId);
+
+            var formId = 'join-' + workspaceId;
+            var form = document.getElementById(formId);
+
+            form.submit();
         }
     </script>
 }
