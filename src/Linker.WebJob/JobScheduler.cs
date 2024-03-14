@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 /// <summary>
 /// Schedules all jobs and starts the scheduler.
 /// </summary>
-internal class JobScheduler
+internal sealed class JobScheduler
 {
     private readonly IEnumerable<JobDescriptor> jobDescriptors;
     private readonly IJobFactory jobFactory;

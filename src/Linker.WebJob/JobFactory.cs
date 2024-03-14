@@ -8,7 +8,7 @@ using System;
 /// <summary>
 /// Custom DI aware job provider for Quartz.
 /// </summary>
-internal class JobFactory : IJobFactory
+internal sealed class JobFactory : IJobFactory
 {
     private readonly IComponentContext contextAccessor;
 

@@ -1,6 +1,7 @@
 ﻿namespace Linker.WebJob.Jobs;
 
 using Linker.Core.Repositories;
+using Linker.WebJob.Options;
 using Quartz;
 using System;
 using System.Diagnostics;
@@ -12,11 +13,14 @@ using System.Threading.Tasks;
 [DisallowConcurrentExecution]
 internal class UrlHealthCheckJob : IJob
 {
+    private const string LogTemplate = "{0:00}:{1:00}:{2:00}.{3:00}";
+
     private readonly IUrlHealthChecker checker;
     private readonly IArticleRepository articleRepository;
     private readonly IWebsiteRepository websiteRepository;
     private readonly IYoutubeRepository youtubeRepository;
     private readonly IHealthCheckRepository healthCheckRepository;
+    private readonly UrlHealthCheckOption option;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UrlHealthCheckJob"/> class.
@@ -26,48 +30,45 @@ internal class UrlHealthCheckJob : IJob
     /// <param name="websiteRepository">The website repository.</param>
     /// <param name="youtubeRepository">The youtube repository.</param>
     /// <param name="healthCheckRepository">The health check result repository.</param>
+    /// <param name="option">The settings for the job.</param>
     public UrlHealthCheckJob(
         IUrlHealthChecker checker,
         IArticleRepository articleRepository,
         IWebsiteRepository websiteRepository,
         IYoutubeRepository youtubeRepository,
-        IHealthCheckRepository healthCheckRepository)
+        IHealthCheckRepository healthCheckRepository,
+        UrlHealthCheckOption option)
     {
         this.checker = checker;
         this.articleRepository = articleRepository;
         this.websiteRepository = websiteRepository;
         this.youtubeRepository = youtubeRepository;
         this.healthCheckRepository = healthCheckRepository;
+        this.option = option;
     }
 
     /// <inheritdoc/>
     public async Task Execute(IJobExecutionContext context)
     {
+        var timeout = TimeSpan.FromSeconds(this.option.TimeoutInSeconds);
+
         try
         {
             context.CancellationToken.ThrowIfCancellationRequested();
+
+            using var timeoutCancellationToken = new CancellationTokenSource(timeout);
+            using var linkedCancellationToken = CancellationTokenSource.CreateLinkedTokenSource(
+                timeoutCancellationToken.Token,
+                context.CancellationToken);
+
             Stopwatch stopwatch = Stopwatch.StartNew();
             await Console.Out.WriteLineAsync("Starting execution");
 
-            var articleUrls = await this.articleRepository
-                .GetAllAsync(context.CancellationToken)
+            var allUrls = await this
+                .GetAllUrlsAsync(linkedCancellationToken.Token)
                 .ConfigureAwait(false);
 
-            var websiteUrls = await this.websiteRepository
-                .GetAllAsync(context.CancellationToken)
-                .ConfigureAwait(false);
-
-            var youtubeUrls = await this.youtubeRepository
-                .GetAllAsync(context.CancellationToken)
-                .ConfigureAwait(false);
-
-            var allUrls = new List<string>();
-
-            allUrls.AddRange(articleUrls.Select(x => x.Url));
-            allUrls.AddRange(websiteUrls.Select(x => x.Url));
-            allUrls.AddRange(youtubeUrls.Select(x => x.Url));
-
-            var pingTasks = allUrls.Select(url => this.checker.PingAsync(url, context.CancellationToken));
+            var pingTasks = allUrls.Select(url => this.checker.PingAsync(url, linkedCancellationToken.Token));
 
             await Console.Out.WriteLineAsync("Pinging started");
             var healthCheckResults = await Task.WhenAll(pingTasks);
@@ -80,15 +81,35 @@ internal class UrlHealthCheckJob : IJob
             stopwatch.Stop();
 
             var ts = stopwatch.Elapsed;
-            string elapsedTime = string.Format(
-                "{0:00}:{1:00}:{2:00}.{3:00}",
-                ts.Hours, ts.Minutes, ts.Seconds,
-                ts.Milliseconds / 10);
+            var elapsedTime = string.Format(LogTemplate, ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
             Console.WriteLine("RunTime " + elapsedTime);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }
+    }
+
+    private async Task<IEnumerable<string>> GetAllUrlsAsync(CancellationToken cancellationToken)
+    {
+        var articleUrls = await this.articleRepository
+            .GetAllAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        var websiteUrls = await this.websiteRepository
+            .GetAllAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        var youtubeUrls = await this.youtubeRepository
+            .GetAllAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        var allUrls = new List<string>();
+
+        allUrls.AddRange(articleUrls.Select(x => x.Url));
+        allUrls.AddRange(websiteUrls.Select(x => x.Url));
+        allUrls.AddRange(youtubeUrls.Select(x => x.Url));
+
+        return allUrls;
     }
 }

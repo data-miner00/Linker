@@ -3,6 +3,7 @@
     "ConnectionString": "Data Source=D:\\Workspace\\Visual Studio\\Linker\\src\\db.sqlite;Version=3;"
   },
   "UrlHealthCheckOption": {
-    "CronExpression": "0 0/3 * 1/1 * ? *"
+    "CronExpression": "0 0/3 * 1/1 * ? *",
+    "TimeoutInSeconds": 10
   }
 }
