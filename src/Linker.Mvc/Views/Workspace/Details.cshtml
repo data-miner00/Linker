@@ -1,7 +1,14 @@
-﻿@model Linker.Mvc.Models.WorkspaceDetailsViewModel
+﻿@using Microsoft.AspNetCore.Http
+@using Linker.Mvc.Models
+@using System.Security.Claims
+@model Linker.Mvc.Models.WorkspaceDetailsViewModel
+@inject IHttpContextAccessor httpContextAccessor
 @{
     ViewData["Title"] = "Workspace details";
     var memberCount = Model.Members.Count();
+    var httpContext = httpContextAccessor.HttpContext;
+    var isLoggedIn = httpContext?.User.Identity?.IsAuthenticated ?? false;
+    var userId = httpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 }
 
 <partial name="_Notification" />
@@ -132,6 +139,11 @@
 </article>
 
 <div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.WorkspaceId }) |
+    @if(Model.WorkspaceOwnerId.Equals(userId, StringComparison.OrdinalIgnoreCase))
+    {
+        <span>
+            @Html.ActionLink("Edit", "Edit", new { id = Model.WorkspaceId }) |
+        </span>
+    }
     <a class="px-4 py-2 bg-black text-white rounded" asp-action="Index">Back to List</a>
 </div>

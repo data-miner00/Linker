@@ -16,5 +16,7 @@ public sealed class WorkspaceDetailsViewModel
 
     required public string WorkspaceOwnerUsername { get; set; }
 
+    required public string WorkspaceOwnerId { get; set; }
+
     required public IEnumerable<User> Members { get; set; }
 }

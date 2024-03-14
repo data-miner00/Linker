@@ -25,10 +25,13 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="my-3 flex">
-                <button class="px-4 py-2 bg-black text-white rounded block">
+            <div class="my-3 flex gap-4">
+                <button type="submit" class="px-4 py-2 bg-black text-white rounded block">
                     Save changes
                 </button>
+                <a asp-action="Details" asp-route-id="@Model.Id" class="px-4 py-2 border border-solid border-black rounded block">
+                    Cancel
+                </a>
             </div>
         </form>
     </div>

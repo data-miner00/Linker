@@ -78,6 +78,7 @@ public sealed class WorkspaceController : Controller
                 WorkspaceName = workspace.Name,
                 WorkspaceCreatedAt = workspace.CreatedAt,
                 WorkspaceOwnerUsername = users.FirstOrDefault(x => x.Id == workspace.OwnerId)!.Username,
+                WorkspaceOwnerId = workspace.OwnerId,
                 Members = users,
             };
 
