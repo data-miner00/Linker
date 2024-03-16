@@ -19,4 +19,10 @@ public sealed class WorkspaceDetailsViewModel
     required public string WorkspaceOwnerId { get; set; }
 
     required public IEnumerable<User> Members { get; set; }
+
+    required public IEnumerable<Article> Articles { get; set; }
+
+    required public IEnumerable<Website> Websites { get; set; }
+
+    required public IEnumerable<Youtube> Youtubes { get; set; }
 }

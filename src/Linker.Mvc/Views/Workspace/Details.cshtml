@@ -32,81 +32,99 @@
         <p class="text-gray-700">@Html.DisplayFor(model => model.WorkspaceDescription)</p>
     </div>
 
-    <section class="flex gap-4 mb-5">
-        <div class="border border-solid border-black rounded flex-1">
-            <p class="text-center underline">Articles</p>
-            <table>
-                <thead>
-                    <tr>
-                        <td>Title</td>
-                        <td>Added At</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Hello article</td>
-                        <td>Yesterday</td>
-                        <td>
-                            <button
-                                class="border border-solid border-black px-4 py-1 rounded"
-                            ><i class="bi bi-box-arrow-up-right"></i></button>
-                        </td>
-                        <td>
-                            <button
-                                class="border border-solid border-black px-4 py-1 rounded"
-                            >View entry</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <section class="flex flex-col gap-4 mb-5">
+        <div>
+            <p class="text-xl font-bold">Articles</p>
+            @if (Model.Articles.Any())
+            {
+                <ul>
+                    @foreach (var (article, index) in Model.Articles.Select((a, i) => (a, i)))
+                    {
+                        <li class="flex gap-4 mb-1">
+                            <a
+                                href="@article.Url"
+                                target="_blank"
+                                class="block"
+                            >
+                                @(index + 1). @article.Title <i class="bi bi-box-arrow-up-right"></i>
+                            </a>
+                            <a
+                                asp-action="Details"
+                                asp-route-id="@article.Id"
+                                class="block border border-solid border-black rounded px-1 text-sm"
+                            >
+                                Details
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="italic">There are no articles in the workspace.</p>
+            }
         </div>
-        <div class="border border-solid border-black rounded flex-1">
-            <p class="text-center underline">Websites</p>
-            <table>
-                <thead>
-                    <tr>
-                        <td>Title</td>
-                        <td>Added At</td>
-                        <td></td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Hello article</td>
-                        <td>Yesterday</td>
-                        <td>
-                            <button
-                                class="border border-solid border-black px-4 py-1 rounded"
-                            ><i class="bi bi-box-arrow-up-right"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div>
+            <p class="text-xl font-bold">Articles</p>
+            @if (Model.Websites.Any())
+            {
+                <ul>
+                    @foreach (var (website, index) in Model.Websites.Select((a, i) => (a, i)))
+                    {
+                        <li class="flex gap-4 mb-1">
+                            <a
+                                href="@website.Url"
+                                target="_blank"
+                                class="block"
+                            >
+                                @(index + 1). @website.Name <i class="bi bi-box-arrow-up-right"></i>
+                            </a>
+                            <a
+                                asp-action="Details"
+                                asp-route-id="@website.Id"
+                                class="block border border-solid border-black rounded px-1 text-sm"
+                            >
+                                Details
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="italic">There are no websites in the workspace.</p>
+            }
         </div>
-        <div class="border border-solid border-black rounded flex-1">
-            <p class="text-center underline">Youtubes</p>
-            <table>
-                <thead>
-                    <tr>
-                        <td>Title</td>
-                        <td>Added At</td>
-                        <td></td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Hello article</td>
-                        <td>Yesterday</td>
-                        <td>
-                            <button
-                                class="border border-solid border-black px-4 py-1 rounded"
-                            ><i class="bi bi-box-arrow-up-right"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div>
+            <p class="text-xl font-bold">Youtubes</p>
+            @if (Model.Youtubes.Any())
+            {
+                <ul>
+                    @foreach (var (youtube, index) in Model.Youtubes.Select((a, i) => (a, i)))
+                    {
+                        <li class="flex gap-4 mb-1">
+                            <a
+                                href="@youtube.Url"
+                                target="_blank"
+                                class="block"
+                            >
+                                @(index + 1). @youtube.Name <i class="bi bi-box-arrow-up-right"></i>
+                            </a>
+                            <a
+                                asp-action="Details"
+                                asp-route-id="@youtube.Id"
+                                class="block border border-solid border-black rounded px-1 text-sm"
+                            >
+                                Details
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="italic">There are no youtube in the workspace.</p>
+            }
         </div>
     </section>
 
