@@ -242,6 +242,21 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
     }
 
     /// <inheritdoc/>
+    public Task<IEnumerable<Workspace>> GetAllUnjoinedByUserAsync(string userId, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var query = @"
+            SELECT * FROM Workspaces WHERE Id NOT IN (
+                SELECT WorkspaceId FROM Workspace_Memberships
+                WHERE UserId = @UserId
+            );
+        ";
+
+        return this.connection.QueryAsync<Workspace>(query, new { UserId = userId });
+    }
+
+    /// <inheritdoc/>
     public Task<IEnumerable<WorkspaceMembership>> GetAllWorkspaceMembershipsAsync(string id, CancellationToken cancellationToken)
     {
         var query = @"SELECT * FROM Workspace_Memberships WHERE WorkspaceId = @WorkspaceId;";

@@ -1,19 +1,14 @@
-﻿@using Microsoft.AspNetCore.Http
-@using Linker.Mvc.Models
-@using System.Security.Claims
-@inject IHttpContextAccessor httpContextAccessor
+﻿@using Linker.Mvc.Models
 @model IEnumerable<WorkspaceIndexViewModel>
 @{
     ViewData["Title"] = "Explore Workspace";
-    var httpContext = httpContextAccessor.HttpContext;
-    var isLoggedIn = httpContext?.User.Identity?.IsAuthenticated ?? false;
-    var userId = httpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 }
 
 <partial name="_Notification" />
 
 <div class="flex mb-4 gap-4">
     <a class="block px-4 py-2 bg-black text-white rounded" asp-controller="Workspace" asp-action="Create">Create a new workspace</a>
+    <a class="block px-4 py-2 bg-black text-white rounded" asp-controller="Workspace" asp-action="Index">Back to list</a>
     <button onclick="toggleDialog(); focusWorkspaceInput()" class="block px-4 py-2 bg-black text-white rounded" asp-controller="Workspace" asp-action="Join">Join</button>
 </div>
 
@@ -26,7 +21,6 @@
                 <td>Handle</td>
                 <td>Description</td>
                 <td>Members</td>
-                <td></td>
                 <td></td>
                 <td></td>
             </tr>    
@@ -49,25 +43,16 @@
                         </a>
                     </td>
                     <td>
-                        @if (workspace.OwnerId.Equals(userId, StringComparison.OrdinalIgnoreCase))
-                        {
-                            <form method="post" asp-action="Delete" asp-route-id="@workspace.Id">
-                                <button
-                                    class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
-                                    onclick="return confirm('Are you sure to delete this workspace?')"
-                                >
-                                    Delete
-                                </button>
-                            </form>
-                        }
-                    </td>
-                    <td>
                         @{
                             var joinFormId = "join-" + workspace.Id;
                         }
                         <form id="@joinFormId" method="get" asp-action="Join" asp-route-id="@workspace.Id" onsubmit="handleJoinSubmission(event, '@workspace.Id')">
                             <input name="workspaceId" hidden value="@workspace.Id" />
-                            <button>Join</button>
+                            <button
+                                class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                            >
+                                Join
+                            </button>
                         </form>
                     </td>
                 </tr>
@@ -78,7 +63,7 @@
 else
 {
     <div class="p-4 border border-black border-solid rounded">
-        You have no workspaces yet. Create or Join one!
+        No workspaces to explore for now.
     </div>
 }
 

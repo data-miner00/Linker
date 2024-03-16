@@ -29,6 +29,7 @@
                 <td>Members</td>
                 <td></td>
                 <td></td>
+                <td></td>
             </tr>    
         </thead>
         <tbody>
@@ -47,6 +48,18 @@
                         >
                             Details
                         </a>
+                    </td>
+                    <td>
+                        <form method="post" asp-action="Leave" asp-route-id="@workspace.Id">
+                            @* Not sure why sometimes need hidden input sometimes not *@
+                            <input hidden name="workspaceId" value="@workspace.Id" />
+                            <button
+                                class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                                onclick="return confirm('Are you sure to leave this workspace?')"
+                            >
+                                Leave
+                            </button>
+                        </form>
                     </td>
                     <td>
                         @if (workspace.OwnerId.Equals(userId, StringComparison.OrdinalIgnoreCase))

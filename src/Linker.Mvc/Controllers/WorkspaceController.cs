@@ -26,7 +26,7 @@ public sealed class WorkspaceController : Controller
     public string? UserId =>
         this.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-    // GET: WorkspaceController/Explore
+    // GET: WorkspaceController/Index
     public async Task<IActionResult> Index()
     {
         var userId = this.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -48,9 +48,20 @@ public sealed class WorkspaceController : Controller
     // GET: WorkspaceController/Explore
     public async Task<IActionResult> Explore()
     {
-        var workspaces = await this.repository
-            .GetAllAsync(this.CancellationToken)
-            .ConfigureAwait(false);
+        IEnumerable<Workspace> workspaces;
+
+        if (string.IsNullOrEmpty(this.UserId))
+        {
+            workspaces = await this.repository
+                .GetAllAsync(this.CancellationToken)
+                .ConfigureAwait(false);
+        }
+        else
+        {
+            workspaces = await this.repository
+                .GetAllUnjoinedByUserAsync(this.UserId, this.CancellationToken)
+                .ConfigureAwait(false);
+        }
 
         var viewModels = await this.ConvertWorkspacesToViewModelsAsync(workspaces);
 
@@ -157,6 +168,32 @@ public sealed class WorkspaceController : Controller
         {
             this.TempData["error"] = "The workspace does not exist.";
 
+            return this.RedirectToAction(nameof(this.Index));
+        }
+    }
+
+    // POST: WorkspaceController/Leave/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Leave(Guid workspaceId)
+    {
+        if (string.IsNullOrEmpty(this.UserId))
+        {
+            return this.RedirectToAction(nameof(this.Index));
+        }
+
+        try
+        {
+            await this.repository
+                .DeleteWorkspaceMembershipAsync(workspaceId.ToString(), this.UserId, this.CancellationToken)
+                .ConfigureAwait(false);
+
+            this.TempData["success"] = "Successfully left the workspace";
+            return this.RedirectToAction(nameof(this.Index));
+        }
+        catch (InvalidOperationException)
+        {
+            this.TempData["error"] = "You are not a member of the workspace.";
             return this.RedirectToAction(nameof(this.Index));
         }
     }

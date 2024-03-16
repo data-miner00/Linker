@@ -42,6 +42,14 @@ public interface IWorkspaceRepository
     Task<IEnumerable<Workspace>> GetAllByUserAsync(string userId, CancellationToken cancellationToken);
 
     /// <summary>
+    /// Gets all the workspaces that is not joined by the user.
+    /// </summary>
+    /// <param name="userId">The user ID.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The list of unjoined workspaces.</returns>
+    Task<IEnumerable<Workspace>> GetAllUnjoinedByUserAsync(string userId, CancellationToken cancellationToken);
+
+    /// <summary>
     /// Removes a workspace.
     /// </summary>
     /// <param name="id">The workspace ID.</param>
