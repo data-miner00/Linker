@@ -288,6 +288,11 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
 
         var articleIds = await this.connection.QueryAsync<string>(query, new { Id = id }).ConfigureAwait(false);
 
+        if (!articleIds.Any())
+        {
+            return Enumerable.Empty<Article>();
+        }
+
         var queryBuilder = new StringBuilder();
 
         foreach (var articleId in articleIds.SkipLast(1))
@@ -347,6 +352,11 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
 
         var websiteIds = await this.connection.QueryAsync<string>(query, new { Id = id }).ConfigureAwait(false);
 
+        if (!websiteIds.Any())
+        {
+            return Enumerable.Empty<Website>();
+        }
+
         var queryBuilder = new StringBuilder();
 
         foreach (var websiteId in websiteIds.SkipLast(1))
@@ -389,6 +399,11 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
             WHERE WorkspaceId = @Id;";
 
         var youtubeIds = await this.connection.QueryAsync<string>(query, new { Id = id }).ConfigureAwait(false);
+
+        if (!youtubeIds.Any())
+        {
+            return Enumerable.Empty<Youtube>();
+        }
 
         var queryBuilder = new StringBuilder();
 
