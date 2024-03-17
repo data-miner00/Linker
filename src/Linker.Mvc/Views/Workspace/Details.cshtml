@@ -50,6 +50,7 @@
                             </a>
                             <a
                                 asp-action="Details"
+                                asp-controller="Article"
                                 asp-route-id="@article.Id"
                                 class="block border border-solid border-black rounded px-1 text-sm"
                             >
@@ -65,7 +66,7 @@
             }
         </div>
         <div>
-            <p class="text-xl font-bold">Articles</p>
+            <p class="text-xl font-bold">Websites</p>
             @if (Model.Websites.Any())
             {
                 <ul>
@@ -81,6 +82,7 @@
                             </a>
                             <a
                                 asp-action="Details"
+                                asp-controller="Website"
                                 asp-route-id="@website.Id"
                                 class="block border border-solid border-black rounded px-1 text-sm"
                             >
@@ -112,6 +114,7 @@
                             </a>
                             <a
                                 asp-action="Details"
+                                asp-controller="Youtube"
                                 asp-route-id="@youtube.Id"
                                 class="block border border-solid border-black rounded px-1 text-sm"
                             >
