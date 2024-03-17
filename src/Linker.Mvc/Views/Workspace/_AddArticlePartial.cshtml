@@ -1,0 +1,23 @@
+﻿@model string
+
+<form method="post" asp-action="AddArticle" autocomplete="off" spellcheck="false">
+    <input hidden name="workspaceId" value="@Model" />
+    
+    <div>
+        <input
+            name="articleId"
+            placeholder="Article ID"
+            class="block p-4 outline-none w-full"
+        />
+    </div>
+    <div class="flex gap-4 justify-end">
+        <button type="submit" class="px-4 py-2 bg-black text-white rounded">Add</button>
+        <button
+            type="button"
+            class="px-4 py-2 border border-solid border-black rounded"
+            onclick="toggleArticleDialog()"
+        >
+            Cancel
+        </button>
+    </div>
+</form>

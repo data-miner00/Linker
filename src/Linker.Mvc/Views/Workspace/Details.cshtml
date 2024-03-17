@@ -34,7 +34,17 @@
 
     <section class="flex flex-col gap-4 mb-5">
         <div>
-            <p class="text-xl font-bold">Articles</p>
+            <div
+                class="flex gap-4 items-center"
+            >
+                <p class="text-xl font-bold block">Articles</p>
+                <button
+                    class="block border border-solid border-black rounded"
+                    onclick="toggleArticleDialog()"
+                >
+                    Add link
+                </button>
+            </div>
             @if (Model.Articles.Any())
             {
                 <ul>
@@ -66,7 +76,17 @@
             }
         </div>
         <div>
-            <p class="text-xl font-bold">Websites</p>
+            <div
+                class="flex gap-4 items-center"
+            >
+                <p class="text-xl font-bold block">Websites</p>
+                <button
+                    class="block border border-solid border-black rounded"
+                    onclick="toggleWebsiteDialog()"
+                >
+                    Add link
+                </button>
+            </div>
             @if (Model.Websites.Any())
             {
                 <ul>
@@ -98,7 +118,17 @@
             }
         </div>
         <div>
-            <p class="text-xl font-bold">Youtubes</p>
+            <div
+                class="flex gap-4 items-center"
+            >
+                <p class="text-xl font-bold block">Youtubes</p>
+                <button
+                    class="block border border-solid border-black rounded"
+                    onclick="toggleYoutubeDialog()"
+                >
+                    Add link
+                </button>
+            </div>
             @if (Model.Youtubes.Any())
             {
                 <ul>
@@ -168,3 +198,81 @@
     }
     <a class="px-4 py-2 bg-black text-white rounded" asp-action="Index">Back to List</a>
 </div>
+
+<dialog id="addw-article-popup" class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg">
+    <p class="text-2xl font-semibold text-center mb-4">Add an article</p>
+    <div>
+        @await Html.PartialAsync("_AddArticlePartial", Model.WorkspaceId)
+    </div>
+</dialog>
+
+<dialog id="addw-website-popup" class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg">
+    <p class="text-2xl font-semibold text-center mb-4">Add a website</p>
+    <div>
+        <form method="post" asp-action="AddWebsite" autocomplete="off" spellcheck="false">
+            <input hidden name="workspaceId" value="@Model.WorkspaceId" />
+            
+            <div>
+                <input
+                    name="websiteId"
+                    placeholder="Website ID"
+                    class="block p-4 outline-none w-full"
+                />
+            </div>
+            <div class="flex gap-4 justify-end">
+                <button type="submit" class="px-4 py-2 bg-black text-white rounded">Add</button>
+                <button
+                    type="button"
+                    class="px-4 py-2 border border-solid border-black rounded"
+                    onclick="toggleWebsiteDialog()"
+                >
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+<dialog id="addw-youtube-popup" class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg">
+    <p class="text-2xl font-semibold text-center mb-4">Add a youtube</p>
+    <div>
+        <form method="post" asp-action="AddYoutube" autocomplete="off" spellcheck="false">
+            <input hidden name="workspaceId" value="@Model.WorkspaceId" />
+            
+            <div>
+                <input
+                    name="youtubeId"
+                    placeholder="Youtube ID"
+                    class="block p-4 outline-none w-full"
+                />
+            </div>
+            <div class="flex gap-4 justify-end">
+                <button type="submit" class="px-4 py-2 bg-black text-white rounded">Add</button>
+                <button
+                    type="button"
+                    class="px-4 py-2 border border-solid border-black rounded"
+                    onclick="toggleYoutubeDialog()"
+                >
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+@section Scripts {
+    <partial name="_SomeScriptsPartial" />
+    <script type="text/javascript">
+        function toggleArticleDialog() {
+            $("dialog#addw-article-popup").toggle();
+        }
+
+        function toggleWebsiteDialog() {
+            $("dialog#addw-website-popup").toggle();
+        }
+
+        function toggleYoutubeDialog() {
+            $("dialog#addw-youtube-popup").toggle();
+        }
+    </script>
+}

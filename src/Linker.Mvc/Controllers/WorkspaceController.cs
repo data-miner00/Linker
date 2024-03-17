@@ -187,6 +187,71 @@ public sealed class WorkspaceController : Controller
         }
     }
 
+    public async Task<IActionResult> AddArticle()
+    {
+        return this.PartialView("_AddArticlePartial");
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddArticle(Guid workspaceId, Guid articleId)
+    {
+        try
+        {
+            await this.repository
+                .AddWorkspaceArticleAsync(workspaceId.ToString(), articleId.ToString(), this.CancellationToken)
+                .ConfigureAwait(false);
+
+            this.TempData["success"] = "Successfully added article to workspace.";
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
+        catch (InvalidOperationException)
+        {
+            this.TempData["error"] = "Failed to add article to workspace.";
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddWebsite(Guid workspaceId, Guid websiteId)
+    {
+        try
+        {
+            await this.repository
+                .AddWorkspaceWebsiteAsync(workspaceId.ToString(), websiteId.ToString(), this.CancellationToken)
+                .ConfigureAwait(false);
+
+            this.TempData["success"] = "Successfully added website to workspace.";
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
+        catch (InvalidOperationException)
+        {
+            this.TempData["error"] = "Failed to add website to workspace.";
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddYoutube(Guid workspaceId, Guid youtubeId)
+    {
+        try
+        {
+            await this.repository
+                .AddWorkspaceYoutubeAsync(workspaceId.ToString(), youtubeId.ToString(), this.CancellationToken)
+                .ConfigureAwait(false);
+
+            this.TempData["success"] = "Successfully added youtube to workspace.";
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
+        catch (InvalidOperationException)
+        {
+            this.TempData["error"] = "Failed to add youtube to workspace.";
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
+    }
+
     // POST: WorkspaceController/Leave/5
     [HttpPost]
     [ValidateAntiForgeryToken]
