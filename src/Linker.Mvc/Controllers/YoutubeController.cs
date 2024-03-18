@@ -78,7 +78,7 @@ public sealed class YoutubeController : Controller
                     .AddAsync(youtube, this.CancellationToken)
                     .ConfigureAwait(false);
 
-                this.TempData["success"] = "Youtube created successfully!";
+                this.TempData[Constants.Success] = "Youtube created successfully!";
 
                 return this.RedirectToAction(nameof(this.Index));
             }
@@ -87,7 +87,7 @@ public sealed class YoutubeController : Controller
         }
         catch
         {
-            this.TempData["error"] = "Something failed.";
+            this.TempData[Constants.Error] = "Something failed.";
 
             return this.View(request);
         }
@@ -130,7 +130,7 @@ public sealed class YoutubeController : Controller
                 .UpdateAsync(youtube, this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData["success"] = "Successfully updated youtube.";
+            this.TempData[Constants.Success] = "Successfully updated youtube.";
 
             return this.RedirectToAction(nameof(this.Index));
         }
@@ -155,7 +155,7 @@ public sealed class YoutubeController : Controller
                 .RemoveAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData["success"] = "Youtube deleted successfully.";
+            this.TempData[Constants.Success] = "Youtube deleted successfully.";
 
             return this.RedirectToAction(nameof(this.Index));
         }

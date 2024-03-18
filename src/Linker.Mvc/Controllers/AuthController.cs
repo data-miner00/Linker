@@ -75,13 +75,13 @@ public sealed class AuthController : Controller
         }
         catch (InvalidOperationException)
         {
-            this.TempData["error"] = "Username or password wrong.";
+            this.TempData[Constants.Error] = "Username or password wrong.";
 
             return this.View(request);
         }
         catch
         {
-            this.TempData["error"] = "Something wrong";
+            this.TempData[Constants.Error] = "Something wrong";
 
             return this.View(request);
         }
@@ -115,7 +115,7 @@ public sealed class AuthController : Controller
                     .AddAsync(user, this.CancellationToken)
                     .ConfigureAwait(false);
 
-                this.TempData["success"] = "Successfully registered.";
+                this.TempData[Constants.Success] = "Successfully registered.";
 
                 return this.RedirectToAction(nameof(this.Login));
             }
@@ -124,7 +124,7 @@ public sealed class AuthController : Controller
         }
         catch (InvalidOperationException)
         {
-            this.TempData["error"] = "User already exist.";
+            this.TempData[Constants.Error] = "User already exist.";
             return this.View(request);
         }
     }

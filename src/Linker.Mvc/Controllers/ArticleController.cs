@@ -60,6 +60,7 @@ public sealed class ArticleController : Controller
 
         try
         {
+            // TODO: For fun, remove soon.
             if (request.Url == "s")
             {
                 this.ModelState.AddModelError("Error", "I hate you");
@@ -71,7 +72,7 @@ public sealed class ArticleController : Controller
                     .AddAsync(article, this.CancellationToken)
                     .ConfigureAwait(false);
 
-                this.TempData["success"] = "Article created successfully!";
+                this.TempData[Constants.Success] = "Article created successfully!";
 
                 return this.RedirectToAction(nameof(this.Index));
             }
@@ -80,7 +81,7 @@ public sealed class ArticleController : Controller
         }
         catch
         {
-            this.TempData["error"] = "Something failed.";
+            this.TempData[Constants.Error] = "Something failed.";
 
             return this.View(request);
         }
@@ -117,7 +118,7 @@ public sealed class ArticleController : Controller
                 .UpdateAsync(article, this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData["success"] = "Successfully updated article.";
+            this.TempData[Constants.Success] = "Successfully updated article.";
 
             return this.RedirectToAction(nameof(this.Index));
         }
@@ -142,7 +143,7 @@ public sealed class ArticleController : Controller
                 .RemoveAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData["success"] = "Article deleted successfully.";
+            this.TempData[Constants.Success] = "Article deleted successfully.";
 
             return this.RedirectToAction(nameof(this.Index));
         }

@@ -139,7 +139,7 @@ public sealed class WorkspaceController : Controller
                     .CreateAsync(newWorkspace, this.CancellationToken)
                     .ConfigureAwait(false);
 
-                this.TempData["success"] = "Workspace created successfully.";
+                this.TempData[Constants.Success] = "Workspace created successfully.";
 
                 return this.RedirectToAction(nameof(this.Index));
             }
@@ -175,13 +175,13 @@ public sealed class WorkspaceController : Controller
                 .AddWorkspaceMembershipAsync(membership, this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData["success"] = "Successfully joined";
+            this.TempData[Constants.Success] = "Successfully joined";
 
             return this.RedirectToAction(nameof(this.Index));
         }
         catch (InvalidOperationException)
         {
-            this.TempData["error"] = "The workspace does not exist.";
+            this.TempData[Constants.Error] = "The workspace does not exist.";
 
             return this.RedirectToAction(nameof(this.Index));
         }
@@ -202,12 +202,12 @@ public sealed class WorkspaceController : Controller
                 .AddWorkspaceArticleAsync(workspaceId.ToString(), articleId.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData["success"] = "Successfully added article to workspace.";
+            this.TempData[Constants.Success] = "Successfully added article to workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
         catch (InvalidOperationException)
         {
-            this.TempData["error"] = "Failed to add article to workspace.";
+            this.TempData[Constants.Error] = "Failed to add article to workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
     }
@@ -221,12 +221,12 @@ public sealed class WorkspaceController : Controller
                 .RemoveWorkspaceArticleAsync(workspaceId.ToString(), articleId.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData["success"] = "Successfully deleted article from workspace.";
+            this.TempData[Constants.Success] = "Successfully deleted article from workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
         catch (InvalidOperationException)
         {
-            this.TempData["error"] = "Failed to remove article from workspace.";
+            this.TempData[Constants.Error] = "Failed to remove article from workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
     }
@@ -241,12 +241,12 @@ public sealed class WorkspaceController : Controller
                 .AddWorkspaceWebsiteAsync(workspaceId.ToString(), websiteId.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData["success"] = "Successfully added website to workspace.";
+            this.TempData[Constants.Success] = "Successfully added website to workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
         catch (InvalidOperationException)
         {
-            this.TempData["error"] = "Failed to add website to workspace.";
+            this.TempData[Constants.Error] = "Failed to add website to workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
     }
@@ -260,12 +260,12 @@ public sealed class WorkspaceController : Controller
                 .RemoveWorkspaceWebsiteAsync(workspaceId.ToString(), websiteId.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData["success"] = "Successfully deleted website from workspace.";
+            this.TempData[Constants.Success] = "Successfully deleted website from workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
         catch (InvalidOperationException)
         {
-            this.TempData["error"] = "Failed to remove website from workspace.";
+            this.TempData[Constants.Error] = "Failed to remove website from workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
     }
@@ -280,12 +280,12 @@ public sealed class WorkspaceController : Controller
                 .AddWorkspaceYoutubeAsync(workspaceId.ToString(), youtubeId.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData["success"] = "Successfully added youtube to workspace.";
+            this.TempData[Constants.Success] = "Successfully added youtube to workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
         catch (InvalidOperationException)
         {
-            this.TempData["error"] = "Failed to add youtube to workspace.";
+            this.TempData[Constants.Error] = "Failed to add youtube to workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
     }
@@ -299,12 +299,12 @@ public sealed class WorkspaceController : Controller
                 .RemoveWorkspaceYoutubeAsync(workspaceId.ToString(), youtubeId.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData["success"] = "Successfully deleted youtube from workspace.";
+            this.TempData[Constants.Success] = "Successfully deleted youtube from workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
         catch (InvalidOperationException)
         {
-            this.TempData["error"] = "Failed to remove youtube from workspace.";
+            this.TempData[Constants.Error] = "Failed to remove youtube from workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
     }
@@ -325,12 +325,12 @@ public sealed class WorkspaceController : Controller
                 .DeleteWorkspaceMembershipAsync(workspaceId.ToString(), this.UserId, this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData["success"] = "Successfully left the workspace";
+            this.TempData[Constants.Success] = "Successfully left the workspace";
             return this.RedirectToAction(nameof(this.Index));
         }
         catch (InvalidOperationException)
         {
-            this.TempData["error"] = "You are not a member of the workspace.";
+            this.TempData[Constants.Error] = "You are not a member of the workspace.";
             return this.RedirectToAction(nameof(this.Index));
         }
     }
@@ -368,7 +368,7 @@ public sealed class WorkspaceController : Controller
                     .UpdateAsync(workspace, this.CancellationToken)
                     .ConfigureAwait(false);
 
-                this.TempData["success"] = "Successfully updated workspace.";
+                this.TempData[Constants.Success] = "Successfully updated workspace.";
 
                 return this.RedirectToAction(nameof(this.Index));
             }
@@ -390,7 +390,7 @@ public sealed class WorkspaceController : Controller
                 .RemoveAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData["success"] = "Workspace successfully deleted.";
+            this.TempData[Constants.Success] = "Workspace successfully deleted.";
 
             return this.RedirectToAction(nameof(this.Index));
         }
@@ -400,7 +400,7 @@ public sealed class WorkspaceController : Controller
         }
         catch
         {
-            this.TempData["error"] = "Something wrong.";
+            this.TempData[Constants.Error] = "Something wrong.";
             return this.RedirectToAction(nameof(this.Index));
         }
     }

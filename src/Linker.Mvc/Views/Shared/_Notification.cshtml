@@ -1,13 +1,13 @@
-﻿@if(TempData["success"] != null)
+﻿@if(TempData[Constants.Success] != null)
 {
     <h2 class="mb-4 bg-green-200 border border-solid border-green-400 py-1 px-3 rounded">
-        @TempData["success"]
+        @TempData[Constants.Success]
     </h2>
 }
 
-@if(TempData["error"] != null)
+@if(TempData[Constants.Error] != null)
 {
     <h2 class="mb-4 bg-red-200 border border-solid border-red-400 py-1 px-3 rounded">
-        @TempData["error"]
+        @TempData[Constants.Error]
     </h2>
 }

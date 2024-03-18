@@ -6,6 +6,7 @@ using Linker.Core.Models;
 using Linker.Core.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 [Authorize]
 public sealed class WebsiteController : Controller
@@ -75,7 +76,7 @@ public sealed class WebsiteController : Controller
                     .AddAsync(website, this.CancellationToken)
                     .ConfigureAwait(false);
 
-                this.TempData["success"] = "Website added successfully.";
+                this.TempData[Constants.Success] = "Website added successfully.";
 
                 return this.RedirectToAction(nameof(this.Index));
             }
@@ -84,7 +85,7 @@ public sealed class WebsiteController : Controller
         }
         catch
         {
-            this.TempData["error"] = "Create website failed.";
+            this.TempData[Constants.Error] = "Create website failed.";
 
             return this.View(request);
         }
@@ -127,7 +128,7 @@ public sealed class WebsiteController : Controller
                 .UpdateAsync(website, this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData["success"] = "Website updated successfully.";
+            this.TempData[Constants.Success] = "Website updated successfully.";
 
             return this.RedirectToAction(nameof(this.Index));
         }
@@ -152,7 +153,7 @@ public sealed class WebsiteController : Controller
                 .RemoveAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData["success"] = "Website deleted successfully.";
+            this.TempData[Constants.Success] = "Website deleted successfully.";
 
             return this.RedirectToAction(nameof(this.Index));
         }
