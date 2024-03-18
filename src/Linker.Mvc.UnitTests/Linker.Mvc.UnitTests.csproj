@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageReference Include="Moq" Version="4.18.4" />
@@ -26,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Linker.Mvc\Linker.Mvc.csproj" />
+    <ProjectReference Include="..\Linker.TestCore\Linker.TestCore.csproj" />
   </ItemGroup>
 
 </Project>

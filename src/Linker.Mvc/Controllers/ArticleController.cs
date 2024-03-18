@@ -27,7 +27,7 @@ public sealed class ArticleController : Controller
     public async Task<IActionResult> Index()
     {
         var articles = await this.repository
-            .GetAllAsync(default)
+            .GetAllAsync(this.CancellationToken)
             .ConfigureAwait(false);
 
         return View(articles);
