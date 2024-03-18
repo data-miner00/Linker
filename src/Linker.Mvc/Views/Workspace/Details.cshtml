@@ -9,6 +9,7 @@
     var httpContext = httpContextAccessor.HttpContext;
     var isLoggedIn = httpContext?.User.Identity?.IsAuthenticated ?? false;
     var userId = httpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+    var isWorkspaceOwner = Model.WorkspaceOwnerId.Equals(userId, StringComparison.OrdinalIgnoreCase);
 }
 
 <partial name="_Notification" />
@@ -38,12 +39,15 @@
                 class="flex gap-4 items-center"
             >
                 <p class="text-xl font-bold block">Articles</p>
-                <button
-                    class="block border border-solid border-black rounded"
-                    onclick="toggleArticleDialog()"
-                >
-                    Add link
-                </button>
+                @if (isWorkspaceOwner)
+                {
+                    <button
+                        class="block border border-solid border-black rounded"
+                        onclick="toggleArticleDialog()"
+                    >
+                        Add link
+                    </button>
+                }
             </div>
             @if (Model.Articles.Any())
             {
@@ -66,15 +70,18 @@
                             >
                                 Details
                             </a>
-                            <a
-                                class="block border border-solid border-black rounded px-1 text-sm"
-                                asp-action="RemoveArticle"
-                                asp-route-workspaceId="@Model.WorkspaceId"
-                                asp-route-articleId="@article.Id"
-                                onclick="return confirm('Are you sure to remove from workspace?')"
-                            >
-                                Delete
-                            </a>
+                            @if (isWorkspaceOwner)
+                            {
+                                <a
+                                    class="block border border-solid border-black rounded px-1 text-sm"
+                                    asp-action="RemoveArticle"
+                                    asp-route-workspaceId="@Model.WorkspaceId"
+                                    asp-route-articleId="@article.Id"
+                                    onclick="return confirm('Are you sure to remove from workspace?')"
+                                >
+                                    Delete
+                                </a>
+                            }
                         </li>
                     }
                 </ul>
@@ -89,12 +96,15 @@
                 class="flex gap-4 items-center"
             >
                 <p class="text-xl font-bold block">Websites</p>
-                <button
-                    class="block border border-solid border-black rounded"
-                    onclick="toggleWebsiteDialog()"
-                >
-                    Add link
-                </button>
+                @if (isWorkspaceOwner)
+                {
+                    <button
+                        class="block border border-solid border-black rounded"
+                        onclick="toggleWebsiteDialog()"
+                    >
+                        Add link
+                    </button>
+                }
             </div>
             @if (Model.Websites.Any())
             {
@@ -117,15 +127,18 @@
                             >
                                 Details
                             </a>
-                            <a
-                                class="block border border-solid border-black rounded px-1 text-sm"
-                                asp-action="RemoveWebsite"
-                                asp-route-workspaceId="@Model.WorkspaceId"
-                                asp-route-websiteId="@website.Id"
-                                onclick="return confirm('Are you sure to remove from workspace?')"
-                            >
-                                Delete
-                            </a>
+                            @if (isWorkspaceOwner)
+                            {
+                                <a
+                                    class="block border border-solid border-black rounded px-1 text-sm"
+                                    asp-action="RemoveWebsite"
+                                    asp-route-workspaceId="@Model.WorkspaceId"
+                                    asp-route-websiteId="@website.Id"
+                                    onclick="return confirm('Are you sure to remove from workspace?')"
+                                >
+                                    Delete
+                                </a>
+                            }
                         </li>
                     }
                 </ul>
@@ -140,12 +153,15 @@
                 class="flex gap-4 items-center"
             >
                 <p class="text-xl font-bold block">Youtubes</p>
-                <button
-                    class="block border border-solid border-black rounded"
-                    onclick="toggleYoutubeDialog()"
-                >
-                    Add link
-                </button>
+                @if (isWorkspaceOwner)
+                {
+                    <button
+                        class="block border border-solid border-black rounded"
+                        onclick="toggleYoutubeDialog()"
+                    >
+                        Add link
+                    </button>
+                }
             </div>
             @if (Model.Youtubes.Any())
             {
@@ -168,15 +184,18 @@
                             >
                                 Details
                             </a>
-                            <a
-                                class="block border border-solid border-black rounded px-1 text-sm"
-                                asp-action="RemoveYoutube"
-                                asp-route-workspaceId="@Model.WorkspaceId"
-                                asp-route-youtubeId="@youtube.Id"
-                                onclick="return confirm('Are you sure to remove from workspace?')"
-                            >
-                                Delete
-                            </a>
+                            @if (isWorkspaceOwner)
+                            {
+                                <a
+                                    class="block border border-solid border-black rounded px-1 text-sm"
+                                    asp-action="RemoveYoutube"
+                                    asp-route-workspaceId="@Model.WorkspaceId"
+                                    asp-route-youtubeId="@youtube.Id"
+                                    onclick="return confirm('Are you sure to remove from workspace?')"
+                                >
+                                    Delete
+                                </a>
+                            }
                         </li>
                     }
                 </ul>
