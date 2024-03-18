@@ -13,4 +13,10 @@ public sealed class WorkspaceIndexViewModel
     required public string OwnerId { get; set; }
 
     required public int MemberCounts { get; set; }
+
+    required public int ArticleCounts { get; set; }
+
+    required public int WebsiteCounts { get; set; }
+
+    required public int YoutubeCounts { get; set; }
 }

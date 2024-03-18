@@ -436,6 +436,18 @@ public sealed class WorkspaceController : Controller
                 .GetAllWorkspaceMembershipsAsync(workspace.Id, this.CancellationToken)
                 .ConfigureAwait(false);
 
+            var article = await this.repository
+                .GetWorkspaceArticlesAsync(workspace.Id, this.CancellationToken)
+                .ConfigureAwait(false);
+
+            var websites = await this.repository
+                .GetWorkspaceWebsitesAsync(workspace.Id, this.CancellationToken)
+                .ConfigureAwait(false);
+
+            var youtubes = await this.repository
+                .GetWorkspaceYoutubesAsync(workspace.Id, this.CancellationToken)
+                .ConfigureAwait(false);
+
             var model = new WorkspaceIndexViewModel
             {
                 Id = workspace.Id,
@@ -444,6 +456,9 @@ public sealed class WorkspaceController : Controller
                 Description = workspace.Description,
                 OwnerId = workspace.OwnerId,
                 MemberCounts = members.Count(),
+                ArticleCounts = article.Count(),
+                WebsiteCounts = websites.Count(),
+                YoutubeCounts = youtubes.Count(),
             };
 
             viewModel.Add(model);
