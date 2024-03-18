@@ -217,6 +217,7 @@
                     <td>Role</td>
                     <td>Status</td>
                     <td>Birthday</td>
+                    <td>Actions</td>
                 </tr>
             </thead>
             <tbody>
@@ -228,6 +229,24 @@
                         <td>@Model.Members.ElementAt(i).Role</td>
                         <td>@Model.Members.ElementAt(i).Status</td>
                         <td>@Model.Members.ElementAt(i).DateOfBirth</td>
+                        <td>
+                            @{
+                                var isNotSelf = !Model.Members.ElementAt(i).Id.Equals(userId, StringComparison.OrdinalIgnoreCase);
+                            }
+                            @if (isWorkspaceOwner && isNotSelf)
+                            {
+                                <form method="post" asp-action="Kick" onsubmit="return confirm('Are you sure to kick this people?')">
+                                    <input hidden name="workspaceId" value="@Model.WorkspaceId" />
+                                    <input hidden name="userId" value="@Model.Members.ElementAt(i).Id" />
+                                    <button
+                                        class="block border border-solid border-black rounded px-1 text-sm"
+                                        type="submit"
+                                    >
+                                        Kick
+                                    </button>
+                                </form>
+                            }
+                        </td>
                     </tr>
                 }
             </tbody>

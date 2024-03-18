@@ -187,6 +187,27 @@ public sealed class WorkspaceController : Controller
         }
     }
 
+    [HttpPost]
+    public async Task<IActionResult> Kick(Guid workspaceId, Guid userId)
+    {
+        try
+        {
+            await this.repository
+                .DeleteWorkspaceMembershipAsync(workspaceId.ToString(), userId.ToString(), this.CancellationToken)
+                .ConfigureAwait(false);
+
+            this.TempData[Constants.Success] = "Removed user from workspace";
+
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
+        catch (InvalidOperationException)
+        {
+            this.TempData[Constants.Error] = "The user is not in the workspace.";
+
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
+    }
+
     public async Task<IActionResult> AddArticle()
     {
         return this.PartialView("_AddArticlePartial");
