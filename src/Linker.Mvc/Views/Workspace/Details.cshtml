@@ -66,6 +66,15 @@
                             >
                                 Details
                             </a>
+                            <a
+                                class="block border border-solid border-black rounded px-1 text-sm"
+                                asp-action="RemoveArticle"
+                                asp-route-workspaceId="@Model.WorkspaceId"
+                                asp-route-articleId="@article.Id"
+                                onclick="return confirm('Are you sure to remove from workspace?')"
+                            >
+                                Delete
+                            </a>
                         </li>
                     }
                 </ul>
@@ -108,6 +117,15 @@
                             >
                                 Details
                             </a>
+                            <a
+                                class="block border border-solid border-black rounded px-1 text-sm"
+                                asp-action="RemoveWebsite"
+                                asp-route-workspaceId="@Model.WorkspaceId"
+                                asp-route-websiteId="@website.Id"
+                                onclick="return confirm('Are you sure to remove from workspace?')"
+                            >
+                                Delete
+                            </a>
                         </li>
                     }
                 </ul>
@@ -149,6 +167,15 @@
                                 class="block border border-solid border-black rounded px-1 text-sm"
                             >
                                 Details
+                            </a>
+                            <a
+                                class="block border border-solid border-black rounded px-1 text-sm"
+                                asp-action="RemoveYoutube"
+                                asp-route-workspaceId="@Model.WorkspaceId"
+                                asp-route-youtubeId="@youtube.Id"
+                                onclick="return confirm('Are you sure to remove from workspace?')"
+                            >
+                                Delete
                             </a>
                         </li>
                     }

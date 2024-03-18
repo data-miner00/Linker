@@ -212,6 +212,25 @@ public sealed class WorkspaceController : Controller
         }
     }
 
+    // TODO: Change to Post
+    public async Task<IActionResult> RemoveArticle(Guid workspaceId, Guid articleId)
+    {
+        try
+        {
+            await this.repository
+                .RemoveWorkspaceArticleAsync(workspaceId.ToString(), articleId.ToString(), this.CancellationToken)
+                .ConfigureAwait(false);
+
+            this.TempData["success"] = "Successfully deleted article from workspace.";
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
+        catch (InvalidOperationException)
+        {
+            this.TempData["error"] = "Failed to remove article from workspace.";
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddWebsite(Guid workspaceId, Guid websiteId)
@@ -232,6 +251,25 @@ public sealed class WorkspaceController : Controller
         }
     }
 
+    // TODO: Change to Post
+    public async Task<IActionResult> RemoveWebsite(Guid workspaceId, Guid websiteId)
+    {
+        try
+        {
+            await this.repository
+                .RemoveWorkspaceWebsiteAsync(workspaceId.ToString(), websiteId.ToString(), this.CancellationToken)
+                .ConfigureAwait(false);
+
+            this.TempData["success"] = "Successfully deleted website from workspace.";
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
+        catch (InvalidOperationException)
+        {
+            this.TempData["error"] = "Failed to remove website from workspace.";
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddYoutube(Guid workspaceId, Guid youtubeId)
@@ -248,6 +286,25 @@ public sealed class WorkspaceController : Controller
         catch (InvalidOperationException)
         {
             this.TempData["error"] = "Failed to add youtube to workspace.";
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
+    }
+
+    // TODO: Change to Post
+    public async Task<IActionResult> RemoveYoutube(Guid workspaceId, Guid youtubeId)
+    {
+        try
+        {
+            await this.repository
+                .RemoveWorkspaceYoutubeAsync(workspaceId.ToString(), youtubeId.ToString(), this.CancellationToken)
+                .ConfigureAwait(false);
+
+            this.TempData["success"] = "Successfully deleted youtube from workspace.";
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
+        catch (InvalidOperationException)
+        {
+            this.TempData["error"] = "Failed to remove youtube from workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
     }
