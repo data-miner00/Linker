@@ -40,7 +40,6 @@
                 .WithYear(request.Year)
                 .WithWatchLater(request.WatchLater)
                 .WithDomain("google.com")
-                .WithCreatedBy(request.CreatedBy)
                 .Build();
 
             var result = new CreatedResult();
