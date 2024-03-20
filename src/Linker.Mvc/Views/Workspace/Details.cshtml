@@ -27,7 +27,7 @@
     <div class="flex gap-4 items-center">
         <div><i class="bi bi-people-fill"></i> @memberCount</div>
         <div><span class="text-xs text-gray-500">Created by</span> @Model.WorkspaceOwnerUsername</div>
-        <div><button title="Add members"><i class="bi bi-person-plus-fill"></i></button></div>
+        <div><button onclick="openInviteUserDialog()" title="Add members"><i class="bi bi-person-plus-fill"></i></button></div>
     </div>
     <div class="mb-10">
         <p class="text-gray-700">@Html.DisplayFor(model => model.WorkspaceDescription)</p>
@@ -325,6 +325,11 @@
     </div>
 </dialog>
 
+<dialog
+    id="addw-user-popup"
+    class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg"
+></dialog>
+
 @section Scripts {
     <partial name="_SomeScriptsPartial" />
     <script type="text/javascript">
@@ -338,6 +343,15 @@
 
         function toggleYoutubeDialog() {
             $("dialog#addw-youtube-popup").toggle();
+        }
+
+        function toggleInviteUserDialog() {
+            $("dialog#addw-user-popup").toggle();
+        }
+
+        function openInviteUserDialog() {
+            var url = "@Url.Action("InviteUser", "Workspace", new { WorkspaceId = Model.WorkspaceId })";
+            $("dialog#addw-user-popup").toggle().load(url);
         }
     </script>
 }

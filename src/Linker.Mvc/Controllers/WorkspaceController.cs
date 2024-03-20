@@ -7,17 +7,27 @@ using Linker.Core.Repositories;
 using Linker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.SQLite;
 using System.Security.Claims;
 
 [Authorize]
 public sealed class WorkspaceController : Controller
 {
     private readonly IWorkspaceRepository repository;
+    private readonly IUserRepository userRepository;
     private readonly IMapper mapper;
 
-    public WorkspaceController(IWorkspaceRepository respository, IMapper mapper)
+    public WorkspaceController(
+        IWorkspaceRepository repository,
+        IUserRepository userRepository,
+        IMapper mapper)
     {
-        this.repository = respository;
+        ArgumentNullException.ThrowIfNull(repository);
+        ArgumentNullException.ThrowIfNull(userRepository);
+        ArgumentNullException.ThrowIfNull(mapper);
+
+        this.repository = repository;
+        this.userRepository = userRepository;
         this.mapper = mapper;
     }
 
@@ -423,6 +433,51 @@ public sealed class WorkspaceController : Controller
         {
             this.TempData[Constants.Error] = "Something wrong.";
             return this.RedirectToAction(nameof(this.Index));
+        }
+    }
+
+    public async Task<IActionResult> InviteUser(Guid workspaceId)
+    {
+        try
+        {
+            var users = await this.userRepository
+                .GetAllAsync(this.CancellationToken)
+                .ConfigureAwait(false);
+
+            return this.PartialView("_InviteUser", (users, workspaceId.ToString()));
+        }
+        catch
+        {
+            return this.NotFound();
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> InviteUser(Guid workspaceId, Guid userId)
+    {
+        try
+        {
+            var membership = new WorkspaceMembership
+            {
+                UserId = userId.ToString(),
+                WorkspaceId = workspaceId.ToString(),
+                WorkspaceRole = WorkspaceRole.User,
+                CreatedAt = DateTime.UtcNow,
+                ModifiedAt = DateTime.UtcNow,
+            };
+
+            await this.repository
+                .AddWorkspaceMembershipAsync(membership, default)
+                .ConfigureAwait(false);
+
+            this.TempData[Constants.Success] = "Successfully invited user to workspace.";
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
+        catch (SQLiteException)
+        {
+            this.TempData[Constants.Error] = "User already in workspace.";
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
     }
 
