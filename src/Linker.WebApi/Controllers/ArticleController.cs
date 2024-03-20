@@ -58,12 +58,8 @@
             var userId = this.context.HttpContext?.User
                 .FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
 
-            if (userId != request.CreatedBy)
-            {
-                return this.Forbid();
-            }
-
             var article = this.mapper.Map<Article>(request);
+            article.CreatedBy = userId;
 
             await this.repository
                 .AddAsync(article, CancellationToken.None)

@@ -6,7 +6,7 @@ using Linker.Core.Models;
 using Linker.Core.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Security.Claims;
 
 [Authorize]
 public sealed class WebsiteController : Controller
@@ -16,11 +16,16 @@ public sealed class WebsiteController : Controller
 
     public WebsiteController(IWebsiteRepository repository, IMapper mapper)
     {
+        ArgumentNullException.ThrowIfNull(repository);
+        ArgumentNullException.ThrowIfNull(mapper);
         this.repository = repository;
         this.mapper = mapper;
     }
 
     public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
+
+    public string UserId =>
+        this.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
     // GET: WebsiteController
     public async Task<IActionResult> Index()
@@ -67,6 +72,7 @@ public sealed class WebsiteController : Controller
         ArgumentNullException.ThrowIfNull(request);
 
         var website = this.mapper.Map<Website>(request);
+        website.CreatedBy = this.UserId;
 
         try
         {

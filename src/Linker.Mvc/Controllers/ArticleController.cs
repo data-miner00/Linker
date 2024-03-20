@@ -6,6 +6,7 @@ using Linker.Core.Models;
 using Linker.Core.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 [Authorize]
 public sealed class ArticleController : Controller
@@ -22,6 +23,9 @@ public sealed class ArticleController : Controller
     }
 
     public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
+
+    public string UserId =>
+        this.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
     // GET: ArticleController
     public async Task<IActionResult> Index()
@@ -57,6 +61,7 @@ public sealed class ArticleController : Controller
         ArgumentNullException.ThrowIfNull(request);
 
         var article = this.mapper.Map<Article>(request);
+        article.CreatedBy = this.UserId;
 
         try
         {

@@ -40,6 +40,12 @@
             this.context = EnsureArg.IsNotNull(context, nameof(context));
         }
 
+        /// <summary>
+        /// Gets the current user's ID.
+        /// </summary>
+        public string UserId =>
+            this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+
         /// <inheritdoc/>
         [HttpPost("", Name = "CreateWebsite")]
         public async Task<IActionResult> CreateAsync([FromBody] CreateWebsiteRequest request)
@@ -47,6 +53,7 @@
             EnsureArg.IsNotNull(request, nameof(request));
 
             var website = this.mapper.Map<Website>(request);
+            website.CreatedBy = this.UserId;
 
             await this.repository
                 .AddAsync(website, CancellationToken.None)

@@ -75,11 +75,5 @@
         /// Gets or sets a value indicating whether the article is marked as watch later.
         /// </summary>
         public bool WatchLater { get; set; }
-
-        /// <summary>
-        /// Gets or sets the creator of the link.
-        /// </summary>
-        [Required]
-        public string CreatedBy { get; set; }
     }
 }

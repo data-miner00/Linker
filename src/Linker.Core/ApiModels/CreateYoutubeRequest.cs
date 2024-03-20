@@ -59,11 +59,5 @@
         /// </summary>
         [Required]
         public IEnumerable<string> Tags { get; set; } = null!;
-
-        /// <summary>
-        /// Gets or sets the creator of the link.
-        /// </summary>
-        [Required]
-        public string CreatedBy { get; set; } = null!;
     }
 }

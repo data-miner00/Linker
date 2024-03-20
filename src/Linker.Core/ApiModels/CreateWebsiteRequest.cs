@@ -67,11 +67,5 @@
         /// </summary>
         [Required]
         public bool IsMultilingual { get; set; }
-
-        /// <summary>
-        /// Gets or sets the creator of the link.
-        /// </summary>
-        [Required]
-        public string CreatedBy { get; set; } = null!;
     }
 }

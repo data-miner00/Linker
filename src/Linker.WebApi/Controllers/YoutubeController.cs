@@ -40,6 +40,12 @@
             this.context = EnsureArg.IsNotNull(context, nameof(context));
         }
 
+        /// <summary>
+        /// Gets the current user's ID.
+        /// </summary>
+        public string UserId =>
+            this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+
         /// <inheritdoc/>
         [HttpPost("", Name = "CreateYoutube")]
         public async Task<IActionResult> CreateAsync([FromBody] CreateYoutubeRequest request)
@@ -47,6 +53,7 @@
             EnsureArg.IsNotNull(request, nameof(request));
 
             var channel = this.mapper.Map<Youtube>(request);
+            channel.CreatedBy = this.UserId;
 
             await this.repository
                 .AddAsync(channel, CancellationToken.None)

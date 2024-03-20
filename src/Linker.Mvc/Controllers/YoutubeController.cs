@@ -5,8 +5,8 @@ using Linker.Core.ApiModels;
 using Linker.Core.Models;
 using Linker.Core.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 [Authorize]
 public sealed class YoutubeController : Controller
@@ -23,6 +23,9 @@ public sealed class YoutubeController : Controller
     }
 
     public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
+
+    public string UserId =>
+        this.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
     // GET: YoutubeController
     public async Task<IActionResult> Index()
@@ -69,6 +72,7 @@ public sealed class YoutubeController : Controller
         ArgumentNullException.ThrowIfNull(request);
 
         var youtube = this.mapper.Map<Youtube>(request);
+        youtube.CreatedBy = this.UserId;
 
         try
         {
