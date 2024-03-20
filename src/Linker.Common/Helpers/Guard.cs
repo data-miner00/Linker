@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel.DataAnnotations;
+    using System.Runtime.CompilerServices;
 
     /// <summary>
     /// A utility class that provides argument checking.
@@ -15,7 +16,8 @@
         /// <param name="obj">The object to be checked.</param>
         /// <param name="paramName">The name of the object.</param>
         /// <returns>The object itself.</returns>
-        public static T ThrowIfNull<T>(T obj, string paramName)
+        /// <exception cref="ArgumentException">Throws when object is null.</exception>
+        public static T ThrowIfNull<T>(T obj, [CallerArgumentExpression(nameof(obj))] string? paramName = null)
             where T : class
         {
             if (obj is null)
@@ -32,7 +34,8 @@
         /// <param name="str">The string to be checked.</param>
         /// <param name="paramName">The name of the string.</param>
         /// <returns>The string itself.</returns>
-        public static string ThrowIfNullOrWhitespace(string str, string paramName)
+        /// <exception cref="ArgumentException">Throws when string is null or empty.</exception>
+        public static string ThrowIfNullOrWhitespace(string str, [CallerArgumentExpression(nameof(str))] string? paramName = null)
         {
             if (string.IsNullOrEmpty(str))
             {
@@ -52,6 +55,25 @@
         {
             var context = new ValidationContext(obj);
             Validator.ValidateObject(obj, context, true);
+        }
+
+        /// <summary>
+        /// Throws if the value type element is at default value.
+        /// </summary>
+        /// <typeparam name="T">The value type.</typeparam>
+        /// <param name="value">The item to validate.</param>
+        /// <param name="paramName">The parameter name for reference.</param>
+        /// <returns>The validated value.</returns>
+        /// <exception cref="ArgumentException">Throws when value is default.</exception>
+        public static T ThrowIfDefault<T>(this T value, [CallerArgumentExpression(nameof(value))] string? paramName = null)
+            where T : struct
+        {
+            if (default(T).Equals(value))
+            {
+                throw new ArgumentException(FormattableString.Invariant($"Argument '{paramName}' cannot be default value."));
+            }
+
+            return value;
         }
     }
 }

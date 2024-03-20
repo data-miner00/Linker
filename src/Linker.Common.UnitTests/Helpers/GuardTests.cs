@@ -5,27 +5,27 @@
     using Linker.Common.Helpers;
     using Xunit;
 
-    internal sealed class TestSubject
-    {
-        [Required]
-        [Range(0, 5)]
-        public int TestProperty { get; set; }
-    }
-
     public sealed class GuardTests
     {
+        internal sealed class TestSubject
+        {
+            [Required]
+            [Range(0, 5)]
+            public int TestProperty { get; set; }
+        }
+
         [Fact]
         public void ThrowIfNull_NullParameter_Throws()
         {
             object mockObj = null;
-            Assert.Throws<ArgumentNullException>(() => Guard.ThrowIfNull(mockObj, nameof(mockObj)));
+            Assert.Throws<ArgumentNullException>(() => Guard.ThrowIfNull(mockObj));
         }
 
         [Fact]
         public void ThrowIfNull_ValidParameter_Pass()
         {
             object mockObj = new object();
-            var result = Guard.ThrowIfNull(mockObj, nameof(mockObj));
+            var result = Guard.ThrowIfNull(mockObj);
             Assert.Equal(result, mockObj);
         }
 
@@ -34,7 +34,7 @@
         [InlineData(null)]
         public void ThrowIfNullOrWhitespace_NullOrEmptyString_Throws(string param)
         {
-            Assert.Throws<ArgumentException>(() => Guard.ThrowIfNullOrWhitespace(param, nameof(param)));
+            Assert.Throws<ArgumentException>(() => Guard.ThrowIfNullOrWhitespace(param));
         }
 
         [Fact]
@@ -49,6 +49,13 @@
         {
             var testObj = new TestSubject { TestProperty = 3, };
             Guard.ThrowIfValidationFailed(testObj);
+        }
+
+        [Fact]
+        public void ThrowIfDefault_DefaultValue_Throws()
+        {
+            var defaultGuid = Guid.Empty;
+            Assert.Throws<ArgumentException>(() => Guard.ThrowIfDefault(defaultGuid));
         }
     }
 }
