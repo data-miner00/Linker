@@ -208,7 +208,7 @@ public sealed class WorkspaceController : Controller
         }
     }
 
-    public async Task<IActionResult> AddArticle()
+    public IActionResult AddArticle()
     {
         return this.PartialView("_AddArticlePartial");
     }
