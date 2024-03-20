@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel.DataAnnotations;
+    using System.Globalization;
     using System.Runtime.CompilerServices;
 
     /// <summary>
@@ -16,13 +17,13 @@
         /// <param name="obj">The object to be checked.</param>
         /// <param name="paramName">The name of the object.</param>
         /// <returns>The object itself.</returns>
-        /// <exception cref="ArgumentException">Throws when object is null.</exception>
+        /// <exception cref="ArgumentException">Throws when .</exception>
         public static T ThrowIfNull<T>(T obj, [CallerArgumentExpression(nameof(obj))] string? paramName = null)
             where T : class
         {
             if (obj is null)
             {
-                throw new ArgumentNullException(paramName, FormattableString.Invariant($"The object {paramName} cannot be null."));
+                throw new ArgumentNullException(paramName, string.Create(CultureInfo.InvariantCulture, $"The object {paramName} cannot be null."));
             }
 
             return obj;
@@ -39,7 +40,7 @@
         {
             if (string.IsNullOrEmpty(str))
             {
-                throw new ArgumentException(paramName, FormattableString.Invariant($"The string {paramName} cannot be null or whitespace"));
+                throw new ArgumentException(paramName, string.Create(CultureInfo.InvariantCulture, $"The string {paramName} cannot be null or whitespace"));
             }
 
             return str;
@@ -70,7 +71,7 @@
         {
             if (default(T).Equals(value))
             {
-                throw new ArgumentException(FormattableString.Invariant($"Argument '{paramName}' cannot be default value."));
+                throw new ArgumentException(string.Create(CultureInfo.InvariantCulture, $"Argument '{paramName}' cannot be default value."));
             }
 
             return value;
