@@ -1,7 +1,13 @@
-﻿@model Linker.Core.Models.Youtube
-
+﻿@using Microsoft.AspNetCore.Http
+@using Linker.Core.Models
+@using System.Security.Claims
+@model Youtube
+@inject IHttpContextAccessor httpContextAccessor
 @{
     ViewData["Title"] = "Details";
+    var httpContext = httpContextAccessor.HttpContext;
+    var isLoggedIn = httpContext?.User.Identity?.IsAuthenticated ?? false;
+    var userId = httpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 }
 
 <article class="mb-10" id="@Html.DisplayFor(model => model.Id)">
@@ -38,6 +44,9 @@
 </article>
 
 <div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @if (Model.CreatedBy.Equals(userId, StringComparison.OrdinalIgnoreCase))
+    {
+        <span>@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |</span>
+    }
     <a class="px-4 py-2 bg-black text-white rounded" asp-action="Index">Back to List</a>
 </div>
