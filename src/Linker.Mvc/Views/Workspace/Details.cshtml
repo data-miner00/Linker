@@ -43,7 +43,7 @@
                 {
                     <button
                         class="block border border-solid border-black rounded"
-                        onclick="toggleArticleDialog()"
+                        onclick="openArticleDialog()"
                     >
                         Add link
                     </button>
@@ -100,7 +100,7 @@
                 {
                     <button
                         class="block border border-solid border-black rounded"
-                        onclick="toggleWebsiteDialog()"
+                        onclick="openWebsiteDialog()"
                     >
                         Add link
                     </button>
@@ -157,7 +157,7 @@
                 {
                     <button
                         class="block border border-solid border-black rounded"
-                        onclick="toggleYoutubeDialog()"
+                        onclick="openYoutubeDialog()"
                     >
                         Add link
                     </button>
@@ -265,65 +265,11 @@
 </div>
 
 <dialog id="addw-article-popup" class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg">
-    <p class="text-2xl font-semibold text-center mb-4">Add an article</p>
-    <div>
-        @await Html.PartialAsync("_AddArticlePartial", Model.WorkspaceId)
-    </div>
 </dialog>
 
-<dialog id="addw-website-popup" class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg">
-    <p class="text-2xl font-semibold text-center mb-4">Add a website</p>
-    <div>
-        <form method="post" asp-action="AddWebsite" autocomplete="off" spellcheck="false">
-            <input hidden name="workspaceId" value="@Model.WorkspaceId" />
-            
-            <div>
-                <input
-                    name="websiteId"
-                    placeholder="Website ID"
-                    class="block p-4 outline-none w-full"
-                />
-            </div>
-            <div class="flex gap-4 justify-end">
-                <button type="submit" class="px-4 py-2 bg-black text-white rounded">Add</button>
-                <button
-                    type="button"
-                    class="px-4 py-2 border border-solid border-black rounded"
-                    onclick="toggleWebsiteDialog()"
-                >
-                    Cancel
-                </button>
-            </div>
-        </form>
-    </div>
-</dialog>
+<dialog id="addw-website-popup" class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg"></dialog>
 
-<dialog id="addw-youtube-popup" class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg">
-    <p class="text-2xl font-semibold text-center mb-4">Add a youtube</p>
-    <div>
-        <form method="post" asp-action="AddYoutube" autocomplete="off" spellcheck="false">
-            <input hidden name="workspaceId" value="@Model.WorkspaceId" />
-            
-            <div>
-                <input
-                    name="youtubeId"
-                    placeholder="Youtube ID"
-                    class="block p-4 outline-none w-full"
-                />
-            </div>
-            <div class="flex gap-4 justify-end">
-                <button type="submit" class="px-4 py-2 bg-black text-white rounded">Add</button>
-                <button
-                    type="button"
-                    class="px-4 py-2 border border-solid border-black rounded"
-                    onclick="toggleYoutubeDialog()"
-                >
-                    Cancel
-                </button>
-            </div>
-        </form>
-    </div>
-</dialog>
+<dialog id="addw-youtube-popup" class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg"></dialog>
 
 <dialog
     id="addw-user-popup"
@@ -352,6 +298,21 @@
         function openInviteUserDialog() {
             var url = "@Url.Action("InviteUser", "Workspace", new { WorkspaceId = Model.WorkspaceId })";
             $("dialog#addw-user-popup").toggle().load(url);
+        }
+
+        function openWebsiteDialog() {
+            var url = "@Url.Action("AddWebsite", "Workspace", new { WorkspaceId = Model.WorkspaceId })";
+            $("dialog#addw-website-popup").toggle().load(url);
+        }
+
+        function openYoutubeDialog() {
+            var url = "@Url.Action("AddYoutube", "Workspace", new { WorkspaceId = Model.WorkspaceId })";
+            $("dialog#addw-youtube-popup").toggle().load(url);
+        }
+
+        function openArticleDialog() {
+            var url = "@Url.Action("AddArticle", "Workspace", new { WorkspaceId = Model.WorkspaceId })";
+            $("dialog#addw-article-popup").toggle().load(url);
         }
     </script>
 }

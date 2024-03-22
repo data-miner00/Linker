@@ -15,19 +15,31 @@ public sealed class WorkspaceController : Controller
 {
     private readonly IWorkspaceRepository repository;
     private readonly IUserRepository userRepository;
+    private readonly IWebsiteRepository websiteRepository;
+    private readonly IYoutubeRepository youtubeRepository;
+    private readonly IArticleRepository articleRepository;
     private readonly IMapper mapper;
 
     public WorkspaceController(
         IWorkspaceRepository repository,
         IUserRepository userRepository,
+        IWebsiteRepository websiteRepository,
+        IYoutubeRepository youtubeRepository,
+        IArticleRepository articleRepository,
         IMapper mapper)
     {
         ArgumentNullException.ThrowIfNull(repository);
         ArgumentNullException.ThrowIfNull(userRepository);
+        ArgumentNullException.ThrowIfNull(websiteRepository);
+        ArgumentNullException.ThrowIfNull(youtubeRepository);
+        ArgumentNullException.ThrowIfNull(articleRepository);
         ArgumentNullException.ThrowIfNull(mapper);
 
         this.repository = repository;
         this.userRepository = userRepository;
+        this.websiteRepository = websiteRepository;
+        this.youtubeRepository = youtubeRepository;
+        this.articleRepository = articleRepository;
         this.mapper = mapper;
     }
 
@@ -218,9 +230,21 @@ public sealed class WorkspaceController : Controller
         }
     }
 
-    public IActionResult AddArticle()
+    public async Task<IActionResult> AddArticle(Guid workspaceId)
     {
-        return this.PartialView("_AddArticlePartial");
+        try
+        {
+            var allArticles = await this.articleRepository
+                .GetAllAsync(this.CancellationToken)
+                .ConfigureAwait(false);
+
+            return this.PartialView("_AddArticlePartial", (allArticles, workspaceId.ToString()));
+        }
+        catch (InvalidOperationException)
+        {
+            this.TempData[Constants.Error] = "A task was canceled";
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
     }
 
     [HttpPost]
@@ -262,6 +286,23 @@ public sealed class WorkspaceController : Controller
         }
     }
 
+    public async Task<IActionResult> AddWebsite(Guid workspaceId)
+    {
+        try
+        {
+            var allWebsites = await this.websiteRepository
+                .GetAllAsync(this.CancellationToken)
+                .ConfigureAwait(false);
+
+            return this.PartialView("_AddWebsitePartial", (allWebsites, workspaceId.ToString()));
+        }
+        catch (TaskCanceledException)
+        {
+            this.TempData[Constants.Error] = "A task was canceled";
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddWebsite(Guid workspaceId, Guid websiteId)
@@ -297,6 +338,23 @@ public sealed class WorkspaceController : Controller
         catch (InvalidOperationException)
         {
             this.TempData[Constants.Error] = "Failed to remove website from workspace.";
+            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
+        }
+    }
+
+    public async Task<IActionResult> AddYoutube(Guid workspaceId)
+    {
+        try
+        {
+            var allYoutubes = await this.youtubeRepository
+                .GetAllAsync(this.CancellationToken)
+                .ConfigureAwait(false);
+
+            return this.PartialView("_AddYoutubePartial", (allYoutubes, workspaceId.ToString()));
+        }
+        catch (OperationCanceledException)
+        {
+            this.TempData[Constants.Error] = "A task was canceled";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
     }
