@@ -19,6 +19,11 @@ namespace Linker.Core.Models
         public string Username { get; set; }
 
         /// <summary>
+        /// Gets or sets the profile image URL of the user.
+        /// </summary>
+        public string PhotoUrl { get; set; }
+
+        /// <summary>
         /// Gets or sets the password of the user.
         /// </summary>
         public string Password { get; set; }

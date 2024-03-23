@@ -39,6 +39,7 @@
                 INSERT INTO Users (
                     Id,
                     Username,
+                    PhotoUrl,
                     Password,
                     Role,
                     Status,
@@ -48,6 +49,7 @@
                 ) VALUES (
                     @Id,
                     @Username,
+                    @PhotoUrl,
                     @Password,
                     @Role,
                     @Status,
@@ -61,6 +63,7 @@
             {
                 Id = randomId,
                 user.Username,
+                user.PhotoUrl,
                 user.Password,
                 Role = user.Role.ToString(),
                 Status = user.Status.ToString(),
@@ -143,6 +146,7 @@
                     Password = @Password,
                     Role = @Role,
                     Status = @Status,
+                    PhotoUrl = @PhotoUrl,
                     ModifiedAt = @ModifiedAt
                 WHERE
                     Id = @Id;
@@ -153,6 +157,7 @@
                 user.Password,
                 Role = user.Role.ToString(),
                 Status = user.Status.ToString(),
+                user.PhotoUrl,
                 ModifiedAt = DateTime.Now,
             });
         }

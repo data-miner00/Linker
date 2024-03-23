@@ -66,7 +66,7 @@
         /// <param name="paramName">The parameter name for reference.</param>
         /// <returns>The validated value.</returns>
         /// <exception cref="ArgumentException">Throws when value is default.</exception>
-        public static T ThrowIfDefault<T>(this T value, [CallerArgumentExpression(nameof(value))] string? paramName = null)
+        public static T ThrowIfDefault<T>(T value, [CallerArgumentExpression(nameof(value))] string? paramName = null)
             where T : struct
         {
             if (default(T).Equals(value))

@@ -92,6 +92,7 @@ builder.Services
         config.AddProfile<ArticleMapperProfile>();
         config.AddProfile<WebsiteMapperProfile>();
         config.AddProfile<YoutubeMapperProfile>();
+        config.AddProfile<UserMapperProfile>();
         config.AddProfile<WorkspaceMapperProfile>();
     })
     .CreateMapper());

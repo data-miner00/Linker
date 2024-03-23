@@ -3,6 +3,7 @@
     using System.Diagnostics.Metrics;
     using System.Security.Claims;
     using System.Threading.Tasks;
+    using AutoMapper;
     using EnsureThat;
     using Linker.Core.ApiModels;
     using Linker.Core.Controllers;
@@ -22,16 +23,22 @@
         private static readonly string AuthScheme = "cookie";
         private readonly IUserRepository repository;
         private readonly IMeterFactory meterFactory;
+        private readonly IMapper mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthController"/> class.
         /// </summary>
         /// <param name="repository">The user repository.</param>
         /// <param name="meterFactory">The meter factory.</param>
-        public AuthController(IUserRepository repository, IMeterFactory meterFactory)
+        /// <param name="mapper">The mapper.</param>
+        public AuthController(
+            IUserRepository repository,
+            IMeterFactory meterFactory,
+            IMapper mapper)
         {
             this.repository = EnsureArg.IsNotNull(repository, nameof(repository));
             this.meterFactory = EnsureArg.IsNotNull(meterFactory, nameof(meterFactory));
+            this.mapper = EnsureArg.IsNotNull(mapper, nameof(mapper));
         }
 
         /// <inheritdoc/>
@@ -74,29 +81,12 @@
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var user = new User
-            {
-                Id = Guid.NewGuid().ToString(),
-                Username = request.Username,
-                Password = request.Password,
-                Role = Role.User,
-                Status = Status.Active,
-                DateOfBirth = request.DateOfBirth,
-                CreatedAt = DateTime.Now,
-                ModifiedAt = DateTime.Now,
-            };
+            var user = this.mapper.Map<User>(request);
 
             await this.repository.AddAsync(user, cancellationToken)
                 .ConfigureAwait(false);
 
-            var response = new CreateUserResponse(
-                user.Id,
-                user.Username,
-                user.Role,
-                user.Status,
-                user.DateOfBirth,
-                user.CreatedAt,
-                user.ModifiedAt);
+            var response = this.mapper.Map<CreateUserResponse>(user);
 
             return this.Created("/login", response);
         }

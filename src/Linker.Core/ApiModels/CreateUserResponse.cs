@@ -8,6 +8,7 @@
     /// </summary>
     /// <param name="Id">The user Id.</param>
     /// <param name="Username">The username.</param>
+    /// <param name="PhotoUrl">The profile image Url.</param>
     /// <param name="Role">The role of the user.</param>
     /// <param name="Status">The status of the user.</param>
     /// <param name="DateOfBirth">The birthday of the user.</param>
@@ -16,6 +17,7 @@
     public record CreateUserResponse(
         string Id,
         string Username,
+        string PhotoUrl,
         Role Role,
         Status Status,
         DateTime DateOfBirth,
