@@ -6,8 +6,10 @@
     "watch:css": "tailwindcss -i ./wwwroot/lib/tailwindcss/index.css -o ./wwwroot/lib/tailwindcss/dist/styles.css --watch",
     "build:css": "tailwindcss -i ./wwwroot/lib/tailwindcss/index.css -o ./wwwroot/lib/tailwindcss/dist/styles.css",
     "release:css": "tailwindcss -i ./wwwroot/lib/tailwindcss/index.css -o ./wwwroot/lib/tailwindcss/dist/styles.css --minify",
-    "copy:bicon": "./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/bootstrap-icons/font/* -DestinationFolder ./wwwroot/lib/bootstrap-icon/",
-    "copy:jquery": "./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/jquery/dist/* -DestinationFolder ./wwwroot/lib/jquery/"
+    "copy:bicon": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/bootstrap-icons/font/* -DestinationFolder ./wwwroot/lib/bootstrap-icon/",
+    "copy:jquery": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/jquery/dist/* -DestinationFolder ./wwwroot/lib/jquery/",
+    "copy:jquery-v": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/jquery-validation/* -DestinationFolder ./wwwroot/lib/jquery-validation/",
+    "copy:jquery-vu": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/jquery-validation-unobtrusive/dist/* -DestinationFolder ./wwwroot/lib/jquery-validation-unobtrusive/"
   },
   "keywords": [],
   "author": "Shaun Chong <mumk0313@gmail.com>",
@@ -15,6 +17,8 @@
   "devDependencies": {
     "bootstrap-icons": "^1.11.3",
     "jquery": "^3.7.1",
+    "jquery-validation": "^1.20.0",
+    "jquery-validation-unobtrusive": "^4.0.0",
     "tailwindcss": "^3.4.1"
   }
 }

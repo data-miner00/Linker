@@ -380,3 +380,5 @@ bootstrap-icon/
 
 # jQuery from node
 jquery/
+jquery-validation/
+jquery-validation-unobtrusive/
