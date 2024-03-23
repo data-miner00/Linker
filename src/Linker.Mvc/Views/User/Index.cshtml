@@ -1,0 +1,11 @@
+﻿@using Linker.Core.Models
+@model ValueTuple<User, IEnumerable<Workspace>>
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<p class="text-4xl font-bold mb-4">@@@Model.Item1.Username</p>
+<p>Joined on: @Model.Item1.CreatedAt</p>
+<p>Joined workspaces: @Model.Item2.Count()</p>
+<p>Status: @Model.Item1.Status</p>
+<p>Birthday: @Model.Item1.DateOfBirth</p>
