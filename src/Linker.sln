@@ -51,7 +51,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.Mvc.UnitTests", "Lin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.GrpcServer", "Linker.GrpcServer\Linker.GrpcServer.csproj", "{CF4B4CE8-E697-41F1-9FAD-03DE06228079}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linker.Data.UnitTests.SpecFlow", "Linker.Data.UnitTests.SpecFlow\Linker.Data.UnitTests.SpecFlow.csproj", "{70774FD9-D606-4CC4-B30F-92938326ACB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.Data.UnitTests.SpecFlow", "Linker.Data.UnitTests.SpecFlow\Linker.Data.UnitTests.SpecFlow.csproj", "{70774FD9-D606-4CC4-B30F-92938326ACB7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linker.Core.V2", "Linker.Core.V2\Linker.Core.V2.csproj", "{F1AA35C0-C64E-4ECF-A41E-C632018121C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -135,6 +137,10 @@ Global
 		{70774FD9-D606-4CC4-B30F-92938326ACB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70774FD9-D606-4CC4-B30F-92938326ACB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70774FD9-D606-4CC4-B30F-92938326ACB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1AA35C0-C64E-4ECF-A41E-C632018121C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1AA35C0-C64E-4ECF-A41E-C632018121C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1AA35C0-C64E-4ECF-A41E-C632018121C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1AA35C0-C64E-4ECF-A41E-C632018121C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
