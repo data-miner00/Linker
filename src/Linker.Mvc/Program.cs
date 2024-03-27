@@ -3,7 +3,9 @@ using System.Data.SQLite;
 using AutoMapper;
 using Linker.Common.Mappers;
 using Linker.Core.Repositories;
+using Linker.Core.V2;
 using Linker.Data.SQLite;
+using Linker.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +29,9 @@ builder.Services
     .AddSingleton<IWebsiteRepository, WebsiteRepository>()
     .AddSingleton<IYoutubeRepository, YoutubeRepository>()
     .AddSingleton<IUserRepository, UserRepository>()
-    .AddSingleton<IWorkspaceRepository, WorkspaceRepository>();
+    .AddSingleton<IWorkspaceRepository, WorkspaceRepository>()
+    .AddSingleton<IAssetUploader>(
+        ctx => new FileSystemAssetUploader("D:\\\\", "Uploads"));
 
 builder.Services
     .AddSingleton(new MapperConfiguration(config =>

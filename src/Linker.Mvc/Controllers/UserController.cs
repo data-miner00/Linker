@@ -1,12 +1,14 @@
 ﻿namespace Linker.Mvc.Controllers;
 
 using Linker.Core.Repositories;
+using Linker.Core.V2;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 public sealed class UserController : Controller
 {
     private readonly IUserRepository repository;
+    private readonly IAssetUploader assetUploader;
     private readonly IWorkspaceRepository workspaceRepository;
 
     public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
@@ -14,11 +16,16 @@ public sealed class UserController : Controller
     public string UserId =>
         this.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
-    public UserController(IUserRepository repository, IWorkspaceRepository workspaceRepository)
+    public UserController(
+        IUserRepository repository,
+        IAssetUploader assetUploader,
+        IWorkspaceRepository workspaceRepository)
     {
         ArgumentNullException.ThrowIfNull(repository);
+        ArgumentNullException.ThrowIfNull(assetUploader);
         ArgumentNullException.ThrowIfNull(workspaceRepository);
         this.repository = repository;
+        this.assetUploader = assetUploader;
         this.workspaceRepository = workspaceRepository;
     }
 
@@ -40,6 +47,26 @@ public sealed class UserController : Controller
         catch (InvalidOperationException)
         {
             return this.NotFound();
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Upload([FromForm] IFormFile file)
+    {
+        try
+        {
+            await this.assetUploader
+                .UploadAsync(file)
+                .ConfigureAwait(false);
+
+            this.TempData[Constants.Success] = "something wrong";
+            return this.RedirectToAction(nameof(this.Index));
+        }
+        catch
+        {
+            this.TempData[Constants.Error] = "something wrong";
+            return this.RedirectToAction(nameof(this.Index));
         }
     }
 }

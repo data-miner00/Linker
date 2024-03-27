@@ -4,8 +4,16 @@
     ViewData["Title"] = "My Profile";
 }
 
+<partial name="_Notification" />
+
 <p class="text-4xl font-bold mb-4">@@@Model.Item1.Username</p>
 <p>Joined on: @Model.Item1.CreatedAt</p>
 <p>Joined workspaces: @Model.Item2.Count()</p>
 <p>Status: @Model.Item1.Status</p>
 <p>Birthday: @Model.Item1.DateOfBirth</p>
+
+<form enctype="multipart/form-data" method="post" asp-controller="User" asp-action="Upload">
+    <label for="file">Upload file</label>
+    <input name="file" type="file" required>
+    <input type="submit" value="Upload" />
+</form>
