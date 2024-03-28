@@ -10,14 +10,17 @@ public sealed class FileSystemAssetUploader : IAssetUploader
 {
     private readonly string basePath;
     private readonly string folder;
+    private readonly IEnumerable<string> allowedExtensions;
     private readonly string qualifiedFolderPath;
 
-    public FileSystemAssetUploader(string basePath, string folder)
+    public FileSystemAssetUploader(string basePath, string folder, IEnumerable<string> allowedExtensions)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(basePath);
         ArgumentException.ThrowIfNullOrWhiteSpace(folder);
+        ArgumentNullException.ThrowIfNull(allowedExtensions);
         this.basePath = basePath;
         this.folder = folder;
+        this.allowedExtensions = allowedExtensions;
         this.qualifiedFolderPath = Path.Combine(basePath, folder);
     }
 
@@ -26,6 +29,12 @@ public sealed class FileSystemAssetUploader : IAssetUploader
         var info = Directory.CreateDirectory(this.qualifiedFolderPath);
 
         var fileExtension = Path.GetExtension(file.FileName);
+
+        if (!this.allowedExtensions.Contains(fileExtension))
+        {
+            throw new ArgumentException($"The file format '{fileExtension}' is not accepted. Accepted formats are {string.Join(',', this.allowedExtensions)}");
+        }
+
         var randomFileName = Path.GetRandomFileName();
         var fileSavePath = Path.Combine(this.qualifiedFolderPath, randomFileName);
         var filename = Path.ChangeExtension(fileSavePath, Path.GetExtension(file.FileName));
