@@ -13,6 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 var sqliteConnectionString = builder.Configuration["SQLiteOption:ConnectionString"];
 
+builder.Services.Configure<SQLiteOption>(
+    builder.Configuration.GetSection(nameof(SQLiteOption)));
+
 using var connection = new SQLiteConnection(sqliteConnectionString);
 
 var environment = builder.Environment;
