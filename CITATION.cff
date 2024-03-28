@@ -1,0 +1,28 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Linker
+message: 'If you use this software, please cite it as below.'
+type: software
+authors:
+  - given-names: Mum Khong
+    family-names: Chong
+    email: mumk0313@gmail.com
+repository-code: 'https://github.com/data-miner00/Linker'
+abstract: >-
+  Managing links and URLs today can be challenging and
+  chaotic. Linker aims to provide users to collect, group
+  and share links with least mental overhead.
+keywords:
+  - csharp
+  - aspnetcore
+  - mvc
+  - graphql
+  - api
+  - url
+  - grpc
+  - unit-tests
+license: WTFPL
+commit: a5747dc21fde63278e4b83ec288384f7625228dd
+version: 0.0.0-Canary
