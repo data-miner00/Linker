@@ -159,6 +159,7 @@
                 Status = user.Status.ToString(),
                 user.PhotoUrl,
                 ModifiedAt = DateTime.Now,
+                user.Id,
             });
         }
 

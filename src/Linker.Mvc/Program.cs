@@ -6,6 +6,7 @@ using Linker.Core.Repositories;
 using Linker.Core.V2;
 using Linker.Data.SQLite;
 using Linker.Mvc;
+using Linker.Mvc.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,15 @@ var builder = WebApplication.CreateBuilder(args);
 var sqliteConnectionString = builder.Configuration["SQLiteOption:ConnectionString"];
 
 using var connection = new SQLiteConnection(sqliteConnectionString);
+
+var environment = builder.Environment;
+
+builder.Configuration
+    .AddJsonFile("appsettings.json")
+    .AddJsonFile($"appsettings.{environment.EnvironmentName}.json");
+
+var fileUploadOption = new FileUploadOption();
+builder.Configuration.GetSection(nameof(FileUploadOption)).Bind(fileUploadOption);
 
 builder.Services.AddControllersWithViews();
 
@@ -31,7 +41,10 @@ builder.Services
     .AddSingleton<IUserRepository, UserRepository>()
     .AddSingleton<IWorkspaceRepository, WorkspaceRepository>()
     .AddSingleton<IAssetUploader>(
-        ctx => new FileSystemAssetUploader("D:\\\\", "Uploads"));
+        ctx => new FileSystemAssetUploader(
+            fileUploadOption.PhysicalUploadOption.BasePath,
+            fileUploadOption.PhysicalUploadOption.FolderName,
+            fileUploadOption.PhysicalUploadOption.AllowedExtensions));
 
 builder.Services
     .AddSingleton(new MapperConfiguration(config =>

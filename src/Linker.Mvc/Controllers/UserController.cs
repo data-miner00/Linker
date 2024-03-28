@@ -56,16 +56,26 @@ public sealed class UserController : Controller
     {
         try
         {
-            await this.assetUploader
+            var uploadResult = await this.assetUploader
                 .UploadAsync(file)
+                .ConfigureAwait(false);
+
+            var user = await this.repository
+                .GetByIdAsync(this.UserId, this.CancellationToken)
+                .ConfigureAwait(false);
+
+            user.PhotoUrl = uploadResult.FullPath;
+
+            await this.repository
+                .UpdateAsync(user, this.CancellationToken)
                 .ConfigureAwait(false);
 
             this.TempData[Constants.Success] = "something wrong";
             return this.RedirectToAction(nameof(this.Index));
         }
-        catch
+        catch (Exception ex)
         {
-            this.TempData[Constants.Error] = "something wrong";
+            this.TempData[Constants.Error] = ex.Message;
             return this.RedirectToAction(nameof(this.Index));
         }
     }
