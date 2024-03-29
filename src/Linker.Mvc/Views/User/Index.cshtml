@@ -6,6 +6,13 @@
 
 <partial name="_Notification" />
 
+@if (!string.IsNullOrEmpty(Model.Item1.PhotoUrl))
+{
+    <div class="border-black border-2 border-solid rounded-full w-20 h-20 overflow-hidden">
+        <img src="@Model.Item1.PhotoUrl" />
+    </div>
+}
+
 <p class="text-4xl font-bold mb-4">@@@Model.Item1.Username</p>
 <p>Joined on: @Model.Item1.CreatedAt</p>
 <p>Joined workspaces: @Model.Item2.Count()</p>
