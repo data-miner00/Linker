@@ -35,7 +35,7 @@ public class User
     /// <summary>
     /// Gets or sets the age of the user.
     /// </summary>
-    public DateTime DateOfBirth { get; set; }
+    public DateOnly DateOfBirth { get; set; }
 
     /// <summary>
     /// Gets or sets the date that the user was created.

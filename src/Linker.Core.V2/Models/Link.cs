@@ -19,6 +19,11 @@ public sealed class Link
     public string Url { get; set; }
 
     /// <summary>
+    /// Gets or sets the name of the link.
+    /// </summary>
+    public string Name { get; set; }
+
+    /// <summary>
     /// Gets or sets the category of the link.
     /// </summary>
     public LinkType Type { get; set; }
@@ -51,7 +56,7 @@ public sealed class Link
     /// <summary>
     /// Gets or sets the creator of the link.
     /// </summary>
-    public string CreatedBy { get; set; }
+    public string AddedBy { get; set; }
 
     /// <summary>
     /// Gets or sets the domain of the link.
