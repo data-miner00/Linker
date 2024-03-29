@@ -6,7 +6,7 @@
     /// <summary>
     /// The utility helpers for URLs.
     /// </summary>
-    public static class UrlParser
+    public static partial class UrlParser
     {
         /// <summary>
         /// Extract the domain using the built in <see cref="Uri"/> object.
@@ -26,9 +26,12 @@
         /// <returns>The extracted domain.</returns>
         public static string ExtractDomainLite(string url)
         {
-            var regex = new Regex(@"^https?:\/\/(.*?)(\/.*)?$", RegexOptions.Compiled);
+            var regex = DomainRegex();
             var matches = regex.Match(url);
             return matches.Groups[1].Value;
         }
+
+        [GeneratedRegex(@"^https?:\/\/(.*?)(\/.*)?$", RegexOptions.Compiled)]
+        private static partial Regex DomainRegex();
     }
 }
