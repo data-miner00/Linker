@@ -9,11 +9,14 @@
 
   <ItemGroup>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Linker.Common\Linker.Common.csproj" />
+    <ProjectReference Include="..\Linker.Core.V2\Linker.Core.V2.csproj" />
+    <ProjectReference Include="..\Linker.Core\Linker.Core.csproj" />
     <ProjectReference Include="..\Linker.Data\Linker.Data.csproj" />
   </ItemGroup>
 
