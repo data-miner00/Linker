@@ -43,10 +43,10 @@ public interface ILinkRepository
     /// <summary>
     /// Updates an link with the new details provided.
     /// </summary>
-    /// <param name="item">The link with updated details.</param>
+    /// <param name="link">The link with updated details.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The awaitable task.</returns>
-    Task UpdateAsync(Link item, CancellationToken cancellationToken);
+    Task UpdateAsync(Link link, CancellationToken cancellationToken);
 
     /// <summary>
     /// Retrieves all items that is owned by the user.

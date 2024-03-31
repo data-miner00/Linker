@@ -23,6 +23,11 @@ public class User
     public string PhotoUrl { get; set; }
 
     /// <summary>
+    /// Gets or sets the description.
+    /// </summary>
+    public string Description { get; set; }
+
+    /// <summary>
     /// Gets or sets the role associated with the user.
     /// </summary>
     public Role Role { get; set; }
