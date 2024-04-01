@@ -29,7 +29,7 @@
 
         /// <inheritdoc/>
         /// <exception cref="OperationCanceledException">The operation cancelled exception.</exception>
-        public async Task AddAsync(User user, CancellationToken cancellationToken)
+        public Task AddAsync(User user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -59,7 +59,7 @@
                 );
             ";
 
-            await this.connection.ExecuteAsync(insertToUsersOperation, new
+            return this.connection.ExecuteAsync(insertToUsersOperation, new
             {
                 Id = randomId,
                 user.Username,
@@ -75,59 +75,53 @@
 
         /// <inheritdoc/>
         /// <exception cref="OperationCanceledException">The operation cancelled exception.</exception>
-        public async Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken)
+        public Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var selectFromUsersQuery = @"SELECT * FROM Users;";
 
-            var users = await this.connection.QueryAsync<User>(selectFromUsersQuery, cancellationToken);
-
-            return users;
+            return this.connection.QueryAsync<User>(selectFromUsersQuery, cancellationToken);
         }
 
         /// <inheritdoc/>
         /// <exception cref="OperationCanceledException">The operation cancelled exception.</exception>
         /// <exception cref="InvalidOperationException">Throws when user is not found.</exception>
-        public async Task<User> GetByUsernameAsync(string username, CancellationToken cancellationToken)
+        public Task<User> GetByUsernameAsync(string username, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var selectFromUsersQuery = @"SELECT * FROM Users WHERE Username = @Username;";
 
-            var user = await this.connection.QueryFirstAsync<User>(selectFromUsersQuery, param: new
+            return this.connection.QueryFirstAsync<User>(selectFromUsersQuery, param: new
             {
                 Username = username,
             });
-
-            return user;
         }
 
         /// <inheritdoc/>
         /// <exception cref="OperationCanceledException">The operation cancelled exception.</exception>
-        public async Task<User> GetByIdAsync(string id, CancellationToken cancellationToken)
+        public Task<User> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var selectFromUsersQuery = @"SELECT * FROM Users WHERE Id = @Id;";
 
-            var user = await this.connection.QueryFirstAsync<User>(selectFromUsersQuery, param: new
+            return this.connection.QueryFirstAsync<User>(selectFromUsersQuery, param: new
             {
                 Id = id,
             });
-
-            return user;
         }
 
         /// <inheritdoc/>
         /// <exception cref="OperationCanceledException">The operation cancelled exception.</exception>
-        public async Task RemoveAsync(string id, CancellationToken cancellationToken)
+        public Task RemoveAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var deleteFromUsersOperation = @"DELETE FROM Users Where Id = @Id;";
 
-            await this.connection.ExecuteAsync(deleteFromUsersOperation, new
+            return this.connection.ExecuteAsync(deleteFromUsersOperation, new
             {
                 Id = id,
             });
@@ -164,7 +158,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<User> GetByUsernameAndPasswordAsync(string username, string password, CancellationToken cancellationToken)
+        public Task<User> GetByUsernameAndPasswordAsync(string username, string password, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -175,13 +169,11 @@
                     Password = @Password;
             ";
 
-            var user = await this.connection.QueryFirstAsync<User>(selectFromUsersQuery, param: new
+            return this.connection.QueryFirstAsync<User>(selectFromUsersQuery, param: new
             {
                 Username = username,
                 Password = password,
             });
-
-            return user;
         }
     }
 }

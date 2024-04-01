@@ -26,18 +26,14 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<Tag>> GetAllAsync()
+        public Task<IEnumerable<Tag>> GetAllAsync()
         {
             var query = @"SELECT * FROM Tags;";
-            var tags = await this.connection
-                .QueryAsync<Tag>(query)
-                .ConfigureAwait(false);
-
-            return tags;
+            return this.connection.QueryAsync<Tag>(query);
         }
 
         /// <inheritdoc/>
-        public async Task<Tag> GetByAsync(string type, string value)
+        public Task<Tag> GetByAsync(string type, string value)
         {
             if (!Columns.Contains(type))
             {
@@ -45,15 +41,11 @@
             }
 
             var query = $"SELECT * FROM Tags WHERE {type} = @value;";
-            var tag = await this.connection
-                .QueryFirstAsync<Tag>(query, new { value })
-                .ConfigureAwait(false);
-
-            return tag;
+            return this.connection.QueryFirstAsync<Tag>(query, new { value });
         }
 
         /// <inheritdoc/>
-        public async Task AddAsync(string name)
+        public Task AddAsync(string name)
         {
             var randomId = Guid.NewGuid().ToString();
 
@@ -71,17 +63,17 @@
                 );
             ";
 
-            await this.connection.ExecuteAsync(query, new
+            return this.connection.ExecuteAsync(query, new
             {
                 Id = randomId,
                 Name = name,
                 CreatedAt = DateTime.Now,
                 ModifiedAt = DateTime.Now,
-            }).ConfigureAwait(false);
+            });
         }
 
         /// <inheritdoc/>
-        public async Task AddLinkTagAsync(string linkId, string tagId)
+        public Task AddLinkTagAsync(string linkId, string tagId)
         {
             var operation = @"
                 INSERT INTO Links_Tags (
@@ -93,13 +85,11 @@
                 );
             ";
 
-            await this.connection
-                .ExecuteAsync(operation, new { LinkId = linkId, TagId = tagId })
-                .ConfigureAwait(false);
+            return this.connection.ExecuteAsync(operation, new { LinkId = linkId, TagId = tagId });
         }
 
         /// <inheritdoc/>
-        public async Task EditNameAsync(string id, string newName)
+        public Task EditNameAsync(string id, string newName)
         {
             var operation = @"
                 UPDATE Tags
@@ -109,12 +99,12 @@
                 WHERE Id = @Id;
             ";
 
-            await this.connection.ExecuteAsync(operation, new
+            return this.connection.ExecuteAsync(operation, new
             {
                 Id = id,
                 Name = newName,
                 ModifiedAt = DateTime.Now,
-            }).ConfigureAwait(false);
+            });
         }
 
         /// <inheritdoc/>
@@ -132,7 +122,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task DeleteLinkTagAsync(string linkId, string tagId)
+        public Task DeleteLinkTagAsync(string linkId, string tagId)
         {
             var operation = @"
                 DELETE FROM Links_Tags
@@ -141,9 +131,7 @@
                     TagId = @TagId;
             ";
 
-            await this.connection
-                .ExecuteAsync(operation, new { LinkId = linkId, TagId = tagId })
-                .ConfigureAwait(false);
+            return this.connection.ExecuteAsync(operation, new { LinkId = linkId, TagId = tagId });
         }
     }
 }
