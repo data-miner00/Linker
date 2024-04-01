@@ -197,6 +197,14 @@ public sealed class LinkRepository : ILinkRepository
     }
 
     /// <inheritdoc/>
+    public Task<IEnumerable<Link>> GetAllByCategoryAsync(Category category, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        return this.connection.QueryAsync<Link>("EXEC sp_GetLinksByCategory @Category;", new { Category = category.ToString() });
+    }
+
+    /// <inheritdoc/>
     public async Task<IEnumerable<Link>> GetAllByUserAsync(string userId, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();

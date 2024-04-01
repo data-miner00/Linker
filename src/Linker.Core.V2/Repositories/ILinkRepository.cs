@@ -64,4 +64,12 @@ public interface ILinkRepository
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The found link.</returns>
     Task<Link> GetByUserAsync(string userId, string linkId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Retrieves a list of links of a category.
+    /// </summary>
+    /// <param name="category">The category.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The list of links.</returns>
+    Task<IEnumerable<Link>> GetAllByCategoryAsync(Category category, CancellationToken cancellationToken);
 }
