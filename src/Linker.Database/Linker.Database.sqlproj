@@ -71,5 +71,6 @@
     <Build Include="dbo\Tables\HealthCheckResults.sql" />
     <Build Include="dbo\Tables\Logins.sql" />
     <Build Include="dbo\Tables\Links.sql" />
+    <Build Include="dbo\Tables\WorkspaceLinks.sql" />
   </ItemGroup>
 </Project>
