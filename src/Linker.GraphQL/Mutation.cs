@@ -1,4 +1,4 @@
-﻿namespace Linker.WebApi.GraphQL;
+﻿namespace Linker.GraphQL;
 
 using AutoMapper;
 using Linker.Core.ApiModels;

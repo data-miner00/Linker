@@ -45,7 +45,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.WebApi.IntegrationTe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.Mvc", "Linker.Mvc\Linker.Mvc.csproj", "{60034221-727B-49A6-BA27-C8D7CB5AE784}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.WebApi.GraphQL", "Linker.WebApi.GraphQL\Linker.WebApi.GraphQL.csproj", "{F585C28D-A62C-4E36-AC93-3C77A93FAC15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.GraphQL", "Linker.GraphQL\Linker.GraphQL.csproj", "{F585C28D-A62C-4E36-AC93-3C77A93FAC15}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.Mvc.UnitTests", "Linker.Mvc.UnitTests\Linker.Mvc.UnitTests.csproj", "{428F405D-8BDB-4C2F-9E3A-24CCB78D5A71}"
 EndProject

@@ -4,7 +4,7 @@ using AutoMapper;
 using Linker.Common.Mappers;
 using Linker.Core.Repositories;
 using Linker.Data.SQLite;
-using Linker.WebApi.GraphQL;
+using Linker.GraphQL;
 
 {
     var builder = WebApplication.CreateBuilder(args);
