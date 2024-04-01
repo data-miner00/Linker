@@ -41,15 +41,6 @@ public interface IUserRepository
     Task<User> GetByUsernameAsync(string username, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Retrieves the user by username and password.
-    /// </summary>
-    /// <param name="username">The username of the user.</param>
-    /// <param name="password">The password of the user.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>The found user.</returns>
-    Task<User> GetByUsernameAndPasswordAsync(string username, string password, CancellationToken cancellationToken);
-
-    /// <summary>
     /// Removes a user from the database by ID.
     /// </summary>
     /// <param name="id">The ID of the user to be removed.</param>
@@ -64,12 +55,4 @@ public interface IUserRepository
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The task.</returns>
     Task UpdateAsync(User user, CancellationToken cancellationToken);
-
-    /// <summary>
-    /// Updates the password of the user.
-    /// </summary>
-    /// <param name="credential">The credential object that contains new password.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>The task.</returns>
-    Task UpdatePasswordAsync(Credential credential, CancellationToken cancellationToken);
 }
