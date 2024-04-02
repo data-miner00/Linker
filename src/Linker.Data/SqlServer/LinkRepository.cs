@@ -313,7 +313,7 @@ public sealed class LinkRepository : ILinkRepository
     /// <inheritdoc/>
     public async Task RemoveAsync(string id, CancellationToken cancellationToken)
     {
-        var removeLinkStatement = @"DELETE FROM Links Where Id = @Id;";
+        var removeLinkStatement = @"DELETE FROM Links WHERE Id = @Id;";
         var removeLinkTagsStatement = @"DELETE FROM LinksTags WHERE LinkId = @Id;";
 
         await this.connection
