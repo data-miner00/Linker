@@ -2,6 +2,9 @@
 
 using System.Security.Authentication;
 
+/// <summary>
+/// The credential record for a user.
+/// </summary>
 public class Credential
 {
     /// <summary>
@@ -28,6 +31,11 @@ public class Credential
     /// Gets or sets the previous password hash.
     /// </summary>
     public string? PreviousPasswordHash { get; set; }
+
+    /// <summary>
+    /// Gets or sets the creation time.
+    /// </summary>
+    public DateTime CreatedAt { get; set; }
 
     /// <summary>
     /// Gets or sets the updated time.

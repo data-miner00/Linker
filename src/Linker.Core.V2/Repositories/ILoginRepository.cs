@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 /// <summary>
-/// The repository to track login dates.
+/// The repository to track login dates. Login is a resource, not an action.
 /// </summary>
 public interface ILoginRepository
 {
