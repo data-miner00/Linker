@@ -33,8 +33,6 @@ public sealed class UserRepository : IUserRepository
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var randomId = Guid.NewGuid().ToString();
-
         var insertToUsersOperation = @"
             INSERT INTO Users (
                 Id,
@@ -63,7 +61,7 @@ public sealed class UserRepository : IUserRepository
 
         return this.connection.ExecuteAsync(insertToUsersOperation, new
         {
-            Id = randomId,
+            user.Id,
             user.Username,
             user.Email,
             user.PhotoUrl,

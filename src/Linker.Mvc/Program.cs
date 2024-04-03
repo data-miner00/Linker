@@ -39,7 +39,9 @@ builder.Services
     .AddSingleton<IUserRepository, UserRepository>()
     .AddSingleton<IWorkspaceRepository, WorkspaceRepository>()
     .AddScoped<ICredentialRepository, CredentialRepository>()
-    .AddScoped<IAuthenticationHandler, AuthenticationHandler>()
+    .AddScoped<IAuthenticationHandler>(
+        ctx => new AuthenticationHandler(
+            ctx.GetRequiredService<ICredentialRepository>(), 16))
     .AddSingleton<IAssetUploader>(
         ctx => new FileSystemAssetUploader(
             fileUploadOption.PhysicalUploadOption.BasePath,
