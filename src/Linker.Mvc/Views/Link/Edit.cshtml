@@ -1,16 +1,16 @@
-﻿@using Linker.Core.Models
-@model Linker.Core.ApiModels.CreateWebsiteRequest
-
+﻿@using Linker.Core.V2.Models
+@model Link
 @{
-    ViewData["Name"] = "Create Website";
+    ViewData["Title"] = $"Edit {Model.Name}";
 }
 
-<h1 class="text-lg">Create Website Link</h1>
-<p class="text-gray-700">Enter the details below to create a new entry.</p>
+
+<h1 class="text-lg">Edit Link</h1>
+<p class="text-gray-700">Update the details below to for the link.</p>
 
 <div class="my-12">
     <div>
-        <form asp-action="Create" class="max-w-screen-md">
+        <form asp-action="Edit" class="max-w-screen-md">
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -34,6 +34,13 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Aesthetics" class="control-label"></label>
+                <select asp-for="Aesthetics" asp-items="Html.GetEnumSelectList<Aesthetics>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+                <span asp-validation-for="Aesthetics" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Language" class="control-label"></label>
                 <select asp-for="Language" asp-items="Html.GetEnumSelectList<Language>()">
                     <option selected="selected" value="">Please select</option>
@@ -41,11 +48,11 @@
                 <span asp-validation-for="Language" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Aesthetics" class="control-label"></label>
-                <select asp-for="Aesthetics" asp-items="Html.GetEnumSelectList<Aesthetics>()">
+                <label asp-for="Grammar" class="control-label"></label>
+                <select asp-for="Grammar" asp-items="Html.GetEnumSelectList<Grammar>()">
                     <option selected="selected" value="">Please select</option>
                 </select>
-                <span asp-validation-for="Aesthetics" class="text-danger"></span>
+                <span asp-validation-for="Grammar" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Rating" class="control-label"></label>
@@ -55,14 +62,39 @@
                 <span asp-validation-for="Rating" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Type" class="control-label"></label>
+                <select asp-for="Type" asp-items="Html.GetEnumSelectList<LinkType>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Visibility" class="control-label"></label>
+                <select asp-for="Visibility" asp-items="Html.GetEnumSelectList<Visibility>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+                <span asp-validation-for="Visibility" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Tags" class="control-label"></label>
                 <div id="tags-container" class="flex flex-wrap">
-                    <input asp-for="Tags" class="form-control" placeholder="compsci" />
-                    <input asp-for="Tags" class="form-control" placeholder="algo" />
-                    <input asp-for="Tags" class="form-control" placeholder="book" />
+                    @foreach (var tag in Model.Tags)
+                    {
+                        <input class="form-control" value="@tag" disabled />
+                    }
                     <button id="add-tag-btn" type="button">Add</button>
                 </div>
                 <span asp-validation-for="Tags" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="KeyPersonName" class="control-label"></label>
+                <input asp-for="KeyPersonName" class="form-control" />
+                <span asp-validation-for="KeyPersonName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Country" class="control-label"></label>
+                <input asp-for="Country" class="form-control" />
+                <span asp-validation-for="Country" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
@@ -76,9 +108,15 @@
                     <span>@Html.DisplayNameFor(model => model.IsMultilingual)</span>
                 </label>
             </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsResource" />
+                    <span>@Html.DisplayNameFor(model => model.IsResource)</span>
+                </label>
+            </div>
             <div class="my-3 flex">
                 <button class="px-4 py-2 bg-black text-white rounded block">
-                    Create
+                    Save changes
                 </button>
             </div>
         </form>
@@ -88,3 +126,4 @@
 <div class="flex">
     <a asp-action="Index" class="px-4 py-2 bg-black text-white rounded block">Back to List</a>
 </div>
+

@@ -1,22 +1,19 @@
 using System.Data;
-using System.Data.SQLite;
+using System.Data.SqlClient;
 using AutoMapper;
-using Linker.Common.Mappers;
-using Linker.Core.Repositories;
 using Linker.Core.V2;
-using Linker.Data.SQLite;
+using Linker.Core.V2.Repositories;
+using Linker.Data.SqlServer;
 using Linker.Mvc;
+using Linker.Mvc.Mappers;
 using Linker.Mvc.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var sqliteConnectionString = builder.Configuration["SQLiteOption:ConnectionString"];
+var databaseConnectionString = builder.Configuration.GetConnectionString("Database");
 
-builder.Services.Configure<SQLiteOption>(
-    builder.Configuration.GetSection(nameof(SQLiteOption)));
-
-using var connection = new SQLiteConnection(sqliteConnectionString);
+using var connection = new SqlConnection(databaseConnectionString);
 
 var environment = builder.Environment;
 
@@ -38,11 +35,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 builder.Services
     .AddSingleton<IDbConnection>(connection)
-    .AddSingleton<IArticleRepository, ArticleRepository>()
-    .AddSingleton<IWebsiteRepository, WebsiteRepository>()
-    .AddSingleton<IYoutubeRepository, YoutubeRepository>()
+    .AddSingleton<ILinkRepository, LinkRepository>()
     .AddSingleton<IUserRepository, UserRepository>()
     .AddSingleton<IWorkspaceRepository, WorkspaceRepository>()
+    .AddScoped<ICredentialRepository, CredentialRepository>()
+    .AddScoped<IAuthenticationHandler, AuthenticationHandler>()
     .AddSingleton<IAssetUploader>(
         ctx => new FileSystemAssetUploader(
             fileUploadOption.PhysicalUploadOption.BasePath,
@@ -53,9 +50,7 @@ builder.Services
     .AddSingleton(new MapperConfiguration(config =>
     {
         config.AllowNullCollections = false;
-        config.AddProfile<ArticleMapperProfile>();
-        config.AddProfile<WebsiteMapperProfile>();
-        config.AddProfile<YoutubeMapperProfile>();
+        config.AddProfile<LinkMapperProfile>();
         config.AddProfile<UserMapperProfile>();
         config.AddProfile<WorkspaceMapperProfile>();
     }).CreateMapper());

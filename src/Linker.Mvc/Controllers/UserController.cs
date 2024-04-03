@@ -1,6 +1,6 @@
 ﻿namespace Linker.Mvc.Controllers;
 
-using Linker.Core.Repositories;
+using Linker.Core.V2.Repositories;
 using Linker.Core.V2;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

@@ -1,6 +1,6 @@
 ﻿namespace Linker.Mvc.Models;
 
-using Linker.Core.Models;
+using Linker.Core.V2.Models;
 
 public sealed class WorkspaceDetailsViewModel
 {
@@ -20,9 +20,5 @@ public sealed class WorkspaceDetailsViewModel
 
     required public IEnumerable<User> Members { get; set; }
 
-    required public IEnumerable<Article> Articles { get; set; }
-
-    required public IEnumerable<Website> Websites { get; set; }
-
-    required public IEnumerable<Youtube> Youtubes { get; set; }
+    required public IEnumerable<Link> Links { get; set; }
 }

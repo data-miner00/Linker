@@ -1,10 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Http
-@using Linker.Core.Models
+@using Linker.Core.V2.Models
 @using System.Security.Claims
-@model IEnumerable<Website>
 @inject IHttpContextAccessor httpContextAccessor
+@model IEnumerable<Link>
 @{
-    ViewData["Title"] = "All websites";
+    ViewData["Title"] = "All Links";
     var httpContext = httpContextAccessor.HttpContext;
     var isLoggedIn = httpContext?.User.Identity?.IsAuthenticated ?? false;
     var userId = httpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
@@ -13,7 +13,7 @@
 <partial name="_Notification" />
 
 <div class="flex mb-4">
-    <a class="block px-4 py-2 bg-black text-white rounded" asp-controller="Website" asp-action="Create">Create a new website</a>
+    <a class="block px-4 py-2 bg-black text-white rounded" asp-controller="Link" asp-action="Create">Create a new link</a>
 </div>
 
 @if (Model.Count() > 0)
@@ -21,41 +21,41 @@
     <table>
         <thead>
             <tr class="border-b-2 border-t-2 border-solid border-gray-600">
-                <td>Name</td>
+                <td>Title</td>
                 <td>Url</td>
                 <td>Description</td>
-                <td>Aesthetics</td>
-                <td>Category</td>
+                <td>Author</td>
+                <td>Year</td>
                 <td></td>
                 <td></td>
             </tr>    
         </thead>
         <tbody>
-            @foreach (var website in Model)
+            @foreach (var link in Model)
             {
                 <tr class="border-b border-solid border-gray-400 py-2">
-                    <td>@website.Name</td>
-                    <td class="max-w-[300px] truncate ...">@website.Url</td>
-                    <td>@website.Description</td>
-                    <td>@website.Aesthetics</td>
-                    <td>@website.Category</td>
+                    <td>@link.Name</td>
+                    <td class="max-w-[300px] truncate ...">@link.Url</td>
+                    <td>@link.Description</td>
+                    <td>@link.KeyPersonName</td>
+                    <td>@link.CreatedAt</td>
                     <td>
                         <a
                             class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
-                            asp-controller="Website"
+                            asp-controller="Link"
                             asp-action="Details"
-                            asp-route-id="@website.Id"
+                            asp-route-id="@link.Id"
                         >
                             Details
                         </a>
                     </td>
                     <td>
-                        @if (website.CreatedBy.Equals(userId, StringComparison.OrdinalIgnoreCase))
+                        @if (userId.Equals(link.AddedBy, StringComparison.OrdinalIgnoreCase))
                         {
-                            <form method="post" asp-action="Delete" asp-route-id="@website.Id">
+                            <form method="post" asp-action="Delete" asp-route-id="@link.Id">
                                 <button
                                     class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
-                                    onclick="return confirm('Are you sure to delete this website?')"
+                                    onclick="return confirm('Are you sure to delete this link?')"
                                 >
                                     Delete
                                 </button>
@@ -70,7 +70,6 @@
 else
 {
     <div class="p-4 border border-black border-solid rounded">
-        There are no Websites.
-    </div> 
+        There are no Links.
+    </div>
 }
-

@@ -1,12 +1,13 @@
 ﻿namespace Linker.Mvc.Controllers;
 
 using AutoMapper;
-using Linker.Core.ApiModels;
-using Linker.Core.Models;
-using Linker.Core.Repositories;
+using Linker.Core.V2.ApiModels;
+using Linker.Core.V2.Models;
+using Linker.Core.V2.Repositories;
 using Linker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Security.Claims;
 
@@ -15,38 +16,30 @@ public sealed class WorkspaceController : Controller
 {
     private readonly IWorkspaceRepository repository;
     private readonly IUserRepository userRepository;
-    private readonly IWebsiteRepository websiteRepository;
-    private readonly IYoutubeRepository youtubeRepository;
-    private readonly IArticleRepository articleRepository;
+    private readonly ILinkRepository linkRepository;
     private readonly IMapper mapper;
 
     public WorkspaceController(
         IWorkspaceRepository repository,
         IUserRepository userRepository,
-        IWebsiteRepository websiteRepository,
-        IYoutubeRepository youtubeRepository,
-        IArticleRepository articleRepository,
+        ILinkRepository linkRepository,
         IMapper mapper)
     {
         ArgumentNullException.ThrowIfNull(repository);
         ArgumentNullException.ThrowIfNull(userRepository);
-        ArgumentNullException.ThrowIfNull(websiteRepository);
-        ArgumentNullException.ThrowIfNull(youtubeRepository);
-        ArgumentNullException.ThrowIfNull(articleRepository);
+        ArgumentNullException.ThrowIfNull(linkRepository);
         ArgumentNullException.ThrowIfNull(mapper);
 
         this.repository = repository;
         this.userRepository = userRepository;
-        this.websiteRepository = websiteRepository;
-        this.youtubeRepository = youtubeRepository;
-        this.articleRepository = articleRepository;
+        this.linkRepository = linkRepository;
         this.mapper = mapper;
     }
 
     public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
 
-    public string? UserId =>
-        this.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    public string UserId =>
+        this.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
     // GET: WorkspaceController/Index
     public async Task<IActionResult> Index()
@@ -103,16 +96,8 @@ public sealed class WorkspaceController : Controller
                 .GetWorkspaceMembersAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
-            var articles = await this.repository
-                .GetWorkspaceArticlesAsync(id.ToString(), this.CancellationToken)
-                .ConfigureAwait(false);
-
-            var websites = await this.repository
-                .GetWorkspaceWebsitesAsync(id.ToString(), this.CancellationToken)
-                .ConfigureAwait(false);
-
-            var youtubes = await this.repository
-                .GetWorkspaceYoutubesAsync(id.ToString(), this.CancellationToken)
+            var links = await this.repository
+                .GetWorkspaceLinksAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
             var viewModel = new WorkspaceDetailsViewModel
@@ -125,9 +110,7 @@ public sealed class WorkspaceController : Controller
                 WorkspaceOwnerUsername = users.FirstOrDefault(x => x.Id == workspace.OwnerId)!.Username,
                 WorkspaceOwnerId = workspace.OwnerId,
                 Members = users,
-                Articles = articles,
-                Websites = websites,
-                Youtubes = youtubes,
+                Links = links,
             };
 
             return this.View(viewModel);
@@ -150,8 +133,7 @@ public sealed class WorkspaceController : Controller
     public async Task<IActionResult> Create(CreateWorkspaceRequest request)
     {
         var newWorkspace = this.mapper.Map<Workspace>(request);
-        newWorkspace.OwnerId = this.HttpContext.User?
-            .FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+        newWorkspace.OwnerId = this.UserId;
 
         try
         {
@@ -230,15 +212,15 @@ public sealed class WorkspaceController : Controller
         }
     }
 
-    public async Task<IActionResult> AddArticle(Guid workspaceId)
+    public async Task<IActionResult> AddLink(Guid workspaceId)
     {
         try
         {
-            var allArticles = await this.articleRepository
+            var allLinks = await this.linkRepository
                 .GetAllAsync(this.CancellationToken)
                 .ConfigureAwait(false);
 
-            return this.PartialView("_AddArticlePartial", (allArticles, workspaceId.ToString()));
+            return this.PartialView("_AddLinkPartial", (allLinks, workspaceId.ToString()));
         }
         catch (InvalidOperationException)
         {
@@ -249,12 +231,12 @@ public sealed class WorkspaceController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AddArticle(Guid workspaceId, Guid articleId)
+    public async Task<IActionResult> AddLink(Guid workspaceId, Guid linkId)
     {
         try
         {
             await this.repository
-                .AddWorkspaceArticleAsync(workspaceId.ToString(), articleId.ToString(), this.CancellationToken)
+                .AddWorkspaceLinkAsync(workspaceId.ToString(), linkId.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
             this.TempData[Constants.Success] = "Successfully added article to workspace.";
@@ -268,12 +250,12 @@ public sealed class WorkspaceController : Controller
     }
 
     // TODO: Change to Post
-    public async Task<IActionResult> RemoveArticle(Guid workspaceId, Guid articleId)
+    public async Task<IActionResult> RemoveLink(Guid workspaceId, Guid linkId)
     {
         try
         {
             await this.repository
-                .RemoveWorkspaceArticleAsync(workspaceId.ToString(), articleId.ToString(), this.CancellationToken)
+                .RemoveWorkspaceLinkAsync(workspaceId.ToString(), linkId.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
             this.TempData[Constants.Success] = "Successfully deleted article from workspace.";
@@ -282,118 +264,6 @@ public sealed class WorkspaceController : Controller
         catch (InvalidOperationException)
         {
             this.TempData[Constants.Error] = "Failed to remove article from workspace.";
-            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
-        }
-    }
-
-    public async Task<IActionResult> AddWebsite(Guid workspaceId)
-    {
-        try
-        {
-            var allWebsites = await this.websiteRepository
-                .GetAllAsync(this.CancellationToken)
-                .ConfigureAwait(false);
-
-            return this.PartialView("_AddWebsitePartial", (allWebsites, workspaceId.ToString()));
-        }
-        catch (TaskCanceledException)
-        {
-            this.TempData[Constants.Error] = "A task was canceled";
-            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
-        }
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AddWebsite(Guid workspaceId, Guid websiteId)
-    {
-        try
-        {
-            await this.repository
-                .AddWorkspaceWebsiteAsync(workspaceId.ToString(), websiteId.ToString(), this.CancellationToken)
-                .ConfigureAwait(false);
-
-            this.TempData[Constants.Success] = "Successfully added website to workspace.";
-            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
-        }
-        catch (InvalidOperationException)
-        {
-            this.TempData[Constants.Error] = "Failed to add website to workspace.";
-            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
-        }
-    }
-
-    // TODO: Change to Post
-    public async Task<IActionResult> RemoveWebsite(Guid workspaceId, Guid websiteId)
-    {
-        try
-        {
-            await this.repository
-                .RemoveWorkspaceWebsiteAsync(workspaceId.ToString(), websiteId.ToString(), this.CancellationToken)
-                .ConfigureAwait(false);
-
-            this.TempData[Constants.Success] = "Successfully deleted website from workspace.";
-            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
-        }
-        catch (InvalidOperationException)
-        {
-            this.TempData[Constants.Error] = "Failed to remove website from workspace.";
-            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
-        }
-    }
-
-    public async Task<IActionResult> AddYoutube(Guid workspaceId)
-    {
-        try
-        {
-            var allYoutubes = await this.youtubeRepository
-                .GetAllAsync(this.CancellationToken)
-                .ConfigureAwait(false);
-
-            return this.PartialView("_AddYoutubePartial", (allYoutubes, workspaceId.ToString()));
-        }
-        catch (OperationCanceledException)
-        {
-            this.TempData[Constants.Error] = "A task was canceled";
-            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
-        }
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AddYoutube(Guid workspaceId, Guid youtubeId)
-    {
-        try
-        {
-            await this.repository
-                .AddWorkspaceYoutubeAsync(workspaceId.ToString(), youtubeId.ToString(), this.CancellationToken)
-                .ConfigureAwait(false);
-
-            this.TempData[Constants.Success] = "Successfully added youtube to workspace.";
-            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
-        }
-        catch (InvalidOperationException)
-        {
-            this.TempData[Constants.Error] = "Failed to add youtube to workspace.";
-            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
-        }
-    }
-
-    // TODO: Change to Post
-    public async Task<IActionResult> RemoveYoutube(Guid workspaceId, Guid youtubeId)
-    {
-        try
-        {
-            await this.repository
-                .RemoveWorkspaceYoutubeAsync(workspaceId.ToString(), youtubeId.ToString(), this.CancellationToken)
-                .ConfigureAwait(false);
-
-            this.TempData[Constants.Success] = "Successfully deleted youtube from workspace.";
-            return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
-        }
-        catch (InvalidOperationException)
-        {
-            this.TempData[Constants.Error] = "Failed to remove youtube from workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
     }
@@ -532,7 +402,7 @@ public sealed class WorkspaceController : Controller
             this.TempData[Constants.Success] = "Successfully invited user to workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
-        catch (SQLiteException)
+        catch (SqlException)
         {
             this.TempData[Constants.Error] = "User already in workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
@@ -549,16 +419,8 @@ public sealed class WorkspaceController : Controller
                 .GetAllWorkspaceMembershipsAsync(workspace.Id, this.CancellationToken)
                 .ConfigureAwait(false);
 
-            var article = await this.repository
-                .GetWorkspaceArticlesAsync(workspace.Id, this.CancellationToken)
-                .ConfigureAwait(false);
-
-            var websites = await this.repository
-                .GetWorkspaceWebsitesAsync(workspace.Id, this.CancellationToken)
-                .ConfigureAwait(false);
-
-            var youtubes = await this.repository
-                .GetWorkspaceYoutubesAsync(workspace.Id, this.CancellationToken)
+            var links = await this.repository
+                .GetWorkspaceLinksAsync(workspace.Id, this.CancellationToken)
                 .ConfigureAwait(false);
 
             var model = new WorkspaceIndexViewModel
@@ -569,9 +431,7 @@ public sealed class WorkspaceController : Controller
                 Description = workspace.Description,
                 OwnerId = workspace.OwnerId,
                 MemberCounts = members.Count(),
-                ArticleCounts = article.Count(),
-                WebsiteCounts = websites.Count(),
-                YoutubeCounts = youtubes.Count(),
+                LinkCounts = links.Count(),
             };
 
             viewModel.Add(model);

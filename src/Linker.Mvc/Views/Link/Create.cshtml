@@ -1,11 +1,11 @@
-﻿@using Linker.Core.Models
-@model Linker.Core.ApiModels.CreateArticleRequest
+﻿@using Linker.Core.V2.Models
+@model Linker.Core.V2.ApiModels.CreateLinkRequest
 
 @{
-    ViewData["Title"] = "Create Article";
+    ViewData["Title"] = "Create Link";
 }
 
-<h1 class="text-lg">Create Article Link</h1>
+<h1 class="text-lg">Create Link</h1>
 <p class="text-gray-700">Enter the details below to create a new entry.</p>
 
 <div asp-validation-summary="All" class="text-violet-300"></div>
@@ -15,9 +15,9 @@
     <div>
         <form asp-action="Create" class="max-w-screen-md">
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Url" class="control-label"></label>
@@ -37,9 +37,9 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Author" class="control-label"></label>
-                <input asp-for="Author" class="form-control" />
-                <span asp-validation-for="Author" class="text-danger"></span>
+                <label asp-for="Country" class="control-label"></label>
+                <input asp-for="Country" class="form-control" />
+                <span asp-validation-for="Country" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Language" class="control-label"></label>
@@ -63,6 +63,34 @@
                 <span asp-validation-for="Rating" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Type" class="control-label"></label>
+                <select asp-for="Type" asp-items="Html.GetEnumSelectList<LinkType>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Grammar" class="control-label"></label>
+                <select asp-for="Grammar" asp-items="Html.GetEnumSelectList<Grammar>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+                <span asp-validation-for="Grammar" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Aesthetics" class="control-label"></label>
+                <select asp-for="Aesthetics" asp-items="Html.GetEnumSelectList<Aesthetics>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+                <span asp-validation-for="Aesthetics" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Visibility" class="control-label"></label>
+                <select asp-for="Visibility" asp-items="Html.GetEnumSelectList<Visibility>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+                <span asp-validation-for="Visibility" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Tags" class="control-label"></label>
                 <div id="tags-container" class="flex flex-wrap">
                     <input asp-for="Tags" class="form-control" placeholder="compsci" />
@@ -73,14 +101,26 @@
                 <span asp-validation-for="Tags" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Year" class="control-label"></label>
-                <input asp-for="Year" class="form-control" value="2022" />
-                <span asp-validation-for="Year" class="text-danger"></span>
+                <label asp-for="KeyPersonName" class="control-label"></label>
+                <input asp-for="KeyPersonName" class="form-control" value="2022" />
+                <span asp-validation-for="KeyPersonName" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="WatchLater" />
-                    <span>@Html.DisplayNameFor(model => model.WatchLater)</span>
+                    <input class="form-check-input" asp-for="IsSubdomain" />
+                    <span>@Html.DisplayNameFor(model => model.IsSubdomain)</span>
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsMultilingual" />
+                    <span>@Html.DisplayNameFor(model => model.IsMultilingual)</span>
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsResource" />
+                    <span>@Html.DisplayNameFor(model => model.IsResource)</span>
                 </label>
             </div>
             <div class="my-3 flex">

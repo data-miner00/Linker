@@ -4,22 +4,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
-using Linker.Core.ApiModels;
-using Linker.Core.Repositories;
+using Linker.Core.V2.ApiModels;
+using Linker.Core.V2.Repositories;
 using AutoMapper;
-using Linker.Core.Models;
+using Linker.Core.V2.Models;
+using ILinkerAuthenticationHandler = Linker.Data.SqlServer.IAuthenticationHandler;
 
 public sealed class AuthController : Controller
 {
     private readonly IUserRepository repository;
     private readonly IMapper mapper;
+    private readonly ILinkerAuthenticationHandler authenticationHandler;
 
-    public AuthController(IUserRepository repository, IMapper mapper)
+    public AuthController(IUserRepository repository, IMapper mapper, ILinkerAuthenticationHandler authenticationHandler)
     {
         ArgumentNullException.ThrowIfNull(repository);
         ArgumentNullException.ThrowIfNull(mapper);
         this.repository = repository;
         this.mapper = mapper;
+        this.authenticationHandler = authenticationHandler;
     }
 
     public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
@@ -45,11 +48,17 @@ public sealed class AuthController : Controller
         try
         {
             var user = await this.repository
-                .GetByUsernameAndPasswordAsync(
-                    request.Username,
-                    request.Password,
-                    this.CancellationToken)
+                .GetByUsernameAsync(request.Username, default)
                 .ConfigureAwait(false);
+
+            var isAuthenticated = await this.authenticationHandler
+                .LoginAsync(user.Id, request.Password, default)
+                .ConfigureAwait(false);
+
+            if (!isAuthenticated)
+            {
+                throw new InvalidOperationException();
+            }
 
             Claim[] claims = [
                 new(ClaimTypes.NameIdentifier, user.Id),
@@ -113,6 +122,10 @@ public sealed class AuthController : Controller
             {
                 await this.repository
                     .AddAsync(user, this.CancellationToken)
+                    .ConfigureAwait(false);
+
+                await this.authenticationHandler
+                    .RegisterAsync(user.Id, request.Password, default)
                     .ConfigureAwait(false);
 
                 this.TempData[Constants.Success] = "Successfully registered.";

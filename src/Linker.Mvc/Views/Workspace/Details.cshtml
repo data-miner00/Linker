@@ -38,34 +38,34 @@
             <div
                 class="flex gap-4 items-center"
             >
-                <p class="text-xl font-bold block">Articles</p>
+                <p class="text-xl font-bold block">Collections</p>
                 @if (isWorkspaceOwner)
                 {
                     <button
                         class="block border border-solid border-black rounded"
-                        onclick="openArticleDialog()"
+                        onclick="openLinkDialog()"
                     >
                         Add link
                     </button>
                 }
             </div>
-            @if (Model.Articles.Any())
+            @if (Model.Links.Any())
             {
                 <ul>
-                    @foreach (var (article, index) in Model.Articles.Select((a, i) => (a, i)))
+                    @foreach (var (link, index) in Model.Links.Select((a, i) => (a, i)))
                     {
                         <li class="flex gap-4 mb-1">
                             <a
-                                href="@article.Url"
+                                href="@link.Url"
                                 target="_blank"
                                 class="block"
                             >
-                                @(index + 1). @article.Title <i class="bi bi-box-arrow-up-right"></i>
+                                @(index + 1). @link.Name <i class="bi bi-box-arrow-up-right"></i>
                             </a>
                             <a
                                 asp-action="Details"
-                                asp-controller="Article"
-                                asp-route-id="@article.Id"
+                                asp-controller="Link"
+                                asp-route-id="@link.Id"
                                 class="block border border-solid border-black rounded px-1 text-sm"
                             >
                                 Details
@@ -74,9 +74,9 @@
                             {
                                 <a
                                     class="block border border-solid border-black rounded px-1 text-sm"
-                                    asp-action="RemoveArticle"
+                                    asp-action="RemoveLink"
                                     asp-route-workspaceId="@Model.WorkspaceId"
-                                    asp-route-articleId="@article.Id"
+                                    asp-route-articleId="@link.Id"
                                     onclick="return confirm('Are you sure to remove from workspace?')"
                                 >
                                     Delete
@@ -88,121 +88,7 @@
             }
             else
             {
-                <p class="italic">There are no articles in the workspace.</p>
-            }
-        </div>
-        <div>
-            <div
-                class="flex gap-4 items-center"
-            >
-                <p class="text-xl font-bold block">Websites</p>
-                @if (isWorkspaceOwner)
-                {
-                    <button
-                        class="block border border-solid border-black rounded"
-                        onclick="openWebsiteDialog()"
-                    >
-                        Add link
-                    </button>
-                }
-            </div>
-            @if (Model.Websites.Any())
-            {
-                <ul>
-                    @foreach (var (website, index) in Model.Websites.Select((a, i) => (a, i)))
-                    {
-                        <li class="flex gap-4 mb-1">
-                            <a
-                                href="@website.Url"
-                                target="_blank"
-                                class="block"
-                            >
-                                @(index + 1). @website.Name <i class="bi bi-box-arrow-up-right"></i>
-                            </a>
-                            <a
-                                asp-action="Details"
-                                asp-controller="Website"
-                                asp-route-id="@website.Id"
-                                class="block border border-solid border-black rounded px-1 text-sm"
-                            >
-                                Details
-                            </a>
-                            @if (isWorkspaceOwner)
-                            {
-                                <a
-                                    class="block border border-solid border-black rounded px-1 text-sm"
-                                    asp-action="RemoveWebsite"
-                                    asp-route-workspaceId="@Model.WorkspaceId"
-                                    asp-route-websiteId="@website.Id"
-                                    onclick="return confirm('Are you sure to remove from workspace?')"
-                                >
-                                    Delete
-                                </a>
-                            }
-                        </li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <p class="italic">There are no websites in the workspace.</p>
-            }
-        </div>
-        <div>
-            <div
-                class="flex gap-4 items-center"
-            >
-                <p class="text-xl font-bold block">Youtubes</p>
-                @if (isWorkspaceOwner)
-                {
-                    <button
-                        class="block border border-solid border-black rounded"
-                        onclick="openYoutubeDialog()"
-                    >
-                        Add link
-                    </button>
-                }
-            </div>
-            @if (Model.Youtubes.Any())
-            {
-                <ul>
-                    @foreach (var (youtube, index) in Model.Youtubes.Select((a, i) => (a, i)))
-                    {
-                        <li class="flex gap-4 mb-1">
-                            <a
-                                href="@youtube.Url"
-                                target="_blank"
-                                class="block"
-                            >
-                                @(index + 1). @youtube.Name <i class="bi bi-box-arrow-up-right"></i>
-                            </a>
-                            <a
-                                asp-action="Details"
-                                asp-controller="Youtube"
-                                asp-route-id="@youtube.Id"
-                                class="block border border-solid border-black rounded px-1 text-sm"
-                            >
-                                Details
-                            </a>
-                            @if (isWorkspaceOwner)
-                            {
-                                <a
-                                    class="block border border-solid border-black rounded px-1 text-sm"
-                                    asp-action="RemoveYoutube"
-                                    asp-route-workspaceId="@Model.WorkspaceId"
-                                    asp-route-youtubeId="@youtube.Id"
-                                    onclick="return confirm('Are you sure to remove from workspace?')"
-                                >
-                                    Delete
-                                </a>
-                            }
-                        </li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <p class="italic">There are no youtube in the workspace.</p>
+                <p class="italic">There are no links in the workspace.</p>
             }
         </div>
     </section>
@@ -264,12 +150,10 @@
     <a class="px-4 py-2 bg-black text-white rounded" asp-action="Index">Back to List</a>
 </div>
 
-<dialog id="addw-article-popup" class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg">
-</dialog>
-
-<dialog id="addw-website-popup" class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg"></dialog>
-
-<dialog id="addw-youtube-popup" class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg"></dialog>
+<dialog
+    id="addw-link-popup"
+    class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg"
+></dialog>
 
 <dialog
     id="addw-user-popup"
@@ -280,15 +164,7 @@
     <partial name="_SomeScriptsPartial" />
     <script type="text/javascript">
         function toggleArticleDialog() {
-            $("dialog#addw-article-popup").toggle();
-        }
-
-        function toggleWebsiteDialog() {
-            $("dialog#addw-website-popup").toggle();
-        }
-
-        function toggleYoutubeDialog() {
-            $("dialog#addw-youtube-popup").toggle();
+            $("dialog#addw-link-popup").toggle();
         }
 
         function toggleInviteUserDialog() {
@@ -300,19 +176,9 @@
             $("dialog#addw-user-popup").toggle().load(url);
         }
 
-        function openWebsiteDialog() {
-            var url = "@Url.Action("AddWebsite", "Workspace", new { WorkspaceId = Model.WorkspaceId })";
-            $("dialog#addw-website-popup").toggle().load(url);
-        }
-
-        function openYoutubeDialog() {
-            var url = "@Url.Action("AddYoutube", "Workspace", new { WorkspaceId = Model.WorkspaceId })";
-            $("dialog#addw-youtube-popup").toggle().load(url);
-        }
-
-        function openArticleDialog() {
-            var url = "@Url.Action("AddArticle", "Workspace", new { WorkspaceId = Model.WorkspaceId })";
-            $("dialog#addw-article-popup").toggle().load(url);
+        function openLinkDialog() {
+            var url = "@Url.Action("AddLink", "Workspace", new { WorkspaceId = Model.WorkspaceId })";
+            $("dialog#addw-link-popup").toggle().load(url);
         }
     </script>
 }

@@ -1,20 +1,20 @@
 ﻿namespace Linker.Mvc.Controllers;
 
 using AutoMapper;
-using Linker.Core.ApiModels;
-using Linker.Core.Models;
-using Linker.Core.Repositories;
+using Linker.Core.V2.ApiModels;
+using Linker.Core.V2.Models;
+using Linker.Core.V2.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 [Authorize]
-public sealed class ArticleController : Controller
+public sealed class LinkController : Controller
 {
-    private readonly IArticleRepository repository;
+    private readonly ILinkRepository repository;
     private readonly IMapper mapper;
 
-    public ArticleController(IArticleRepository repository, IMapper mapper)
+    public LinkController(ILinkRepository repository, IMapper mapper)
     {
         ArgumentNullException.ThrowIfNull(repository);
         ArgumentNullException.ThrowIfNull(mapper);
@@ -27,41 +27,41 @@ public sealed class ArticleController : Controller
     public string UserId =>
         this.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
-    // GET: ArticleController
+    // GET: LinkController
     public async Task<IActionResult> Index()
     {
-        var articles = await this.repository
+        var links = await this.repository
             .GetAllAsync(this.CancellationToken)
             .ConfigureAwait(false);
 
-        return View(articles);
+        return View(links);
     }
 
-    // GET: ArticleController/Details/5
+    // GET: LinkController/Details/5
     public async Task<IActionResult> Details(string id)
     {
-        var article = await this.repository
+        var link = await this.repository
             .GetByIdAsync(id, this.CancellationToken)
             .ConfigureAwait(false);
 
-        return View(article);
+        return View(link);
     }
 
-    // GET: ArticleController/Create
+    // GET: LinkController/Create
     public IActionResult Create()
     {
         return View();
     }
 
-    // POST: ArticleController/Create
+    // POST: LinkController/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(CreateArticleRequest request)
+    public async Task<IActionResult> Create(CreateLinkRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var article = this.mapper.Map<Article>(request);
-        article.CreatedBy = this.UserId;
+        var link = this.mapper.Map<Link>(request);
+        link.AddedBy = this.UserId;
 
         try
         {
@@ -74,10 +74,10 @@ public sealed class ArticleController : Controller
             if (this.ModelState.IsValid)
             {
                 await this.repository
-                    .AddAsync(article, this.CancellationToken)
+                    .AddAsync(link, this.CancellationToken)
                     .ConfigureAwait(false);
 
-                this.TempData[Constants.Success] = "Article created successfully!";
+                this.TempData[Constants.Success] = "Link created successfully!";
 
                 return this.RedirectToAction(nameof(this.Index));
             }
@@ -92,16 +92,16 @@ public sealed class ArticleController : Controller
         }
     }
 
-    // GET: ArticleController/Edit/5
+    // GET: LinkController/Edit/5
     public async Task<IActionResult> Edit(Guid id)
     {
         try
         {
-            var article = await this.repository
+            var link = await this.repository
                 .GetByIdAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
-            return this.View(article);
+            return this.View(link);
         }
         catch (InvalidOperationException)
         {
@@ -109,21 +109,21 @@ public sealed class ArticleController : Controller
         }
     }
 
-    // POST: ArticleController/Edit/5
+    // POST: LinkController/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Guid id, UpdateArticleRequest request)
+    public async Task<IActionResult> Edit(Guid id, UpdateLinkRequest request)
     {
         try
         {
-            var article = this.mapper.Map<Article>(request);
-            article.Id = id.ToString();
+            var link = this.mapper.Map<Link>(request);
+            link.Id = id.ToString();
 
             await this.repository
-                .UpdateAsync(article, this.CancellationToken)
+                .UpdateAsync(link, this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData[Constants.Success] = "Successfully updated article.";
+            this.TempData[Constants.Success] = "Successfully updated link.";
 
             return this.RedirectToAction(nameof(this.Index));
         }
@@ -137,7 +137,7 @@ public sealed class ArticleController : Controller
         }
     }
 
-    // POST: ArticleController/Delete/5
+    // POST: LinkController/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(Guid id)
@@ -148,7 +148,7 @@ public sealed class ArticleController : Controller
                 .RemoveAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData[Constants.Success] = "Article deleted successfully.";
+            this.TempData[Constants.Success] = "Link deleted successfully.";
 
             return this.RedirectToAction(nameof(this.Index));
         }
