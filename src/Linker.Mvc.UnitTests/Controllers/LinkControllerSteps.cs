@@ -1,8 +1,8 @@
 ﻿namespace Linker.Mvc.UnitTests.Controllers;
 
 using AutoMapper;
-using Linker.Core.Models;
-using Linker.Core.Repositories;
+using Linker.Core.V2.Models;
+using Linker.Core.V2.Repositories;
 using Linker.Mvc.Controllers;
 using Linker.TestCore;
 using Microsoft.AspNetCore.Http;
@@ -11,13 +11,13 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using System;
 using System.Collections.Generic;
 
-internal sealed class ArticleControllerSteps : BaseSteps<ArticleControllerSteps>
+internal sealed class LinkControllerSteps : BaseSteps<LinkControllerSteps>
 {
-    private readonly Mock<IArticleRepository> mockRepository;
+    private readonly Mock<ILinkRepository> mockRepository;
     private readonly Mock<IMapper> mockMapper;
-    private readonly ArticleController controller;
+    private readonly LinkController controller;
 
-    public ArticleControllerSteps()
+    public LinkControllerSteps()
     {
         this.mockRepository = new();
         this.mockMapper = new();
@@ -26,9 +26,9 @@ internal sealed class ArticleControllerSteps : BaseSteps<ArticleControllerSteps>
         this.GivenIHaveDefaultHttpContext();
     }
 
-    public override ArticleControllerSteps GetSteps() => this;
+    public override LinkControllerSteps GetSteps() => this;
 
-    public ArticleControllerSteps WhenIInitWith(bool isRepoNull, bool isMapperNull)
+    public LinkControllerSteps WhenIInitWith(bool isRepoNull, bool isMapperNull)
     {
         var repo = isRepoNull
             ? null
@@ -38,10 +38,10 @@ internal sealed class ArticleControllerSteps : BaseSteps<ArticleControllerSteps>
             ? null
             : this.mockMapper.Object;
 
-        return this.RecordException(() => new ArticleController(repo, mapper));
+        return this.RecordException(() => new LinkController(repo, mapper));
     }
 
-    public ArticleControllerSteps GivenIHaveDefaultHttpContext()
+    public LinkControllerSteps GivenIHaveDefaultHttpContext()
     {
         var httpContext = new DefaultHttpContext();
         var actionDescriptor = new ControllerActionDescriptor();
@@ -52,7 +52,7 @@ internal sealed class ArticleControllerSteps : BaseSteps<ArticleControllerSteps>
         return this;
     }
 
-    public ArticleControllerSteps GivenGetAllAsyncReturns(IEnumerable<Article> articles)
+    public LinkControllerSteps GivenGetAllAsyncReturns(IEnumerable<Link> articles)
     {
         this.mockRepository
             .Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
@@ -61,7 +61,7 @@ internal sealed class ArticleControllerSteps : BaseSteps<ArticleControllerSteps>
         return this;
     }
 
-    public ArticleControllerSteps GivenGetAllAsyncThrows(Exception exception)
+    public LinkControllerSteps GivenGetAllAsyncThrows(Exception exception)
     {
         this.mockRepository
             .Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
@@ -76,7 +76,7 @@ internal sealed class ArticleControllerSteps : BaseSteps<ArticleControllerSteps>
             async () => this.Result = await this.controller.Index());
     }
 
-    public ArticleControllerSteps ThenIExpectRepositoryGetAllAsyncCalled(int times)
+    public LinkControllerSteps ThenIExpectRepositoryGetAllAsyncCalled(int times)
     {
         this.mockRepository
             .Verify(x => x.GetAllAsync(It.IsAny<CancellationToken>()), Times.Exactly(times));
@@ -84,7 +84,7 @@ internal sealed class ArticleControllerSteps : BaseSteps<ArticleControllerSteps>
         return this;
     }
 
-    public ArticleControllerSteps ThenIExpectViewResultToContain(object model)
+    public LinkControllerSteps ThenIExpectViewResultToContain(object model)
     {
         (this.Result as ViewResult)?.Model.Should().BeEquivalentTo(model);
 
