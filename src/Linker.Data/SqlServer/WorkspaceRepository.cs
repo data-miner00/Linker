@@ -163,10 +163,10 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
 
         foreach (var workspaceId in workspaceIds.SkipLast(1))
         {
-            queryBuilder.Append($"Id = \"{workspaceId}\" OR ");
+            queryBuilder.Append($"Id = '{workspaceId}' OR ");
         }
 
-        var getWorkspaces = $"SELECT * FROM Workspaces WHERE {queryBuilder}Id = \"{workspaceIds.Last()}\";";
+        var getWorkspaces = $"SELECT * FROM Workspaces WHERE {queryBuilder}Id = '{workspaceIds.Last()}';";
 
         var workspaces = await this.connection
             .QueryAsync<Workspace>(getWorkspaces)
@@ -319,7 +319,7 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
         cancellationToken.ThrowIfCancellationRequested();
 
         var query = @"
-            SELECT LinkId FROM WorkspaceLink
+            SELECT LinkId FROM WorkspaceLinks
             WHERE WorkspaceId = @Id;";
 
         var linkIds = await this.connection.QueryAsync<string>(query, new { Id = id }).ConfigureAwait(false);
@@ -333,10 +333,10 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
 
         foreach (var linkId in linkIds.SkipLast(1))
         {
-            queryBuilder.Append($"Id = \"{linkId}\" OR ");
+            queryBuilder.Append($"Id = '{linkId}' OR ");
         }
 
-        var queryLinks = $"SELECT * FROM Link WHERE {queryBuilder}Id = \"{linkIds.Last()}\";";
+        var queryLinks = $"SELECT * FROM Link WHERE {queryBuilder}Id = '{linkIds.Last()}';";
 
         var links = await this.connection.QueryAsync<Link>(queryLinks).ConfigureAwait(false);
 
@@ -367,7 +367,7 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
         cancellationToken.ThrowIfCancellationRequested();
 
         var addWorkspaceLink = @"
-            INSERT INTO WorkspaceLink (
+            INSERT INTO WorkspaceLinks (
                 WorkspaceId,
                 LinkId,
                 CreatedAt
