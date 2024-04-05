@@ -336,7 +336,7 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
             queryBuilder.Append($"Id = '{linkId}' OR ");
         }
 
-        var queryLinks = $"SELECT * FROM Link WHERE {queryBuilder}Id = '{linkIds.Last()}';";
+        var queryLinks = $"SELECT * FROM Links WHERE {queryBuilder}Id = '{linkIds.Last()}';";
 
         var links = await this.connection.QueryAsync<Link>(queryLinks).ConfigureAwait(false);
 

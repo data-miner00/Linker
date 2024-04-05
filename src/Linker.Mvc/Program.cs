@@ -24,13 +24,22 @@ builder.Configuration
 var fileUploadOption = new FileUploadOption();
 builder.Configuration.GetSection(nameof(FileUploadOption)).Bind(fileUploadOption);
 
+var cookieOption = builder.Configuration.GetSection(nameof(CookieOption)).Get<CookieOption>();
+var credentialOption = builder.Configuration.GetSection(nameof(CredentialOption)).Get<CredentialOption>();
+
+if (credentialOption is null || cookieOption is null)
+{
+    Console.WriteLine("Credential or Cookie settings is not configured properly.");
+    return;
+}
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(option =>
     {
-        option.LoginPath = "/Auth/Login";
-        option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+        option.LoginPath = cookieOption.LoginPath;
+        option.ExpireTimeSpan = TimeSpan.FromMinutes(cookieOption.TimeoutInMinutes);
     });
 
 builder.Services
@@ -41,7 +50,7 @@ builder.Services
     .AddScoped<ICredentialRepository, CredentialRepository>()
     .AddScoped<IAuthenticationHandler>(
         ctx => new AuthenticationHandler(
-            ctx.GetRequiredService<ICredentialRepository>(), 16))
+            ctx.GetRequiredService<ICredentialRepository>(), credentialOption.SaltLength))
     .AddSingleton<IAssetUploader>(
         ctx => new FileSystemAssetUploader(
             fileUploadOption.PhysicalUploadOption.BasePath,
