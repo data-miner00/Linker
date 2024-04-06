@@ -51,11 +51,14 @@
         /// </summary>
         /// <typeparam name="T">Any class object.</typeparam>
         /// <param name="obj">The object to be checked.</param>
-        public static void ThrowIfValidationFailed<T>(T obj)
+        /// <returns>The validated object.</returns>
+        public static T ThrowIfValidationFailed<T>(T obj)
             where T : class
         {
             var context = new ValidationContext(obj);
             Validator.ValidateObject(obj, context, true);
+
+            return obj;
         }
 
         /// <summary>

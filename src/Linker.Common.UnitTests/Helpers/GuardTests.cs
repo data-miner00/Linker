@@ -48,7 +48,8 @@
         public void ThrowIfValidationFailed_ValidAttribute_Pass()
         {
             var testObj = new TestSubject { TestProperty = 3, };
-            Guard.ThrowIfValidationFailed(testObj);
+            var result = Guard.ThrowIfValidationFailed(testObj);
+            Assert.Equal(result, testObj);
         }
 
         [Fact]
