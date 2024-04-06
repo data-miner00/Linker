@@ -378,7 +378,8 @@ dist/
 # MVC Bootstrap Icon source
 bootstrap-icon/
 
-# jQuery from node
+# Copied node packages
 jquery/
 jquery-validation/
 jquery-validation-unobtrusive/
+signalr/

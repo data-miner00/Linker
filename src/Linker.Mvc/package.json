@@ -9,7 +9,9 @@
     "copy:bicon": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/bootstrap-icons/font/* -DestinationFolder ./wwwroot/lib/bootstrap-icon/",
     "copy:jquery": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/jquery/dist/* -DestinationFolder ./wwwroot/lib/jquery/",
     "copy:jquery-v": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/jquery-validation/* -DestinationFolder ./wwwroot/lib/jquery-validation/",
-    "copy:jquery-vu": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/jquery-validation-unobtrusive/dist/* -DestinationFolder ./wwwroot/lib/jquery-validation-unobtrusive/"
+    "copy:jquery-vu": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/jquery-validation-unobtrusive/dist/* -DestinationFolder ./wwwroot/lib/jquery-validation-unobtrusive/",
+    "copy:signalr": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/@microsoft/signalr/dist/browser/* -DestinationFolder ./wwwroot/lib/signalr/",
+    "copy": "pnpm copy:bicon && pnpm copy:jquery && pnpm copy:jquery-v && pnpm copy:jquery-vu && pnpm copy:signalr"
   },
   "keywords": [],
   "author": "Shaun Chong <mumk0313@gmail.com>",
