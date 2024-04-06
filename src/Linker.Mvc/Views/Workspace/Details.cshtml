@@ -14,131 +14,156 @@
 
 <partial name="_Notification" />
 
-<article class="mb-10" id="@Html.DisplayFor(model => model.WorkspaceId)">
-    <header class="mb-2">
-        <p class="uppercase tracking-wide font-bold text-sm text-gray-300">
-            @@@Html.DisplayFor(model => model.WorkspaceHandle)
-        </p>
+<div class="flex mb-10">
+    <article id="@Html.DisplayFor(model => model.WorkspaceId)">
+        <header class="mb-2">
+            <p class="uppercase tracking-wide font-bold text-sm text-gray-300">
+                @@@Html.DisplayFor(model => model.WorkspaceHandle)
+            </p>
 
-        <h1 class="text-2xl font-bold block">
-            @Html.DisplayFor(model => model.WorkspaceName)
-        </h1>
-    </header>
-    <div class="flex gap-4 items-center">
-        <div><i class="bi bi-people-fill"></i> @memberCount</div>
-        <div><span class="text-xs text-gray-500">Created by</span> @Model.WorkspaceOwnerUsername</div>
-        <div><button onclick="openInviteUserDialog()" title="Add members"><i class="bi bi-person-plus-fill"></i></button></div>
-    </div>
-    <div class="mb-10">
-        <p class="text-gray-700">@Html.DisplayFor(model => model.WorkspaceDescription)</p>
-    </div>
+            <h1 class="text-2xl font-bold block">
+                @Html.DisplayFor(model => model.WorkspaceName)
+            </h1>
+        </header>
+        <div class="flex gap-4 items-center">
+            <div><i class="bi bi-people-fill"></i> @memberCount</div>
+            <div><span class="text-xs text-gray-500">Created by</span> @Model.WorkspaceOwnerUsername</div>
+            <div><button onclick="openInviteUserDialog()" title="Add members"><i class="bi bi-person-plus-fill"></i></button></div>
+        </div>
+        <div class="mb-10">
+            <p class="text-gray-700">@Html.DisplayFor(model => model.WorkspaceDescription)</p>
+        </div>
 
-    <section class="flex flex-col gap-4 mb-5">
-        <div>
-            <div
-                class="flex gap-4 items-center"
-            >
-                <p class="text-xl font-bold block">Collections</p>
-                @if (isWorkspaceOwner)
+        <section class="flex flex-col gap-4 mb-5">
+            <div>
+                <div
+                    class="flex gap-4 items-center"
+                >
+                    <p class="text-xl font-bold block">Collections</p>
+                    @if (isWorkspaceOwner)
+                    {
+                        <button
+                            class="block border border-solid border-black rounded"
+                            onclick="openLinkDialog()"
+                        >
+                            Add link
+                        </button>
+                    }
+                </div>
+                @if (Model.Links.Any())
                 {
-                    <button
-                        class="block border border-solid border-black rounded"
-                        onclick="openLinkDialog()"
-                    >
-                        Add link
-                    </button>
+                    <ul>
+                        @foreach (var (link, index) in Model.Links.Select((a, i) => (a, i)))
+                        {
+                            <li class="flex gap-4 mb-1">
+                                <a
+                                    href="@link.Url"
+                                    target="_blank"
+                                    class="block"
+                                >
+                                    @(index + 1). @link.Name <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                                <a
+                                    asp-action="Details"
+                                    asp-controller="Link"
+                                    asp-route-id="@link.Id"
+                                    class="block border border-solid border-black rounded px-1 text-sm"
+                                >
+                                    Details
+                                </a>
+                                @if (isWorkspaceOwner)
+                                {
+                                    <a
+                                        class="block border border-solid border-black rounded px-1 text-sm"
+                                        asp-action="RemoveLink"
+                                        asp-route-workspaceId="@Model.WorkspaceId"
+                                        asp-route-articleId="@link.Id"
+                                        onclick="return confirm('Are you sure to remove from workspace?')"
+                                    >
+                                        Delete
+                                    </a>
+                                }
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="italic">There are no links in the workspace.</p>
                 }
             </div>
-            @if (Model.Links.Any())
-            {
-                <ul>
-                    @foreach (var (link, index) in Model.Links.Select((a, i) => (a, i)))
-                    {
-                        <li class="flex gap-4 mb-1">
-                            <a
-                                href="@link.Url"
-                                target="_blank"
-                                class="block"
-                            >
-                                @(index + 1). @link.Name <i class="bi bi-box-arrow-up-right"></i>
-                            </a>
-                            <a
-                                asp-action="Details"
-                                asp-controller="Link"
-                                asp-route-id="@link.Id"
-                                class="block border border-solid border-black rounded px-1 text-sm"
-                            >
-                                Details
-                            </a>
-                            @if (isWorkspaceOwner)
-                            {
-                                <a
-                                    class="block border border-solid border-black rounded px-1 text-sm"
-                                    asp-action="RemoveLink"
-                                    asp-route-workspaceId="@Model.WorkspaceId"
-                                    asp-route-articleId="@link.Id"
-                                    onclick="return confirm('Are you sure to remove from workspace?')"
-                                >
-                                    Delete
-                                </a>
-                            }
-                        </li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <p class="italic">There are no links in the workspace.</p>
-            }
-        </div>
-    </section>
+        </section>
 
-    <section>
-        <p class="font-bold">Workspace members</p>
-        <table>
-            <thead>
-                <tr class="border-b-2 border-t-2 border-solid border-gray-600">
-                    <td>No.</td>
-                    <td>Username</td>
-                    <td>Role</td>
-                    <td>Status</td>
-                    <td>Birthday</td>
-                    <td>Actions</td>
-                </tr>
-            </thead>
-            <tbody>
-                @for (var i = 0; i < memberCount; i++)
-                {
-                    <tr class="border-b border-solid border-gray-400 py-2">
-                        <td>@(i + 1)</td>
-                        <td>@Model.Members.ElementAt(i).Username</td>
-                        <td>@Model.Members.ElementAt(i).Role</td>
-                        <td>@Model.Members.ElementAt(i).Status</td>
-                        <td>@Model.Members.ElementAt(i).DateOfBirth</td>
-                        <td>
-                            @{
-                                var isNotSelf = !Model.Members.ElementAt(i).Id.Equals(userId, StringComparison.OrdinalIgnoreCase);
-                            }
-                            @if (isWorkspaceOwner && isNotSelf)
-                            {
-                                <form method="post" asp-action="Kick" onsubmit="return confirm('Are you sure to kick this people?')">
-                                    <input hidden name="workspaceId" value="@Model.WorkspaceId" />
-                                    <input hidden name="userId" value="@Model.Members.ElementAt(i).Id" />
-                                    <button
-                                        class="block border border-solid border-black rounded px-1 text-sm"
-                                        type="submit"
-                                    >
-                                        Kick
-                                    </button>
-                                </form>
-                            }
-                        </td>
+        <section>
+            <p class="font-bold">Workspace members</p>
+            <table>
+                <thead>
+                    <tr class="border-b-2 border-t-2 border-solid border-gray-600">
+                        <td>No.</td>
+                        <td>Username</td>
+                        <td>Role</td>
+                        <td>Status</td>
+                        <td>Birthday</td>
+                        <td>Actions</td>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </section>
-</article>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < memberCount; i++)
+                    {
+                        <tr class="border-b border-solid border-gray-400 py-2">
+                            <td>@(i + 1)</td>
+                            <td>@Model.Members.ElementAt(i).Username</td>
+                            <td>@Model.Members.ElementAt(i).Role</td>
+                            <td>@Model.Members.ElementAt(i).Status</td>
+                            <td>@Model.Members.ElementAt(i).DateOfBirth</td>
+                            <td>
+                                @{
+                                    var isNotSelf = !Model.Members.ElementAt(i).Id.Equals(userId, StringComparison.OrdinalIgnoreCase);
+                                }
+                                @if (isWorkspaceOwner && isNotSelf)
+                                {
+                                    <form method="post" asp-action="Kick" onsubmit="return confirm('Are you sure to kick this people?')">
+                                        <input hidden name="workspaceId" value="@Model.WorkspaceId" />
+                                        <input hidden name="userId" value="@Model.Members.ElementAt(i).Id" />
+                                        <button
+                                            class="block border border-solid border-black rounded px-1 text-sm"
+                                            type="submit"
+                                        >
+                                            Kick
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </section>
+    </article>
+    <aside class="">
+        <div class="w-[300px] border-2 border-solid border-black">
+            <div class="border-b-2 text-2xl underline decoration-sky-500 border-solid border-black p-4">Chat Room</div>
+            <div class="p-2">
+                <article class="border border-solid border-black rounded mb-4">
+                    <p class="text-xs">Shaun - 4AM</p>
+                    <p>Hello world this is my content</p>
+                </article>
+                <article class="border border-solid border-black rounded mb-4">
+                    <p class="text-xs">May - 4AM</p>
+                    <p>Hello world this is my content</p>
+                </article>
+            </div>
+            <form class="mt-auto" onsubmit="return captureMessage(event)">
+                <input
+                    class="p-2 outline-none border-none w-full"
+                    name="chatmessage"
+                    id="chatmessage"
+                    placeholder="Type messages..."
+                />
+            </form>
+        </div>
+    </aside>
+</div>
 
 <div>
     @if(Model.WorkspaceOwnerId.Equals(userId, StringComparison.OrdinalIgnoreCase))
@@ -179,6 +204,12 @@
         function openLinkDialog() {
             var url = "@Url.Action("AddLink", "Workspace", new { WorkspaceId = Model.WorkspaceId })";
             $("dialog#addw-link-popup").toggle().load(url);
+        }
+
+        function captureMessage(event) {
+            event.preventDefault();
+            var formData = new FormData(event.target);
+            console.log([...formData.entries()]);
         }
     </script>
 }
