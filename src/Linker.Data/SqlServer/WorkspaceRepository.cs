@@ -298,17 +298,29 @@ public sealed class WorkspaceRepository : IWorkspaceRepository
     {
         cancellationToken.ThrowIfCancellationRequested();
 
+        var sb = new StringBuilder();
+
         var queryMemberships = "SELECT UserId FROM WorkspaceMemberships WHERE WorkspaceId = @WorkspaceId;";
 
         var userIds = await this.connection
             .QueryAsync<string>(queryMemberships, new { WorkspaceId = workspaceId })
             .ConfigureAwait(false);
 
-        var queryUser = "SELECT * FROM Users WHERE Id = @Id;";
+        if (!userIds.Any())
+        {
+            return Enumerable.Empty<User>();
+        }
 
-        var userTasks = userIds.Select(id => this.connection.QueryFirstAsync<User>(queryUser, new { Id = id }));
+        sb.Append($"SELECT * FROM Users WHERE Id = '{userIds.Last()}'");
 
-        var users = await Task.WhenAll(userTasks).ConfigureAwait(false);
+        foreach (var userId in userIds.SkipLast(1))
+        {
+            sb.Append($" OR Id = '{userId}'");
+        }
+
+        sb.Append(';');
+
+        var users = await this.connection.QueryAsync<User>(sb.ToString());
 
         return users;
     }
