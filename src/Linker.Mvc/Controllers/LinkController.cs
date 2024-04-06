@@ -84,9 +84,9 @@ public sealed class LinkController : Controller
 
             return this.View(request);
         }
-        catch
+        catch (Exception ex)
         {
-            this.TempData[Constants.Error] = "Something failed.";
+            this.TempData[Constants.Error] = "Something failed: " + ex.Message;
 
             return this.View(request);
         }
