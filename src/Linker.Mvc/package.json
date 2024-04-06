@@ -15,6 +15,7 @@
   "author": "Shaun Chong <mumk0313@gmail.com>",
   "license": "WTFPL",
   "devDependencies": {
+    "@microsoft/signalr": "^8.0.0",
     "bootstrap-icons": "^1.11.3",
     "jquery": "^3.7.1",
     "jquery-validation": "^1.20.0",
