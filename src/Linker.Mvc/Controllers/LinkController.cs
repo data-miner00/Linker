@@ -34,7 +34,7 @@ public sealed class LinkController : Controller
             .GetAllAsync(this.CancellationToken)
             .ConfigureAwait(false);
 
-        return View(links);
+        return View((links, LinkType.None));
     }
 
     // GET: LinkController/Details/5
@@ -159,6 +159,42 @@ public sealed class LinkController : Controller
         catch
         {
             return this.View();
+        }
+    }
+
+    public async Task<IActionResult> Articles()
+    {
+        var type = LinkType.Article;
+
+        try
+        {
+            var articles = await this.repository
+                .GetAllByLinkTypeAsync(type, this.CancellationToken)
+                .ConfigureAwait(false);
+
+            return this.View("Index", (articles, type));
+        }
+        catch
+        {
+            return this.NotFound();
+        }
+    }
+
+    public async Task<IActionResult> Websites()
+    {
+        var type = LinkType.Website;
+
+        try
+        {
+            var websites = await this.repository
+                .GetAllByLinkTypeAsync(type, this.CancellationToken)
+                .ConfigureAwait(false);
+
+            return this.View("Index", (websites, type));
+        }
+        catch
+        {
+            return this.NotFound();
         }
     }
 }

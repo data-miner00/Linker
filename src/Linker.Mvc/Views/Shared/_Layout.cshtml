@@ -29,11 +29,17 @@
                         <a asp-area="" asp-controller="Link" asp-action="Index">Links</a>
                     </li>
                     <li>
-                        <a asp-area="" asp-controller="Home" asp-action="Index">Chat</a>
+                        <a asp-area="" asp-controller="Link" asp-action="Articles">Articles</a>
                     </li>
                     <li>
-                        <a asp-area="" asp-controller="Home" asp-action="Index">Lists</a>
+                        <a asp-area="" asp-controller="Link" asp-action="Websites">Websites</a>
                     </li>
+                    @*
+                        For some reason, Mvc does not allow passing data as query parameter for GET request.
+                    <li>
+                        <a asp-area="" asp-controller="Link" asp-action="ByType" asp-route-type="Website">Websites</a>
+                    </li>
+                    *@
                 </ul>
             </nav>
             <div class="flex-1 flex justify-center">

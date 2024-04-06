@@ -2,9 +2,17 @@
 @using Linker.Core.V2.Models
 @using System.Security.Claims
 @inject IHttpContextAccessor httpContextAccessor
-@model IEnumerable<Link>
+@model ValueTuple<IEnumerable<Link>, LinkType>
 @{
-    ViewData["Title"] = "All Links";
+    var linkTypeText = Model.Item2 switch
+    {
+        LinkType.Article => "Articles",
+        LinkType.Website => "Websites",
+        LinkType.Youtube => "YouTube Channels",
+        LinkType.GitHub => "GitHub",
+        _ => "All",
+    };
+    ViewData["Title"] = linkTypeText;
     var httpContext = httpContextAccessor.HttpContext;
     var isLoggedIn = httpContext?.User.Identity?.IsAuthenticated ?? false;
     var userId = httpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
@@ -13,7 +21,7 @@
 <partial name="_Notification" />
 
 <div class="bg-stone-200 rounded-lg h-[400px] flex items-center justify-center mb-4">
-    <div class="uppercase text-7xl font-bold">All.</div>
+    <div class="uppercase text-7xl font-bold">@linkTypeText.</div>
 </div>
 
 <div class="flex mb-4 justify-between">
@@ -25,7 +33,7 @@
     </div>
 </div>
 
-@if (Model.Count() > 0)
+@if (Model.Item1.Count() > 0)
 {
     static string ConvertLinkTypeToIcon(LinkType type) => type switch
     {
@@ -37,7 +45,7 @@
     };
 
     <main class="grid grid-cols-2 gap-4 mb-10">
-        @foreach (var link in Model)
+        @foreach (var link in Model.Item1)
         {
             <article class="border-2 border-solid border-black rounded h-[230px] p-6">
                 <header class="mb-4">
