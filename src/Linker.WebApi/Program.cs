@@ -7,6 +7,7 @@ using AutoMapper;
 using Linker.Common.Mappers;
 using Linker.Core.Repositories;
 using Linker.Data.SQLite;
+using Linker.WebApi.Exceptions;
 using Linker.WebApi.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Timeouts;
@@ -110,6 +111,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app
+    .UseMiddleware<ExceptionHandlerMiddleware>()
     .UseExceptionHandler("/error")
     .UseHttpsRedirection()
     .UseRequestTimeouts()
