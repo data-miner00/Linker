@@ -311,6 +311,16 @@ public sealed class LinkRepository : ILinkRepository
     }
 
     /// <inheritdoc/>
+    public Task<IEnumerable<Link>> GetAllByLinkTypeAsync(LinkType linkType, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var query = "SELECT * FROM Links WHERE Type = @LinkType;";
+
+        return this.connection.QueryAsync<Link>(query, new { LinkType = linkType.ToString() });
+    }
+
+    /// <inheritdoc/>
     public async Task RemoveAsync(string id, CancellationToken cancellationToken)
     {
         var removeLinkStatement = @"DELETE FROM Links WHERE Id = @Id;";
