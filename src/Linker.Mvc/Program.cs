@@ -5,6 +5,7 @@ using Linker.Core.V2;
 using Linker.Core.V2.Repositories;
 using Linker.Data.SqlServer;
 using Linker.Mvc;
+using Linker.Mvc.Hubs;
 using Linker.Mvc.Mappers;
 using Linker.Mvc.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -34,6 +35,7 @@ if (credentialOption is null || cookieOption is null)
 }
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(option =>
@@ -92,5 +94,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Login}/{id?}");
+
+app.MapHub<ChatHub>("/chathub");
 
 app.Run();
