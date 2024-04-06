@@ -152,18 +152,18 @@
 
 <dialog
     id="addw-link-popup"
-    class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg"
+    class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
 ></dialog>
 
 <dialog
     id="addw-user-popup"
-    class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg"
+    class="bg-white border-solid border border-black rounded p-5 w-[500px] shadow-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
 ></dialog>
 
 @section Scripts {
     <partial name="_SomeScriptsPartial" />
     <script type="text/javascript">
-        function toggleArticleDialog() {
+        function toggleLinkDialog() {
             $("dialog#addw-link-popup").toggle();
         }
 
