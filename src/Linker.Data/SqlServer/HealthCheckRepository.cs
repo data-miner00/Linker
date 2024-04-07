@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 public sealed class HealthCheckRepository : IHealthCheckRepository
 {
     private readonly IDbConnection connection;
+    private readonly SemaphoreSlim semaphore = new(1, 1);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HealthCheckRepository"/> class.
@@ -37,6 +38,8 @@ public sealed class HealthCheckRepository : IHealthCheckRepository
     /// <inheritdoc/>
     public async Task UpsertAsync(HealthCheckResult result, CancellationToken cancellationToken)
     {
+        await this.semaphore.WaitAsync(cancellationToken);
+
         try
         {
             var previousResult = await this.GetByUrlAsync(result.Url, cancellationToken).ConfigureAwait(false);
@@ -46,6 +49,10 @@ public sealed class HealthCheckRepository : IHealthCheckRepository
         catch (InvalidOperationException)
         {
             await InsertAsync().ConfigureAwait(false);
+        }
+        finally
+        {
+            this.semaphore.Release();
         }
 
         Task UpdateAsync(HealthCheckResult previousResult)
