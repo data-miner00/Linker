@@ -1,7 +1,7 @@
 ﻿namespace Linker.WebJob;
 
 using EnsureThat;
-using Linker.Core.Models;
+using Linker.Core.V2.Models;
 using System;
 using System.Threading.Tasks;
 

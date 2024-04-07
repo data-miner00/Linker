@@ -2,8 +2,8 @@
 
 using Autofac;
 using Autofac.Configuration;
-using Linker.Core.Repositories;
-using Linker.Data.SQLite;
+using Linker.Core.V2.Repositories;
+using Linker.Data.SqlServer;
 using Linker.WebJob.Jobs;
 using Linker.WebJob.Models;
 using Linker.WebJob.Options;
@@ -13,7 +13,7 @@ using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
 using System.Data;
-using System.Data.SQLite;
+using System.Data.SqlClient;
 
 /// <summary>
 /// The IoC container configurations. Registers all dependencies of the program.
@@ -31,7 +31,7 @@ internal static class ContainerConfig
         builder
             .RegisterOptions()
             .RegisterRepositories()
-            .RegisterSQLiteConnection()
+            .RegisterDatabaseConnection()
             .RegisterUrlHealthCheck();
 
         return builder.Build();
@@ -48,31 +48,31 @@ internal static class ContainerConfig
 
         builder.RegisterModule(module);
 
-        var sqliteOptions = config
-            .GetSection(nameof(SQLiteOption))
-            .Get<SQLiteOption>();
+        var databaseOption = config
+            .GetSection(nameof(DatabaseOption))
+            .Get<DatabaseOption>();
 
         var urlHealthCheckOption = config
             .GetSection(nameof(UrlHealthCheckOption))
             .Get<UrlHealthCheckOption>();
 
-        ArgumentNullException.ThrowIfNull(sqliteOptions);
+        ArgumentNullException.ThrowIfNull(databaseOption);
         ArgumentNullException.ThrowIfNull(urlHealthCheckOption);
 
-        builder.RegisterInstance(sqliteOptions);
+        builder.RegisterInstance(databaseOption);
         builder.RegisterInstance(urlHealthCheckOption);
 
         return builder;
     }
 
-    private static ContainerBuilder RegisterSQLiteConnection(this ContainerBuilder builder)
+    private static ContainerBuilder RegisterDatabaseConnection(this ContainerBuilder builder)
     {
         builder
             .Register(ctx =>
             {
-                var option = ctx.Resolve<SQLiteOption>();
+                var option = ctx.Resolve<DatabaseOption>();
 
-                var connection = new SQLiteConnection(option.ConnectionString);
+                var connection = new SqlConnection(option.ConnectionString);
 
                 return connection;
             })
@@ -119,9 +119,7 @@ internal static class ContainerConfig
 
     private static ContainerBuilder RegisterRepositories(this ContainerBuilder builder)
     {
-        builder.RegisterType<ArticleRepository>().As<IArticleRepository>().SingleInstance();
-        builder.RegisterType<WebsiteRepository>().As<IWebsiteRepository>().SingleInstance();
-        builder.RegisterType<YoutubeRepository>().As<IYoutubeRepository>().SingleInstance();
+        builder.RegisterType<LinkRepository>().As<ILinkRepository>().SingleInstance();
         builder.RegisterType<HealthCheckRepository>().As<IHealthCheckRepository>().SingleInstance();
 
         return builder;

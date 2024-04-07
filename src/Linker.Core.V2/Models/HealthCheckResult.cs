@@ -1,4 +1,4 @@
-﻿namespace Linker.Core.Models;
+﻿namespace Linker.Core.V2.Models;
 
 using System;
 

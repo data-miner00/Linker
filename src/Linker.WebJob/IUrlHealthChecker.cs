@@ -1,6 +1,6 @@
 ﻿namespace Linker.WebJob;
 
-using Linker.Core.Models;
+using Linker.Core.V2.Models;
 
 /// <summary>
 /// The interface for Url health checker.

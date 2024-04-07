@@ -15,12 +15,13 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
     <PackageReference Include="Quartz" Version="3.8.1" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Linker.Core\Linker.Core.csproj" />
+    <ProjectReference Include="..\Linker.Core.V2\Linker.Core.V2.csproj" />
     <ProjectReference Include="..\Linker.Data\Linker.Data.csproj" />
   </ItemGroup>
 

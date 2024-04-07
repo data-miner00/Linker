@@ -1,6 +1,6 @@
 ﻿namespace Linker.WebJob.Jobs;
 
-using Linker.Core.Repositories;
+using Linker.Core.V2.Repositories;
 using Linker.WebJob.Options;
 using Quartz;
 using System;
@@ -16,9 +16,7 @@ internal class UrlHealthCheckJob : IJob
     private const string LogTemplate = "{0:00}:{1:00}:{2:00}.{3:00}";
 
     private readonly IUrlHealthChecker checker;
-    private readonly IArticleRepository articleRepository;
-    private readonly IWebsiteRepository websiteRepository;
-    private readonly IYoutubeRepository youtubeRepository;
+    private readonly ILinkRepository linkRepository;
     private readonly IHealthCheckRepository healthCheckRepository;
     private readonly UrlHealthCheckOption option;
 
@@ -26,23 +24,17 @@ internal class UrlHealthCheckJob : IJob
     /// Initializes a new instance of the <see cref="UrlHealthCheckJob"/> class.
     /// </summary>
     /// <param name="checker">The URL health checker.</param>
-    /// <param name="articleRepository">The article repository.</param>
-    /// <param name="websiteRepository">The website repository.</param>
-    /// <param name="youtubeRepository">The youtube repository.</param>
+    /// <param name="linkRepository">The link repository.</param>
     /// <param name="healthCheckRepository">The health check result repository.</param>
     /// <param name="option">The settings for the job.</param>
     public UrlHealthCheckJob(
         IUrlHealthChecker checker,
-        IArticleRepository articleRepository,
-        IWebsiteRepository websiteRepository,
-        IYoutubeRepository youtubeRepository,
+        ILinkRepository linkRepository,
         IHealthCheckRepository healthCheckRepository,
         UrlHealthCheckOption option)
     {
         this.checker = checker;
-        this.articleRepository = articleRepository;
-        this.websiteRepository = websiteRepository;
-        this.youtubeRepository = youtubeRepository;
+        this.linkRepository = linkRepository;
         this.healthCheckRepository = healthCheckRepository;
         this.option = option;
     }
@@ -92,23 +84,13 @@ internal class UrlHealthCheckJob : IJob
 
     private async Task<IEnumerable<string>> GetAllUrlsAsync(CancellationToken cancellationToken)
     {
-        var articleUrls = await this.articleRepository
-            .GetAllAsync(cancellationToken)
-            .ConfigureAwait(false);
-
-        var websiteUrls = await this.websiteRepository
-            .GetAllAsync(cancellationToken)
-            .ConfigureAwait(false);
-
-        var youtubeUrls = await this.youtubeRepository
+        var articleUrls = await this.linkRepository
             .GetAllAsync(cancellationToken)
             .ConfigureAwait(false);
 
         var allUrls = new List<string>();
 
         allUrls.AddRange(articleUrls.Select(x => x.Url));
-        allUrls.AddRange(websiteUrls.Select(x => x.Url));
-        allUrls.AddRange(youtubeUrls.Select(x => x.Url));
 
         return allUrls;
     }

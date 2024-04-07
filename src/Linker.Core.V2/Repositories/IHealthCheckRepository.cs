@@ -1,6 +1,6 @@
-﻿namespace Linker.Core.Repositories;
+﻿namespace Linker.Core.V2.Repositories;
 
-using Linker.Core.Models;
+using Linker.Core.V2.Models;
 using System.Threading;
 using System.Threading.Tasks;
 

@@ -1,6 +1,6 @@
 {
-  "SQLiteOption": {
-    "ConnectionString": "Data Source=D:\\Workspace\\Visual Studio\\Linker\\src\\db.sqlite;Version=3;"
+  "DatabaseOption": {
+    "ConnectionString": "Server=DESKTOP-KL3VEUU;Database=Linker;Trusted_Connection=True;TrustServerCertificate=True;"
   },
   "UrlHealthCheckOption": {
     "CronExpression": "0 0/3 * 1/1 * ? *",

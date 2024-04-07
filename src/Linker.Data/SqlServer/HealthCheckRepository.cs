@@ -1,8 +1,8 @@
-﻿namespace Linker.Data.SQLite;
+﻿namespace Linker.Data.SqlServer;
 
 using Dapper;
-using Linker.Core.Models;
-using Linker.Core.Repositories;
+using Linker.Core.V2.Models;
+using Linker.Core.V2.Repositories;
 using System;
 using System.Data;
 using System.Threading;
