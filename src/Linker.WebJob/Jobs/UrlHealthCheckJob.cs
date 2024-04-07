@@ -88,10 +88,6 @@ internal class UrlHealthCheckJob : IJob
             .GetAllAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        var allUrls = new List<string>();
-
-        allUrls.AddRange(articleUrls.Select(x => x.Url));
-
-        return allUrls;
+        return articleUrls.Select(x => x.Url).ToList();
     }
 }
