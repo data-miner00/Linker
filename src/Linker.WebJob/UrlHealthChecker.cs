@@ -38,16 +38,16 @@ public sealed class UrlHealthChecker : IUrlHealthChecker
             {
                 Url = url,
                 Status = UrlStatus.Alive,
-                LastChecked = DateTime.Now,
+                LastCheckedAt = DateTime.Now,
             };
         }
-        catch (HttpRequestException ex)
+        catch (Exception ex)
         {
             return new HealthCheckResult
             {
                 Url = url,
                 Status = UrlStatus.Dead,
-                LastChecked = DateTime.Now,
+                LastCheckedAt = DateTime.Now,
                 ErrorMessage = ex.Message,
                 DeadAt = DateTime.Now,
             };

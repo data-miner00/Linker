@@ -20,7 +20,7 @@ public class HealthCheckResult
     /// <summary>
     /// Gets or sets the last checked date.
     /// </summary>
-    required public DateTime LastChecked { get; set; }
+    required public DateTime LastCheckedAt { get; set; }
 
     /// <summary>
     /// Gets or sets the error message if any.

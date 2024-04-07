@@ -68,7 +68,13 @@ internal class UrlHealthCheckJob : IJob
 
             var upsertTasks = healthCheckResults.Select(result => this.healthCheckRepository.UpsertAsync(result, default));
             await Console.Out.WriteLineAsync("Upsert started");
-            await Task.WhenAll(upsertTasks);
+
+            // Need to figure out why Task.WhenAll won't work for SQL Server
+            foreach (var task in upsertTasks)
+            {
+                await task.ConfigureAwait(false);
+            }
+
             await Console.Out.WriteLineAsync("Upsert done");
             stopwatch.Stop();
 

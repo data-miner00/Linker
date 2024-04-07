@@ -54,7 +54,7 @@ public sealed class HealthCheckRepository : IHealthCheckRepository
                 UPDATE HealthCheckResults
                 SET
                     Status = @Status,
-                    LastChecked = @LastChecked,
+                    LastCheckedAt = @LastCheckedAt,
                     ErrorMessage = @ErrorMessage,
                     DeadAt = @DeadAt
                 WHERE
@@ -71,7 +71,7 @@ public sealed class HealthCheckRepository : IHealthCheckRepository
             {
                 result.Url,
                 Status = result.Status.ToString(),
-                result.LastChecked,
+                result.LastCheckedAt,
                 result.ErrorMessage,
                 result.DeadAt,
             });
@@ -83,13 +83,13 @@ public sealed class HealthCheckRepository : IHealthCheckRepository
                 INSERT INTO HealthCheckResults (
                     Url,
                     Status,
-                    LastChecked,
+                    LastCheckedAt,
                     ErrorMessage,
                     DeadAt
                 ) VALUES (
                     @Url,
                     @Status,
-                    @LastChecked,
+                    @LastCheckedAt,
                     @ErrorMessage,
                     @DeadAt
                 );
@@ -99,7 +99,7 @@ public sealed class HealthCheckRepository : IHealthCheckRepository
             {
                 result.Url,
                 Status = result.Status.ToString(),
-                result.LastChecked,
+                result.LastCheckedAt,
                 result.ErrorMessage,
                 result.DeadAt,
             });
