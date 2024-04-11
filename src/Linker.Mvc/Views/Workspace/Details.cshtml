@@ -188,6 +188,25 @@
 
 @section Scripts {
     <partial name="_SomeScriptsPartial" />
+    <script type="text/javascript" async>
+        var connection = new signalR
+            .HubConnectionBuilder()
+            .withUrl("https://localhost:7201/Chat")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        connection.on("JoinSpecificChatRoom", (usr, msg) => {
+            console.log(msg);
+        });
+
+        connection.start().then(() => {
+            connection.invoke("JoinSpecificChatRoom", {
+                username: "@User.FindFirstValue(ClaimTypes.Name)",
+                roomId: "@Model.WorkspaceId",
+            })
+                .then(() => console.log("Done connect"));
+        });
+    </script>
     <script type="text/javascript">
         function toggleLinkDialog() {
             $("dialog#addw-link-popup").toggle();
