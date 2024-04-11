@@ -30,7 +30,7 @@ public sealed class UrlHealthChecker : IUrlHealthChecker
         {
             await Console.Out.WriteLineAsync($"Pinging {url}");
             await this.httpClient
-                .SendAsync(new HttpRequestMessage(HttpMethod.Get, url), cancellationToken)
+                .SendAsync(new HttpRequestMessage(HttpMethod.Head, url), cancellationToken)
                 .ConfigureAwait(false);
             await Console.Out.WriteLineAsync($"Done pinging {url}");
 
