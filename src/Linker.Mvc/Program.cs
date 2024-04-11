@@ -1,5 +1,6 @@
 using System.Data;
 using System.Data.SqlClient;
+using System.Net;
 using AutoMapper;
 using Linker.Core.V2;
 using Linker.Core.V2.Repositories;
@@ -57,7 +58,8 @@ builder.Services
         ctx => new FileSystemAssetUploader(
             fileUploadOption.PhysicalUploadOption.BasePath,
             fileUploadOption.PhysicalUploadOption.FolderName,
-            fileUploadOption.PhysicalUploadOption.AllowedExtensions));
+            fileUploadOption.PhysicalUploadOption.AllowedExtensions))
+    .AddSingleton<ConnectionManager>();
 
 builder.Services
     .AddSingleton(new MapperConfiguration(config =>
@@ -95,6 +97,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Login}/{id?}");
 
-app.MapHub<ChatHub>("/chathub");
+app.MapHub<ChatHub>("/Chat");
 
 app.Run();
