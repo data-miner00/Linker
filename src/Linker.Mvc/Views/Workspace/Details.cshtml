@@ -142,14 +142,17 @@
         </section>
     </article>
     <aside class="col-span-1">
-        <div class="w-[300px] border-2 border-solid border-black">
-            <div class="border-b-2 text-2xl underline decoration-sky-500 border-solid border-black p-4">Chat Room</div>
-            <div id="chatcontainer" class="p-2">
-                <article class="border border-solid border-black rounded mb-4">
+        <div class="w-[300px] border border-solid border-black">
+            <div class="border-b border-solid border-black p-4 flex justify-between">
+                <div>Chat</div>
+                <div><i class="bi bi-0-circle-fill"></i></div>
+            </div>
+            <div id="chatcontainer">
+                <article class="border-b border-solid border-black p-2 bg-gray-50">
                     <p class="text-xs">Shaun - 4AM</p>
                     <p>Hello world this is my content</p>
                 </article>
-                <article class="border border-solid border-black rounded mb-4">
+                <article class="border-b border-solid border-black p-2 bg-gray-50">
                     <p class="text-xs">May - 4AM</p>
                     <p>Hello world this is my content</p>
                 </article>
@@ -200,11 +203,15 @@
         });
 
         connection.on("ReceiveMessage", (usr, msg) => {
-            var newChatElem = document.createElement("div");
-            newChatElem.innerHTML = msg;
-            console.log(usr);
+            var now = new Date();
+            var newChatElem = document.createElement("article");
+            newChatElem.className = "border-b border-solid border-black p-2 bg-gray-50";
+            newChatElem.innerHTML = `
+                <p class="text-xs">${usr} - ${now.getHours()}:${now.getMinutes()}</p>
+                <p>${msg}</p>
+            `;
+            console.log(`${usr} - ${msg}`);
             $("#chatcontainer").append(newChatElem);
-            console.log(msg);
         });
 
         connection.start().then(() => {
