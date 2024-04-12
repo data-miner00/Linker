@@ -1,3 +1,5 @@
+namespace Linker.Mvc;
+
 using System.Data;
 using System.Data.SqlClient;
 using System.Net;
@@ -5,98 +7,185 @@ using AutoMapper;
 using Linker.Core.V2;
 using Linker.Core.V2.Repositories;
 using Linker.Data.SqlServer;
-using Linker.Mvc;
 using Linker.Mvc.Hubs;
 using Linker.Mvc.Mappers;
 using Linker.Mvc.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
-var builder = WebApplication.CreateBuilder(args);
-
-var databaseConnectionString = builder.Configuration.GetConnectionString("Database");
-
-using var connection = new SqlConnection(databaseConnectionString);
-
-var environment = builder.Environment;
-
-builder.Configuration
-    .AddJsonFile("appsettings.json")
-    .AddJsonFile($"appsettings.{environment.EnvironmentName}.json");
-
-var fileUploadOption = new FileUploadOption();
-builder.Configuration.GetSection(nameof(FileUploadOption)).Bind(fileUploadOption);
-
-var cookieOption = builder.Configuration.GetSection(nameof(CookieOption)).Get<CookieOption>();
-var credentialOption = builder.Configuration.GetSection(nameof(CredentialOption)).Get<CredentialOption>();
-
-if (credentialOption is null || cookieOption is null)
+/// <summary>
+/// The entry point for Linker Mvc.
+/// </summary>
+public static class Program
 {
-    Console.WriteLine("Credential or Cookie settings is not configured properly.");
-    return;
-}
-
-builder.Services.AddControllersWithViews();
-builder.Services.AddSignalR();
-
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(option =>
+    /// <summary>
+    /// Configures all necessary dependencies and start the service.
+    /// </summary>
+    /// <param name="args">The optional arguments.</param>
+    public static void Main(string[] args)
     {
-        option.LoginPath = cookieOption.LoginPath;
-        option.ExpireTimeSpan = TimeSpan.FromMinutes(cookieOption.TimeoutInMinutes);
-    });
+        var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-    .AddSingleton<IDbConnection>(connection)
-    .AddSingleton<ILinkRepository, LinkRepository>()
-    .AddSingleton<IUserRepository, UserRepository>()
-    .AddSingleton<IWorkspaceRepository, WorkspaceRepository>()
-    .AddScoped<ICredentialRepository, CredentialRepository>()
-    .AddScoped<IAuthenticationHandler>(
-        ctx => new AuthenticationHandler(
-            ctx.GetRequiredService<ICredentialRepository>(), credentialOption.SaltLength))
-    .AddSingleton<IAssetUploader>(
-        ctx => new FileSystemAssetUploader(
-            fileUploadOption.PhysicalUploadOption.BasePath,
-            fileUploadOption.PhysicalUploadOption.FolderName,
-            fileUploadOption.PhysicalUploadOption.AllowedExtensions))
-    .AddSingleton<ConnectionManager>();
+        builder.Services.AddControllersWithViews();
+        builder.Services.AddHttpContextAccessor();
 
-builder.Services
-    .AddSingleton(new MapperConfiguration(config =>
+        builder
+            .ConfigureOptions()
+            .ConfigureDatabase()
+            .ConfigureRepositories()
+            .ConfigureAuths()
+            .ConfigureMappers()
+            .ConfigureChat()
+            .ConfigureAssetsUploader()
+            .Start();
+    }
+
+    private static WebApplicationBuilder ConfigureOptions(this WebApplicationBuilder builder)
     {
-        config.AllowNullCollections = false;
-        config.AddProfile<LinkMapperProfile>();
-        config.AddProfile<UserMapperProfile>();
-        config.AddProfile<WorkspaceMapperProfile>();
-    }).CreateMapper());
+        var environment = builder.Environment;
 
-builder.Services.AddHttpContextAccessor();
+        builder.Configuration
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile($"appsettings.{environment.EnvironmentName}.json");
 
-var app = builder.Build();
+        var fileUploadOption = new FileUploadOption();
+        builder.Configuration.GetSection(nameof(FileUploadOption)).Bind(fileUploadOption);
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
+        var cookieOption = builder.Configuration.GetSection(nameof(CookieOption)).Get<CookieOption>();
+        var credentialOption = builder.Configuration.GetSection(nameof(CredentialOption)).Get<CredentialOption>();
 
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+        if (cookieOption is null || credentialOption is null)
+        {
+            throw new InvalidOperationException("CookieOption and CredentialOption must not be null.");
+        }
+
+        builder.Services.AddSingleton(fileUploadOption);
+        builder.Services.AddSingleton(cookieOption);
+        builder.Services.AddSingleton(credentialOption);
+
+        return builder;
+    }
+
+    private static WebApplicationBuilder ConfigureDatabase(this WebApplicationBuilder builder)
+    {
+        var databaseConnectionString = builder.Configuration.GetConnectionString("Database");
+
+        var connection = new SqlConnection(databaseConnectionString);
+
+        builder.Services.AddSingleton<IDbConnection>(connection);
+
+        return builder;
+    }
+
+    private static WebApplicationBuilder ConfigureRepositories(this WebApplicationBuilder builder)
+    {
+        builder.Services
+            .AddSingleton<ILinkRepository, LinkRepository>()
+            .AddSingleton<IUserRepository, UserRepository>()
+            .AddSingleton<IWorkspaceRepository, WorkspaceRepository>();
+
+        return builder;
+    }
+
+    private static WebApplicationBuilder ConfigureAuths(this WebApplicationBuilder builder)
+    {
+        var cookieOption = builder.Configuration.GetSection(nameof(CookieOption)).Get<CookieOption>();
+        var credentialOption = builder.Configuration.GetSection(nameof(CredentialOption)).Get<CredentialOption>();
+
+        builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(option =>
+            {
+                option.LoginPath = cookieOption.LoginPath;
+                option.ExpireTimeSpan = TimeSpan.FromMinutes(cookieOption.TimeoutInMinutes);
+            });
+
+        builder.Services
+            .AddScoped<ICredentialRepository, CredentialRepository>()
+            .AddScoped<IAuthenticationHandler>(
+                ctx => new AuthenticationHandler(
+                    ctx.GetRequiredService<ICredentialRepository>(), credentialOption.SaltLength));
+
+        return builder;
+    }
+
+    private static WebApplicationBuilder ConfigureMappers(this WebApplicationBuilder builder)
+    {
+        builder.Services
+            .AddSingleton(new MapperConfiguration(config =>
+            {
+                config.AllowNullCollections = false;
+                config.AddProfile<LinkMapperProfile>();
+                config.AddProfile<UserMapperProfile>();
+                config.AddProfile<WorkspaceMapperProfile>();
+            }).CreateMapper());
+
+        return builder;
+    }
+
+    private static WebApplicationBuilder ConfigureChat(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddSignalR();
+        builder.Services
+            .AddSingleton<ConnectionManager>();
+
+        return builder;
+    }
+
+    private static WebApplicationBuilder ConfigureAssetsUploader(this WebApplicationBuilder builder)
+    {
+        builder.Services
+            .AddSingleton<IAssetUploader>(
+                ctx =>
+                {
+                    var fileUploadOption = ctx.GetRequiredService<FileUploadOption>();
+                    return new FileSystemAssetUploader(
+                        fileUploadOption.PhysicalUploadOption.BasePath,
+                        fileUploadOption.PhysicalUploadOption.FolderName,
+                        fileUploadOption.PhysicalUploadOption.AllowedExtensions);
+                });
+
+        return builder;
+    }
+
+    private static void Start(this WebApplicationBuilder builder)
+    {
+        var app = builder.Build();
+
+        // Configure the HTTP request pipeline.
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseExceptionHandler("/Home/Error");
+
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
+        }
+
+        app.Use(async (context, next) =>
+        {
+            await next();
+
+            if (context.Response.StatusCode.Equals((int)HttpStatusCode.NotFound))
+            {
+                context.Request.Path = "/Home/NotFound";
+                await next();
+            }
+        });
+
+        app.UseHttpsRedirection();
+
+        app.UseStaticFiles();
+
+        app.UseRouting();
+
+        app.UseAuthentication();
+
+        app.UseAuthorization();
+
+        app.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Auth}/{action=Login}/{id?}");
+
+        app.MapHub<ChatHub>("/Chat");
+
+        app.Run();
+    }
 }
-
-app.UseHttpsRedirection();
-
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthentication();
-
-app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Auth}/{action=Login}/{id?}");
-
-app.MapHub<ChatHub>("/Chat");
-
-app.Run();
