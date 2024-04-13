@@ -64,13 +64,15 @@ public sealed class UserController : Controller
                 .GetByIdAsync(this.UserId, this.CancellationToken)
                 .ConfigureAwait(false);
 
-            user.PhotoUrl = uploadResult.FullPath;
+            user.PhotoUrl = uploadResult.FullPath.StartsWith(".\\wwwroot")
+                ? uploadResult.FullPath.Replace(".\\wwwroot", "https://localhost:7201")
+                : uploadResult.FullPath;
 
             await this.repository
                 .UpdateAsync(user, this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData[Constants.Success] = "something wrong";
+            this.TempData[Constants.Success] = "Profile photo uploaded successfully.";
             return this.RedirectToAction(nameof(this.Index));
         }
         catch (Exception ex)
