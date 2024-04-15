@@ -25,7 +25,7 @@ public sealed record ChatMessage
     /// <summary>
     /// Gets or sets the actual chat message.
     /// </summary>
-    public string Content { get; set; }
+    public string Message { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the chat content has been edited.
@@ -43,7 +43,7 @@ public sealed record ChatMessage
     public DateTime CreatedAt { get; set; }
 
     /// <summary>
-    /// Gets or set the updated date.
+    /// Gets or sets the updated date.
     /// </summary>
     public DateTime ModifiedAt { get; set; }
 }
