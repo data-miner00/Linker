@@ -53,7 +53,7 @@
                     }
                     else
                     {
-                        <a asp-area="" asp-controller="Auth" asp-action="Login">Login</a>
+                        <a asp-area="" asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">Login</a>
                     }
                 </div>
                 <div class="text-xl"><i class="bi bi-bookmark"></i></div>
