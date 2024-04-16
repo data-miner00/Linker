@@ -43,7 +43,7 @@ public sealed class AuthController : Controller
     // POST: AuthController/Login
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LoginRequest request)
+    public async Task<IActionResult> Login(LoginRequest request, string returnUrl)
     {
         try
         {
@@ -79,6 +79,11 @@ public sealed class AuthController : Controller
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 principal,
                 properties);
+
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                return this.LocalRedirect(returnUrl);
+            }
 
             return this.RedirectToAction("Index", "Home");
         }
