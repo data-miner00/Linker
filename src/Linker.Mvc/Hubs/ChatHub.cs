@@ -11,6 +11,8 @@ public class ChatHub : Hub
     private readonly ConnectionManager connectionManager;
     private readonly IChatRepository repository;
 
+    public sealed record EditChatMessage(string WorkspaceId, string ChatId, string UpdatedContent);
+
     public ChatHub(ConnectionManager connectionManager, IChatRepository repository)
     {
         ArgumentNullException.ThrowIfNull(connectionManager);
@@ -58,6 +60,27 @@ public class ChatHub : Hub
 
         await this.Groups.AddToGroupAsync(this.Context.ConnectionId, chat.RoomId);
         await this.Clients.Group(chat.RoomId).SendAsync("JoinSpecificChatRoom", ServerIdentifier, $"{chat.Username} has joined {chat.RoomId}!");
+    }
+
+    public Task EditMessage(EditChatMessage edit)
+    {
+        if (!this.connectionManager.Connections.TryGetValue(this.Context.ConnectionId, out var connection))
+        {
+            return Task.CompletedTask;
+        }
+
+        var message = new ChatMessage
+        {
+            Id = edit.ChatId,
+            Message = edit.UpdatedContent,
+        };
+
+        IEnumerable<Task> tasks = [
+            this.repository.EditChatMessageAsync(message, default),
+            this.Clients.Group(edit.WorkspaceId).SendAsync("EditMessage", message),
+        ];
+
+        return Task.WhenAll(tasks);
     }
 
     private void KeepConnection(ChatConnection connection)

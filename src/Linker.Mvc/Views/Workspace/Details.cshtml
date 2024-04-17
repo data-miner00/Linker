@@ -238,6 +238,11 @@
             $("#chatcontainer").append(newChatElem);
         });
 
+        connection.on("EditMessage", (msg) => {
+            $(`#p-${msg.id}`).text(msg.message);
+            console.log(msg);
+        });
+
         connection.start().then(() => {
             connection.invoke("JoinSpecificChatRoom", {
                 username: "@User.FindFirstValue(ClaimTypes.Name)",
@@ -293,8 +298,20 @@
 
         function editChatMessage(event, chatId) {
             event.preventDefault();
-            console.log(event);
-            console.log(chatId);
+            var formData = new FormData(event.target);
+            try {
+                var message = [...formData.entries()][0][1];
+                connection.invoke("EditMessage", {
+                    workspaceId: "@Model.WorkspaceId",
+                    chatId,
+                    updatedContent: message,
+                }).then(() => {
+                    toggleChatEdit(chatId);
+                });
+            }
+            catch (ex) {
+                console.error(ex);
+            }
         }
     </script>
 }

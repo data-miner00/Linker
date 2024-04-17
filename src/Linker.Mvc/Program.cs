@@ -132,6 +132,8 @@ public static class Program
 
     private static WebApplicationBuilder ConfigureAssetsUploader(this WebApplicationBuilder builder)
     {
+        builder.Services.AddSingleton<IChatRepository, ChatRepository>();
+
         builder.Services
             .AddSingleton<IAssetUploader>(
                 ctx =>

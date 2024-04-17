@@ -24,7 +24,8 @@ public sealed class ChatRepository : IChatRepository
         var softDeleteStatement = @"
             UPDATE ChatMessages
             SET
-                IsDeleted = 1
+                IsDeleted = 1,
+                ModifiedAt = GETUTCDATE()
             WHERE
                 Id = @Id;
         ";
@@ -38,7 +39,8 @@ public sealed class ChatRepository : IChatRepository
             UPDATE ChatMessages
             SET
                 Message = @Message,
-                IsEdited = 1
+                IsEdited = 1,
+                ModifiedAt = GETUTCDATE()
             WHERE
                 Id = @Id;
         ";
