@@ -15,53 +15,58 @@
 <partial name="_Notification" />
 
 <div class="grid grid-cols-5 mb-10 gap-4">
-    <div class="col-span-1 border border-solid border-black p-4">
-        <div class="mb-4 flex justify-between items-center">
-            <div>
-                <i class="bi bi-people-fill"></i> Members (@memberCount)
+    <div class="col-span-1">
+        <div class="border border-solid border-black p-4 mb-4">
+            <div class="mb-4 flex justify-between items-center">
+                <div>
+                    <i class="bi bi-people-fill"></i> Members (@memberCount)
+                </div>
+                <div>
+                    <button
+                        onclick="openInviteUserDialog()"
+                        title="Add members"
+                        class="px-4 py-2 bg-black text-white rounded"
+                    >
+                        <i class="bi bi-person-plus-fill"></i> Invite
+                    </button>
+                </div>
             </div>
-            <div>
-                <button
-                    onclick="openInviteUserDialog()"
-                    title="Add members"
-                    class="px-4 py-2 bg-black text-white rounded"
-                >
-                    <i class="bi bi-person-plus-fill"></i> Invite
-                </button>
-            </div>
-        </div>
-        <ul class="">
-            @for (var i = 0; i < memberCount; i++)
-            {
-                var member = Model.Members.ElementAt(i);
-                var isNotSelf = !member.Id.Equals(userId, StringComparison.OrdinalIgnoreCase);
+            <ul>
+                @for (var i = 0; i < memberCount; i++)
+                {
+                    var member = Model.Members.ElementAt(i);
+                    var isNotSelf = !member.Id.Equals(userId, StringComparison.OrdinalIgnoreCase);
 
-                <li class="flex justify-between mb-2 items-center">
-                    <div class="flex gap-2 items-center">
-                        <div class="rounded-full overflow-hidden w-[30px] h-[30px]">
-                            <img width="30" height="30" src="@member.PhotoUrl" alt="@member.Username's Profile image" />
+                    <li class="flex justify-between mb-2 items-center">
+                        <div class="flex gap-2 items-center">
+                            <div class="rounded-full overflow-hidden w-[30px] h-[30px]">
+                                <img width="30" height="30" src="@member.PhotoUrl" alt="@member.Username's Profile image" />
+                            </div>
+                            <div>
+                                <span>@member.Username</span>
+                                <span class="text-sm text-gray-600">@member.Email</span>
+                            </div>
                         </div>
-                        <div>
-                            <span>@member.Username</span>
-                            <span class="text-sm text-gray-600">@member.Email</span>
-                        </div>
-                    </div>
-                    @if (isWorkspaceOwner && isNotSelf)
-                    {
-                        <form method="post" asp-action="Kick" onsubmit="return confirm('Are you sure to kick this people?')">
-                            <input hidden name="workspaceId" value="@Model.WorkspaceId" />
-                            <input hidden name="userId" value="@member.Id" />
-                            <button
-                                class="block border border-solid border-black rounded px-1 text-sm"
-                                type="submit"
-                            >
-                                Kick
-                            </button>
-                        </form>
-                    }
-                </li>
-            }
-        </ul>
+                        @if (isWorkspaceOwner && isNotSelf)
+                        {
+                            <form method="post" asp-action="Kick" onsubmit="return confirm('Are you sure to kick this people?')">
+                                <input hidden name="workspaceId" value="@Model.WorkspaceId" />
+                                <input hidden name="userId" value="@member.Id" />
+                                <button
+                                    class="block border border-solid border-black rounded px-1 text-sm"
+                                    type="submit"
+                                >
+                                    Kick
+                                </button>
+                            </form>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+        <div>
+            <img src="/assets/images/ads.png" alt="Stub ads" />
+        </div>
     </div>
     <article class="col-span-3" id="@Html.DisplayFor(model => model.WorkspaceId)">
         <header class="mb-2">
@@ -153,8 +158,17 @@
                     var username = Model.Members.FirstOrDefault(
                         x => x.Id.Equals(message.AuthorId, StringComparison.OrdinalIgnoreCase))?.Username ?? "Unknown";
                     <article class="border-b border-solid border-black p-2 bg-gray-50">
-                        <p class="text-xs">@username - @message.CreatedAt</p>
-                        <p>@message.Message</p>
+                        <div class="flex justify-between">
+                            <p class="text-xs">@username - @message.CreatedAt</p>
+                            <div class="flex gap-4">
+                                <button class="block" onclick="return toggleChatEdit('@message.Id')"><i class="bi bi-pencil"></i></button>
+                                <button class="block"><i class="bi bi-trash"></i></button>
+                            </div>
+                        </div>
+                        <p id="p-@message.Id" class="bg-pink-50">@message.Message</p>
+                        <form id="f-@message.Id" class="hidden" onsubmit="return editChatMessage(event, '@message.Id')">
+                            <input class="bg-purple-50" name="editMessage" value="@message.Message" />
+                        </form>
                     </article>
                 }
             </div>
@@ -200,7 +214,16 @@
             .build();
 
         connection.on("JoinSpecificChatRoom", (usr, msg) => {
+            var now = new Date();
+            var displayTime = `${now.getHours()}:${now.getMinutes()}`;
+            var newChatElem = document.createElement("article");
+            newChatElem.className = "border-b border-solid border-black p-2 bg-gray-50 text-center text-xs";
+            newChatElem.innerHTML = `
+                <p>${displayTime} - ${msg}</p>
+            `;
+
             console.log(msg);
+            $("#chatcontainer").append(newChatElem);
         });
 
         connection.on("ReceiveMessage", (usr, msg) => {
@@ -258,6 +281,20 @@
             catch (ex) {
                 console.error(ex);
             }
+        }
+
+        function toggleChatEdit(chatId) {
+            var paragraph = document.querySelector(`#p-${chatId}`);
+            var form = document.querySelector(`#f-${chatId}`);
+
+            paragraph.classList.toggle("hidden");
+            form.classList.toggle("hidden");
+        }
+
+        function editChatMessage(event, chatId) {
+            event.preventDefault();
+            console.log(event);
+            console.log(chatId);
         }
     </script>
 }
