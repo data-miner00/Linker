@@ -1,26 +1,50 @@
 ﻿namespace Linker.Mvc.Hubs;
 
+using Linker.Core.V2.ApiModels;
 using Linker.Core.V2.Models;
+using Linker.Core.V2.Repositories;
 using Microsoft.AspNetCore.SignalR;
 
 public class ChatHub : Hub
 {
     private const string ServerIdentifier = "server";
     private readonly ConnectionManager connectionManager;
+    private readonly IChatRepository repository;
 
-    public ChatHub(ConnectionManager connectionManager)
+    public ChatHub(ConnectionManager connectionManager, IChatRepository repository)
     {
+        ArgumentNullException.ThrowIfNull(connectionManager);
+        ArgumentNullException.ThrowIfNull(repository);
+
         this.connectionManager = connectionManager;
+        this.repository = repository;
     }
 
-    public Task SendMessage(string message)
+    public Task SendMessage(CreateChatMessage createMessage)
     {
         if (!this.connectionManager.Connections.TryGetValue(this.Context.ConnectionId, out var connection))
         {
             return Task.CompletedTask;
         }
 
-        return this.Clients.Group(connection.RoomId).SendAsync("ReceiveMessage", connection.Username, message);
+        var message = new ChatMessage
+        {
+            Id = Guid.NewGuid().ToString(),
+            AuthorId = createMessage.AuthorId,
+            WorkspaceId = createMessage.WorkspaceId,
+            Message = createMessage.Content,
+            CreatedAt = DateTime.UtcNow,
+            ModifiedAt = DateTime.UtcNow,
+            IsDeleted = false,
+            IsEdited = false,
+        };
+
+        IEnumerable<Task> tasks = [
+            this.Clients.Group(connection.RoomId).SendAsync("ReceiveMessage", connection.Username, message),
+            this.repository.InsertChatMessageAsync(message, default),
+        ];
+
+        return Task.WhenAll(tasks);
     }
 
     public Task JoinChat(ChatConnection chat)
@@ -36,8 +60,8 @@ public class ChatHub : Hub
         await this.Clients.Group(chat.RoomId).SendAsync("JoinSpecificChatRoom", ServerIdentifier, $"{chat.Username} has joined {chat.RoomId}!");
     }
 
-    private void KeepConnection(ChatConnection chat)
+    private void KeepConnection(ChatConnection connection)
     {
-        this.connectionManager.Connections[this.Context.ConnectionId] = chat;
+        this.connectionManager.Connections[this.Context.ConnectionId] = connection;
     }
 }

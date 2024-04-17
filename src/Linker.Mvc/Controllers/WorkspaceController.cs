@@ -17,22 +17,26 @@ public sealed class WorkspaceController : Controller
     private readonly IWorkspaceRepository repository;
     private readonly IUserRepository userRepository;
     private readonly ILinkRepository linkRepository;
+    private readonly IChatRepository chatRepository;
     private readonly IMapper mapper;
 
     public WorkspaceController(
         IWorkspaceRepository repository,
         IUserRepository userRepository,
         ILinkRepository linkRepository,
+        IChatRepository chatRepository,
         IMapper mapper)
     {
         ArgumentNullException.ThrowIfNull(repository);
         ArgumentNullException.ThrowIfNull(userRepository);
         ArgumentNullException.ThrowIfNull(linkRepository);
+        ArgumentNullException.ThrowIfNull(chatRepository);
         ArgumentNullException.ThrowIfNull(mapper);
 
         this.repository = repository;
         this.userRepository = userRepository;
         this.linkRepository = linkRepository;
+        this.chatRepository = chatRepository;
         this.mapper = mapper;
     }
 
@@ -100,6 +104,10 @@ public sealed class WorkspaceController : Controller
                 .GetWorkspaceLinksAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
+            var chats = await this.chatRepository
+                .GetChatMessagesAsync(id.ToString(), 10, this.CancellationToken)
+                .ConfigureAwait(false);
+
             var viewModel = new WorkspaceDetailsViewModel
             {
                 WorkspaceId = workspace.Id,
@@ -111,6 +119,7 @@ public sealed class WorkspaceController : Controller
                 WorkspaceOwnerId = workspace.OwnerId,
                 Members = users,
                 Links = links,
+                ChatMessages = chats,
             };
 
             return this.View(viewModel);

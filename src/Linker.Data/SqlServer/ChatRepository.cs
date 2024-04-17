@@ -52,14 +52,14 @@ public sealed class ChatRepository : IChatRepository
 
     public Task<IEnumerable<ChatMessage>> GetChatMessagesAsync(string workspaceId, CancellationToken cancellationToken)
     {
-        var query = @"SELECT * FROM ChatMessages WHERE WorkspaceID = @WorkspaceId;";
+        var query = @"SELECT * FROM ChatMessages WHERE WorkspaceID = @WorkspaceId ORDER BY CreatedAt DESC;";
 
         return this.connection.QueryAsync<ChatMessage>(query, new { WorkspaceId = workspaceId });
     }
 
     public Task<IEnumerable<ChatMessage>> GetChatMessagesAsync(string workspaceId, int limit, CancellationToken cancellationToken)
     {
-        var query = @"SELECT * FROM ChatMessages WHERE WorkspaceID = @WorkspaceId LIMIT @Limit;";
+        var query = @"SELECT TOP(@Limit) * FROM ChatMessages WHERE WorkspaceID = @WorkspaceId ORDER BY CreatedAt DESC;";
 
         return this.connection.QueryAsync<ChatMessage>(query, new { WorkspaceId = workspaceId, Limit = limit });
     }

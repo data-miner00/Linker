@@ -21,4 +21,6 @@ public sealed class WorkspaceDetailsViewModel
     required public IEnumerable<User> Members { get; set; }
 
     required public IEnumerable<Link> Links { get; set; }
+
+    required public IEnumerable<ChatMessage> ChatMessages { get; set; }
 }
