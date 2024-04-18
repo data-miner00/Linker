@@ -227,12 +227,20 @@
         });
 
         connection.on("ReceiveMessage", (usr, msg) => {
-            var now = new Date();
             var newChatElem = document.createElement("article");
             newChatElem.className = "border-b border-solid border-black p-2 bg-gray-50";
             newChatElem.innerHTML = `
-                <p class="text-xs">${usr} - ${now.getHours()}:${now.getMinutes()}</p>
-                <p>${msg.message}</p>
+                <div class="flex justify-between">
+                    <p class="text-xs">${usr} - ${msg.createdAt}</p>
+                    <div class="flex gap-4">
+                        <button class="block" onclick="return toggleChatEdit('${msg.id}')"><i class="bi bi-pencil"></i></button>
+                        <button class="block"><i class="bi bi-trash"></i></button>
+                    </div>
+                </div>
+                <p id="p-${msg.id}" class="bg-pink-50">${msg.message}</p>
+                <form id="f-${msg.id}" class="hidden" onsubmit="return editChatMessage(event, '${msg.id}')">
+                    <input class="bg-purple-50" name="editMessage" value="${msg.message}" />
+                </form>
             `;
             console.log(`${usr} - ${JSON.stringify(msg)}`);
             $("#chatcontainer").append(newChatElem);
