@@ -1,22 +1,23 @@
 ﻿namespace Linker.GraphQL;
 
-using Linker.Core.Models;
-using Linker.Core.Repositories;
+using Linker.Core.V2.Models;
+using Linker.Core.V2.Repositories;
 
 /// <summary>
 /// The query schema for GraphQL.
 /// </summary>
 public sealed class Query
 {
-    private readonly IArticleRepository articleRepository;
+    private readonly ILinkRepository linkRepository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Query"/> class.
     /// </summary>
-    /// <param name="articleRepository">The article repository.</param>
-    public Query(IArticleRepository articleRepository)
+    /// <param name="linkRepository">The link repository.</param>
+    public Query(ILinkRepository linkRepository)
     {
-        this.articleRepository = articleRepository;
+        ArgumentNullException.ThrowIfNull(linkRepository);
+        this.linkRepository = linkRepository;
     }
 
     #region Test
@@ -36,15 +37,15 @@ public sealed class Query
     public Book GetBook() => new("Learn you Haskell", "Milan");
 
     #endregion
-    #region Article
+    #region Link
 
     /// <summary>
-    /// Gets all the existing articles.
+    /// Gets all the existing links.
     /// </summary>
-    /// <returns>The list of articles.</returns>
-    public Task<IEnumerable<Article>> GetArticlesAsync()
+    /// <returns>The list of links.</returns>
+    public Task<IEnumerable<Link>> GetLinksAsync()
     {
-        return this.articleRepository.GetAllAsync(default);
+        return this.linkRepository.GetAllAsync(default);
     }
 
     /// <summary>
@@ -52,11 +53,11 @@ public sealed class Query
     /// </summary>
     /// <param name="id">The ID of the article.</param>
     /// <returns>The article if found else <c>null</c>.</returns>
-    public async Task<Article?> GetByIdAsync(string id)
+    public async Task<Link?> GetByIdAsync(string id)
     {
         try
         {
-            return await this.articleRepository.GetByIdAsync(id, default).ConfigureAwait(false);
+            return await this.linkRepository.GetByIdAsync(id, default).ConfigureAwait(false);
         }
         catch (InvalidOperationException)
         {
@@ -65,15 +66,15 @@ public sealed class Query
     }
 
     /// <summary>
-    /// Retrieves the articles created by a user.
+    /// Retrieves the links created by a user.
     /// </summary>
     /// <param name="userId">The user ID.</param>
-    /// <returns>The list of user created articles.</returns>
-    public async Task<IEnumerable<Article>?> GetArticlesByUser(string userId)
+    /// <returns>The list of user created links.</returns>
+    public async Task<IEnumerable<Link>?> GetLinksByUser(string userId)
     {
         try
         {
-            return await this.articleRepository.GetAllByUserAsync(userId, default).ConfigureAwait(false);
+            return await this.linkRepository.GetAllByUserAsync(userId, default).ConfigureAwait(false);
         }
         catch (InvalidOperationException)
         {

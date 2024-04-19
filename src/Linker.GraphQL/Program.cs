@@ -1,25 +1,24 @@
 using System.Data;
-using System.Data.SQLite;
+using System.Data.SqlClient;
 using AutoMapper;
-using Linker.Common.Mappers;
-using Linker.Core.Repositories;
-using Linker.Data.SQLite;
+using Linker.Core.V2.Repositories;
+using Linker.Data.SqlServer;
 using Linker.GraphQL;
+using Linker.GraphQL.Mappers;
 
 {
     var builder = WebApplication.CreateBuilder(args);
-    var sqliteConnectionString = builder.Configuration["SQLiteOption:ConnectionString"];
-    using var connection = new SQLiteConnection(sqliteConnectionString);
+    var databaseConnectionString = builder.Configuration.GetConnectionString("Database");
+    using var connection = new SqlConnection(databaseConnectionString);
 
     builder.Services.AddSingleton<IDbConnection>(connection);
-    builder.Services.AddSingleton<IArticleRepository, ArticleRepository>();
+    builder.Services.AddSingleton<ILinkRepository, LinkRepository>();
     builder.Services
         .AddSingleton(c => new MapperConfiguration(config =>
         {
             config.AllowNullCollections = false;
-            config.AddProfile<ArticleMapperProfile>();
-            config.AddProfile<WebsiteMapperProfile>();
-            config.AddProfile<YoutubeMapperProfile>();
+            config.AddProfile<LinkMapperProfile>();
+            config.AddProfile<UserMapperProfile>();
             config.AddProfile<WorkspaceMapperProfile>();
         })
         .CreateMapper());

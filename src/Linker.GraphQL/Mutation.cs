@@ -1,46 +1,46 @@
 ﻿namespace Linker.GraphQL;
 
 using AutoMapper;
-using Linker.Core.ApiModels;
-using Linker.Core.Models;
-using Linker.Core.Repositories;
+using Linker.Core.V2.ApiModels;
+using Linker.Core.V2.Models;
+using Linker.Core.V2.Repositories;
 
 /// <summary>
 /// The mutation schema for GraphQL.
 /// </summary>
 public sealed class Mutation
 {
-    private readonly IArticleRepository articleRepository;
+    private readonly ILinkRepository linkRepository;
     private readonly IMapper mapper;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Mutation"/> class.
     /// </summary>
-    /// <param name="articleRepository">The article repository.</param>
+    /// <param name="linkRepository">The link repository.</param>
     /// <param name="mapper">The model mapper.</param>
-    public Mutation(IArticleRepository articleRepository, IMapper mapper)
+    public Mutation(ILinkRepository linkRepository, IMapper mapper)
     {
-        ArgumentNullException.ThrowIfNull(articleRepository);
+        ArgumentNullException.ThrowIfNull(linkRepository);
         ArgumentNullException.ThrowIfNull(mapper);
-        this.articleRepository = articleRepository;
+        this.linkRepository = linkRepository;
         this.mapper = mapper;
     }
 
     /// <summary>
-    /// Creates an article.
+    /// Creates an link.
     /// </summary>
-    /// <param name="request">The article creation request.</param>
+    /// <param name="request">The link creation request.</param>
     /// <returns>The operation status.</returns>
-    public async Task<bool> CreateArticleAsync(CreateArticleRequest request)
+    public async Task<bool> CreateLinkAsync(CreateLinkRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var article = this.mapper.Map<Article>(request);
+        var link = this.mapper.Map<Link>(request);
 
         try
         {
-            await this.articleRepository
-                .AddAsync(article, default)
+            await this.linkRepository
+                .AddAsync(link, default)
                 .ConfigureAwait(false);
 
             return true;
@@ -52,28 +52,28 @@ public sealed class Mutation
     }
 
     /// <summary>
-    /// Updates an existing article.
+    /// Updates an existing link.
     /// </summary>
-    /// <param name="articleId">The article Id.</param>
+    /// <param name="linkId">The link Id.</param>
     /// <param name="request">The update request.</param>
     /// <returns>True if success.</returns>
     /// <exception cref="GraphQLException">The GraphQL exception.</exception>
-    public async Task<bool> UpdateArticleAsync(string articleId, UpdateArticleRequest request)
+    public async Task<bool> UpdateLinkAsync(string linkId, UpdateLinkRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var article = this.mapper.Map<Article>(request);
+        var link = this.mapper.Map<Link>(request);
 
         try
         {
-            var existing = await this.articleRepository
-                .GetByIdAsync(articleId, default)
+            var existing = await this.linkRepository
+                .GetByIdAsync(linkId, default)
                 .ConfigureAwait(false);
 
-            article.Id = existing.Id;
+            link.Id = existing.Id;
 
-            await this.articleRepository
-                .UpdateAsync(article, default)
+            await this.linkRepository
+                .UpdateAsync(link, default)
                 .ConfigureAwait(false);
 
             return true;
@@ -85,19 +85,19 @@ public sealed class Mutation
     }
 
     /// <summary>
-    /// Deletes an existing article.
+    /// Deletes an existing link.
     /// </summary>
-    /// <param name="articleId">The article ID.</param>
+    /// <param name="linkId">The link ID.</param>
     /// <returns>True if success.</returns>
     /// <exception cref="GraphQLException">The GraphQL exception.</exception>
-    public async Task<bool> DeleteArticleAsync(string articleId)
+    public async Task<bool> DeleteLinkAsync(string linkId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(articleId);
+        ArgumentException.ThrowIfNullOrEmpty(linkId);
 
         try
         {
-            await this.articleRepository
-                .RemoveAsync(articleId, default)
+            await this.linkRepository
+                .RemoveAsync(linkId, default)
                 .ConfigureAwait(false);
 
             return true;
