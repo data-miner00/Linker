@@ -10,6 +10,7 @@
     var isLoggedIn = httpContext?.User.Identity?.IsAuthenticated ?? false;
     var userId = httpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
     var isWorkspaceOwner = Model.WorkspaceOwnerId.Equals(userId, StringComparison.OrdinalIgnoreCase);
+    var stringifiedJavascriptLinkArray = "[" + string.Join(',', Model.Links.Select(link => "'" + link.Url + "'")) + "]";
 }
 
 <partial name="_Notification" />
@@ -77,6 +78,10 @@
             <h1 class="text-2xl font-bold block">
                 @Html.DisplayFor(model => model.WorkspaceName)
             </h1>
+
+            <button onclick="openAllLinksInNewTab(@stringifiedJavascriptLinkArray)">
+                Open All Links
+            </button>
         </header>
         <div class="flex gap-4 items-center">
             <div><i class="bi bi-people-fill"></i> @memberCount</div>
@@ -320,6 +325,10 @@
             catch (ex) {
                 console.error(ex);
             }
+        }
+
+        function openAllLinksInNewTab(links) {
+            links.forEach((link) => window.open(link, "_blank"));
         }
     </script>
 }
