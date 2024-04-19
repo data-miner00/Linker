@@ -1,4 +1,4 @@
-﻿namespace Linker.Common.Mappers;
+﻿namespace Linker.WebApi.Mappers;
 
 using System;
 using AutoMapper;
