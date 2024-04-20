@@ -34,7 +34,7 @@ public sealed class LinkControllerTests
         this.steps
             .ThenIExpectRepositoryGetAllAsyncCalled(1)
             .ThenIExpectResultToBeOfType<ViewResult>()
-            .ThenIExpectViewResultToContain(links)
+            .ThenIExpectViewResultToContain((links, LinkType.None))
             .ThenIExpectNoExceptionIsThrown();
     }
 }
