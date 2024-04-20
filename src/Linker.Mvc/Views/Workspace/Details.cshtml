@@ -165,15 +165,25 @@
                     <article class="border-b border-solid border-black p-2 bg-gray-50">
                         <div class="flex justify-between">
                             <p class="text-xs">@username - @message.CreatedAt</p>
-                            <div class="flex gap-4">
-                                <button class="block" onclick="return toggleChatEdit('@message.Id')"><i class="bi bi-pencil"></i></button>
-                                <button class="block"><i class="bi bi-trash"></i></button>
-                            </div>
+                            @if (!message.IsDeleted)
+                            {
+                                <div class="flex gap-4">
+                                    <button class="block" onclick="return toggleChatEdit('@message.Id')"><i class="bi bi-pencil"></i></button>
+                                    <button class="block" onclick="return deleteChat('@message.Id')"><i class="bi bi-trash"></i></button>
+                                </div>
+                            }
                         </div>
-                        <p id="p-@message.Id" class="bg-pink-50">@message.Message</p>
-                        <form id="f-@message.Id" class="hidden" onsubmit="return editChatMessage(event, '@message.Id')">
-                            <input class="bg-purple-50" name="editMessage" value="@message.Message" />
-                        </form>
+                        @if (!message.IsDeleted)
+                        {
+                            <p id="p-@message.Id" class="bg-pink-50">@message.Message</p>
+                            <form id="f-@message.Id" class="hidden" onsubmit="return editChatMessage(event, '@message.Id')">
+                                <input class="bg-purple-50" name="editMessage" value="@message.Message" />
+                            </form>
+                        }
+                        else
+                        {
+                            <p class="bg-pink-50 italic">The message has been deleted.</p>
+                        }
                     </article>
                 }
             </div>
@@ -239,7 +249,7 @@
                     <p class="text-xs">${usr} - ${msg.createdAt}</p>
                     <div class="flex gap-4">
                         <button class="block" onclick="return toggleChatEdit('${msg.id}')"><i class="bi bi-pencil"></i></button>
-                        <button class="block"><i class="bi bi-trash"></i></button>
+                        <button class="block" onclick="return deleteChat('${msg.id}')"><i class="bi bi-trash"></i></button>
                     </div>
                 </div>
                 <p id="p-${msg.id}" class="bg-pink-50">${msg.message}</p>
@@ -255,6 +265,10 @@
             $(`#p-${msg.id}`).text(msg.message);
             console.log(msg);
         });
+
+        connection.on("DeleteMessage", (chatId) => {
+            $(`#p-${chatId}`).text("The message has been deleted.").addClass("italic");
+        })
 
         connection.start().then(() => {
             connection.invoke("JoinSpecificChatRoom", {
@@ -329,6 +343,12 @@
 
         function openAllLinksInNewTab(links) {
             links.forEach((link) => window.open(link, "_blank"));
+        }
+
+        function deleteChat(chatId) {
+            connection
+                .invoke("DeleteMessage", "@Model.WorkspaceId", chatId)
+                .catch(console.error);
         }
     </script>
 }

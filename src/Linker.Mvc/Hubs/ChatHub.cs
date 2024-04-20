@@ -83,6 +83,21 @@ public class ChatHub : Hub
         return Task.WhenAll(tasks);
     }
 
+    public Task DeleteMessage(string workspaceId, string chatId)
+    {
+        if (!this.connectionManager.Connections.TryGetValue(this.Context.ConnectionId, out var connection))
+        {
+            return Task.CompletedTask;
+        }
+
+        IEnumerable<Task> tasks = [
+            this.repository.SoftDeleteChatMessageAsync(chatId, default),
+            this.Clients.Group(workspaceId).SendAsync("DeleteMessage", chatId),
+        ];
+
+        return Task.WhenAll(tasks);
+    }
+
     private void KeepConnection(ChatConnection connection)
     {
         this.connectionManager.Connections[this.Context.ConnectionId] = connection;
