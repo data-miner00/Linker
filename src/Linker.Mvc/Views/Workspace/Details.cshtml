@@ -70,7 +70,7 @@
         </div>
     </div>
     <article class="col-span-3" id="@Html.DisplayFor(model => model.WorkspaceId)">
-        <header class="mb-2">
+        <header class="mb-2 border border-solid border-black p-4 mb-10 relative">
             <p class="uppercase tracking-wide font-bold text-sm text-gray-300">
                 @@@Html.DisplayFor(model => model.WorkspaceHandle)
             </p>
@@ -79,17 +79,25 @@
                 @Html.DisplayFor(model => model.WorkspaceName)
             </h1>
 
-            <button onclick="openAllLinksInNewTab(@stringifiedJavascriptLinkArray)">
-                Open All Links
-            </button>
-        </header>
-        <div class="flex gap-4 items-center">
-            <div><i class="bi bi-people-fill"></i> @memberCount</div>
-            <div><span class="text-xs text-gray-500">Created by</span> @Model.WorkspaceOwnerUsername</div>
-        </div>
-        <div class="mb-10">
             <p class="text-gray-700">@Html.DisplayFor(model => model.WorkspaceDescription)</p>
-        </div>
+
+            <div class="absolute top-4 right-4 flex gap-4">
+                @if(Model.WorkspaceOwnerId.Equals(userId, StringComparison.OrdinalIgnoreCase))
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.WorkspaceId" title="Edit workspace info">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                }
+
+                <a asp-action="Index" title="Go back to list">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
+
+                <button onclick="openAllLinksInNewTab(@stringifiedJavascriptLinkArray)" title="Open all links">
+                    <i class="bi bi-box-arrow-up-right"></i>
+                </button>
+            </div>
+        </header>
 
         <section class="flex flex-col gap-4 mb-5">
             <div>
@@ -100,10 +108,11 @@
                     @if (isWorkspaceOwner)
                     {
                         <button
-                            class="block border border-solid border-black rounded"
+                            class="block"
                             onclick="openLinkDialog()"
+                            title="Add new link"
                         >
-                            Add link
+                            <i class="bi bi-plus-circle"></i>
                         </button>
                     }
                 </div>
@@ -197,16 +206,6 @@
             </form>
         </div>
     </aside>
-</div>
-
-<div>
-    @if(Model.WorkspaceOwnerId.Equals(userId, StringComparison.OrdinalIgnoreCase))
-    {
-        <span>
-            @Html.ActionLink("Edit", "Edit", new { id = Model.WorkspaceId }) |
-        </span>
-    }
-    <a class="px-4 py-2 bg-black text-white rounded" asp-action="Index">Back to List</a>
 </div>
 
 <dialog
