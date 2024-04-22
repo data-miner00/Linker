@@ -1,7 +1,7 @@
 ﻿namespace Linker.Core.V2.Models;
 
 /// <summary>
-/// The visibility of a link.
+/// The visibility of a resource.
 /// </summary>
 public enum Visibility
 {
@@ -11,12 +11,12 @@ public enum Visibility
     None,
 
     /// <summary>
-    /// The link is publicly accessible.
+    /// The resource is publicly accessible.
     /// </summary>
     Public,
 
     /// <summary>
-    /// The link is only accessible to its owner.
+    /// The resource is only accessible to its owner.
     /// </summary>
     Private,
 }
