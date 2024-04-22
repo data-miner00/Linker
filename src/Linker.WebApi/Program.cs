@@ -37,6 +37,16 @@ builder.Services.AddSwaggerGen(c =>
     c.ExampleFilters();
 });
 
+builder.Services.AddCors(opt =>
+{
+    opt.AddDefaultPolicy(pb =>
+    {
+        pb.AllowAnyOrigin();
+        pb.AllowAnyMethod();
+        pb.AllowAnyHeader();
+    });
+});
+
 builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
 
 builder.Services.AddOpenTelemetry()
@@ -111,6 +121,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app
+    .UseCors()
     .UseMiddleware<ExceptionHandlerMiddleware>()
     .UseExceptionHandler("/error")
     .UseHttpsRedirection()
