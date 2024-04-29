@@ -28,7 +28,12 @@ public sealed class LinkController : Controller
         this.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
     // GET: LinkController
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(
+        string? name,
+        string? description,
+        string? domain,
+        DateTime? createdAtStart,
+        DateTime? createdAtEnd)
     {
         var links = await this.repository
             .GetAllAsync(this.CancellationToken)

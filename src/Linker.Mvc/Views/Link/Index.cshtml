@@ -28,10 +28,48 @@
     <a class="block px-4 py-2 bg-black text-white rounded" asp-controller="Link" asp-action="Create">Create a new link</a>
 
     <div class="flex items-center gap-1">
-        <button class="block px-4 py-2 bg-white text-black rounded border border-solid border-black box-border"><i class="bi bi-view-list"></i> <span>Layout</span></button>
-        <button class="block px-4 py-2 bg-black text-white rounded"><i class="bi bi-funnel"></i> <span>Filter</span></button>
+        <button
+            class="block px-4 py-2 bg-white text-black rounded border border-solid border-black box-border"
+        >
+            <i class="bi bi-view-list"></i>
+            <span>Layout</span>
+        </button>
+        <button
+            class="block px-4 py-2 bg-black text-white rounded"
+            onclick="return toggleFilterForm()"
+        >
+            <i class="bi bi-funnel"></i>
+            <span>Filter</span>
+        </button>
     </div>
 </div>
+
+<form id="filter-form" method="get" class="hidden flex gap-4 w-fit ml-auto mb-8">
+    @{
+        var inputClass = "px-4 py-2 outline-none border-2 border-solid border-black rounded";
+    }
+    <div>
+        <input class="@inputClass" name="name" placeholder="Name" />
+    </div>
+    <div>
+        <input class="@inputClass" name="description" placeholder="Description" />
+    </div>
+    <div>
+        <input class="@inputClass" name="domain" placeholder="Domain" />
+    </div>
+    <div>
+        <input class="@inputClass" name="createdAtStart" type="datetime-local" placeholder="Created" />
+    </div>
+    <div>
+        <input class="@inputClass" name="createdAtEnd" type="datetime-local" placeholder="Created at end" />
+    </div>
+
+    <div>
+        <button class="block px-4 py-2 bg-black text-white rounded">
+            Apply Filter
+        </button>
+    </div>
+</form>
 
 @if (Model.Item1.Count() > 0)
 {
@@ -87,4 +125,14 @@ else
     <div class="p-4 border border-black border-solid rounded">
         There are no Links.
     </div>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_SomeScriptsPartial");}
+
+    <script type="text/javascript">
+        function toggleFilterForm() {
+            $("#filter-form").toggleClass("hidden");
+        }
+    </script>
 }
