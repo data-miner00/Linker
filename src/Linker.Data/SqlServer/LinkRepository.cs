@@ -413,7 +413,6 @@ public sealed class LinkRepository : ILinkRepository
                 Description = @Description,
                 Language = @Language,
                 Rating = @Rating,
-                AddedBy = @AddedBy,
                 Domain = @Domain,
                 Aesthetics = @Aesthetics,
                 IsSubdomain = @IsSubdomain,
@@ -438,7 +437,6 @@ public sealed class LinkRepository : ILinkRepository
             link.Description,
             Language = link.Language.ToString(),
             Rating = link.Rating.ToString(),
-            link.AddedBy,
             link.Domain,
             Aesthetics = link.Aesthetics.ToString(),
             link.IsSubdomain,
@@ -448,7 +446,7 @@ public sealed class LinkRepository : ILinkRepository
             link.KeyPersonName,
             Grammar = link.Grammar.ToString(),
             Visibility = link.Visibility.ToString(),
-            link.ModifiedAt,
+            ModifiedAt = DateTime.Now,
         });
     }
 }
