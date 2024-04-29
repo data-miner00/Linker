@@ -9,6 +9,7 @@ using Linker.Core.V2.Repositories;
 using Dapper;
 using System.Data;
 using EnsureThat;
+using Linker.Core.V2.QueryParams;
 
 /// <summary>
 /// The repository for working with <see cref="Link"/>.
@@ -172,6 +173,68 @@ public sealed class LinkRepository : ILinkRepository
         var selectTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
 
         var links = await this.connection.QueryAsync<Link>(selectLinkStatement)
+            .ConfigureAwait(false);
+
+        foreach (var link in links)
+        {
+            var tags = new List<string>();
+
+            var linkTagPairs = await this.connection
+                .QueryAsync<LinkTagPair>(selectLinksTagsQuery, new { LinkId = link.Id })
+                .ConfigureAwait(false);
+
+            foreach (var pair in linkTagPairs)
+            {
+                var tag = await this.connection
+                    .QueryFirstAsync<Tag>(selectTagsQuery, new { Id = pair.TagId })
+                    .ConfigureAwait(false);
+                tags.Add(tag.Name);
+            }
+
+            link.Tags = tags;
+        }
+
+        return links;
+    }
+
+    /// <inheritdoc/>
+    public async Task<IEnumerable<Link>> GetAllAsync(GetLinksQueryParams query, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var selectLinkStatement = @"
+            EXEC usp_GetLinksWithFilters
+                @Name,
+                @Description,
+                @Domain,
+                @Category,
+                @Language,
+                @Rating,
+                @Aesthetics,
+                @Grammar,
+                @Country,
+                @KeyPersonName,
+                @CreatedAtStart,
+                @CreatedAtEnd;
+        ";
+        var selectLinksTagsQuery = @"SELECT * FROM LinksTags WHERE LinkId = @LinkId;";
+        var selectTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
+
+        var links = await this.connection.QueryAsync<Link>(selectLinkStatement, new
+        {
+            query.Name,
+            query.Description,
+            query.Domain,
+            Category = query.Category?.ToString(),
+            Language = query.Language?.ToString(),
+            Rating = query.Rating?.ToString(),
+            Aesthetics = query.Aesthetics?.ToString(),
+            Grammar = query.Grammar?.ToString(),
+            query.Country,
+            query.KeyPersonName,
+            query.CreatedAtStart,
+            query.CreatedAtEnd,
+        })
             .ConfigureAwait(false);
 
         foreach (var link in links)

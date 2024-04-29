@@ -1,6 +1,7 @@
 ﻿namespace Linker.Core.V2.Repositories;
 
 using Linker.Core.V2.Models;
+using Linker.Core.V2.QueryParams;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -23,6 +24,14 @@ public interface ILinkRepository
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The entire list of data.</returns>
     Task<IEnumerable<Link>> GetAllAsync(CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Retrieves all the available data from the database.
+    /// </summary>
+    /// <param name="query">The query parameters.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The entire list of data.</returns>
+    Task<IEnumerable<Link>> GetAllAsync(GetLinksQueryParams query, CancellationToken cancellationToken);
 
     /// <summary>
     /// Retrieves the link by ID.

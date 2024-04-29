@@ -75,5 +75,6 @@
     <Build Include="dbo\Tables\WorkspaceLinks.sql" />
     <Build Include="dbo\Stored Procedures\sp_GetLinksByCategory.sql" />
     <Build Include="dbo\Tables\ChatMessages.sql" />
+    <Build Include="dbo\Stored Procedures\usp_GetLinksWithFilters.sql" />
   </ItemGroup>
 </Project>

@@ -44,7 +44,7 @@
     </div>
 </div>
 
-<form id="filter-form" method="get" class="hidden flex gap-4 w-fit ml-auto mb-8">
+<form id="filter-form" method="get" class="hidden flex gap-4 w-fit ml-auto mb-8 flex-wrap">
     @{
         var inputClass = "px-4 py-2 outline-none border-2 border-solid border-black rounded";
     }
@@ -58,12 +58,47 @@
         <input class="@inputClass" name="domain" placeholder="Domain" />
     </div>
     <div>
+        @Html.DropDownList("Category",
+            Html.GetEnumSelectList<Category>(),
+            "Select category",
+            new { @class = inputClass })
+    </div>
+    <div>
+        @Html.DropDownList("Language",
+            Html.GetEnumSelectList<Language>(),
+            "Select language",
+            new { @class = inputClass })
+    </div>
+    <div>
+        @Html.DropDownList("Rating",
+            Html.GetEnumSelectList<Rating>(),
+            "Select rating",
+            new { @class = inputClass })
+    </div>
+    <div>
+        @Html.DropDownList("Aesthetics",
+            Html.GetEnumSelectList<Aesthetics>(),
+            "Select aesthetics",
+            new { @class = inputClass })
+    </div>
+    <div>
+        @Html.DropDownList("Grammar",
+            Html.GetEnumSelectList<Grammar>(),
+            "Select grammar",
+            new { @class = inputClass })
+    </div>
+    <div>
+        <input class="@inputClass" name="country" placeholder="Country" />
+    </div>
+    <div>
+        <input class="@inputClass" name="keyPersonName" placeholder="KeyPersonName" />
+    </div>
+    <div>
         <input class="@inputClass" name="createdAtStart" type="datetime-local" placeholder="Created" />
     </div>
     <div>
         <input class="@inputClass" name="createdAtEnd" type="datetime-local" placeholder="Created at end" />
     </div>
-
     <div>
         <button class="block px-4 py-2 bg-black text-white rounded">
             Apply Filter

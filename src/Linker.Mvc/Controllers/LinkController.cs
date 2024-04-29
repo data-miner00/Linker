@@ -3,6 +3,7 @@
 using AutoMapper;
 using Linker.Core.V2.ApiModels;
 using Linker.Core.V2.Models;
+using Linker.Core.V2.QueryParams;
 using Linker.Core.V2.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,15 +29,10 @@ public sealed class LinkController : Controller
         this.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
     // GET: LinkController
-    public async Task<IActionResult> Index(
-        string? name,
-        string? description,
-        string? domain,
-        DateTime? createdAtStart,
-        DateTime? createdAtEnd)
+    public async Task<IActionResult> Index(GetLinksQueryParams query)
     {
         var links = await this.repository
-            .GetAllAsync(this.CancellationToken)
+            .GetAllAsync(query, this.CancellationToken)
             .ConfigureAwait(false);
 
         return View((links, LinkType.None));
