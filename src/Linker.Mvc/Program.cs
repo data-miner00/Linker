@@ -11,6 +11,7 @@ using Linker.Mvc.Hubs;
 using Linker.Mvc.Mappers;
 using Linker.Mvc.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Serilog;
 
 /// <summary>
 /// The entry point for Linker Mvc.
@@ -36,6 +37,7 @@ public static class Program
             .ConfigureMappers()
             .ConfigureChat()
             .ConfigureAssetsUploader()
+            .ConfigureLoggings()
             .Start();
     }
 
@@ -148,6 +150,16 @@ public static class Program
         return builder;
     }
 
+    private static WebApplicationBuilder ConfigureLoggings(this WebApplicationBuilder builder)
+    {
+        builder.Host.UseSerilog((context, configuration) =>
+        {
+            configuration.ReadFrom.Configuration(context.Configuration);
+        });
+
+        return builder;
+    }
+
     private static void Start(this WebApplicationBuilder builder)
     {
         var app = builder.Build();
@@ -171,6 +183,8 @@ public static class Program
                 await next();
             }
         });
+
+        app.UseSerilogRequestLogging();
 
         app.UseHttpsRedirection();
 
