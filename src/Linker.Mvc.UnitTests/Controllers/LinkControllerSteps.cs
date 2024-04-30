@@ -2,6 +2,7 @@
 
 using AutoMapper;
 using Linker.Core.V2.Models;
+using Linker.Core.V2.QueryParams;
 using Linker.Core.V2.Repositories;
 using Linker.Mvc.Controllers;
 using Linker.TestCore;
@@ -55,7 +56,7 @@ internal sealed class LinkControllerSteps : BaseSteps<LinkControllerSteps>
     public LinkControllerSteps GivenGetAllAsyncReturns(IEnumerable<Link> articles)
     {
         this.mockRepository
-            .Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetAllAsync(It.IsAny<GetLinksQueryParams>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(articles);
 
         return this;
@@ -73,13 +74,13 @@ internal sealed class LinkControllerSteps : BaseSteps<LinkControllerSteps>
     public Task WhenIVisitIndexAsync()
     {
         return this.RecordExceptionAsync(
-            async () => this.Result = await this.controller.Index());
+            async () => this.Result = await this.controller.Index(new()));
     }
 
     public LinkControllerSteps ThenIExpectRepositoryGetAllAsyncCalled(int times)
     {
         this.mockRepository
-            .Verify(x => x.GetAllAsync(It.IsAny<CancellationToken>()), Times.Exactly(times));
+            .Verify(x => x.GetAllAsync(It.IsAny<GetLinksQueryParams>(), It.IsAny<CancellationToken>()), Times.Exactly(times));
 
         return this;
     }
