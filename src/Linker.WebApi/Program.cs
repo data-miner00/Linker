@@ -110,6 +110,8 @@ builder.Services
 
 builder.Services.AddMetrics();
 
+builder.Services.AddHttpLogging(opt => opt = new());
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -122,6 +124,7 @@ if (app.Environment.IsDevelopment())
 
 app
     .UseCors()
+    .UseHttpLogging()
     .UseMiddleware<ExceptionHandlerMiddleware>()
     .UseExceptionHandler("/error")
     .UseHttpsRedirection()
