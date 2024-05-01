@@ -22,7 +22,7 @@ public interface ILinkRepository
     /// Retrieves all the available data from the database.
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>The entire list of data.</returns>
+    /// <returns>The entire list of links.</returns>
     Task<IEnumerable<Link>> GetAllAsync(CancellationToken cancellationToken);
 
     /// <summary>
@@ -30,8 +30,16 @@ public interface ILinkRepository
     /// </summary>
     /// <param name="query">The query parameters.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>The entire list of data.</returns>
+    /// <returns>The entire list of filtered links.</returns>
     Task<IEnumerable<Link>> GetAllAsync(GetLinksQueryParams query, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Searches the links that has the keyword provided.
+    /// </summary>
+    /// <param name="keyword">The keyword to be searched.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The list of search results.</returns>
+    Task<IEnumerable<Link>> SearchAsync(string keyword, CancellationToken cancellationToken);
 
     /// <summary>
     /// Retrieves the link by ID.

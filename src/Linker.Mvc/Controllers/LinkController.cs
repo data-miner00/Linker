@@ -38,6 +38,15 @@ public sealed class LinkController : Controller
         return View((links, LinkType.None));
     }
 
+    public async Task<IActionResult> Search(string q)
+    {
+        var links = await this.repository
+            .SearchAsync(q, this.CancellationToken)
+            .ConfigureAwait(false);
+
+        return this.View(links);
+    }
+
     // GET: LinkController/Details/5
     public async Task<IActionResult> Details(string id)
     {

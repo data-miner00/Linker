@@ -1,0 +1,73 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Linker.Core.V2.Models
+@using System.Security.Claims
+@inject IHttpContextAccessor httpContextAccessor
+@model IEnumerable<Link>
+@{
+    ViewData["Title"] = $"Search results for {Context.Request.Query["q"]}";
+    var httpContext = httpContextAccessor.HttpContext;
+    var isLoggedIn = httpContext?.User.Identity?.IsAuthenticated ?? false;
+    var userId = httpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+}
+
+<partial name="_Notification" />
+
+<div class="bg-stone-200 rounded-lg h-[400px] flex items-center justify-center mb-4">
+    <div class="uppercase text-7xl font-bold">Search results</div>
+</div>
+
+@if (Model.Count() > 0)
+{
+    static string ConvertLinkTypeToIcon(LinkType type) => type switch
+    {
+        LinkType.Article => "bi bi-pencil",
+        LinkType.Website => "bi bi-globe",
+        LinkType.Youtube => "bi bi-youtube",
+        LinkType.GitHub => "bi bi-github",
+        _ => "bi bi-patch-question",
+    };
+
+    <main class="grid grid-cols-2 gap-4 mb-10">
+        @foreach (var link in Model)
+        {
+            <article class="border-2 border-solid border-black rounded h-[230px] p-6">
+                <header class="mb-4">
+                    <div class="flex justify-between items-center">
+                        <p class="block">
+                            <i class="@ConvertLinkTypeToIcon(link.Type)"></i> @link.Type.ToString()
+                        </p>
+                        <a class="block" title="Go to link" href="@link.Url" target="_blank">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+                    </div>
+                    <a asp-action="Details" asp-route-id="@link.Id">
+                        <p class="text-3xl font-semibold max-w-[300px] truncate ...">@link.Name</p>
+                    </a>
+                </header>
+                <section class="mb-4">
+                    <p class="text-gray-700">@link.Description</p>
+                </section>
+                <footer class="flex items-center justify-between">
+                    <p class="text-xs italic block">Added on @link.CreatedAt</p>
+                    @if (userId.Equals(link.AddedBy, StringComparison.OrdinalIgnoreCase))
+                    {
+                        <form method="post" asp-action="Delete" asp-route-id="@link.Id" class="block">
+                            <button
+                                class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                                onclick="return confirm('Are you sure to delete this link?')"
+                            >
+                                Delete
+                            </button>
+                        </form>
+                    }
+                </footer>
+            </article>
+        }
+    </main>
+}
+else
+{
+    <div class="p-4 border border-black border-solid rounded">
+        There are no Links.
+    </div>
+}

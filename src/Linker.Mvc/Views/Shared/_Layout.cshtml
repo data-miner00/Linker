@@ -70,12 +70,17 @@
                 </div>
             </div>
         </header>
-        <div class="border-b border-solid border-black flex px-2 gap-4 text-sm">
+        <form
+            method="get"
+            asp-controller="Link"
+            asp-action="Search"
+            class="border-b border-solid border-black flex px-2 gap-4 text-sm"
+        >
             <button class="block py-2">
                 <i class="bi bi-search"></i>
             </button>
-            <input class="block w-full py-2 outline-none" placeholder="WHAT ARE YOU LOOKING FOR?" />
-        </div>
+            <input class="block w-full py-2 outline-none" name="q" placeholder="WHAT ARE YOU LOOKING FOR?" />
+        </form>
     </div>
 
     <div class="max-w-screen-2xl mx-auto my-5">

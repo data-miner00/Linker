@@ -260,6 +260,41 @@ public sealed class LinkRepository : ILinkRepository
     }
 
     /// <inheritdoc/>
+    public async Task<IEnumerable<Link>> SearchAsync(string keyword, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var selectLinkStatement = @"EXEC usp_GetLinksWithSearch @Keyword;";
+        var selectLinksTagsQuery = @"SELECT * FROM LinksTags WHERE LinkId = @LinkId;";
+        var selectTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
+
+        var links = await this.connection
+            .QueryAsync<Link>(selectLinkStatement, new { Keyword = keyword })
+            .ConfigureAwait(false);
+
+        foreach (var link in links)
+        {
+            var tags = new List<string>();
+
+            var linkTagPairs = await this.connection
+                .QueryAsync<LinkTagPair>(selectLinksTagsQuery, new { LinkId = link.Id })
+                .ConfigureAwait(false);
+
+            foreach (var pair in linkTagPairs)
+            {
+                var tag = await this.connection
+                    .QueryFirstAsync<Tag>(selectTagsQuery, new { Id = pair.TagId })
+                    .ConfigureAwait(false);
+                tags.Add(tag.Name);
+            }
+
+            link.Tags = tags;
+        }
+
+        return links;
+    }
+
+    /// <inheritdoc/>
     public Task<IEnumerable<Link>> GetAllByCategoryAsync(Category category, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
