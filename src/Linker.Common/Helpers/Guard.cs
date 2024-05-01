@@ -3,6 +3,7 @@
     using System;
     using System.ComponentModel.DataAnnotations;
     using System.Globalization;
+    using System.Numerics;
     using System.Runtime.CompilerServices;
 
     /// <summary>
@@ -75,6 +76,46 @@
             if (default(T).Equals(value))
             {
                 throw new ArgumentException(string.Create(CultureInfo.InvariantCulture, $"Argument '{paramName}' cannot be default value."));
+            }
+
+            return value;
+        }
+
+        /// <summary>
+        /// Throws if the numeric value is less than the specified threshold.
+        /// </summary>
+        /// <typeparam name="T">The numeric type.</typeparam>
+        /// <param name="value">The value to validate.</param>
+        /// <param name="threshold">The threshold value.</param>
+        /// <param name="paramName">The parameter name for reference.</param>
+        /// <returns>The validated value.</returns>
+        /// <exception cref="ArgumentException">The argument exception.</exception>
+        public static T ThrowIfLessThan<T>(T value, T threshold, [CallerArgumentExpression(nameof(value))] string? paramName = null)
+            where T : INumber<T>
+        {
+            if (value < threshold)
+            {
+                throw new ArgumentException(string.Create(CultureInfo.InvariantCulture, $"Argument '{paramName}' cannot be less than {threshold}."));
+            }
+
+            return value;
+        }
+
+        /// <summary>
+        /// Throws if the numeric value is more than the specified threshold.
+        /// </summary>
+        /// <typeparam name="T">The numeric type.</typeparam>
+        /// <param name="value">The value to validate.</param>
+        /// <param name="threshold">The threshold value.</param>
+        /// <param name="paramName">The parameter name for reference.</param>
+        /// <returns>The validated value.</returns>
+        /// <exception cref="ArgumentException">The argument exception.</exception>
+        public static T ThrowIfMoreThan<T>(T value, T threshold, [CallerArgumentExpression(nameof(value))] string? paramName = null)
+            where T : INumber<T>
+        {
+            if (value > threshold)
+            {
+                throw new ArgumentException(string.Create(CultureInfo.InvariantCulture, $"Argument '{paramName}' cannot be more than {threshold}."));
             }
 
             return value;

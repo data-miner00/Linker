@@ -58,5 +58,43 @@
             var defaultGuid = Guid.Empty;
             Assert.Throws<ArgumentException>(() => Guard.ThrowIfDefault(defaultGuid));
         }
+
+        [Fact]
+        public void ThrowIfMoreThan_LessThanThreshold_Pass()
+        {
+            var value = 5;
+            var threshold = 6;
+
+            var result = Guard.ThrowIfMoreThan(value, threshold);
+            Assert.Equal(value, result);
+        }
+
+        [Fact]
+        public void ThrowIfMoreThan_MoreThanThreshold_Throws()
+        {
+            var value = 5;
+            var threshold = 4;
+
+            Assert.Throws<ArgumentException>(() => Guard.ThrowIfMoreThan(value, threshold));
+        }
+
+        [Fact]
+        public void ThrowIfLessThan_MoreThanThreshold_Pass()
+        {
+            var value = 6;
+            var threshold = 5;
+
+            var result = Guard.ThrowIfLessThan(value, threshold);
+            Assert.Equal(value, result);
+        }
+
+        [Fact]
+        public void ThrowIfLessThan_LessThanThreshold_Throws()
+        {
+            var value = 4;
+            var threshold = 5;
+
+            Assert.Throws<ArgumentException>(() => Guard.ThrowIfLessThan(value, threshold));
+        }
     }
 }
