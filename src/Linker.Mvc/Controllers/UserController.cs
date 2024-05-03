@@ -4,12 +4,15 @@ using Linker.Core.V2.Repositories;
 using Linker.Core.V2;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Linker.Common.Helpers;
+using Serilog;
 
 public sealed class UserController : Controller
 {
     private readonly IUserRepository repository;
     private readonly IAssetUploader assetUploader;
     private readonly IWorkspaceRepository workspaceRepository;
+    private readonly ILogger logger;
 
     public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
 
@@ -19,14 +22,13 @@ public sealed class UserController : Controller
     public UserController(
         IUserRepository repository,
         IAssetUploader assetUploader,
-        IWorkspaceRepository workspaceRepository)
+        IWorkspaceRepository workspaceRepository,
+        ILogger logger)
     {
-        ArgumentNullException.ThrowIfNull(repository);
-        ArgumentNullException.ThrowIfNull(assetUploader);
-        ArgumentNullException.ThrowIfNull(workspaceRepository);
-        this.repository = repository;
-        this.assetUploader = assetUploader;
-        this.workspaceRepository = workspaceRepository;
+        this.repository = Guard.ThrowIfNull(repository);
+        this.assetUploader = Guard.ThrowIfNull(assetUploader);
+        this.workspaceRepository = Guard.ThrowIfNull(workspaceRepository);
+        this.logger = Guard.ThrowIfNull(logger);
     }
 
     // GET: UserController
@@ -44,8 +46,10 @@ public sealed class UserController : Controller
 
             return this.View((user, joinedWorkspaces));
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
+            this.logger.Error(ex, "Something went wrong: {message}", ex.Message);
+
             return this.NotFound();
         }
     }
@@ -54,6 +58,8 @@ public sealed class UserController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Upload([FromForm] IFormFile file)
     {
+        Guard.ThrowIfNull(file);
+
         try
         {
             var uploadResult = await this.assetUploader
@@ -78,6 +84,7 @@ public sealed class UserController : Controller
         catch (Exception ex)
         {
             this.TempData[Constants.Error] = ex.Message;
+            this.logger.Error(ex, "Something went wrong: {message}", ex.Message);
             return this.RedirectToAction(nameof(this.Index));
         }
     }

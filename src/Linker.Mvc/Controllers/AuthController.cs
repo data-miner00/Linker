@@ -8,6 +8,8 @@ using Linker.Core.V2.ApiModels;
 using Linker.Core.V2.Repositories;
 using AutoMapper;
 using Linker.Core.V2.Models;
+using Linker.Common.Helpers;
+using Serilog;
 using ILinkerAuthenticationHandler = Linker.Data.SqlServer.IAuthenticationHandler;
 
 public sealed class AuthController : Controller
@@ -15,14 +17,18 @@ public sealed class AuthController : Controller
     private readonly IUserRepository repository;
     private readonly IMapper mapper;
     private readonly ILinkerAuthenticationHandler authenticationHandler;
+    private readonly ILogger logger;
 
-    public AuthController(IUserRepository repository, IMapper mapper, ILinkerAuthenticationHandler authenticationHandler)
+    public AuthController(
+        IUserRepository repository,
+        IMapper mapper,
+        ILinkerAuthenticationHandler authenticationHandler,
+        ILogger logger)
     {
-        ArgumentNullException.ThrowIfNull(repository);
-        ArgumentNullException.ThrowIfNull(mapper);
-        this.repository = repository;
-        this.mapper = mapper;
-        this.authenticationHandler = authenticationHandler;
+        this.repository = Guard.ThrowIfNull(repository);
+        this.mapper = Guard.ThrowIfNull(mapper);
+        this.authenticationHandler = Guard.ThrowIfNull(authenticationHandler);
+        this.logger = Guard.ThrowIfNull(logger);
     }
 
     public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
@@ -45,6 +51,11 @@ public sealed class AuthController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginRequest request, string returnUrl)
     {
+        if (!this.ModelState.IsValid)
+        {
+            return this.View(request);
+        }
+
         try
         {
             var user = await this.repository
@@ -87,15 +98,17 @@ public sealed class AuthController : Controller
 
             return this.RedirectToAction("Index", "Home");
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
             this.TempData[Constants.Error] = "Username or password wrong.";
+            this.logger.Warning(ex, "Invalid login for {username}.", request.Username);
 
             return this.View(request);
         }
-        catch
+        catch (Exception ex)
         {
             this.TempData[Constants.Error] = "Something wrong";
+            this.logger.Error("Login for {username} failed due to {exception}", request.Username, ex.Message);
 
             return this.View(request);
         }
@@ -123,26 +136,27 @@ public sealed class AuthController : Controller
 
         try
         {
-            if (this.ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                await this.repository
-                    .AddAsync(user, this.CancellationToken)
-                    .ConfigureAwait(false);
-
-                await this.authenticationHandler
-                    .RegisterAsync(user.Id, request.Password, default)
-                    .ConfigureAwait(false);
-
-                this.TempData[Constants.Success] = "Successfully registered.";
-
-                return this.RedirectToAction(nameof(this.Login));
+                return this.View(request);
             }
 
-            return this.View(request);
+            await this.repository
+                .AddAsync(user, this.CancellationToken)
+                .ConfigureAwait(false);
+
+            await this.authenticationHandler
+                .RegisterAsync(user.Id, request.Password, default)
+                .ConfigureAwait(false);
+
+            this.TempData[Constants.Success] = "Successfully registered.";
+
+            return this.RedirectToAction(nameof(this.Login));
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
             this.TempData[Constants.Error] = "User already exist.";
+            this.logger.Error(ex, "Unable to register. {message}", ex.Message);
             return this.View(request);
         }
     }

@@ -1,12 +1,14 @@
 ﻿namespace Linker.Mvc.Controllers;
 
 using AutoMapper;
+using Linker.Common.Helpers;
 using Linker.Core.V2.ApiModels;
 using Linker.Core.V2.Models;
 using Linker.Core.V2.QueryParams;
 using Linker.Core.V2.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using System.Security.Claims;
 
 [Authorize]
@@ -14,13 +16,13 @@ public sealed class LinkController : Controller
 {
     private readonly ILinkRepository repository;
     private readonly IMapper mapper;
+    private readonly ILogger logger;
 
-    public LinkController(ILinkRepository repository, IMapper mapper)
+    public LinkController(ILinkRepository repository, IMapper mapper, ILogger logger)
     {
-        ArgumentNullException.ThrowIfNull(repository);
-        ArgumentNullException.ThrowIfNull(mapper);
-        this.repository = repository;
-        this.mapper = mapper;
+        this.repository = Guard.ThrowIfNull(repository);
+        this.mapper = Guard.ThrowIfNull(mapper);
+        this.logger = Guard.ThrowIfNull(logger);
     }
 
     public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
@@ -35,7 +37,7 @@ public sealed class LinkController : Controller
             .GetAllAsync(query, this.CancellationToken)
             .ConfigureAwait(false);
 
-        return View((links, LinkType.None));
+        return this.View((links, LinkType.None));
     }
 
     public async Task<IActionResult> Search(string q)
@@ -54,13 +56,13 @@ public sealed class LinkController : Controller
             .GetByIdAsync(id, this.CancellationToken)
             .ConfigureAwait(false);
 
-        return View(link);
+        return this.View(link);
     }
 
     // GET: LinkController/Create
     public IActionResult Create()
     {
-        return View();
+        return this.View();
     }
 
     // POST: LinkController/Create
@@ -92,6 +94,8 @@ public sealed class LinkController : Controller
                 return this.RedirectToAction(nameof(this.Index));
             }
 
+            this.logger.Warning("The model is invalid. {@model}.", this.ModelState);
+
             return this.View(request);
         }
         catch (Exception ex)
@@ -105,6 +109,8 @@ public sealed class LinkController : Controller
     // GET: LinkController/Edit/5
     public async Task<IActionResult> Edit(Guid id)
     {
+        Guard.ThrowIfDefault(id);
+
         try
         {
             var link = await this.repository
@@ -115,7 +121,9 @@ public sealed class LinkController : Controller
         }
         catch (InvalidOperationException)
         {
-            return this.NotFound();
+            this.logger.Warning("The link with '{id}' could not be found.", id);
+
+            return this.NotFound(); // Change this
         }
     }
 
@@ -124,6 +132,16 @@ public sealed class LinkController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Guid id, UpdateLinkRequest request)
     {
+        Guard.ThrowIfDefault(id);
+        Guard.ThrowIfNull(request);
+
+        if (!this.ModelState.IsValid)
+        {
+            this.logger.Warning("The model is invalid. {@model}.", this.ModelState);
+
+            return this.View(request);
+        }
+
         try
         {
             var link = this.mapper.Map<Link>(request);
@@ -139,11 +157,7 @@ public sealed class LinkController : Controller
         }
         catch (InvalidOperationException)
         {
-            return this.NotFound();
-        }
-        catch
-        {
-            return this.View();
+            return this.NotFound(); // update this
         }
     }
 
@@ -152,6 +166,8 @@ public sealed class LinkController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(Guid id)
     {
+        Guard.ThrowIfDefault(id);
+
         try
         {
             await this.repository
@@ -186,7 +202,7 @@ public sealed class LinkController : Controller
         }
         catch
         {
-            return this.NotFound();
+            return this.NotFound(); // change this
         }
     }
 
@@ -204,7 +220,7 @@ public sealed class LinkController : Controller
         }
         catch
         {
-            return this.NotFound();
+            return this.NotFound(); // change this
         }
     }
 }

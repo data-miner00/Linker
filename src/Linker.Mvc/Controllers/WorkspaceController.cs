@@ -1,12 +1,14 @@
 ﻿namespace Linker.Mvc.Controllers;
 
 using AutoMapper;
+using Linker.Common.Helpers;
 using Linker.Core.V2.ApiModels;
 using Linker.Core.V2.Models;
 using Linker.Core.V2.Repositories;
 using Linker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Security.Claims;
@@ -19,25 +21,22 @@ public sealed class WorkspaceController : Controller
     private readonly ILinkRepository linkRepository;
     private readonly IChatRepository chatRepository;
     private readonly IMapper mapper;
+    private readonly ILogger logger;
 
     public WorkspaceController(
         IWorkspaceRepository repository,
         IUserRepository userRepository,
         ILinkRepository linkRepository,
         IChatRepository chatRepository,
-        IMapper mapper)
+        IMapper mapper,
+        ILogger logger)
     {
-        ArgumentNullException.ThrowIfNull(repository);
-        ArgumentNullException.ThrowIfNull(userRepository);
-        ArgumentNullException.ThrowIfNull(linkRepository);
-        ArgumentNullException.ThrowIfNull(chatRepository);
-        ArgumentNullException.ThrowIfNull(mapper);
-
-        this.repository = repository;
-        this.userRepository = userRepository;
-        this.linkRepository = linkRepository;
-        this.chatRepository = chatRepository;
-        this.mapper = mapper;
+        this.repository = Guard.ThrowIfNull(repository);
+        this.userRepository = Guard.ThrowIfNull(userRepository);
+        this.linkRepository = Guard.ThrowIfNull(linkRepository);
+        this.chatRepository = Guard.ThrowIfNull(chatRepository);
+        this.mapper = Guard.ThrowIfNull(mapper);
+        this.logger = Guard.ThrowIfNull(logger);
     }
 
     public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
@@ -48,15 +47,8 @@ public sealed class WorkspaceController : Controller
     // GET: WorkspaceController/Index
     public async Task<IActionResult> Index()
     {
-        var userId = this.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        if (string.IsNullOrWhiteSpace(userId))
-        {
-            return this.RedirectToAction(nameof(this.Explore));
-        }
-
         var workspaces = await this.repository
-            .GetAllByUserAsync(userId, this.CancellationToken)
+            .GetAllByUserAsync(this.UserId, this.CancellationToken)
             .ConfigureAwait(false);
 
         var viewModels = await this.ConvertWorkspacesToViewModelsAsync(workspaces);
@@ -124,9 +116,11 @@ public sealed class WorkspaceController : Controller
 
             return this.View(viewModel);
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
-            return this.NotFound();
+            this.logger.Error(ex, "Something went wrong: {message}", ex.Message);
+
+            return this.NotFound(); // change this
         }
     }
 
@@ -141,6 +135,8 @@ public sealed class WorkspaceController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateWorkspaceRequest request)
     {
+        Guard.ThrowIfNull(request);
+
         var newWorkspace = this.mapper.Map<Workspace>(request);
         newWorkspace.OwnerId = this.UserId;
 
@@ -159,8 +155,10 @@ public sealed class WorkspaceController : Controller
 
             return this.View(request);
         }
-        catch
+        catch (Exception ex)
         {
+            this.logger.Error(ex, "Something went wrong: {message}", ex.Message);
+
             return this.View(request);
         }
     }
@@ -168,6 +166,8 @@ public sealed class WorkspaceController : Controller
     // GET: WorkspaceController/Join
     public async Task<IActionResult> Join(Guid workspaceId)
     {
+        Guard.ThrowIfDefault(workspaceId);
+
         if (string.IsNullOrEmpty(this.UserId))
         {
             return this.RedirectToAction(nameof(this.Index));
@@ -192,10 +192,10 @@ public sealed class WorkspaceController : Controller
 
             return this.RedirectToAction(nameof(this.Index));
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
             this.TempData[Constants.Error] = "The workspace does not exist.";
-
+            this.logger.Error(ex, "Not found: {message}", ex.Message);
             return this.RedirectToAction(nameof(this.Index));
         }
     }
@@ -203,6 +203,9 @@ public sealed class WorkspaceController : Controller
     [HttpPost]
     public async Task<IActionResult> Kick(Guid workspaceId, Guid userId)
     {
+        Guard.ThrowIfDefault(workspaceId);
+        Guard.ThrowIfDefault(userId);
+
         try
         {
             await this.repository
@@ -213,16 +216,18 @@ public sealed class WorkspaceController : Controller
 
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
             this.TempData[Constants.Error] = "The user is not in the workspace.";
-
+            this.logger.Error(ex, "Not found: {message}", ex.Message);
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
     }
 
     public async Task<IActionResult> AddLink(Guid workspaceId)
     {
+        Guard.ThrowIfDefault(workspaceId);
+
         try
         {
             var allLinks = await this.linkRepository
@@ -231,9 +236,10 @@ public sealed class WorkspaceController : Controller
 
             return this.PartialView("_AddLinkPartial", (allLinks, workspaceId.ToString()));
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
             this.TempData[Constants.Error] = "A task was canceled";
+            this.logger.Error(ex, "Something wrong: {message}", ex.Message);
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
     }
@@ -242,6 +248,9 @@ public sealed class WorkspaceController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddLink(Guid workspaceId, Guid linkId)
     {
+        Guard.ThrowIfDefault(workspaceId);
+        Guard.ThrowIfDefault(linkId);
+
         try
         {
             await this.repository
@@ -251,9 +260,10 @@ public sealed class WorkspaceController : Controller
             this.TempData[Constants.Success] = "Successfully added article to workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
             this.TempData[Constants.Error] = "Failed to add article to workspace.";
+            this.logger.Error(ex, "Something wrong: {message}", ex.Message);
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
     }
@@ -261,6 +271,9 @@ public sealed class WorkspaceController : Controller
     // TODO: Change to Post
     public async Task<IActionResult> RemoveLink(Guid workspaceId, Guid linkId)
     {
+        Guard.ThrowIfDefault(workspaceId);
+        Guard.ThrowIfDefault(linkId);
+
         try
         {
             await this.repository
@@ -270,9 +283,10 @@ public sealed class WorkspaceController : Controller
             this.TempData[Constants.Success] = "Successfully deleted article from workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
             this.TempData[Constants.Error] = "Failed to remove article from workspace.";
+            this.logger.Error(ex, "Something wrong: {message}", ex.Message);
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
     }
@@ -282,6 +296,8 @@ public sealed class WorkspaceController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Leave(Guid workspaceId)
     {
+        Guard.ThrowIfDefault(workspaceId);
+
         if (string.IsNullOrEmpty(this.UserId))
         {
             return this.RedirectToAction(nameof(this.Index));
@@ -296,9 +312,10 @@ public sealed class WorkspaceController : Controller
             this.TempData[Constants.Success] = "Successfully left the workspace";
             return this.RedirectToAction(nameof(this.Index));
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
             this.TempData[Constants.Error] = "You are not a member of the workspace.";
+            this.logger.Error(ex, "Something wrong: {message}", ex.Message);
             return this.RedirectToAction(nameof(this.Index));
         }
     }
@@ -306,6 +323,8 @@ public sealed class WorkspaceController : Controller
     // GET: WorkspaceController/Edit/5
     public async Task<IActionResult> Edit(Guid id)
     {
+        Guard.ThrowIfDefault(id);
+
         try
         {
             var workspace = await this.repository
@@ -314,9 +333,10 @@ public sealed class WorkspaceController : Controller
 
             return this.View(workspace);
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
-            return this.NotFound();
+            this.logger.Error(ex, "Something wrong: {message}", ex.Message);
+            return this.NotFound(); // chang ethis
         }
     }
 
@@ -325,6 +345,9 @@ public sealed class WorkspaceController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Guid id, UpdateWorkspaceRequest request)
     {
+        Guard.ThrowIfDefault(id);
+        Guard.ThrowIfNull(request);
+
         var workspace = this.mapper.Map<Workspace>(request);
         workspace.Id = id.ToString();
 
@@ -343,8 +366,9 @@ public sealed class WorkspaceController : Controller
 
             return this.View(request);
         }
-        catch
+        catch (Exception ex)
         {
+            this.logger.Error(ex, "Something wrong: {message}", ex.Message);
             return this.View(request);
         }
     }
@@ -352,6 +376,8 @@ public sealed class WorkspaceController : Controller
     // GET: WorkspaceController/Delete/5
     public async Task<IActionResult> Delete(Guid id)
     {
+        Guard.ThrowIfNull(id);
+
         try
         {
             await this.repository
@@ -362,19 +388,22 @@ public sealed class WorkspaceController : Controller
 
             return this.RedirectToAction(nameof(this.Index));
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
-            return this.NotFound();
+            return this.NotFound(); // change this
         }
-        catch
+        catch (Exception ex)
         {
             this.TempData[Constants.Error] = "Something wrong.";
+            this.logger.Error(ex, "Something wrong: {message}", ex.Message);
             return this.RedirectToAction(nameof(this.Index));
         }
     }
 
     public async Task<IActionResult> InviteUser(Guid workspaceId)
     {
+        Guard.ThrowIfDefault(workspaceId);
+
         try
         {
             var users = await this.userRepository
@@ -383,9 +412,10 @@ public sealed class WorkspaceController : Controller
 
             return this.PartialView("_InviteUser", (users, workspaceId.ToString()));
         }
-        catch
+        catch (Exception ex)
         {
-            return this.NotFound();
+            this.logger.Error(ex, "Something wrong: {message}", ex.Message);
+            return this.NotFound(); // hcange this
         }
     }
 
@@ -393,6 +423,9 @@ public sealed class WorkspaceController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> InviteUser(Guid workspaceId, Guid userId)
     {
+        Guard.ThrowIfDefault(workspaceId);
+        Guard.ThrowIfDefault(userId);
+
         try
         {
             var membership = new WorkspaceMembership
@@ -411,15 +444,18 @@ public sealed class WorkspaceController : Controller
             this.TempData[Constants.Success] = "Successfully invited user to workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
-        catch (SqlException)
+        catch (SqlException ex) // Dont catch sql here
         {
             this.TempData[Constants.Error] = "User already in workspace.";
+            this.logger.Error(ex, "User already exist: {message}", ex.Message);
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
     }
 
     private async Task<IEnumerable<WorkspaceIndexViewModel>> ConvertWorkspacesToViewModelsAsync(IEnumerable<Workspace> workspaces)
     {
+        Guard.ThrowIfNull(workspaces);
+
         var viewModel = new List<WorkspaceIndexViewModel>();
 
         foreach (var workspace in workspaces)
