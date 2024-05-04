@@ -376,7 +376,7 @@ public sealed class WorkspaceController : Controller
     // GET: WorkspaceController/Delete/5
     public async Task<IActionResult> Delete(Guid id)
     {
-        Guard.ThrowIfNull(id);
+        Guard.ThrowIfDefault(id);
 
         try
         {
