@@ -18,46 +18,64 @@
             method="post"
             autocomplete="off"
         >
-            <div class="flex border-2 border-solid border-black items-center gap-4 px-4 mb-4 rounded">
-                <i class="bi bi-person block text-xl"></i>
-                <input
-                    class="block p-4 outline-none w-full"
-                    asp-for="Username"
-                    placeholder="Username"
-                />
+            <div class="mb-4">
+                <div class="flex border-2 border-solid border-black items-center gap-4 px-4 rounded">
+                    <i class="bi bi-person block text-xl"></i>
+                    <input
+                        class="block p-4 outline-none w-full"
+                        asp-for="Username"
+                        placeholder="Username"
+                    />
+                </div>
+                <span asp-validation-for="Username" class="text-danger mt-2"></span>
             </div>
-            <div class="flex border-2 border-solid border-black items-center gap-4 px-4 mb-4 rounded">
-                <i class="bi bi-key block text-xl"></i>
-                <input
-                    class="block p-4 outline-none w-full"
-                    asp-for="Password"
-                    placeholder="Password"
-                    type="password"
-                />
+
+            <div class="mb-4">
+                <div class="flex border-2 border-solid border-black items-center gap-4 px-4 rounded">
+                    <i class="bi bi-key block text-xl"></i>
+                    <input
+                        class="block p-4 outline-none w-full"
+                        asp-for="Password"
+                        placeholder="Password"
+                        type="password"
+                    />
+                </div>
+                <span asp-validation-for="Password" class="text-danger mt-2"></span>
             </div>
-            <div class="flex border-2 border-solid border-black items-center gap-4 px-4 mb-4 rounded">
-                <i class="bi bi-envelope-at block text-xl"></i>
-                <input
-                    class="block p-4 outline-none w-full"
-                    asp-for="Email"
-                    placeholder="Email"
-                />
+            <div class="mb-4">
+                <div class="flex border-2 border-solid border-black items-center gap-4 px-4 rounded">
+                    <i class="bi bi-envelope-at block text-xl"></i>
+                    <input
+                        class="block p-4 outline-none w-full"
+                        asp-for="Email"
+                        placeholder="Email"
+                    />
+                </div>
+                <span asp-validation-for="Email" class="text-danger mt-2"></span>
             </div>
-            <div class="flex border-2 border-solid border-black items-center gap-4 px-4 mb-4 rounded">
-                <i class="bi bi-file-image block text-xl"></i>
-                <input
-                    class="block p-4 outline-none w-full"
-                    asp-for="PhotoUrl"
-                    placeholder="PhotoUrl"
-                />
+            
+            <div class="mb-4">
+                <div class="flex border-2 border-solid border-black items-center gap-4 px-4 rounded">
+                    <i class="bi bi-file-image block text-xl"></i>
+                    <input
+                        class="block p-4 outline-none w-full"
+                        asp-for="PhotoUrl"
+                        placeholder="PhotoUrl"
+                    />
+                </div>
+                <span asp-validation-for="PhotoUrl" class="text-danger mt-2"></span>
             </div>
-            <div class="flex border-2 border-solid border-black items-center gap-4 px-4 mb-4 rounded">
-                <i class="bi bi-cake2 block text-xl"></i>
-                <input
-                    class="block p-4 outline-none w-full"
-                    asp-for="DateOfBirth"
-                    placeholder="Birthday"
-                />
+
+            <div class="mb-4">
+                <div class="flex border-2 border-solid border-black items-center gap-4 px-4 rounded">
+                    <i class="bi bi-cake2 block text-xl"></i>
+                    <input
+                        class="block p-4 outline-none w-full"
+                        asp-for="DateOfBirth"
+                        placeholder="Birthday"
+                    />
+                </div>
+                <span asp-validation-for="DateOfBirth" class="text-danger mt-2"></span>
             </div>
             <button class="bg-black text-white p-4 block text-center rounded w-full mb-4" type="submit">Register</button>
         </form>
