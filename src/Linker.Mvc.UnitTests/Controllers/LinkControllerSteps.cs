@@ -11,25 +11,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System;
 using System.Collections.Generic;
+using Serilog;
 
 internal sealed class LinkControllerSteps : BaseSteps<LinkControllerSteps>
 {
     private readonly Mock<ILinkRepository> mockRepository;
     private readonly Mock<IMapper> mockMapper;
+    private readonly Mock<ILogger> mockLogger;
     private readonly LinkController controller;
 
     public LinkControllerSteps()
     {
         this.mockRepository = new();
         this.mockMapper = new();
+        this.mockLogger = new();
 
-        this.controller = new(this.mockRepository.Object, this.mockMapper.Object);
+        this.controller = new(this.mockRepository.Object, this.mockMapper.Object, this.mockLogger.Object);
         this.GivenIHaveDefaultHttpContext();
     }
 
     public override LinkControllerSteps GetSteps() => this;
 
-    public LinkControllerSteps WhenIInitWith(bool isRepoNull, bool isMapperNull)
+    public LinkControllerSteps WhenIInitWith(bool isRepoNull, bool isMapperNull, bool isLoggerNull)
     {
         var repo = isRepoNull
             ? null
@@ -39,7 +42,11 @@ internal sealed class LinkControllerSteps : BaseSteps<LinkControllerSteps>
             ? null
             : this.mockMapper.Object;
 
-        return this.RecordException(() => new LinkController(repo, mapper));
+        var logger = isLoggerNull
+            ? null
+            : this.mockLogger.Object;
+
+        return this.RecordException(() => new LinkController(repo, mapper, logger));
     }
 
     public LinkControllerSteps GivenIHaveDefaultHttpContext()
