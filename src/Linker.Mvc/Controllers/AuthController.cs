@@ -49,7 +49,7 @@ public sealed class AuthController : Controller
     // POST: AuthController/Login
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LoginRequest request, string returnUrl)
+    public async Task<IActionResult> Login(LoginRequest request, string? returnUrl)
     {
         if (!this.ModelState.IsValid)
         {
