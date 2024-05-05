@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Linker.Core.V2.Models;
 using Linker.Core.V2.Repositories;
+using Linker.Core.V2.Exceptions;
 using Dapper;
 using System.Data;
 using EnsureThat;
@@ -342,31 +343,38 @@ public sealed class LinkRepository : ILinkRepository
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var tags = new List<string>();
-
-        var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id = @Id;";
-        var selectFromLinksTagsQuery = @"SELECT * FROM LinksTags WHERE LinkId = @LinkId;";
-        var selectFromTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
-
-        var link = await this.connection
-            .QueryFirstAsync<Link>(selectFromLinksQuery, new { Id = id })
-            .ConfigureAwait(false);
-
-        var tagPairs = await this.connection
-            .QueryAsync<LinkTagPair>(selectFromLinksTagsQuery, new { LinkId = id })
-            .ConfigureAwait(false);
-
-        foreach (var pair in tagPairs)
+        try
         {
-            var tag = await this.connection
-                .QueryFirstAsync<Tag>(selectFromTagsQuery, new { Id = pair.TagId })
+            var tags = new List<string>();
+
+            var selectFromLinksQuery = @"SELECT * FROM Links WHERE Id = @Id;";
+            var selectFromLinksTagsQuery = @"SELECT * FROM LinksTags WHERE LinkId = @LinkId;";
+            var selectFromTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
+
+            var link = await this.connection
+                .QueryFirstAsync<Link>(selectFromLinksQuery, new { Id = id })
                 .ConfigureAwait(false);
-            tags.Add(tag.Name);
+
+            var tagPairs = await this.connection
+                .QueryAsync<LinkTagPair>(selectFromLinksTagsQuery, new { LinkId = id })
+                .ConfigureAwait(false);
+
+            foreach (var pair in tagPairs)
+            {
+                var tag = await this.connection
+                    .QueryFirstAsync<Tag>(selectFromTagsQuery, new { Id = pair.TagId })
+                    .ConfigureAwait(false);
+                tags.Add(tag.Name);
+            }
+
+            link.Tags = tags;
+
+            return link;
         }
-
-        link.Tags = tags;
-
-        return link;
+        catch (InvalidOperationException ex) when (ex.Message.Contains("Sequence contains no elements"))
+        {
+            throw new ApplicationExceptions.ItemNotFoundException($"The link with ID \"{id}\" does not exist.");
+        }
     }
 
     /// <inheritdoc/>

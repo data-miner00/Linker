@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = TempData["StatusCode"];
+}
+
+@if (TempData["StatusCode"] != null)
+{
+    <div class="border border-solid border-black rounded px-4">
+        <p>@TempData["StatusCode"]</p>
+        <p>@TempData[Constants.Error]</p>
+        <p>@TempData["ReferenceId"]</p>
+    </div>
+}
+else
+{
+    <p>You don't have any errors</p>
+}

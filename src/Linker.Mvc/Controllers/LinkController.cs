@@ -3,12 +3,14 @@
 using AutoMapper;
 using Linker.Common.Helpers;
 using Linker.Core.V2.ApiModels;
+using Linker.Core.V2.Exceptions;
 using Linker.Core.V2.Models;
 using Linker.Core.V2.QueryParams;
 using Linker.Core.V2.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using System.Net;
 using System.Security.Claims;
 
 [Authorize]
@@ -52,11 +54,24 @@ public sealed class LinkController : Controller
     // GET: LinkController/Details/5
     public async Task<IActionResult> Details(string id)
     {
-        var link = await this.repository
-            .GetByIdAsync(id, this.CancellationToken)
-            .ConfigureAwait(false);
+        try
+        {
+            var link = await this.repository
+                .GetByIdAsync(id, this.CancellationToken)
+                .ConfigureAwait(false);
 
-        return this.View(link);
+            return this.View(link);
+        }
+        catch (ApplicationExceptions.ItemNotFoundException ex)
+        {
+            this.logger.Warning(ex, "Link with Id \"{linkId}\" could not be found.", id);
+
+            this.TempData[Constants.Error] = "The link cannot be found.";
+            this.TempData["StatusCode"] = 404;
+            this.TempData["ReferenceId"] = this.HttpContext.TraceIdentifier;
+
+            return this.RedirectToAction("Index", "Error");
+        }
     }
 
     // GET: LinkController/Create
