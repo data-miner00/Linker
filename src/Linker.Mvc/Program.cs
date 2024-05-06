@@ -3,6 +3,8 @@ namespace Linker.Mvc;
 using System.Data;
 using System.Data.SqlClient;
 using System.Net;
+using App.Metrics.AspNetCore;
+using App.Metrics.Formatters.Prometheus;
 using AutoMapper;
 using Linker.Core.V2;
 using Linker.Core.V2.Repositories;
@@ -13,6 +15,8 @@ using Linker.Mvc.Options;
 using Linker.Mvc.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Serilog;
+
+using AppMetrics = Microsoft.Extensions.DependencyInjection.AppMetricsServiceCollectionExtensions;
 
 /// <summary>
 /// The entry point for Linker Mvc.
@@ -40,6 +44,7 @@ public static class Program
             .ConfigureAssetsUploader()
             .ConfigureLoggings()
             .ConfigureHttpClients()
+            .ConfigureMetrics()
             .Start();
     }
 
@@ -175,6 +180,25 @@ public static class Program
             httpClient.DefaultRequestHeaders.Add("User-Agent", string.Empty);
             httpClient.BaseAddress = new Uri("https://api.github.com");
         }
+    }
+
+    private static WebApplicationBuilder ConfigureMetrics(this WebApplicationBuilder builder)
+    {
+        AppMetrics.AddMetrics(builder.Services);
+
+        builder.Host
+            .UseMetricsWebTracking()
+            .UseMetrics(opt =>
+            {
+                opt.EndpointOptions = (eopt) =>
+                {
+                    eopt.MetricsTextEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
+                    eopt.MetricsEndpointOutputFormatter = new MetricsPrometheusProtobufOutputFormatter();
+                    eopt.EnvironmentInfoEndpointEnabled = false;
+                };
+            });
+
+        return builder;
     }
 
     private static void Start(this WebApplicationBuilder builder)
