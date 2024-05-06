@@ -10,6 +10,7 @@ using Linker.Data.SqlServer;
 using Linker.Mvc.Hubs;
 using Linker.Mvc.Mappers;
 using Linker.Mvc.Options;
+using Linker.Mvc.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Serilog;
 
@@ -38,6 +39,7 @@ public static class Program
             .ConfigureChat()
             .ConfigureAssetsUploader()
             .ConfigureLoggings()
+            .ConfigureHttpClients()
             .Start();
     }
 
@@ -158,6 +160,21 @@ public static class Program
         });
 
         return builder;
+    }
+
+    private static WebApplicationBuilder ConfigureHttpClients(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddHttpClient("github", ConfigureClient);
+        builder.Services.AddHttpClient<GitHubService>(ConfigureClient);
+
+        return builder;
+
+        static void ConfigureClient(IServiceProvider ctx, HttpClient httpClient)
+        {
+            httpClient.DefaultRequestHeaders.Add("Authorization", string.Empty);
+            httpClient.DefaultRequestHeaders.Add("User-Agent", string.Empty);
+            httpClient.BaseAddress = new Uri("https://api.github.com");
+        }
     }
 
     private static void Start(this WebApplicationBuilder builder)
