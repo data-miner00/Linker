@@ -1,5 +1,6 @@
 ﻿namespace Linker.Data.SqlServer;
 
+using Linker.Common.Helpers;
 using Linker.Core.V2.Models;
 using Linker.Core.V2.Repositories;
 using System;
@@ -23,8 +24,8 @@ public sealed class AuthenticationHandler : IAuthenticationHandler
     /// <param name="saltLength">The length of salt generated.</param>
     public AuthenticationHandler(ICredentialRepository repository, int saltLength)
     {
-        this.repository = repository;
-        this.saltLength = saltLength;
+        this.repository = Guard.ThrowIfNull(repository);
+        this.saltLength = Guard.ThrowIfLessThan(saltLength, 0);
     }
 
     /// <inheritdoc/>

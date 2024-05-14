@@ -265,12 +265,12 @@ public sealed class LinkRepository : ILinkRepository
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var selectLinkStatement = @"EXEC usp_GetLinksWithSearch @Keyword;";
+        var searchLinkStatement = @"EXEC usp_GetLinksWithSearch @Keyword;";
         var selectLinksTagsQuery = @"SELECT * FROM LinksTags WHERE LinkId = @LinkId;";
         var selectTagsQuery = @"SELECT * FROM Tags WHERE Id = @Id;";
 
         var links = await this.connection
-            .QueryAsync<Link>(selectLinkStatement, new { Keyword = keyword })
+            .QueryAsync<Link>(searchLinkStatement, new { Keyword = keyword })
             .ConfigureAwait(false);
 
         foreach (var link in links)
