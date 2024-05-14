@@ -1,8 +1,10 @@
 namespace Linker.WebApi.IntegrationTests;
 
+using Linker.TestCore.Attributes;
+
 public class UnitTest1
 {
-    [Fact]
+    [PrefixedFact(nameof(UnitTest1))]
     public void Test1()
     {
 
