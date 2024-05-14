@@ -3,9 +3,11 @@
 using Linker.Core.V2.ApiModels;
 using Linker.Core.V2.Models;
 using Linker.Core.V2.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
-public class ChatHub : Hub
+[Authorize]
+public sealed class ChatHub : Hub
 {
     private const string ServerIdentifier = "server";
     private readonly ConnectionManager connectionManager;
