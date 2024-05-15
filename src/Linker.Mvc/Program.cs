@@ -133,8 +133,7 @@ public static class Program
     private static WebApplicationBuilder ConfigureChat(this WebApplicationBuilder builder)
     {
         builder.Services.AddSignalR();
-        builder.Services
-            .AddSingleton<ConnectionManager>();
+        builder.Services.AddSingleton<ConnectionManager>();
 
         return builder;
     }

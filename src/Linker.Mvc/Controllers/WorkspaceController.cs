@@ -257,12 +257,12 @@ public sealed class WorkspaceController : Controller
                 .AddWorkspaceLinkAsync(workspaceId.ToString(), linkId.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData[Constants.Success] = "Successfully added article to workspace.";
+            this.TempData[Constants.Success] = "Successfully added link to workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
         catch (InvalidOperationException ex)
         {
-            this.TempData[Constants.Error] = "Failed to add article to workspace.";
+            this.TempData[Constants.Error] = "Failed to add link to workspace.";
             this.logger.Error(ex, "Something wrong: {message}", ex.Message);
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
@@ -280,12 +280,12 @@ public sealed class WorkspaceController : Controller
                 .RemoveWorkspaceLinkAsync(workspaceId.ToString(), linkId.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
 
-            this.TempData[Constants.Success] = "Successfully deleted article from workspace.";
+            this.TempData[Constants.Success] = "Successfully deleted link from workspace.";
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }
         catch (InvalidOperationException ex)
         {
-            this.TempData[Constants.Error] = "Failed to remove article from workspace.";
+            this.TempData[Constants.Error] = "Failed to remove link from workspace.";
             this.logger.Error(ex, "Something wrong: {message}", ex.Message);
             return this.RedirectToAction(nameof(this.Details), new { id = workspaceId.ToString() });
         }

@@ -38,7 +38,7 @@
                     var member = Model.Members.ElementAt(i);
                     var isNotSelf = !member.Id.Equals(userId, StringComparison.OrdinalIgnoreCase);
 
-                    <li class="flex justify-between mb-2 items-center">
+                    <li class="flex justify-between mb-2 items-center relative">
                         <div class="flex gap-2 items-center">
                             <div class="rounded-full overflow-hidden w-[30px] h-[30px]">
                                 <img width="30" height="30" src="@member.PhotoUrl" alt="@member.Username's Profile image" />
@@ -50,16 +50,32 @@
                         </div>
                         @if (isWorkspaceOwner && isNotSelf)
                         {
-                            <form method="post" asp-action="Kick" onsubmit="return confirm('Are you sure to kick this people?')">
-                                <input hidden name="workspaceId" value="@Model.WorkspaceId" />
-                                <input hidden name="userId" value="@member.Id" />
-                                <button
-                                    class="block border border-solid border-black rounded px-1 text-sm"
-                                    type="submit"
-                                >
-                                    Kick
+                            var menuId = string.Concat("opt-", member.Id);
+                            <button onclick="return toggleUserOption('@menuId')">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <div
+                                id="@menuId"
+                                onclick="return toggleUserOption('@menuId')"
+                                class="flex flex-col absolute top-6 hidden right-0 border border-solid border-black bg-white z-10"
+                            >
+                                <a class="p-2" asp-action="Details" asp-controller="User">
+                                    <i class="bi bi-person"></i> View Profile
+                                </a>
+                                <button class="p-2 text-left block">
+                                    <i class="bi bi-box-seam-fill"></i> Manage Roles
                                 </button>
-                            </form>
+                                <form method="post" asp-action="Kick" onsubmit="return confirm('Are you sure to kick this people?')">
+                                    <input hidden name="workspaceId" value="@Model.WorkspaceId" />
+                                    <input hidden name="userId" value="@member.Id" />
+                                    <button
+                                        class="p-2 text-left block w-full"
+                                        type="submit"
+                                    >
+                                        <i class="bi bi-person-x"></i> Kick
+                                    </button>
+                                </form>
+                            </div>
                         }
                     </li>
                 }
@@ -348,6 +364,10 @@
             connection
                 .invoke("DeleteMessage", "@Model.WorkspaceId", chatId)
                 .catch(console.error);
+        }
+
+        function toggleUserOption(optionElementId) {
+            $(`#${optionElementId}`).toggleClass("hidden");
         }
     </script>
 }
