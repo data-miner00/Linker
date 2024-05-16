@@ -1,5 +1,6 @@
 ﻿namespace Linker.WebJob.Options;
 
+using Linker.WebJob.Filters;
 using Linker.WebJob.Jobs;
 using System.ComponentModel.DataAnnotations;
 
@@ -12,6 +13,7 @@ internal sealed class UrlHealthCheckOption
     /// Gets or sets the cron expression for the job.
     /// </summary>
     [Required]
+    [CronExpression]
     required public string CronExpression { get; set; }
 
     /// <summary>
