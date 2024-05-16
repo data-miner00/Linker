@@ -1,7 +1,7 @@
 ﻿@using Linker.Core.V2.Models
 @model ValueTuple<User, IEnumerable<Workspace>>
 @{
-    ViewData["Title"] = "My Profile";
+    ViewData["Title"] = Model.Item1.Username;
     var age = (DateTime.Now - Model.Item1.DateOfBirth).TotalDays / 365;
 }
 
@@ -20,8 +20,3 @@
 <p>Status: @Model.Item1.Status</p>
 <p>Birthday: @Model.Item1.DateOfBirth (@age years old)</p>
 
-<form enctype="multipart/form-data" method="post" asp-controller="User" asp-action="Upload">
-    <label for="file">Upload file</label>
-    <input name="file" type="file" required>
-    <input type="submit" value="Upload" />
-</form>

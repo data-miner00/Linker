@@ -54,6 +54,28 @@ public sealed class UserController : Controller
         }
     }
 
+    public async Task<IActionResult> Details(Guid id)
+    {
+        try
+        {
+            var user = await this.repository
+                .GetByIdAsync(id.ToString(), this.CancellationToken)
+                .ConfigureAwait(false);
+
+            var joinedWorkspaces = await this.workspaceRepository
+                .GetAllByUserAsync(this.UserId, this.CancellationToken)
+                .ConfigureAwait(false);
+
+            return this.View((user, joinedWorkspaces));
+        }
+        catch (InvalidOperationException ex)
+        {
+            this.logger.Error(ex, "Something went wrong: {message}", ex.Message);
+
+            return this.NotFound();
+        }
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Upload([FromForm] IFormFile file)

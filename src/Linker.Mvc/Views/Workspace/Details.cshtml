@@ -59,7 +59,7 @@
                                 onclick="return toggleUserOption('@menuId')"
                                 class="flex flex-col absolute top-6 hidden right-0 border border-solid border-black bg-white z-10"
                             >
-                                <a class="p-2" asp-action="Details" asp-controller="User">
+                                <a class="p-2" asp-action="Details" asp-controller="User" asp-route-id="@member.Id">
                                     <i class="bi bi-person"></i> View Profile
                                 </a>
                                 <button class="p-2 text-left block">
