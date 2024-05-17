@@ -38,16 +38,24 @@
                     var member = Model.Members.ElementAt(i);
                     var isNotSelf = !member.Id.Equals(userId, StringComparison.OrdinalIgnoreCase);
 
+
                     <li class="flex justify-between mb-2 items-center relative">
-                        <div class="flex gap-2 items-center">
+                        <a
+                            class="flex gap-2 items-center hover:bg-gray-100 block w-full"
+                            asp-action="Details"
+                            asp-controller="User"
+                            target="_blank"
+                            title="Visit profile"
+                            asp-route-id="@member.Id"
+                        >
                             <div class="rounded-full overflow-hidden w-[30px] h-[30px]">
                                 <img width="30" height="30" src="@member.PhotoUrl" alt="@member.Username's Profile image" />
                             </div>
-                            <div>
-                                <span>@member.Username</span>
-                                <span class="text-sm text-gray-600">@member.Email</span>
+                            <div class="flex flex-col">
+                                <div>@member.Username <span class="text-xs">Role</span></div>
+                                <div class="text-sm text-gray-600">@member.Email</div>
                             </div>
-                        </div>
+                        </a>
                         @if (isWorkspaceOwner && isNotSelf)
                         {
                             var menuId = string.Concat("opt-", member.Id);
@@ -64,6 +72,9 @@
                                 </a>
                                 <button class="p-2 text-left block">
                                     <i class="bi bi-box-seam-fill"></i> Manage Roles
+                                </button>
+                                <button class="p-2 text-left block">
+                                    <i class="bi bi-person-fill-add"></i> Add friend
                                 </button>
                                 <form method="post" asp-action="Kick" onsubmit="return confirm('Are you sure to kick this people?')">
                                     <input hidden name="workspaceId" value="@Model.WorkspaceId" />
