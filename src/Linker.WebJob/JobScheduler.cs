@@ -49,7 +49,7 @@ internal sealed class JobScheduler
         return this.scheduler.Shutdown();
     }
 
-    private Task ScheduleJobsAsync(CancellationToken cancellationToken)
+    private Task<DateTimeOffset[]> ScheduleJobsAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
