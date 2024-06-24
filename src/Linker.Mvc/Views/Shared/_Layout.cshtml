@@ -57,7 +57,11 @@
                         <a asp-area="" asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">Login</a>
                     }
                 </div>
-                <div class="text-xl"><i class="bi bi-bookmark"></i></div>
+                <div class="text-xl">
+                    <a asp-area="" asp-controller="Playlist" asp-action="Index" title="Playlists">
+                        <i class="bi bi-bookmark"></i>
+                    </a>
+                </div>
                 <div class="text-xl"><i class="bi bi-bell"></i></div>
                 <div class="text-xl">
                     <a asp-area="" asp-controller="Workspace" asp-action="Index" title="Workspaces">
