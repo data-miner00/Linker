@@ -13,6 +13,11 @@ public class Playlist
     public string Id { get; set; }
 
     /// <summary>
+    /// Gets or sets the owner Id.
+    /// </summary>
+    public string OwnerId { get; set; }
+
+    /// <summary>
     /// Gets or sets the name of the playlist.
     /// </summary>
     public string Name { get; set; }
