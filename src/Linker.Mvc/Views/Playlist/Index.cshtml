@@ -1,8 +1,31 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using Linker.Core.V2.Models
+@model IEnumerable<Playlist>
 @{
     ViewData["Title"] = "Playlist";
+    var playlistCounts = Model.Count();
 }
 
-<p>Stub Playlist Page</p>
+<partial name="_Notification" />
+
+<a asp-action="Create">+</a>
+
+@if (Model.Any())
+{
+    @foreach (var playlist in Model)
+    {
+        <div>
+            <p>@playlist.Id</p>
+            <p>@playlist.Name</p>
+            <p>@playlist.Description</p>
+            <p>@playlist.Visibility.ToString()</p>
+            <p>@playlist.CreatedAt.ToLongTimeString()</p>
+            <p>@playlist.ModifiedAt.ToLongTimeString()</p>
+        </div>
+    }
+}
+else
+{
+    <p>No playlist for now.</p>
+    <button>Create a new playlist.</button>
+}
+

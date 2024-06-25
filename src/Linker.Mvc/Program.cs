@@ -90,7 +90,8 @@ public static class Program
         builder.Services
             .AddSingleton<ILinkRepository, LinkRepository>()
             .AddSingleton<IUserRepository, UserRepository>()
-            .AddSingleton<IWorkspaceRepository, WorkspaceRepository>();
+            .AddSingleton<IWorkspaceRepository, WorkspaceRepository>()
+            .AddSingleton<IPlaylistRepository, PlaylistRepository>();
 
         return builder;
     }
