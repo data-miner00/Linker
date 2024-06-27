@@ -7,7 +7,7 @@ using Linker.Core.V2.ApiModels;
 using Linker.Core.V2.Models;
 
 /// <summary>
-/// The mapper profile for mapping <see cref="Article"/> related models.
+/// The mapper profile for mapping <see cref="Link"/> related models.
 /// </summary>
 public class LinkMapperProfile : Profile
 {
@@ -16,14 +16,14 @@ public class LinkMapperProfile : Profile
     /// </summary>
     public LinkMapperProfile()
     {
-        this.ConfigureMapFromPostRequestToArticle();
-        this.ConfigureMapFromPutRequestToArticle();
+        this.ConfigureMapFromPostRequestToProfile();
+        this.ConfigureMapFromPutRequestToProfile();
     }
 
     /// <summary>
     /// Configure the mappings from <see cref="CreateLinkRequest"/> to <see cref="Link"/>.
     /// </summary>
-    public void ConfigureMapFromPostRequestToArticle()
+    public void ConfigureMapFromPostRequestToProfile()
     {
         this.CreateMap<CreateLinkRequest, Link>(MemberList.Source)
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
@@ -35,7 +35,7 @@ public class LinkMapperProfile : Profile
     /// <summary>
     /// Configure the mappings from <see cref="UpdateLinkRequest"/> to <see cref="Link"/>.
     /// </summary>
-    public void ConfigureMapFromPutRequestToArticle()
+    public void ConfigureMapFromPutRequestToProfile()
     {
         this.CreateMap<UpdateLinkRequest, Link>(MemberList.Source)
             .ForMember(dest => dest.Domain, opt => opt.MapFrom(src => UrlParser.ExtractDomainLite(src.Url)));
