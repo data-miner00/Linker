@@ -126,6 +126,7 @@ public static class Program
                 config.AddProfile<LinkMapperProfile>();
                 config.AddProfile<UserMapperProfile>();
                 config.AddProfile<WorkspaceMapperProfile>();
+                config.AddProfile<PlaylistMapperProfile>();
             }).CreateMapper());
 
         return builder;

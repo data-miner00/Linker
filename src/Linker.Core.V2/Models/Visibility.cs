@@ -19,4 +19,9 @@ public enum Visibility
     /// The resource is only accessible to its owner.
     /// </summary>
     Private,
+
+    /// <summary>
+    /// The resource is available only through dedicated links.
+    /// </summary>
+    Unlisted,
 }

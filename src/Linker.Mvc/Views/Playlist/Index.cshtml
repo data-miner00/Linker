@@ -11,15 +11,18 @@
 
 @if (Model.Any())
 {
+    var counter = 1;
     @foreach (var playlist in Model)
     {
-        <div>
+        <div class="border border-solid border-black rounded p-4">
+            <p>Index: @(counter++)</p>
             <p>@playlist.Id</p>
             <p>@playlist.Name</p>
             <p>@playlist.Description</p>
             <p>@playlist.Visibility.ToString()</p>
             <p>@playlist.CreatedAt.ToLongTimeString()</p>
             <p>@playlist.ModifiedAt.ToLongTimeString()</p>
+            <a class="bg-black p-2 rounded-lg text-white" asp-action="Edit" asp-route-id="@playlist.Id">Edit</a>
         </div>
     }
 }
