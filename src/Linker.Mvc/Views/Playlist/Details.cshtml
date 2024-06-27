@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Linker.Core.V2.Models
+@using System.Security.Claims
+@model Playlist
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    ViewData["Title"] = Model.Name;
+    var httpContext = httpContextAccessor.HttpContext;
+    var isLoggedIn = httpContext?.User.Identity?.IsAuthenticated ?? false;
+    var userId = httpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+}
+
+<article class="mb-10" id="@Html.DisplayFor(model => model.Id)">
+    <header class="mb-2">
+        <h1 class="text-2xl font-bold block">
+            @Html.DisplayFor(model => model.Name)
+        </h1>
+    </header>
+    <div class="flex gap-4 mb-4">
+        <div><span>By</span> @Html.DisplayFor(model => model.OwnerId)</div>
+        <div>Created at <time>@Html.DisplayFor(model => model.CreatedAt)</time></div>
+        <div>Modified at <time>@Html.DisplayFor(model => model.ModifiedAt)</time></div>
+        <div class="bg-white border border-solid border-black text-xs uppercase rounded flex items-center justify-center px-1">
+            <span class="block">@Html.DisplayFor(model => model.Visibility)</span>
+        </div>
+    </div>
+    <div>
+        <p class="text-gray-700">@Html.DisplayFor(model => model.Description)</p>
+    </div>
+</article>

@@ -3,6 +3,7 @@
 using AutoMapper;
 using Linker.Common.Helpers;
 using Linker.Core.V2.ApiModels;
+using Linker.Core.V2.Exceptions;
 using Linker.Core.V2.Models;
 using Linker.Core.V2.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -126,6 +127,52 @@ public sealed class PlaylistController : Controller
         {
             this.TempData[Constants.Error] = ex.Message;
             return this.View(request);
+        }
+    }
+
+    public async Task<IActionResult> Details(string id)
+    {
+        try
+        {
+            var playlist = await this.repository
+                .GetByIdAsync(id, this.HttpContext.RequestAborted)
+                .ConfigureAwait(false);
+
+            return this.View(playlist);
+        }
+        catch (ApplicationExceptions.ItemNotFoundException ex)
+        {
+            this.logger.Warning(ex, "Playlist with Id \"{playlistId}\" could not be found.", id);
+
+            this.TempData[Constants.Error] = "The link cannot be found.";
+            this.TempData["StatusCode"] = 404;
+            this.TempData["ReferenceId"] = this.HttpContext.TraceIdentifier;
+
+            return this.RedirectToAction("Index", "Error");
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(string id)
+    {
+        try
+        {
+            await this.repository
+                .RemoveAsync(id, this.HttpContext.RequestAborted)
+                .ConfigureAwait(false);
+
+            this.TempData[Constants.Success] = "Playlist successfully deleted.";
+
+            return this.RedirectToAction(nameof(this.Index));
+        }
+        catch (InvalidOperationException)
+        {
+            return this.NotFound();
+        }
+        catch
+        {
+            return this.View();
         }
     }
 }
