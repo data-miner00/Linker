@@ -47,14 +47,8 @@ public sealed class PlaylistController : Controller
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var playlist = new Playlist
-        {
-            Id = Guid.NewGuid().ToString(),
-            OwnerId = this.UserId,
-            Name = request.Name,
-            Description = request.Description,
-            Visibility = request.Visibility,
-        };
+        var playlist = this.mapper.Map<Playlist>(request);
+        playlist.OwnerId = this.UserId;
 
         try
         {

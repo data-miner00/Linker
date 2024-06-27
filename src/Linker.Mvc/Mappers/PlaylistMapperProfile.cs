@@ -15,13 +15,19 @@ public sealed class PlaylistMapperProfile : Profile
     public PlaylistMapperProfile()
     {
         this.ConfigureMapFromPutRequestToPlaylist();
+        this.ConfigureMapFromPostRequestToPlaylist();
+    }
+
+    private void ConfigureMapFromPostRequestToPlaylist()
+    {
+        this.CreateMap<CreatePlaylistRequest, Playlist>(MemberList.Source)
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
+            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(dest => dest.ModifiedAt, opt => opt.MapFrom(src => DateTime.Now));
     }
 
     private void ConfigureMapFromPutRequestToPlaylist()
     {
-        this.CreateMap<UpdatePlaylistRequest, Playlist>(MemberList.Source)
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
-            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now))
-            .ForMember(dest => dest.ModifiedAt, opt => opt.MapFrom(src => DateTime.Now));
+        this.CreateMap<UpdatePlaylistRequest, Playlist>(MemberList.Source);
     }
 }

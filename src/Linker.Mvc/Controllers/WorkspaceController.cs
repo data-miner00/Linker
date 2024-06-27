@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System.Data.SqlClient;
-using System.Data.SQLite;
 using System.Security.Claims;
 
 [Authorize]
