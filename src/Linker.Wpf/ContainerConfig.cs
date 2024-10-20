@@ -1,5 +1,6 @@
 ﻿namespace Linker.Wpf
 {
+    using System;
     using System.Data;
     using System.Data.SQLite;
     using Autofac;
@@ -31,7 +32,8 @@
 
             builder.RegisterModule(module);
 
-            var sqliteOptions = config.GetSection(typeof(SQLiteOption).Name).Get<SQLiteOption>();
+            var sqliteOptions = config.GetSection(typeof(SQLiteOption).Name).Get<SQLiteOption>()
+                    ?? throw new InvalidOperationException("The settings is missing");
 
             var connection = new SQLiteConnection(sqliteOptions.ConnectionString);
 
