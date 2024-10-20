@@ -13,7 +13,9 @@
 
 <partial name="_Notification" />
 
-<a asp-action="Create">+</a>
+<div class="my-3 flex">
+    <a asp-action="Create" class="px-4 py-2 bg-black text-white rounded block">+ Create</a>
+</div>
 
 @if (Model.Any())
 {
@@ -28,8 +30,12 @@
             <p>@playlist.Visibility.ToString()</p>
             <p>@playlist.CreatedAt.ToLongTimeString()</p>
             <p>@playlist.ModifiedAt.ToLongTimeString()</p>
-            <a class="bg-black p-2 rounded-lg text-white" asp-action="Details" asp-route-id="@playlist.Id">Details</a>
-            <a class="bg-black p-2 rounded-lg text-white" asp-action="Edit" asp-route-id="@playlist.Id">Edit</a>
+
+            <div class="my-4 flex gap-2">
+                <a class="bg-black p-2 rounded-lg text-white block" asp-action="Details" asp-route-id="@playlist.Id">Details</a>
+                <a class="bg-black p-2 rounded-lg text-white block" asp-action="Edit" asp-route-id="@playlist.Id">Edit</a>
+            </div>
+
             @if(userId.Equals(playlist.OwnerId, StringComparison.OrdinalIgnoreCase))
             {
                 <form method="post" asp-action="Delete" asp-route-id="@playlist.Id" class="block">
