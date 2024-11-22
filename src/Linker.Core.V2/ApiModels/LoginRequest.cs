@@ -17,7 +17,7 @@ public sealed class LoginRequest
     /// <summary>
     /// Gets or sets the password.
     /// </summary>
-    [StringLength(100, MinimumLength = 10)]
+    [StringLength(100, MinimumLength = 3)]
     [Required(AllowEmptyStrings = false)]
     public string Password { get; set; } = null!;
 }
