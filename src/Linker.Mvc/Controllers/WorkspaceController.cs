@@ -8,8 +8,8 @@ using Linker.Core.V2.Repositories;
 using Linker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Serilog;
-using System.Data.SqlClient;
 using System.Security.Claims;
 
 [Authorize]

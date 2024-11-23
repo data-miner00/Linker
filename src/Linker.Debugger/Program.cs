@@ -3,7 +3,6 @@
     using System;
     using System.Configuration;
     using System.Data;
-    using System.Data.SqlClient;
     using System.Data.SQLite;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
@@ -12,6 +11,7 @@
     using Linker.Core.V2.Models;
     using Linker.Data.SQLite;
     using Linker.Data.SqlServer;
+    using Microsoft.Data.SqlClient;
 
     internal static class Program
     {

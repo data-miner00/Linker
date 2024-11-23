@@ -7,13 +7,13 @@ using Linker.Data.SqlServer;
 using Linker.WebJob.Jobs;
 using Linker.WebJob.Models;
 using Linker.WebJob.Options;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
 using System.Data;
-using System.Data.SqlClient;
 
 /// <summary>
 /// The IoC container configurations. Registers all dependencies of the program.
