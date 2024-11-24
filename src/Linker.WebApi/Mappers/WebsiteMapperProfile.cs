@@ -5,6 +5,7 @@ using AutoMapper;
 using Linker.Common;
 using Linker.Core.ApiModels;
 using Linker.Core.Models;
+using Linker.WebApi.ApiModels;
 
 /// <summary>
 /// The mapper profile for mapping <see cref="Website"/> related models.
@@ -18,6 +19,7 @@ public sealed class WebsiteMapperProfile : Profile
     {
         this.ConfigureMapFromPostRequestToWebsite();
         this.ConfigureMapFromPutRequestToWebsite();
+        this.ConfigureMapFromWebsiteToWebsiteApiModel();
     }
 
     /// <summary>
@@ -40,5 +42,17 @@ public sealed class WebsiteMapperProfile : Profile
     {
         this.CreateMap<UpdateWebsiteRequest, Website>(MemberList.Source)
             .ForMember(dest => dest.Domain, opt => opt.MapFrom(src => UrlParser.ExtractDomainLite(src.Url)));
+    }
+
+    /// <summary>
+    /// Configure the mappings from <see cref="Website"/> to <see cref="WebsiteApiModel"/>.
+    /// </summary>
+    public void ConfigureMapFromWebsiteToWebsiteApiModel()
+    {
+        this.CreateMap<Website, WebsiteApiModel>(MemberList.Source)
+            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.ToString()))
+            .ForMember(dest => dest.Language, opt => opt.MapFrom(src => src.Language.ToString()))
+            .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating.ToString()))
+            .ForMember(dest => dest.Aesthetics, opt => opt.MapFrom(src => src.Aesthetics.ToString()));
     }
 }

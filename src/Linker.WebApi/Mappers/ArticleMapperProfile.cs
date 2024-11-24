@@ -5,6 +5,7 @@ using AutoMapper;
 using Linker.Common;
 using Linker.Core.ApiModels;
 using Linker.Core.Models;
+using Linker.WebApi.ApiModels;
 
 /// <summary>
 /// The mapper profile for mapping <see cref="Article"/> related models.
@@ -18,6 +19,7 @@ public class ArticleMapperProfile : Profile
     {
         this.ConfigureMapFromPostRequestToArticle();
         this.ConfigureMapFromPutRequestToArticle();
+        this.ConfigureMapFromArticleToArticleApiModel();
     }
 
     /// <summary>
@@ -40,5 +42,17 @@ public class ArticleMapperProfile : Profile
     {
         this.CreateMap<UpdateArticleRequest, Article>(MemberList.Source)
             .ForMember(dest => dest.Domain, opt => opt.MapFrom(src => UrlParser.ExtractDomainLite(src.Url)));
+    }
+
+    /// <summary>
+    /// Configure the mappings from <see cref="Article"/> to <see cref="ArticleApiModel"/>.
+    /// </summary>
+    public void ConfigureMapFromArticleToArticleApiModel()
+    {
+        this.CreateMap<Article, ArticleApiModel>(MemberList.Source)
+            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.ToString()))
+            .ForMember(dest => dest.Language, opt => opt.MapFrom(src => src.Language.ToString()))
+            .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating.ToString()))
+            .ForMember(dest => dest.Grammar, opt => opt.MapFrom(src => src.Grammar.ToString()));
     }
 }

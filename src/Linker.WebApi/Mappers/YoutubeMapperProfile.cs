@@ -4,6 +4,7 @@ using System;
 using AutoMapper;
 using Linker.Core.ApiModels;
 using Linker.Core.Models;
+using Linker.WebApi.ApiModels;
 
 /// <summary>
 /// The mapper profile for mapping <see cref="Youtube"/> related models.
@@ -17,6 +18,7 @@ public sealed class YoutubeMapperProfile : Profile
     {
         this.ConfigureMapFromPostRequestToYoutube();
         this.ConfigureMapFromPutRequestToYoutube();
+        this.ConfigureMapFromYoutubeToYoutubeApiModel();
     }
 
     /// <summary>
@@ -37,5 +39,16 @@ public sealed class YoutubeMapperProfile : Profile
     public void ConfigureMapFromPutRequestToYoutube()
     {
         this.CreateMap<UpdateYoutubeRequest, Youtube>(MemberList.Source);
+    }
+
+    /// <summary>
+    /// Configure the mappings from <see cref="Youtube"/> to <see cref="YoutubeApiModel"/>.
+    /// </summary>
+    public void ConfigureMapFromYoutubeToYoutubeApiModel()
+    {
+        this.CreateMap<Youtube, YoutubeApiModel>(MemberList.Source)
+            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.ToString()))
+            .ForMember(dest => dest.Language, opt => opt.MapFrom(src => src.Language.ToString()))
+            .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating.ToString()));
     }
 }

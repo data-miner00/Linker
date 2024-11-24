@@ -8,6 +8,7 @@
     using Linker.Core.Controllers;
     using Linker.Core.Models;
     using Linker.Core.Repositories;
+    using Linker.WebApi.ApiModels;
     using Linker.WebApi.Filters;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -71,9 +72,11 @@
         {
             try
             {
-                var result = await this.repository
+                var website = await this.repository
                     .GetByIdAsync(id.ToString(), CancellationToken.None)
                     .ConfigureAwait(false);
+
+                var result = this.mapper.Map<WebsiteApiModel>(website);
 
                 return this.Ok(result);
             }
@@ -88,9 +91,12 @@
         [HttpGet("", Name = "GetAllWebsites")]
         public async Task<IActionResult> GetAllAsync()
         {
-            var results = await this.repository
+            var websites = await this.repository
                 .GetAllAsync(CancellationToken.None)
                 .ConfigureAwait(false);
+
+            var results = websites.Select(this.mapper.Map<WebsiteApiModel>)
+                .ToList();
 
             return this.Ok(results);
         }
