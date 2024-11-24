@@ -1,6 +1,7 @@
 ﻿namespace Linker.WebApi.Controllers
 {
     using System;
+    using System.Net;
     using System.Security.Claims;
     using AutoMapper;
     using EnsureThat;
@@ -10,8 +11,11 @@
     using Linker.Core.Repositories;
     using Linker.WebApi.ApiModels;
     using Linker.WebApi.Filters;
+    using Linker.WebApi.Swagger;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Swashbuckle.AspNetCore.Annotations;
+    using Swashbuckle.AspNetCore.Filters;
 
     /// <summary>
     /// The API controller for <see cref="Youtube"/>.
@@ -49,6 +53,7 @@
 
         /// <inheritdoc/>
         [HttpPost("", Name = "CreateYoutube")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Youtube link created")]
         public async Task<IActionResult> CreateAsync([FromBody] CreateYoutubeRequest request)
         {
             EnsureArg.IsNotNull(request, nameof(request));
@@ -68,6 +73,8 @@
         /// <inheritdoc/>
         [RoleAuthorize(Role.Administrator)]
         [HttpDelete("{id:guid}", Name = "DeleteYoutube")]
+        [SwaggerResponse((int)HttpStatusCode.NoContent, "Youtube successfully deleted.")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Youtube not found.")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
             try
@@ -87,6 +94,9 @@
         /// <inheritdoc/>
         [RoleAuthorize(Role.Administrator)]
         [HttpGet("", Name = "GetAllYoutubes")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved all youtubes.")]
+        [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(YoutubeResponseCollectionExample))]
+        [ProducesResponseType(typeof(YoutubeResponseCollectionExample), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllAsync()
         {
             var channels = await this.repository
@@ -102,6 +112,10 @@
         /// <inheritdoc/>
         [RoleAuthorize(Role.Administrator)]
         [HttpGet("{id:guid}", Name = "GetYoutube")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Youtube not found.")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved youtube.")]
+        [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(YoutubeResponseExample))]
+        [ProducesResponseType(typeof(YoutubeResponseExample), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
             try
@@ -123,6 +137,8 @@
         /// <inheritdoc/>
         [RoleAuthorize(Role.Administrator)]
         [HttpPut("{id:guid}", Name = "UpdateYoutube")]
+        [SwaggerResponse((int)HttpStatusCode.NoContent, "Youtube updated.")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Youtube not found.")]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateYoutubeRequest request)
         {
             EnsureArg.IsNotNull(request, nameof(request));
@@ -163,6 +179,8 @@
         /// <inheritdoc/>
         [AccountAuthorize]
         [HttpDelete("/byuser/{userId:guid}/{linkId:guid}", Name = "DeleteYoutubeByUser")]
+        [SwaggerResponse((int)HttpStatusCode.NoContent, "Youtube successfully deleted.")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Youtube not found.")]
         public async Task<IActionResult> DeleteByUserAsync(Guid userId, Guid linkId)
         {
             try
@@ -191,6 +209,9 @@
         /// <inheritdoc/>
         [AccountAuthorize]
         [HttpGet("byuser/{userId:guid}", Name = "GetAllYoutubesByUser")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved all youtubes.")]
+        [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(YoutubeResponseCollectionExample))]
+        [ProducesResponseType(typeof(YoutubeResponseCollectionExample), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllByUserAsync(Guid userId)
         {
             var results = await this.repository
@@ -203,6 +224,10 @@
         /// <inheritdoc/>
         [AccountAuthorize]
         [HttpGet("byuser/{userId:guid}/{linkId:guid}", Name = "GetYoutubeByUser")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Youtube not found.")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved youtube.")]
+        [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(YoutubeResponseExample))]
+        [ProducesResponseType(typeof(YoutubeResponseExample), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetByUserAsync(Guid userId, Guid linkId)
         {
             try
@@ -222,6 +247,8 @@
         /// <inheritdoc/>
         [AccountAuthorize]
         [HttpPut("/byuser/{userId:guid}/{linkId:guid}", Name = "UpdateYoutubeByUser")]
+        [SwaggerResponse((int)HttpStatusCode.NoContent, "Youtube updated.")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Youtube not found.")]
         public async Task<IActionResult> UpdateByUserAsync(
             [FromRoute] Guid userId,
             [FromRoute] Guid linkId,

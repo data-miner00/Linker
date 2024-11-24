@@ -1,6 +1,6 @@
 ﻿namespace Linker.WebApi.ApiModels;
 
-internal sealed class WebsiteApiModel : LinkApiModel
+public sealed class WebsiteApiModel : LinkApiModel
 {
     /// <summary>
     /// Gets or sets the name of the website/entity.

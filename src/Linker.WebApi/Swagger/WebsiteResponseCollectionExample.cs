@@ -8,57 +8,54 @@
     using Swashbuckle.AspNetCore.Filters;
 
     /// <summary>
-    /// The example for the Article collection response.
+    /// The example for the Website collection response.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public sealed class ArticleResponseCollectionExample : IExamplesProvider<IEnumerable<ArticleApiModel>>
+    public sealed class WebsiteResponseCollectionExample : IExamplesProvider<IEnumerable<WebsiteApiModel>>
     {
         /// <inheritdoc/>
-        public IEnumerable<ArticleApiModel> GetExamples()
+        public IEnumerable<WebsiteApiModel> GetExamples()
         {
             return new[]
             {
-                new ArticleApiModel
+                new WebsiteApiModel
                 {
                     Id = GetRandomId(),
-                    Title = "TypeScript satifies Operator",
+                    Name = "TypeScript satifies Operator",
                     Url = "https://www.freecodecamp.org/news/typescript-satisfies-operator/",
-                    Author = "Satyam Tripathi",
                     Category = Category.Programming.ToString(),
                     Description = "In TypeScript, the satisfies operator is a very useful tool. It was introduced in TypeScript v4.9 as an effective way to ensure type safety.",
                     Tags = new[]
                     {
                         "programming", "typescript", "operator",
                     },
-                    WatchLater = false,
-                    Year = 2023,
+                    IsMultilingual = false,
+                    IsSubdomain = false,
                     Domain = "freecodecamp.org",
                     Language = Language.English.ToString(),
-                    Grammar = Grammar.Average.ToString(),
-                    Rating = Rating.G.ToString(),
+                    Rating = Rating.R.ToString(),
+                    Aesthetics = Aesthetics.Clean.ToString(),
                     LastVisitAt = DateTime.Now,
                     CreatedAt = DateTime.Now,
                     ModifiedAt = DateTime.Now,
                     CreatedBy = GetRandomId(),
                 },
-                new ArticleApiModel
+                new WebsiteApiModel
                 {
                     Id = GetRandomId(),
-                    Title = "Rust traits are better interfaces",
+                    Name = "Rust traits are better interfaces",
                     Url = "https://catalin-tech.com/traits-vs-interfaces/",
-                    Author = "Cătălin",
                     Category = nameof(Category.Programming),
                     Description = "In this article, Catalin discusses about the perks of the Rust traits compared to interfaces of other programming languages.",
                     Tags = new[]
                     {
                         "programming", "rust", "traits", "interfaces", "oo",
                     },
-                    WatchLater = true,
-                    Year = 2023,
+                    IsMultilingual = false,
+                    IsSubdomain = false,
                     Domain = "catalin-tech.com",
                     Language = nameof(Language.English),
-                    Grammar = nameof(Grammar.Average),
-                    Rating = nameof(Rating.G),
+                    Aesthetics = nameof(Aesthetics.Normal),
                     LastVisitAt = DateTime.Now,
                     CreatedAt = DateTime.Now,
                     ModifiedAt = DateTime.Now,

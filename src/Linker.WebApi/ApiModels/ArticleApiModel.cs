@@ -1,6 +1,6 @@
 ﻿namespace Linker.WebApi.ApiModels;
 
-internal sealed class ArticleApiModel : LinkApiModel
+public sealed class ArticleApiModel : LinkApiModel
 {
     /// <summary>
     /// Gets or sets the title of the article.

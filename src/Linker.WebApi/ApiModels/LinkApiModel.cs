@@ -2,7 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-internal class LinkApiModel
+public class LinkApiModel
 {
     /// <summary>
     /// Gets or sets the unique identifier for the object.

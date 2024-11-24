@@ -8,31 +8,28 @@
     using Swashbuckle.AspNetCore.Filters;
 
     /// <summary>
-    /// The example for the Article response.
+    /// The example for the Youtube response.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public sealed class ArticleResponseExample : IExamplesProvider<ArticleApiModel>
+    public sealed class YoutubeResponseExample : IExamplesProvider<YoutubeApiModel>
     {
         /// <inheritdoc/>
-        public ArticleApiModel GetExamples()
+        public YoutubeApiModel GetExamples()
         {
-            return new ArticleApiModel
+            return new YoutubeApiModel
             {
                 Id = GetRandomId(),
-                Title = "TypeScript satifies Operator",
+                Name = "TypeScript satifies Operator",
                 Url = "https://www.freecodecamp.org/news/typescript-satisfies-operator/",
-                Author = "Satyam Tripathi",
+                Youtuber = "Satyam Tripathi",
                 Category = Category.Programming.ToString(),
                 Description = "In TypeScript, the satisfies operator is a very useful tool. It was introduced in TypeScript v4.9 as an effective way to ensure type safety.",
                 Tags = new[]
                 {
                     "programming", "typescript", "operator",
                 },
-                WatchLater = false,
-                Year = 2023,
-                Domain = "freecodecamp.org",
+                Country = "United States",
                 Language = Language.English.ToString(),
-                Grammar = Grammar.Average.ToString(),
                 Rating = Rating.R.ToString(),
                 LastVisitAt = DateTime.Now,
                 CreatedAt = DateTime.Now,

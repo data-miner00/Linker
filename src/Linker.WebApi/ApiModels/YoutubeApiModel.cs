@@ -1,6 +1,6 @@
 ﻿namespace Linker.WebApi.ApiModels;
 
-internal sealed class YoutubeApiModel : LinkApiModel
+public sealed class YoutubeApiModel : LinkApiModel
 {
     /// <summary>
     /// Gets or sets the name of the Youtube Channel.
