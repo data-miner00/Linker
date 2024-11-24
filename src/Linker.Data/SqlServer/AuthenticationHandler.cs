@@ -16,16 +16,22 @@ public sealed class AuthenticationHandler : IAuthenticationHandler
 {
     private readonly ICredentialRepository repository;
     private readonly int saltLength;
+    private readonly KeyValuePair<HashAlgorithmType, HashAlgorithm> hashAlgorithm;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AuthenticationHandler"/> class.
     /// </summary>
     /// <param name="repository">The credential repository.</param>
     /// <param name="saltLength">The length of salt generated.</param>
-    public AuthenticationHandler(ICredentialRepository repository, int saltLength)
+    /// <param name="hashAlgorithm">The hashing algorithm.</param>
+    public AuthenticationHandler(
+        ICredentialRepository repository,
+        int saltLength,
+        KeyValuePair<HashAlgorithmType, HashAlgorithm> hashAlgorithm)
     {
         this.repository = Guard.ThrowIfNull(repository);
         this.saltLength = Guard.ThrowIfLessThan(saltLength, 0);
+        this.hashAlgorithm = Guard.ThrowIfDefault(hashAlgorithm);
     }
 
     /// <inheritdoc/>
@@ -41,7 +47,7 @@ public sealed class AuthenticationHandler : IAuthenticationHandler
             UserId = userId,
             PasswordHash = hash,
             PasswordSalt = salt,
-            HashAlgorithmType = HashAlgorithmType.Sha1,
+            HashAlgorithmType = this.hashAlgorithm.Key,
             PreviousPasswordHash = null,
             CreatedAt = DateTime.UtcNow,
             ModifiedAt = DateTime.UtcNow,
@@ -57,12 +63,7 @@ public sealed class AuthenticationHandler : IAuthenticationHandler
 
         var attemptHash = this.ConvertPasswordAndSaltToHash(credential.PasswordSalt, password);
 
-        if (!attemptHash.Equals(credential.PasswordHash))
-        {
-            return false;
-        }
-
-        return true;
+        return attemptHash.Equals(credential.PasswordHash);
     }
 
     /// <inheritdoc/>
@@ -99,7 +100,7 @@ public sealed class AuthenticationHandler : IAuthenticationHandler
         var sb = new StringBuilder();
         var mixture = salt + password;
         var encodedMixture = Encoding.UTF8.GetBytes(mixture);
-        var hashedBytes = SHA1.HashData(encodedMixture);
+        var hashedBytes = this.hashAlgorithm.Value.ComputeHash(encodedMixture);
 
         foreach (var bytes in hashedBytes)
         {

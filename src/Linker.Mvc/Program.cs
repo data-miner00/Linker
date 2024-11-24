@@ -1,7 +1,8 @@
 namespace Linker.Mvc;
 
 using System.Data;
-using Microsoft.Data.SqlClient;
+using System.Security.Cryptography;
+using System.Security.Authentication;
 using System.Net;
 using App.Metrics.AspNetCore;
 using App.Metrics.Formatters.Prometheus;
@@ -14,6 +15,7 @@ using Linker.Mvc.Mappers;
 using Linker.Mvc.Options;
 using Linker.Mvc.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Data.SqlClient;
 using Serilog;
 
 using AppMetrics = Microsoft.Extensions.DependencyInjection.AppMetricsServiceCollectionExtensions;
@@ -98,8 +100,27 @@ public static class Program
 
     private static WebApplicationBuilder ConfigureAuths(this WebApplicationBuilder builder)
     {
-        var cookieOption = builder.Configuration.GetSection(nameof(CookieOption)).Get<CookieOption>();
-        var credentialOption = builder.Configuration.GetSection(nameof(CredentialOption)).Get<CredentialOption>();
+        var hashingAlgorithms = new Dictionary<HashAlgorithmType, HashAlgorithm>
+        {
+            { HashAlgorithmType.Sha1, SHA1.Create() },
+            { HashAlgorithmType.Sha256, SHA256.Create() },
+            { HashAlgorithmType.Md5, MD5.Create() },
+            { HashAlgorithmType.Sha512, SHA512.Create() },
+        };
+
+        var cookieOption = builder.Configuration
+            .GetSection(nameof(CookieOption))
+            .Get<CookieOption>() ?? throw new InvalidOperationException("Cookie option is required.");
+        var credentialOption = builder.Configuration
+            .GetSection(nameof(CredentialOption))
+            .Get<CredentialOption>() ?? throw new InvalidOperationException("Credential option is required.");
+
+        if (!hashingAlgorithms.TryGetValue(credentialOption.HashAlgorithmType, out var hashAlgorithm))
+        {
+            throw new InvalidOperationException("Unsupported hash algorithms provided");
+        }
+
+        var algorithmKeyValuePair = hashingAlgorithms.FirstOrDefault(x => x.Key == credentialOption.HashAlgorithmType);
 
         builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(option =>
@@ -112,7 +133,9 @@ public static class Program
             .AddScoped<ICredentialRepository, CredentialRepository>()
             .AddScoped<IAuthenticationHandler>(
                 ctx => new AuthenticationHandler(
-                    ctx.GetRequiredService<ICredentialRepository>(), credentialOption.SaltLength));
+                    ctx.GetRequiredService<ICredentialRepository>(),
+                    credentialOption.SaltLength,
+                    algorithmKeyValuePair));
 
         return builder;
     }
