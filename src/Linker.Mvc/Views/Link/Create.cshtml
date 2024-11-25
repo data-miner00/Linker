@@ -5,7 +5,9 @@
     ViewData["Title"] = "Create Link";
 }
 
-<h1 class="text-lg">Create Link</h1>
+<partial name="_Notification" />
+
+<h1 class="text-2xl font-bold">Create Link</h1>
 <p class="text-gray-700">Enter the details below to create a new entry.</p>
 
 <div asp-validation-summary="All" class="text-violet-300"></div>
@@ -87,7 +89,7 @@
                 <label asp-for="Tags" class="control-label"></label>
                 <div id="tags-container" class="flex flex-wrap">
                     <input name="Tags" class="form-control" placeholder="Tag Value" />
-                    <button id="add-tag-btn" type="button" onclick="return addNewTagInput()">Add</button>
+                    <button id="add-tag-btn" type="button" onclick="return addNewTagInput()" class="bg-black text-white rounded px-2 py-1">Add</button>
                 </div>
             </div>
             <div class="form-group">
@@ -95,24 +97,28 @@
                 <input asp-for="KeyPersonName" class="form-control" />
                 <span asp-validation-for="KeyPersonName" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsSubdomain" />
-                    <span>@Html.DisplayNameFor(model => model.IsSubdomain)</span>
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsMultilingual" />
-                    <span>@Html.DisplayNameFor(model => model.IsMultilingual)</span>
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsResource" />
-                    <span>@Html.DisplayNameFor(model => model.IsResource)</span>
-                </label>
-            </div>
+
+            <fieldset class="border border-solid border-black p-2 rounded">
+                <legend class="bg-black text-white px-2 py-1 rounded">Metadata</legend>
+                <div>
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="IsSubdomain" />
+                        <span>@Html.DisplayNameFor(model => model.IsSubdomain)</span>
+                    </label>
+                </div>
+                <div>
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="IsMultilingual" />
+                        <span>@Html.DisplayNameFor(model => model.IsMultilingual)</span>
+                    </label>
+                </div>
+                <div>
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="IsResource" />
+                        <span>@Html.DisplayNameFor(model => model.IsResource)</span>
+                    </label>
+                </div>
+            </fieldset>
             <div class="my-3 flex">
                 <button class="px-4 py-2 bg-black text-white rounded block">
                     Create
