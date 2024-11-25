@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Linker.Common.Validators;
 using Linker.Core.V2.Models;
 
 /// <summary>
@@ -36,6 +37,7 @@ public sealed class CreateLinkRequest
     /// Gets or sets the tags of the website.
     /// </summary>
     [Required]
+    [NoNullValues]
     public IEnumerable<string> Tags { get; set; } = null!;
 
     /// <summary>
