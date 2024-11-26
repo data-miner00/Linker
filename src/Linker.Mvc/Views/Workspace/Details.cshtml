@@ -133,7 +133,7 @@
         <section class="flex flex-col gap-4 mb-5">
             <div>
                 <div
-                    class="flex gap-4 items-center"
+                    class="flex gap-4 items-center mb-3"
                 >
                     <p class="text-xl font-bold block">Collections</p>
                     @if (isWorkspaceOwner)
@@ -152,34 +152,47 @@
                     <ul>
                         @foreach (var (link, index) in Model.Links.Select((a, i) => (a, i)))
                         {
-                            <li class="flex gap-4 mb-1">
-                                <a
-                                    href="@link.Url"
-                                    target="_blank"
-                                    class="block"
-                                >
-                                    @(index + 1). @link.Name <i class="bi bi-box-arrow-up-right"></i>
-                                </a>
-                                <a
-                                    asp-action="Details"
-                                    asp-controller="Link"
-                                    asp-route-id="@link.Id"
-                                    class="block border border-solid border-black rounded px-1 text-sm"
-                                >
-                                    Details
-                                </a>
-                                @if (isWorkspaceOwner)
-                                {
+                            <li class="flex gap-4 mb-1 border border-solid border-gray-200 rounded-xl p-3 items-center">
+                                <div class="h-[72px] w-[128px] bg-gray-300 rounded-xl">
+                                </div>
+
+                                <div>
                                     <a
-                                        class="block border border-solid border-black rounded px-1 text-sm"
-                                        asp-action="RemoveLink"
-                                        asp-route-workspaceId="@Model.WorkspaceId"
-                                        asp-route-articleId="@link.Id"
-                                        onclick="return confirm('Are you sure to remove from workspace?')"
+                                        href="@link.Url"
+                                        target="_blank"
+                                        class="block mb-1 hover:underline"
                                     >
-                                        Delete
+                                        @link.Name <i class="bi bi-box-arrow-up-right"></i>
                                     </a>
-                                }
+                                    <div class="flex items-center">
+                                        <div class="w-4 h-4 bg-gray-100 mr-1"></div>
+                                        <p class="block text-gray-600 text-sm">@link.Domain</p>
+                                    </div>
+                                </div>
+
+                                <div class="ml-auto">
+                                    <a
+                                        asp-action="Details"
+                                        asp-controller="Link"
+                                        asp-route-id="@link.Id"
+                                        class="block border border-solid border-black rounded px-1 text-sm"
+                                    >
+                                        Details
+                                    </a>
+
+                                    @if (isWorkspaceOwner)
+                                    {
+                                        <a
+                                            class="block border border-solid border-black rounded px-1 text-sm mt-1"
+                                            asp-action="RemoveLink"
+                                            asp-route-workspaceId="@Model.WorkspaceId"
+                                            asp-route-articleId="@link.Id"
+                                            onclick="return confirm('Are you sure to remove from workspace?')"
+                                        >
+                                            Delete
+                                        </a>
+                                    }
+                                </div>
                             </li>
                         }
                     </ul>
