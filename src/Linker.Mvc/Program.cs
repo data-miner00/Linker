@@ -93,7 +93,8 @@ public static class Program
             .AddSingleton<ILinkRepository, LinkRepository>()
             .AddSingleton<IUserRepository, UserRepository>()
             .AddSingleton<IWorkspaceRepository, WorkspaceRepository>()
-            .AddSingleton<IPlaylistRepository, PlaylistRepository>();
+            .AddSingleton<IPlaylistRepository, PlaylistRepository>()
+            .AddSingleton<ITagRepository, TagRepository>();
 
         return builder;
     }

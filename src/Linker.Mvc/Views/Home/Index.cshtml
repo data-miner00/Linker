@@ -1,8 +1,65 @@
-﻿@{
+﻿@model Linker.Mvc.Models.HomeViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div>
-    <h1 class="text-2xl font-bold text-green-500">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1 class="text-3xl font-bold mb-2">Home</h1>
+
+<!-- Tags -->
+<div class="border border-black border-solid flex p-4 gap-1 flex gap-2 flex-wrap">
+    @foreach (var tag in Model.TrendingTags) {
+        <div class="bg-gray-100 gap-1 rounded px-1">#@tag</div>
+    }
+</div>
+
+<div class="flex">
+    <!-- Links -->
+    <ul>
+        @foreach (var link in Model.LatestLinks) {
+            <li class="flex gap-4 mb-1 border border-solid border-gray-200 rounded-xl p-3 items-center">
+                <div class="h-[72px] w-[128px] bg-gray-300 rounded-xl">
+                </div>
+
+                <div>
+                    <a
+                        href="@link.Url"
+                        target="_blank"
+                        class="block mb-1 hover:underline"
+                    >
+                        @link.Name <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                    <div class="flex items-center">
+                        <div class="w-4 h-4 bg-gray-100 mr-1"></div>
+                        <p class="block text-gray-600 text-sm">@link.Domain</p>
+                    </div>
+                </div>
+
+                <div class="ml-auto">
+                    <a
+                        asp-action="Details"
+                        asp-controller="Link"
+                        asp-route-id="@link.Id"
+                        class="block border border-solid border-black rounded px-1 text-sm"
+                    >
+                        Details
+                    </a>
+                </div>
+            </li>
+        }
+    </ul>
+
+    <!-- Users -->
+    <aside class="flex flex-col gap-4">
+        <ul>
+            @foreach (var user in Model.Users) {
+                <li class="flex gap-1 items-center">
+                    <div class="w-4 h-4 bg-gray-100 rounded-full"></div>
+                    <div>
+                        <p class="font-bold">@user.Username</p>
+                        <p>@user.Email</p>
+                    </div>
+                </li>
+            }
+        </ul>
+    </aside>
 </div>
