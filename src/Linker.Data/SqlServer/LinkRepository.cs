@@ -431,9 +431,14 @@ public sealed class LinkRepository : ILinkRepository
     {
         var removeLinkStatement = @"DELETE FROM Links WHERE Id = @Id;";
         var removeLinkTagsStatement = @"DELETE FROM LinksTags WHERE LinkId = @Id;";
+        var removeLinkWorkspaceStatement = @"DELETE FROM WorkspaceLinks WHERE LinkId = @Id;";
 
         await this.connection
             .ExecuteAsync(removeLinkTagsStatement, new { Id = id })
+            .ConfigureAwait(false);
+
+        await this.connection
+            .ExecuteAsync(removeLinkWorkspaceStatement, new { Id = id })
             .ConfigureAwait(false);
 
         await this.connection

@@ -1,5 +1,5 @@
 ﻿@using Linker.Core.V2.Models
-@model ValueTuple<User, IEnumerable<Workspace>>
+@model ValueTuple<User, IEnumerable<Workspace>, IEnumerable<Link>>
 @{
     ViewData["Title"] = "My Profile";
     var age = (DateTime.Now - Model.Item1.DateOfBirth).TotalDays / 365;
@@ -7,21 +7,69 @@
 
 <partial name="_Notification" />
 
-@if (!string.IsNullOrEmpty(Model.Item1.PhotoUrl))
-{
-    <div class="border-black border-2 border-solid rounded-full w-20 h-20 overflow-hidden">
-        <img src="@Model.Item1.PhotoUrl" />
-    </div>
-}
+<div class="flex">
+    <aside>
+        @if (!string.IsNullOrEmpty(Model.Item1.PhotoUrl))
+        {
+            <div class="border-black border-2 border-solid rounded-full w-20 h-20 overflow-hidden">
+                <img src="@Model.Item1.PhotoUrl" />
+            </div>
+        }
 
-<p class="text-4xl font-bold mb-4">@@@Model.Item1.Username</p>
-<p>Joined on: @Model.Item1.CreatedAt</p>
-<p>Joined workspaces: @Model.Item2.Count()</p>
-<p>Status: @Model.Item1.Status</p>
-<p>Birthday: @Model.Item1.DateOfBirth (@age years old)</p>
+        <p class="text-4xl font-bold mb-4">@@@Model.Item1.Username</p>
+        <p>Joined on: @Model.Item1.CreatedAt</p>
+        <p>Joined workspaces: @Model.Item2.Count()</p>
+        <p>Status: @Model.Item1.Status</p>
+        <p>Birthday: @Model.Item1.DateOfBirth (@age years old)</p>
 
-<form enctype="multipart/form-data" method="post" asp-controller="User" asp-action="Upload">
-    <label for="file">Upload file</label>
-    <input name="file" type="file" required accept="image/png, image/gif, image/jpeg">
-    <input type="submit" value="Upload" />
-</form>
+        <form enctype="multipart/form-data" method="post" asp-controller="User" asp-action="Upload">
+            <label for="file">Upload file</label>
+            <input name="file" type="file" required accept="image/png, image/gif, image/jpeg">
+            <input type="submit" value="Upload" />
+        </form>
+    </aside>
+    <main class="p-4 rounded shadow-lg">
+        <ul>
+            @foreach (var link in Model.Item3) {
+                <li class="flex gap-4 mb-1 border border-solid border-gray-200 rounded-xl p-3 items-center">
+                    <div class="h-[72px] w-[128px] bg-gray-300 rounded-xl">
+                    </div>
+
+                    <div>
+                        <a
+                            href="@link.Url"
+                            target="_blank"
+                            class="block mb-1 hover:underline"
+                        >
+                            @link.Name <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-gray-100 mr-1"></div>
+                            <p class="block text-gray-600 text-sm">@link.Domain</p>
+                        </div>
+                    </div>
+
+                    <div class="ml-auto">
+                        <a
+                            asp-action="Details"
+                            asp-controller="Link"
+                            asp-route-id="@link.Id"
+                            class="block border border-solid border-black rounded px-1 text-sm"
+                        >
+                            Details
+                        </a>
+                    </div>
+                    
+                    <form method="post" asp-controller="Link" asp-action="Delete" asp-route-id="@link.Id" class="block">
+                        <button
+                            class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                            onclick="return confirm('Are you sure to delete this link?')"
+                        >
+                            Delete
+                        </button>
+                    </form>
+                </li>
+            }
+        </ul>
+    </main>
+</div>

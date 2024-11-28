@@ -193,12 +193,16 @@ public sealed class LinkController : Controller
 
             return this.RedirectToAction(nameof(this.Index));
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
+            this.logger.Warning(ex, "Possibly item not found. Link Id: {LinkId}", id.ToString());
+
             return this.NotFound();
         }
-        catch
+        catch (Exception ex)
         {
+            this.logger.Error(ex, "General exception caught.");
+
             return this.View();
         }
     }

@@ -13,6 +13,7 @@ public sealed class UserController : Controller
     private readonly IAssetUploader assetUploader;
     private readonly IWorkspaceRepository workspaceRepository;
     private readonly ILogger logger;
+    private readonly ILinkRepository linkRepository;
 
     public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
 
@@ -23,12 +24,14 @@ public sealed class UserController : Controller
         IUserRepository repository,
         IAssetUploader assetUploader,
         IWorkspaceRepository workspaceRepository,
+        ILinkRepository linkRepository,
         ILogger logger)
     {
         this.repository = Guard.ThrowIfNull(repository);
         this.assetUploader = Guard.ThrowIfNull(assetUploader);
         this.workspaceRepository = Guard.ThrowIfNull(workspaceRepository);
         this.logger = Guard.ThrowIfNull(logger);
+        this.linkRepository = Guard.ThrowIfNull(linkRepository);
     }
 
     // GET: UserController
@@ -44,7 +47,11 @@ public sealed class UserController : Controller
                 .GetAllByUserAsync(this.UserId, this.CancellationToken)
                 .ConfigureAwait(false);
 
-            return this.View((user, joinedWorkspaces));
+            var posts = await this.linkRepository
+                .GetAllByUserAsync(this.UserId, this.CancellationToken)
+                .ConfigureAwait(false);
+
+            return this.View((user, joinedWorkspaces, posts));
         }
         catch (InvalidOperationException ex)
         {
