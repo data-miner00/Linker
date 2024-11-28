@@ -33,6 +33,16 @@ public class Workspace
     public string OwnerId { get; set; }
 
     /// <summary>
+    /// Gets or sets the visibility of the workspace.
+    /// </summary>
+    public Visibility Visibility { get; set; }
+
+    /// <summary>
+    /// Gets or sets the maximum accomodated member count.
+    /// </summary>
+    public short? MaxMemberCount { get; set; }
+
+    /// <summary>
     /// Gets or sets the creation date.
     /// </summary>
     public DateTime CreatedAt { get; set; }
