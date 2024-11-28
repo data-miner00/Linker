@@ -8,6 +8,7 @@ using Serilog;
 using AutoMapper;
 using Linker.Common.Helpers;
 using Linker.Core.V2.Repositories;
+using Linker.Core.V2.Models;
 
 /// <summary>
 /// The controller for the home page.
@@ -55,8 +56,8 @@ public sealed class HomeController : Controller
         var viewModel = new HomeViewModel
         {
             TrendingTags = tags.Select(tag => tag.Name),
-            LatestLinks = links.Take(20),
-            TrendingLinks = links.Skip(20),
+            LatestLinks = links.Where(link => link.Visibility == Visibility.Public).Take(20),
+            TrendingLinks = links.Where(link => link.Visibility == Visibility.Public).Skip(20),
             Users = users,
         };
 

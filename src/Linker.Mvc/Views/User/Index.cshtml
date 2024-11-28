@@ -49,6 +49,12 @@
                         </div>
                     </div>
 
+                    @if (link.Visibility != Visibility.Public) {
+                        <div class="block border border-solid border-black rounded px-1 text-sm">
+                            @link.Visibility.ToString()
+                        </div>
+                    }
+
                     <div class="ml-auto">
                         <a
                             asp-action="Details"

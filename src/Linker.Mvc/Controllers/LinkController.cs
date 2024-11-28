@@ -39,7 +39,9 @@ public sealed class LinkController : Controller
             .GetAllAsync(query, this.CancellationToken)
             .ConfigureAwait(false);
 
-        return this.View((links, LinkType.None));
+        var publicLinks = links.Where(link => link.Visibility == Visibility.Public);
+
+        return this.View((publicLinks, LinkType.None));
     }
 
     public async Task<IActionResult> Search(string q)
@@ -48,7 +50,9 @@ public sealed class LinkController : Controller
             .SearchAsync(q, this.CancellationToken)
             .ConfigureAwait(false);
 
-        return this.View(links);
+        var publicLinks = links.Where(link => link.Visibility == Visibility.Public);
+
+        return this.View(publicLinks);
     }
 
     // GET: LinkController/Details/5
@@ -217,7 +221,9 @@ public sealed class LinkController : Controller
                 .GetAllByLinkTypeAsync(type, this.CancellationToken)
                 .ConfigureAwait(false);
 
-            return this.View("Index", (articles, type));
+            var publicArticles = articles.Where(link => link.Visibility == Visibility.Public);
+
+            return this.View("Index", (publicArticles, type));
         }
         catch
         {
@@ -235,7 +241,9 @@ public sealed class LinkController : Controller
                 .GetAllByLinkTypeAsync(type, this.CancellationToken)
                 .ConfigureAwait(false);
 
-            return this.View("Index", (websites, type));
+            var publicWebsites = websites.Where(link => link.Visibility == Visibility.Public);
+
+            return this.View("Index", (publicWebsites, type));
         }
         catch
         {

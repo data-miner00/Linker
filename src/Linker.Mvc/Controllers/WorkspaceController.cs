@@ -229,11 +229,13 @@ public sealed class WorkspaceController : Controller
 
         try
         {
-            var allLinks = await this.linkRepository
+            var links = await this.linkRepository
                 .GetAllAsync(this.CancellationToken)
                 .ConfigureAwait(false);
 
-            return this.PartialView("_AddLinkPartial", (allLinks, workspaceId.ToString()));
+            var publicLinks = links.Where(link => link.Visibility == Visibility.Public);
+
+            return this.PartialView("_AddLinkPartial", (publicLinks, workspaceId.ToString()));
         }
         catch (InvalidOperationException ex)
         {
