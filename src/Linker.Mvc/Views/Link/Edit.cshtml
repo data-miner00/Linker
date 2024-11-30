@@ -11,6 +11,12 @@
 <div class="my-12">
     <div>
         <form asp-action="Edit" class="max-w-screen-md">
+            @if (!string.IsNullOrEmpty(Model.ThumbnailUrl)) {
+                <input asp-for="ThumbnailUrl" hidden />
+            }
+            @if (!string.IsNullOrEmpty(Model.FaviconUrl)) {
+                <input asp-for="FaviconUrl" hidden />
+            }
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />

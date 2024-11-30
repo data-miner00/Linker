@@ -92,4 +92,14 @@ public sealed class UpdateLinkRequest
     /// </summary>
     [Required]
     public Visibility Visibility { get; set; }
+
+    /// <summary>
+    /// Gets or sets the thumbnail such as open graph image for the link.
+    /// </summary>
+    public string? ThumbnailUrl { get; set; }
+
+    /// <summary>
+    /// Gets or sets the favicon for the link.
+    /// </summary>
+    public string? FaviconUrl { get; set; }
 }

@@ -19,6 +19,8 @@
     [Visibility]     NVARCHAR (50)  NOT NULL,
     [CreatedAt]      DATETIME2 (7)  NOT NULL,
     [ModifiedAt]     DATETIME2 (7)  NOT NULL,
+    [ThumbnailUrl]   NVARCHAR(255)  NULL,
+    [FaviconUrl]     NVARCHAR(255)  NULL,
     CONSTRAINT [PK_Links] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 

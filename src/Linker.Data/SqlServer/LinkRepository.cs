@@ -470,7 +470,9 @@ public sealed class LinkRepository : ILinkRepository
                 KeyPersonName = @KeyPersonName,
                 Grammar = @Grammar,
                 Visibility = @Visibility,
-                ModifiedAt = @ModifiedAt
+                ModifiedAt = @ModifiedAt,
+                ThumbnailUrl = @ThumbnailUrl,
+                FaviconUrl = @FaviconUrl
             WHERE
                 Id = @Id;
         ";
@@ -495,6 +497,8 @@ public sealed class LinkRepository : ILinkRepository
             Grammar = link.Grammar.ToString(),
             Visibility = link.Visibility.ToString(),
             ModifiedAt = DateTime.Now,
+            link.ThumbnailUrl,
+            link.FaviconUrl,
         });
     }
 }
