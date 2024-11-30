@@ -28,3 +28,7 @@ body {
     opacity: 0.8;
     background: repeating-linear-gradient( 45deg, #000, #000 5px, #fff 5px, #fff 25px );
 }
+
+dialog::backdrop {
+    background-color: rgba(255, 255, 255, 0.25);
+}

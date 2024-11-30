@@ -50,7 +50,9 @@ public sealed class WorkspaceController : Controller
             .GetAllByUserAsync(this.UserId, this.CancellationToken)
             .ConfigureAwait(false);
 
-        var viewModels = await this.ConvertWorkspacesToViewModelsAsync(workspaces);
+        var publicWorkspaces = workspaces.Where(workspace => workspace.Visibility == Visibility.Public);
+
+        var viewModels = await this.ConvertWorkspacesToViewModelsAsync(publicWorkspaces);
 
         return this.View(viewModels);
     }

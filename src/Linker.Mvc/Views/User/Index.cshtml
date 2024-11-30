@@ -2,7 +2,7 @@
 @model ValueTuple<User, IEnumerable<Workspace>, IEnumerable<Link>>
 @{
     ViewData["Title"] = "My Profile";
-    var age = (DateTime.Now - Model.Item1.DateOfBirth).TotalDays / 365;
+    var age = (int)Math.Floor((DateTime.Now - Model.Item1.DateOfBirth).TotalDays / 365);
 }
 
 <partial name="_Notification" />

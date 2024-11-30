@@ -1,8 +1,8 @@
 ﻿CREATE TABLE [dbo].[Links] (
     [Id]             NVARCHAR (50)  NOT NULL,
-    [Name]           NVARCHAR (50)  NOT NULL,
+    [Name]           NVARCHAR (255)  NOT NULL,
     [Domain]         NVARCHAR (50)  NOT NULL,
-    [Url]            NVARCHAR (100) NOT NULL,
+    [Url]            NVARCHAR (255) NOT NULL,
     [Description]    NVARCHAR (200) NULL,
     [AddedBy]        NVARCHAR (50)  NOT NULL,
     [IsSubdomain]    BIT            NOT NULL,
