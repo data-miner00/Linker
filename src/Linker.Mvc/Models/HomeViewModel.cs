@@ -2,7 +2,7 @@
 
 using Linker.Core.V2.Models;
 
-public class HomeViewModel
+public sealed class HomeViewModel
 {
     public IEnumerable<string> TrendingTags { get; set; }
 
@@ -11,4 +11,6 @@ public class HomeViewModel
     public IEnumerable<Link> LatestLinks { get; set; }
 
     public IEnumerable<User> Users { get; set; }
+
+    public IEnumerable<Workspace> Workspaces { get; set; }
 }

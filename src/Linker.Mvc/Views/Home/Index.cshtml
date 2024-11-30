@@ -62,4 +62,17 @@
             }
         </ul>
     </aside>
+
+    <!-- Workspaces -->
+    <ul>
+        @foreach (var workspace in Model.Workspaces) {
+            <li class="flex gap-1 items-center">
+                <div class="w-4 h-4 bg-gray-100 rounded-full"></div>
+                <div>
+                    <p class="font-bold">@@@workspace.Handle</p>
+                    <p>@workspace.Name</p>
+                </div>
+            </li>
+        }
+    </ul>
 </div>

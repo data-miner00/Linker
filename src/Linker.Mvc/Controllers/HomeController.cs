@@ -21,24 +21,31 @@ public sealed class HomeController : Controller
     private readonly ILinkRepository linkRepository;
     private readonly IUserRepository userRepository;
     private readonly ITagRepository tagRepository;
+    private readonly IWorkspaceRepository workspaceRepository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HomeController"/> class.
     /// </summary>
     /// <param name="logger">The logger.</param>
     /// <param name="mapper">The mapper.</param>
+    /// <param name="linkRepository">The link repository.</param>
+    /// <param name="userRepository">The user repository.</param>
+    /// <param name="tagRepository">The tag repository.</param>
+    /// <param name="workspaceRepository">The workspace repository.</param>
     public HomeController(
         ILogger logger,
         IMapper mapper,
         ILinkRepository linkRepository,
         IUserRepository userRepository,
-        ITagRepository tagRepository)
+        ITagRepository tagRepository,
+        IWorkspaceRepository workspaceRepository)
     {
         this.logger = Guard.ThrowIfNull(logger);
         this.mapper = Guard.ThrowIfNull(mapper);
         this.linkRepository = Guard.ThrowIfNull(linkRepository);
         this.userRepository = Guard.ThrowIfNull(userRepository);
         this.tagRepository = Guard.ThrowIfNull(tagRepository);
+        this.workspaceRepository = Guard.ThrowIfNull(workspaceRepository);
     }
 
     public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
@@ -52,6 +59,7 @@ public sealed class HomeController : Controller
         var links = await this.linkRepository.GetAllAsync(this.CancellationToken);
         var tags = await this.tagRepository.GetAllAsync();
         var users = await this.userRepository.GetAllAsync(this.CancellationToken);
+        var workspaces = await this.workspaceRepository.GetAllAsync(this.CancellationToken);
 
         var viewModel = new HomeViewModel
         {
@@ -59,6 +67,7 @@ public sealed class HomeController : Controller
             LatestLinks = links.Where(link => link.Visibility == Visibility.Public).Take(20),
             TrendingLinks = links.Where(link => link.Visibility == Visibility.Public).Skip(20),
             Users = users,
+            Workspaces = workspaces,
         };
 
         return this.View(viewModel);
