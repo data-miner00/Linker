@@ -29,7 +29,9 @@
         </form>
     </aside>
     <main class="p-4 rounded shadow-lg">
-        <button>Export to..</button>
+        <form method="get" asp-action="Export">
+            <button>Export links..</button>
+        </form>
 
         <ul>
             @foreach (var link in Model.Item3) {

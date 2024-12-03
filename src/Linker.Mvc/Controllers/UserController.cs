@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Linker.Common.Helpers;
 using Serilog;
+using System.Text.Json;
+using System.Text;
 
 public sealed class UserController : Controller
 {
@@ -116,5 +118,23 @@ public sealed class UserController : Controller
             this.logger.Error(ex, "Something went wrong: {message}", ex.Message);
             return this.RedirectToAction(nameof(this.Index));
         }
+    }
+
+    public async Task<IActionResult> Export()
+    {
+        var posts = await this.linkRepository.GetAllByUserAsync(this.UserId, this.CancellationToken);
+
+        var options = new JsonSerializerOptions
+        {
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            WriteIndented = true,
+        };
+
+        var jsonString = JsonSerializer.Serialize(posts, options);
+        var byteString = Encoding.UTF8.GetBytes(jsonString);
+
+        var memoryStream = new MemoryStream(byteString);
+
+        return this.File(memoryStream, "application/octet-stream", "exports.json");
     }
 }
