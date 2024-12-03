@@ -29,10 +29,15 @@
         </form>
     </aside>
     <main class="p-4 rounded shadow-lg">
+        <button>Export to..</button>
+
         <ul>
             @foreach (var link in Model.Item3) {
                 <li class="flex gap-4 mb-1 border border-solid border-gray-200 rounded-xl p-3 items-center">
-                    <div class="h-[72px] w-[128px] bg-gray-300 rounded-xl">
+                    <div class="h-[72px] w-[128px] bg-gray-300 rounded-xl overflow-hidden flex items-center justify-center">
+                        @if (link.ThumbnailUrl is not null) {
+                            <img src="@link.ThumbnailUrl" class="w-full h-full block" />
+                        }
                     </div>
 
                     <div>
