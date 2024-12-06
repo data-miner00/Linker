@@ -62,6 +62,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.Core.V2", "Linker.Co
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Linker.Database", "Linker.Database\Linker.Database.sqlproj", "{F7A0BEEC-6ABB-408E-A940-027128BFFDEB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linker.Integrations", "Linker.Integrations\Linker.Integrations.csproj", "{8C9689C5-DC58-4794-B418-B411EA91A216}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linker.Integrations.UnitTests", "Linker.Integrations.UnitTests\Linker.Integrations.UnitTests.csproj", "{2BF291C7-2541-4599-A945-728A29CD24CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +157,14 @@ Global
 		{F7A0BEEC-6ABB-408E-A940-027128BFFDEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7A0BEEC-6ABB-408E-A940-027128BFFDEB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F7A0BEEC-6ABB-408E-A940-027128BFFDEB}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{8C9689C5-DC58-4794-B418-B411EA91A216}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C9689C5-DC58-4794-B418-B411EA91A216}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C9689C5-DC58-4794-B418-B411EA91A216}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C9689C5-DC58-4794-B418-B411EA91A216}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BF291C7-2541-4599-A945-728A29CD24CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BF291C7-2541-4599-A945-728A29CD24CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BF291C7-2541-4599-A945-728A29CD24CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BF291C7-2541-4599-A945-728A29CD24CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
