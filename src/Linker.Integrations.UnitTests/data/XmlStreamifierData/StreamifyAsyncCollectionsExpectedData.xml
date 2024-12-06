@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfUser xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <User>
+    <Id xmlns="http://example.com">1</Id>
+    <FullName xmlns="http://example.com">Shaun</FullName>
+    <Email xmlns="http://example.com">shaun@gmail.com</Email>
+  </User>
+  <User>
+    <Id xmlns="http://example.com">2</Id>
+    <FullName xmlns="http://example.com">Ben</FullName>
+    <Email xmlns="http://example.com">ben@yahoo.com</Email>
+  </User>
+</ArrayOfUser>
