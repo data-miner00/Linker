@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Linker.Common\Linker.Common.csproj" />
     <ProjectReference Include="..\Linker.Data\Linker.Data.csproj" />
+    <ProjectReference Include="..\Linker.Integrations\Linker.Integrations.csproj" />
   </ItemGroup>
 
   <ItemGroup>

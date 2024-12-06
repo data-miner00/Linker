@@ -10,6 +10,7 @@ using AutoMapper;
 using Linker.Core.V2;
 using Linker.Core.V2.Repositories;
 using Linker.Data.SqlServer;
+using Linker.Integrations;
 using Linker.Mvc.Hubs;
 using Linker.Mvc.Mappers;
 using Linker.Mvc.Options;
@@ -38,6 +39,7 @@ public static class Program
 
         builder
             .ConfigureOptions()
+            .ConfigureStreamifiers()
             .ConfigureDatabase()
             .ConfigureRepositories()
             .ConfigureAuths()
@@ -222,6 +224,20 @@ public static class Program
                     eopt.EnvironmentInfoEndpointEnabled = false;
                 };
             });
+
+        return builder;
+    }
+
+    private static WebApplicationBuilder ConfigureStreamifiers(this WebApplicationBuilder builder)
+    {
+        var streamifiers = new Dictionary<string, IDataStreamifier>()
+        {
+            { "json", new JsonStreamifier() },
+            { "xml", new XmlStreamifier() },
+        };
+
+        builder.Services
+            .AddSingleton<IDictionary<string, IDataStreamifier>>(streamifiers);
 
         return builder;
     }

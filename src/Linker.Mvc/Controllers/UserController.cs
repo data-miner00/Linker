@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Linker.Common.Helpers;
 using Serilog;
-using System.Text.Json;
-using System.Text;
 
 public sealed class UserController : Controller
 {
@@ -16,6 +14,7 @@ public sealed class UserController : Controller
     private readonly IWorkspaceRepository workspaceRepository;
     private readonly ILogger logger;
     private readonly ILinkRepository linkRepository;
+    private readonly IDictionary<string, IDataStreamifier> dataStreamifiers;
 
     public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
 
@@ -27,6 +26,7 @@ public sealed class UserController : Controller
         IAssetUploader assetUploader,
         IWorkspaceRepository workspaceRepository,
         ILinkRepository linkRepository,
+        IDictionary<string, IDataStreamifier> dataStreamifiers,
         ILogger logger)
     {
         this.repository = Guard.ThrowIfNull(repository);
@@ -34,6 +34,7 @@ public sealed class UserController : Controller
         this.workspaceRepository = Guard.ThrowIfNull(workspaceRepository);
         this.logger = Guard.ThrowIfNull(logger);
         this.linkRepository = Guard.ThrowIfNull(linkRepository);
+        this.dataStreamifiers = Guard.ThrowIfNull(dataStreamifiers);
     }
 
     // GET: UserController
@@ -65,6 +66,8 @@ public sealed class UserController : Controller
 
     public async Task<IActionResult> Details(Guid id)
     {
+        Guard.ThrowIfDefault(id);
+
         try
         {
             var user = await this.repository
@@ -124,16 +127,12 @@ public sealed class UserController : Controller
     {
         var posts = await this.linkRepository.GetAllByUserAsync(this.UserId, this.CancellationToken);
 
-        var options = new JsonSerializerOptions
+        if (!this.dataStreamifiers.TryGetValue("json", out var dataStreamifier))
         {
-            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            WriteIndented = true,
-        };
+            return this.NotFound();
+        }
 
-        var jsonString = JsonSerializer.Serialize(posts, options);
-        var byteString = Encoding.UTF8.GetBytes(jsonString);
-
-        var memoryStream = new MemoryStream(byteString);
+        var memoryStream = await dataStreamifier.StreamifyAsync(posts.ToList(), default);
 
         return this.File(memoryStream, "application/octet-stream", "exports.json");
     }
