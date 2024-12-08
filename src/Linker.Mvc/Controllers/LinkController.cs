@@ -250,4 +250,24 @@ public sealed class LinkController : Controller
             return this.NotFound(); // change this
         }
     }
+
+    public async Task<IActionResult> Youtube()
+    {
+        var type = LinkType.Youtube;
+
+        try
+        {
+            var websites = await this.repository
+                .GetAllByLinkTypeAsync(type, this.CancellationToken)
+                .ConfigureAwait(false);
+
+            var publicWebsites = websites.Where(link => link.Visibility == Visibility.Public);
+
+            return this.View("Index", (publicWebsites, type));
+        }
+        catch
+        {
+            return this.NotFound(); // change this
+        }
+    }
 }
