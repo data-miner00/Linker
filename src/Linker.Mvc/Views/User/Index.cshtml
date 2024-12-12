@@ -30,8 +30,10 @@
     </aside>
     <main class="p-4 rounded shadow-lg">
         <form method="get" asp-action="Export">
-            <button>Export links..</button>
+            <button class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">Export links..</button>
         </form>
+
+        <hr class="my-4"/>
 
         <ul>
             @foreach (var link in Model.Item3) {
@@ -67,7 +69,7 @@
                             asp-action="Details"
                             asp-controller="Link"
                             asp-route-id="@link.Id"
-                            class="block border border-solid border-black rounded px-1 text-sm"
+                            class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
                         >
                             Details
                         </a>
