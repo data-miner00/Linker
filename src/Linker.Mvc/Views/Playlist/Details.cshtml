@@ -33,8 +33,53 @@
 </article>
 
 <ul>
-    @foreach (var link in Model.Links) {
-        <li>@link.Name</li>
+    @foreach (var (link, index) in Model.Links.Select((a, i) => (a, i)))
+    {
+        <li class="flex gap-4 mb-1 border border-solid border-gray-200 rounded-xl p-3 items-center">
+            <div class="h-[72px] w-[128px] bg-gray-300 rounded overflow-hidden">
+                @if (!string.IsNullOrWhiteSpace(link.ThumbnailUrl)) {
+                    <img src="@link.ThumbnailUrl" class="object-cover w-full h-full" />
+                }
+            </div>
+
+            <div>
+                <a
+                    href="@link.Url"
+                    target="_blank"
+                    class="block mb-1 hover:underline"
+                >
+                    @link.Name <i class="bi bi-box-arrow-up-right"></i>
+                </a>
+                <div class="flex items-center">
+                    <div class="w-4 h-4 bg-gray-100 mr-1"></div>
+                    <p class="block text-gray-600 text-sm">@link.Domain</p>
+                </div>
+            </div>
+
+            <div class="ml-auto">
+                <a
+                    asp-action="Details"
+                    asp-controller="Link"
+                    asp-route-id="@link.Id"
+                    class="block border border-solid border-black rounded px-1 text-sm"
+                >
+                    Details
+                </a>
+
+                @if (isPlaylistOwner)
+                {
+                    <a
+                        class="block border border-solid border-black rounded px-1 text-sm mt-1"
+                        asp-action="RemoveLink"
+                        asp-route-playlistId="@Model.Playlist.Id"
+                        asp-route-linkId="@link.Id"
+                        onclick="return confirm('Are you sure to remove from playlist?')"
+                    >
+                        Delete
+                    </a>
+                }
+            </div>
+        </li>
     }
 </ul>
 

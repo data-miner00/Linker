@@ -237,4 +237,24 @@ public sealed class PlaylistController : Controller
             return this.RedirectToAction(nameof(this.Details), new { id = playlistId.ToString() });
         }
     }
+
+    public async Task<IActionResult> RemoveLink(Guid playlistId, Guid linkId)
+    {
+        try
+        {
+            await this.repository
+                .RemovePlaylistLinkAsync(playlistId.ToString(), linkId.ToString(), this.CancellationToken)
+                .ConfigureAwait(false);
+
+            this.TempData[Constants.Success] = "Successfully removed link from playlist.";
+
+            return this.RedirectToAction(nameof(this.Details), new { id = playlistId.ToString() });
+        }
+        catch (InvalidOperationException ex)
+        {
+            this.TempData[Constants.Error] = "Failed to remove link from playlist.";
+            this.logger.Error(ex, "Something wrong: {message}", ex.Message);
+            return this.RedirectToAction(nameof(this.Details), new { id = playlistId.ToString() });
+        }
+    }
 }
