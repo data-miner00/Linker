@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.gitignore = ..\.gitignore
 		..\CITATION.cff = ..\CITATION.cff
 		Directory.Build.props = Directory.Build.props
+		..\.github\workflows\dotnet.yml = ..\.github\workflows\dotnet.yml
 		..\LICENSE = ..\LICENSE
 		package.json = package.json
 		pnpm-workspace.yaml = pnpm-workspace.yaml
