@@ -7,6 +7,7 @@ using Linker.Core.V2.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -97,6 +98,54 @@ public sealed class PlaylistRepository : IPlaylistRepository
     }
 
     /// <inheritdoc/>
+    public async Task<IEnumerable<Link>> GetPlaylistLinksAsync(string id, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var query = @"
+            SELECT LinkId FROM [dbo].[PlaylistLinks]
+            WHERE PlaylistId = @Id;";
+
+        var linkIds = await this.connection.QueryAsync<string>(query, new { Id = id }).ConfigureAwait(false);
+
+        if (!linkIds.Any())
+        {
+            return Enumerable.Empty<Link>();
+        }
+
+        var queryBuilder = new StringBuilder();
+
+        foreach (var linkId in linkIds.SkipLast(1))
+        {
+            queryBuilder.Append($"Id = '{linkId}' OR ");
+        }
+
+        var queryLinks = $"SELECT * FROM [dbo].[Links] WHERE {queryBuilder}Id = '{linkIds.Last()}';";
+
+        var links = await this.connection.QueryAsync<Link>(queryLinks).ConfigureAwait(false);
+
+        var selectFromLinksTagsQuery = @"SELECT * FROM [dbo].[LinksTags] WHERE LinkId = @LinkId;";
+        var selectFromTagsQuery = @"SELECT * FROM [dbo].[Tags] WHERE Id = @Id;";
+
+        foreach (var link in links)
+        {
+            var tags = new List<string>();
+
+            var tagPairs = await this.connection.QueryAsync<LinkTagPair>(selectFromLinksTagsQuery, new { LinkId = link.Id });
+
+            foreach (var pair in tagPairs)
+            {
+                var tag = await this.connection.QueryFirstAsync<Tag>(selectFromTagsQuery, new { Id = pair.TagId });
+                tags.Add(tag.Name);
+            }
+
+            link.Tags = tags;
+        }
+
+        return links;
+    }
+
+    /// <inheritdoc/>
     public Task UpdateAsync(Playlist playlist, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -118,6 +167,45 @@ public sealed class PlaylistRepository : IPlaylistRepository
             playlist.Description,
             Visibility = playlist.Visibility.ToString(),
             ModifiedAt = DateTime.UtcNow,
+        });
+    }
+
+    /// <inheritdoc/>
+    public Task AddPlaylistLinkAsync(string playlistId, string linkId, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var addPlaylistLink = @"
+            INSERT INTO [dbo].[PlaylistLinks] (
+                PlaylistId,
+                LinkId,
+                CreatedAt
+            ) VALUES (
+                @PlaylistId,
+                @LinkId,
+                @CreatedAt
+            );
+        ";
+
+        return this.connection.ExecuteAsync(addPlaylistLink, new
+        {
+            PlaylistId = playlistId,
+            LinkId = linkId,
+            CreatedAt = DateTime.Now,
+        });
+    }
+
+    /// <inheritdoc/>
+    public Task RemovePlaylistLinkAsync(string playlistId, string linkId, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var deleteOperation = "DELETE FROM [dbo].[PlaylistLinks] WHERE PlaylistId = @PlaylistId AND LinkId = @LinkId;";
+
+        return this.connection.ExecuteAsync(deleteOperation, new
+        {
+            PlaylistId = playlistId,
+            LinkId = linkId,
         });
     }
 }

@@ -6,6 +6,7 @@ using Linker.Core.V2.ApiModels;
 using Linker.Core.V2.Exceptions;
 using Linker.Core.V2.Models;
 using Linker.Core.V2.Repositories;
+using Linker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -17,16 +18,24 @@ public sealed class PlaylistController : Controller
     private readonly IPlaylistRepository repository;
     private readonly ILogger logger;
     private readonly IMapper mapper;
+    private readonly ILinkRepository linkRepository;
 
-    public PlaylistController(IPlaylistRepository repository, ILogger logger, IMapper mapper)
+    public PlaylistController(
+        IPlaylistRepository repository,
+        ILogger logger,
+        IMapper mapper,
+        ILinkRepository linkRepository)
     {
         this.repository = Guard.ThrowIfNull(repository);
         this.logger = Guard.ThrowIfNull(logger);
         this.mapper = Guard.ThrowIfNull(mapper);
+        this.linkRepository = Guard.ThrowIfNull(linkRepository);
     }
 
     public string UserId =>
         this.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+
+    public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
 
     public async Task<IActionResult> Index()
     {
@@ -138,7 +147,17 @@ public sealed class PlaylistController : Controller
                 .GetByIdAsync(id, this.HttpContext.RequestAborted)
                 .ConfigureAwait(false);
 
-            return this.View(playlist);
+            var links = await this.repository
+                .GetPlaylistLinksAsync(id, this.HttpContext.RequestAborted)
+                .ConfigureAwait(false);
+
+            var viewModel = new PlaylistDetailsViewModel
+            {
+                Playlist = playlist,
+                Links = links,
+            };
+
+            return this.View(viewModel);
         }
         catch (ApplicationExceptions.ItemNotFoundException ex)
         {
@@ -173,6 +192,49 @@ public sealed class PlaylistController : Controller
         catch
         {
             return this.View();
+        }
+    }
+
+    public async Task<IActionResult> AddLink(Guid playlistId)
+    {
+        try
+        {
+            var links = await this.linkRepository
+                .GetAllAsync(this.CancellationToken);
+
+            var publicLinks = links.Where(link => link.Visibility == Visibility.Public);
+
+            return this.PartialView("_AddLinkPartial", (publicLinks, playlistId.ToString()));
+        }
+        catch (InvalidOperationException ex)
+        {
+            this.TempData[Constants.Error] = "A task was canceked";
+            this.logger.Error(ex, "Something wrong: {Message}", ex.Message);
+            return this.RedirectToAction(nameof(this.Details), new { id = playlistId });
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddLink(Guid playlistId, Guid linkId)
+    {
+        Guard.ThrowIfDefault(playlistId);
+        Guard.ThrowIfDefault(linkId);
+
+        try
+        {
+            await this.repository
+                .AddPlaylistLinkAsync(playlistId.ToString(), linkId.ToString(), this.CancellationToken)
+                .ConfigureAwait(false);
+
+            this.TempData[Constants.Success] = "Successfully added link to playlist.";
+            return this.RedirectToAction(nameof(this.Details), new { id = playlistId.ToString() });
+        }
+        catch (InvalidOperationException ex)
+        {
+            this.TempData[Constants.Error] = "Failed to add link to playlist.";
+            this.logger.Error(ex, "Something wrong: {message}", ex.Message);
+            return this.RedirectToAction(nameof(this.Details), new { id = playlistId.ToString() });
         }
     }
 }

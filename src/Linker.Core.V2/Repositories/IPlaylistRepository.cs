@@ -48,4 +48,30 @@ public interface IPlaylistRepository
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The task.</returns>
     Task RemoveAsync(string id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Gets the links of a playlist.
+    /// </summary>
+    /// <param name="id">The playlist id.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The list of links.</returns>
+    Task<IEnumerable<Link>> GetPlaylistLinksAsync(string id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Adds the link to a playlist.
+    /// </summary>
+    /// <param name="playlistId">The playlist Id.</param>
+    /// <param name="linkId">The link Id.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The task.</returns>
+    Task AddPlaylistLinkAsync(string playlistId, string linkId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Removes the link from a playlist.
+    /// </summary>
+    /// <param name="playlistId">The playlist Id.</param>
+    /// <param name="linkId">The link Id.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The task.</returns>
+    Task RemovePlaylistLinkAsync(string playlistId, string linkId, CancellationToken cancellationToken);
 }
