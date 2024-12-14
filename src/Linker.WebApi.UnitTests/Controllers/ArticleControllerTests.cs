@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
     using Linker.Core.Models;
     using Linker.TestCore.DataBuilders;
+    using Linker.WebApi.ApiModels;
     using Linker.WebApi.UnitTests.Steps;
     using Microsoft.AspNetCore.Mvc;
     using Xunit;
@@ -101,15 +102,23 @@
                 new ArticleDataBuilder().Build(),
             };
 
+            var articleApiModels = new List<ArticleApiModel>
+            {
+                new ArticleApiModelDataBuilder().Build(),
+                new ArticleApiModelDataBuilder().Build(),
+            };
+
             this.steps
-                .GivenRepoGetAllAsyncReturns(articles);
+                .GivenRepoGetAllAsyncReturns(articles)
+                .GivenMapperMapToArticleApiModelReturns(articleApiModels);
 
             await this.steps.WhenIGetAllAsync();
 
             this.steps
                 .ThenIExpectNoExceptionIsThrown()
                 .ThenIExpectRepoGetAllAsyncToBeCalled(1)
-                .ThenIExpectResultToBe(new OkObjectResult(articles));
+                .ThenIExpectMapperToBeCalledWithArticle(2)
+                .ThenIExpectResultToBe(new OkObjectResult(articleApiModels));
         }
 
         [Fact]
@@ -118,16 +127,19 @@
             var guidStr = "ba3e784b-5edd-432d-a6fb-5215c27d83d2";
             var guid = Guid.Parse(guidStr);
             var article = new ArticleDataBuilder().WithId(guidStr).Build();
+            var articleApiModel = new ArticleApiModelDataBuilder().WithId(guidStr).Build();
 
             this.steps
-                .GivenRepoGetByIdAsyncReturns(article);
+                .GivenRepoGetByIdAsyncReturns(article)
+                .GivenMapperMapToArticleApiModelReturns([articleApiModel]);
 
             await this.steps.WhenIGetByIdAsync(guid);
 
             this.steps
                 .ThenIExpectNoExceptionIsThrown()
                 .ThenIExpectRepoGetByIdAsyncToBeCalledWith(guidStr, 1)
-                .ThenIExpectResultToBe(new OkObjectResult(article));
+                .ThenIExpectMapperToBeCalledWithArticle(1)
+                .ThenIExpectResultToBe(new OkObjectResult(articleApiModel));
         }
 
         [Fact]

@@ -25,7 +25,7 @@ public sealed class LinkDataBuilder : ITestDataBuilder<Link>
     private string? country;
     private string? keyPersonName;
     private Grammar grammar;
-    private Visibility visibility;
+    private Visibility visibility = Visibility.Public;
     private DateTime createdAt = DateTime.Now;
     private DateTime modifiedAt = DateTime.Now;
 

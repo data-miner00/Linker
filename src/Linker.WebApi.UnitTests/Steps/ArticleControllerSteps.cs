@@ -10,6 +10,7 @@
     using Linker.Core.Models;
     using Linker.Core.Repositories;
     using Linker.TestCore;
+    using Linker.WebApi.ApiModels;
     using Linker.WebApi.Controllers;
     using Microsoft.AspNetCore.Http;
 
@@ -125,6 +126,16 @@
             return this;
         }
 
+        public ArticleControllerSteps GivenMapperMapToArticleApiModelReturns(IEnumerable<ArticleApiModel> apiModels)
+        {
+            this.mockMapper
+                .SetupSequence(x => x.Map<ArticleApiModel>(It.IsAny<Article>()))
+                .Returns(apiModels.First())
+                .Returns(apiModels.Last());
+
+            return this;
+        }
+
         public ArticleControllerSteps GivenRepoGetByIdAsyncReturns(Article article)
         {
             this.mockRepository
@@ -212,6 +223,14 @@
         #endregion
 
         #region Then
+
+        public ArticleControllerSteps ThenIExpectMapperToBeCalledWithArticle(int times)
+        {
+            this.mockMapper
+                .Verify(x => x.Map<ArticleApiModel>(It.IsAny<Article>()), Times.Exactly(times));
+
+            return this;
+        }
 
         public ArticleControllerSteps ThenIExpectMapperToBeCalledWith(CreateArticleRequest request, int times)
         {
