@@ -14,7 +14,7 @@
   <h3 align="center">Linker</h3>
 
   <p align="center">
-    An application that stores links.
+    An application that stores and manages URL links.
     <br />
     <a href="https://github.com/data-miner00/Linker"><strong>View Demo »</strong></a>
     <br />
@@ -56,7 +56,9 @@
 
 ## About
 
-A quasi-social-media application to store and share links. This project started out as a basic console application but have evolved a lot during the years. Recently discovered that there is already a web app (not created by me) for this idea named [Snack.xyz](https://snack.xyz). For the entities and database design, please refer to the [drawio document](/docs/Linker.drawio).
+A suite of applications to store, manage and share links. I found that keeping track of useful websites/URL can be arduous and that was the raison d'être for this project. However, as the time goes by, I started to add more functionalities such as authorization, real-time chat, GraphQL etc to expand my knowledge and challenge myself.
+
+This project is still in active development and the entities and database design can be temporary found in the [drawio document](/docs/Linker.drawio) in the `docs` folder.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -214,6 +216,7 @@ List of resources that are helpful and would like to give credit to.
 - [Hot Chocolate AspNetCore](https://chillicream.com/docs/hotchocolate/v13/get-started-with-graphql-in-net-core)
 - [Stored Procedure with optional "WHERE" parameters](https://stackoverflow.com/questions/697671/stored-procedure-with-optional-where-parameters)
 - [Subscriptions - GRAPHQL API IN .NET w/ HOT CHOCOLATE #4](https://www.youtube.com/watch?v=JD5tfdzPIaI&list=PLA8ZIAm2I03g9z705U3KWJjTv0Nccw9pj&index=4)
+- [Snack.xyz](https://snack.xyz)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
