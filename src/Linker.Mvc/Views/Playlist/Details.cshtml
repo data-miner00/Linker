@@ -105,5 +105,9 @@
             var url = "@Url.Action("AddLink", "Playlist", new { PlaylistId = Model.Playlist.Id })";
             $("dialog#addw-link-popup").toggle().load(url);
         }
+
+        function toggleLinkDialog() {
+            $("dialog#addw-link-popup").toggle();
+        }
     </script>
 }
