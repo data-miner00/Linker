@@ -6,6 +6,7 @@ using Linker.Core.V2.ApiModels;
 using Linker.Core.V2.Exceptions;
 using Linker.Core.V2.Models;
 using Linker.Core.V2.Repositories;
+using Linker.Mvc.Comparers;
 using Linker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -202,7 +203,12 @@ public sealed class PlaylistController : Controller
             var links = await this.linkRepository
                 .GetAllAsync(this.CancellationToken);
 
-            var publicLinks = links.Where(link => link.Visibility == Visibility.Public);
+            var addedLinks = await this.repository
+                .GetPlaylistLinksAsync(playlistId.ToString(), this.CancellationToken);
+
+            var publicLinks = links
+                .Except(addedLinks, new NaiveLinkComparer())
+                .Where(link => link.Visibility == Visibility.Public);
 
             return this.PartialView("_AddLinkPartial", (publicLinks, playlistId.ToString()));
         }
