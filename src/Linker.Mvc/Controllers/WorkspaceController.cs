@@ -5,6 +5,7 @@ using Linker.Common.Helpers;
 using Linker.Core.V2.ApiModels;
 using Linker.Core.V2.Models;
 using Linker.Core.V2.Repositories;
+using Linker.Mvc.Comparers;
 using Linker.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -235,7 +236,12 @@ public sealed class WorkspaceController : Controller
                 .GetAllAsync(this.CancellationToken)
                 .ConfigureAwait(false);
 
-            var publicLinks = links.Where(link => link.Visibility == Visibility.Public);
+            var addedLinks = await this.repository
+                .GetWorkspaceLinksAsync(workspaceId.ToString(), this.CancellationToken);
+
+            var publicLinks = links
+                .Except(addedLinks, new NaiveLinkComparer())
+                .Where(link => link.Visibility == Visibility.Public);
 
             return this.PartialView("_AddLinkPartial", (publicLinks, workspaceId.ToString()));
         }
