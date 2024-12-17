@@ -1,0 +1,22 @@
+{
+  "name": "linker.web",
+  "version": "1.0.0",
+  "description": "The MVC .NET Core application that store links.",
+  "scripts": {
+    "copy:bootstrap": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/bootstrap/* -DestinationFolder ./wwwroot/lib/bootstrap/",
+    "copy:jquery": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/jquery/dist/* -DestinationFolder ./wwwroot/lib/jquery/",
+    "copy:jquery-v": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/jquery-validation/* -DestinationFolder ./wwwroot/lib/jquery-validation/",
+    "copy:jquery-vu": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/jquery-validation-unobtrusive/dist/* -DestinationFolder ./wwwroot/lib/jquery-validation-unobtrusive/",
+    "copy": "pnpm copy:bootstrap && pnpm copy:jquery && pnpm copy:jquery-v && pnpm copy:jquery-vu"
+  },
+  "keywords": [],
+  "author": "Shaun Chong <mumk0313@gmail.com>",
+  "license": "WTFPL",
+  "devDependencies": {
+    "bootstrap": "5.3.3",
+    "jquery": "^3.7.1",
+    "jquery-validation": "^1.20.0",
+    "jquery-validation-unobtrusive": "^4.0.0",
+    "tailwindcss": "^3.4.1"
+  }
+}

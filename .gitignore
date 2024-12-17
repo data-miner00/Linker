@@ -383,6 +383,7 @@ jquery/
 jquery-validation/
 jquery-validation-unobtrusive/
 signalr/
+bootstrap/
 
 # Upload folder
 Uploads/

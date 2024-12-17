@@ -1,2 +1,3 @@
 packages:
-    - Linker.Mvc    
+    - Linker.Mvc
+    - Linker.Web
