@@ -154,6 +154,9 @@
                         {
                             <li class="flex gap-4 mb-1 border border-solid border-gray-200 rounded-xl p-3 items-center">
                                 <div class="h-[72px] w-[128px] bg-gray-300 rounded-xl">
+                                    @if (!string.IsNullOrWhiteSpace(link.ThumbnailUrl)) {
+                                        <img src="@link.ThumbnailUrl" class="object-cover w-full h-full" />
+                                    }
                                 </div>
 
                                 <div>
