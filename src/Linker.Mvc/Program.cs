@@ -201,11 +201,14 @@ public static class Program
 
         return builder;
 
-        static void ConfigureClient(IServiceProvider ctx, HttpClient httpClient)
+        void ConfigureClient(IServiceProvider ctx, HttpClient httpClient)
         {
+            var gitHubUrl = builder.Configuration.GetSection("GitHubUrl")?.Value
+                ?? throw new InvalidOperationException("GitHubUrl missing from command line args.");
+
             httpClient.DefaultRequestHeaders.Add("Authorization", string.Empty);
             httpClient.DefaultRequestHeaders.Add("User-Agent", string.Empty);
-            httpClient.BaseAddress = new Uri("https://api.github.com");
+            httpClient.BaseAddress = new Uri(gitHubUrl);
         }
     }
 

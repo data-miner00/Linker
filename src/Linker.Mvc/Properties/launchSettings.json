@@ -25,7 +25,8 @@
       "applicationUrl": "https://localhost:7201;http://localhost:5029",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "commandLineArgs": "--GitHubUrl=\"https://api.github.com\""
     },
     "IIS Express": {
       "commandName": "IISExpress",
