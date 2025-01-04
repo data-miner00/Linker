@@ -29,18 +29,27 @@
         </form>
     </aside>
     <main class="p-4 rounded shadow-lg">
-        <form method="get" asp-action="Export">
-            <button class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">Export links..</button>
-        </form>
+        <div class="flex gap-2 items-center">
+            <form method="get" asp-action="Export">
+                <button class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">Export links..</button>
+            </form>
+
+            <select name="showType" class="p-2 rounded">
+                <option value="all">All</option>
+                <option value="public">Public</option>
+                <option value="unlisted">Unlisted</option>
+                <option value="private">Private</option>
+            </select>
+        </div>
 
         <hr class="my-4"/>
 
         <ul>
             @foreach (var link in Model.Item3) {
                 <li class="flex gap-4 mb-1 border border-solid border-gray-200 rounded-xl p-3 items-center">
-                    <div class="h-[72px] w-[128px] bg-gray-300 rounded-xl overflow-hidden flex items-center justify-center">
-                        @if (link.ThumbnailUrl is not null) {
-                            <img src="@link.ThumbnailUrl" class="w-full h-full block" />
+                    <div class="h-[72px] w-[128px] bg-gray-300 rounded-xl overflow-hidden">
+                        @if (!string.IsNullOrWhiteSpace(link.ThumbnailUrl)) {
+                            <img src="@link.ThumbnailUrl" class="w-full h-full object-cover" />
                         }
                     </div>
 
@@ -88,3 +97,9 @@
         </ul>
     </main>
 </div>
+
+@section Scripts {
+    <script type="text/javascript">
+        console.log("Loaded");
+    </script>
+}
