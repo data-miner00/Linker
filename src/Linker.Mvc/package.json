@@ -11,17 +11,23 @@
     "copy:jquery-v": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/jquery-validation/* -DestinationFolder ./wwwroot/lib/jquery-validation/",
     "copy:jquery-vu": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/jquery-validation-unobtrusive/dist/* -DestinationFolder ./wwwroot/lib/jquery-validation-unobtrusive/",
     "copy:signalr": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/@microsoft/signalr/dist/browser/* -DestinationFolder ./wwwroot/lib/signalr/",
-    "copy": "pnpm copy:bicon && pnpm copy:jquery && pnpm copy:jquery-v && pnpm copy:jquery-vu && pnpm copy:signalr"
+    "copy:react": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/react/umd/* -DestinationFolder ./wwwroot/lib/react/",
+    "copy:react-dom": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/react-dom/umd/* -DestinationFolder ./wwwroot/lib/react-dom/",
+    "copy:babel": "powershell ./Scripts/Copy-FolderItems.ps1 -SourceFolder ./node_modules/babel-standalone/babel.min.js -DestinationFolder ./wwwroot/lib/babel-standalone/",
+    "copy": "pnpm copy:bicon && pnpm copy:jquery && pnpm copy:jquery-v && pnpm copy:jquery-vu && pnpm copy:signalr && pnpm copy:react && pnpm copy:react-dom && pnpm copy:babel"
   },
   "keywords": [],
   "author": "Shaun Chong <mumk0313@gmail.com>",
   "license": "WTFPL",
   "devDependencies": {
     "@microsoft/signalr": "^8.0.0",
+    "babel-standalone": "^6.26.0",
     "bootstrap-icons": "^1.11.3",
     "jquery": "^3.7.1",
     "jquery-validation": "^1.20.0",
     "jquery-validation-unobtrusive": "^4.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.1"
   }
 }

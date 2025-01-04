@@ -80,3 +80,21 @@
         </ul>
     </div>
 </div>
+
+<div id="root"></div>
+
+@section Scripts {
+    <partial name="_ReactScriptsPartial" />
+    <script type="text/babel">
+        function Counter() {
+            const [counter, setCounter] = React.useState(0);
+
+            return (
+                <button onClick={() => setCounter(x => ++x)}>Counter: {counter}</button>
+            )
+        }
+        const domContainer = document.querySelector('#root');
+        const root = ReactDOM.createRoot(domContainer);
+        root.render(<Counter />);
+    </script>
+}

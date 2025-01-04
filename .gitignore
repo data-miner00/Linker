@@ -384,6 +384,9 @@ jquery-validation/
 jquery-validation-unobtrusive/
 signalr/
 bootstrap/
+react/
+react-dom/
+babel-standalone/
 
 # Upload folder
 Uploads/
