@@ -12,12 +12,14 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using System;
 using System.Collections.Generic;
 using Serilog;
+using Linker.Core.V2.Clients;
 
 internal sealed class LinkControllerSteps : BaseSteps<LinkControllerSteps>
 {
     private readonly Mock<ILinkRepository> mockRepository;
     private readonly Mock<IMapper> mockMapper;
     private readonly Mock<ILogger> mockLogger;
+    private readonly Mock<ILinkUpdatedEventClient> mockClient;
     private readonly LinkController controller;
 
     public LinkControllerSteps()
@@ -25,14 +27,19 @@ internal sealed class LinkControllerSteps : BaseSteps<LinkControllerSteps>
         this.mockRepository = new();
         this.mockMapper = new();
         this.mockLogger = new();
+        this.mockClient = new();
 
-        this.controller = new(this.mockRepository.Object, this.mockMapper.Object, this.mockLogger.Object);
+        this.controller = new(this.mockRepository.Object, this.mockMapper.Object, this.mockLogger.Object, this.mockClient.Object);
         this.GivenIHaveDefaultHttpContext();
     }
 
     public override LinkControllerSteps GetSteps() => this;
 
-    public LinkControllerSteps WhenIInitWith(bool isRepoNull, bool isMapperNull, bool isLoggerNull)
+    public LinkControllerSteps WhenIInitWith(
+        bool isRepoNull,
+        bool isMapperNull,
+        bool isLoggerNull,
+        bool isClientNull)
     {
         var repo = isRepoNull
             ? null
@@ -46,7 +53,11 @@ internal sealed class LinkControllerSteps : BaseSteps<LinkControllerSteps>
             ? null
             : this.mockLogger.Object;
 
-        return this.RecordException(() => new LinkController(repo, mapper, logger));
+        var client = isClientNull
+            ? null
+            : this.mockClient.Object;
+
+        return this.RecordException(() => new LinkController(repo, mapper, logger, client));
     }
 
     public LinkControllerSteps GivenIHaveDefaultHttpContext()

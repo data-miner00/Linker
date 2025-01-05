@@ -7,13 +7,15 @@ Background:
 
 @nulls
 Scenario: Unable to initialize controller with "Null" parameters
-	When I initialize with "Null" for repo "<IsRepoNull>" and "Null" for mapper "<IsMapperNull>" and "Null" for logger "<IsLoggerNull>"
+	When I initialize with "Null" for repo "<IsRepoNull>" and "Null" for mapper "<IsMapperNull>" and "Null" for logger "<IsLoggerNull>" and "Null" for client "<IsClientNull>"
 	Then I expect "ArgumentNullException" should be thrown.
 Examples: 
-| IsRepoNull | IsMapperNull | IsLoggerNull |
-| true       | false        | false        |
-| false      | true         | false        |
-| false      | false        | true         |
+| IsRepoNull | IsMapperNull | IsLoggerNull | IsClientNull |
+| true       | false        | false        | false        |
+| false      | true         | false        | false        |
+| false      | false        | true         | false        |
+| false      | false        | false        | true         |
+
 
 @get
 Scenario: Return links when "Index" is called

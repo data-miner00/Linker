@@ -12,16 +12,18 @@ public sealed class LinkControllerTests
     private readonly LinkControllerSteps steps = new();
 
     [Theory]
-    [InlineData(true, false, false)]
-    [InlineData(false, true, false)]
-    [InlineData(false, false, true)]
+    [InlineData(true, false, false, false)]
+    [InlineData(false, true, false, false)]
+    [InlineData(false, false, true, false)]
+    [InlineData(false, false, false, true)]
     public void Constructor_NullParameters_Throws(
         bool isRepoNull,
         bool isMapperNull,
-        bool isLoggerNull)
+        bool isLoggerNull,
+        bool isClientNull)
     {
         this.steps
-            .WhenIInitWith(isRepoNull, isMapperNull, isLoggerNull)
+            .WhenIInitWith(isRepoNull, isMapperNull, isLoggerNull, isClientNull)
             .ThenIExpectExceptionIsThrown<ArgumentNullException>();
     }
 

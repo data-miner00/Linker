@@ -93,10 +93,11 @@ namespace Linker.Mvc.UnitTests.Features
         [Xunit.TraitAttribute("FeatureTitle", "LinkController")]
         [Xunit.TraitAttribute("Description", "Unable to initialize controller with \"Null\" parameters")]
         [Xunit.TraitAttribute("Category", "nulls")]
-        [Xunit.InlineDataAttribute("true", "false", "false", new string[0])]
-        [Xunit.InlineDataAttribute("false", "true", "false", new string[0])]
-        [Xunit.InlineDataAttribute("false", "false", "true", new string[0])]
-        public void UnableToInitializeControllerWithNullParameters(string isRepoNull, string isMapperNull, string isLoggerNull, string[] exampleTags)
+        [Xunit.InlineDataAttribute("true", "false", "false", "false", new string[0])]
+        [Xunit.InlineDataAttribute("false", "true", "false", "false", new string[0])]
+        [Xunit.InlineDataAttribute("false", "false", "true", "false", new string[0])]
+        [Xunit.InlineDataAttribute("false", "false", "false", "true", new string[0])]
+        public void UnableToInitializeControllerWithNullParameters(string isRepoNull, string isMapperNull, string isLoggerNull, string isClientNull, string[] exampleTags)
         {
             string[] @__tags = new string[] {
                     "nulls"};
@@ -109,6 +110,7 @@ namespace Linker.Mvc.UnitTests.Features
             argumentsOfScenario.Add("IsRepoNull", isRepoNull);
             argumentsOfScenario.Add("IsMapperNull", isMapperNull);
             argumentsOfScenario.Add("IsLoggerNull", isLoggerNull);
+            argumentsOfScenario.Add("IsClientNull", isClientNull);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Unable to initialize controller with \"Null\" parameters", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 9
 this.ScenarioInitialize(scenarioInfo);
@@ -125,7 +127,7 @@ this.FeatureBackground();
 #line hidden
 #line 10
  testRunner.When(string.Format("I initialize with \"Null\" for repo \"{0}\" and \"Null\" for mapper \"{1}\" and \"Null\" fo" +
-                            "r logger \"{2}\"", isRepoNull, isMapperNull, isLoggerNull), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+                            "r logger \"{2}\" and \"Null\" for client \"{3}\"", isRepoNull, isMapperNull, isLoggerNull, isClientNull), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 11
  testRunner.Then("I expect \"ArgumentNullException\" should be thrown.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -144,7 +146,7 @@ this.FeatureBackground();
                     "get"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Return links when \"Index\" is called", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 19
+#line 21
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -157,19 +159,19 @@ this.ScenarioInitialize(scenarioInfo);
 #line 5
 this.FeatureBackground();
 #line hidden
-#line 20
+#line 22
  testRunner.Given("the repository is able to fetch all links that contains name \"My link\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 21
+#line 23
  testRunner.When("I invoke \"Index\" method", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 22
+#line 24
  testRunner.Then("I expect the response to contain a list of links that contains \"My link\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 23
+#line 25
  testRunner.And("the repository\'s \"GetAllAsync\" method should be called 1 times", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 24
+#line 26
  testRunner.And("no exception was thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }

@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Linker.TestCore.DataBuilders;
 using Linker.Core.V2.QueryParams;
+using Linker.Core.V2.Clients;
 
 [Binding]
 public sealed class LinkControllerSteps : BaseSteps<LinkControllerSteps>
@@ -21,6 +22,7 @@ public sealed class LinkControllerSteps : BaseSteps<LinkControllerSteps>
     private readonly Mock<ILinkRepository> mockRepo;
     private readonly Mock<IMapper> mockMapper;
     private readonly Mock<ILogger> mockLogger;
+    private readonly Mock<ILinkUpdatedEventClient> mockClient;
     private readonly LinkController controller;
 
     public LinkControllerSteps()
@@ -28,8 +30,13 @@ public sealed class LinkControllerSteps : BaseSteps<LinkControllerSteps>
         this.mockRepo = new Mock<ILinkRepository>();
         this.mockMapper = new Mock<IMapper>();
         this.mockLogger = new Mock<ILogger>();
+        this.mockClient = new();
 
-        this.controller = new LinkController(this.mockRepo.Object, this.mockMapper.Object, this.mockLogger.Object); ;
+        this.controller = new LinkController(
+            this.mockRepo.Object,
+            this.mockMapper.Object,
+            this.mockLogger.Object,
+            this.mockClient.Object);
     }
 
     // For additional details on SpecFlow hooks see http://go.specflow.org/doc-hooks
@@ -84,8 +91,8 @@ public sealed class LinkControllerSteps : BaseSteps<LinkControllerSteps>
             .ReturnsAsync(links);
     }
 
-    [When(@"I initialize with ""Null"" for repo ""(.*?)"" and ""Null"" for mapper ""(.*?)"" and ""Null"" for logger ""(.*?)""")]
-    public void WhenIInitializeWith(string isRepoNull, string isMapperNull, string isLoggerNull)
+    [When(@"I initialize with ""Null"" for repo ""(.*?)"" and ""Null"" for mapper ""(.*?)"" and ""Null"" for logger ""(.*?)"" and ""Null"" for client ""(.*?)""")]
+    public void WhenIInitializeWith(string isRepoNull, string isMapperNull, string isLoggerNull, string isClientNull)
     {
         var repo = isRepoNull == "true"
             ? null
@@ -99,7 +106,11 @@ public sealed class LinkControllerSteps : BaseSteps<LinkControllerSteps>
             ? null
             : this.mockLogger.Object;
 
-        this.RecordException(() => new LinkController(repo, mapper, logger));
+        var client = isClientNull == "true"
+            ? null
+            : this.mockClient.Object;
+
+        this.RecordException(() => new LinkController(repo, mapper, logger, client));
     }
 
     [When(@"I invoke ""Index"" method")]
