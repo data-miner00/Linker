@@ -20,6 +20,8 @@ using Microsoft.Data.SqlClient;
 using Serilog;
 
 using AppMetrics = Microsoft.Extensions.DependencyInjection.AppMetricsServiceCollectionExtensions;
+using Linker.Core.V2.Clients;
+using Linker.Integrations.Clients;
 
 /// <summary>
 /// The entry point for Linker Mvc.
@@ -49,6 +51,7 @@ public static class Program
             .ConfigureLoggings()
             .ConfigureHttpClients()
             .ConfigureMetrics()
+            .ConfigureClients()
             .Start();
     }
 
@@ -241,6 +244,13 @@ public static class Program
 
         builder.Services
             .AddSingleton<IDictionary<string, IDataStreamifier>>(streamifiers);
+
+        return builder;
+    }
+
+    private static WebApplicationBuilder ConfigureClients(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddSingleton<ILinkUpdatedEventClient, LinkUpdatedEventClient>();
 
         return builder;
     }

@@ -15,8 +15,8 @@ public interface ILinkRepository
     /// </summary>
     /// <param name="link">The link to be added.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>The task.</returns>
-    Task AddAsync(Link link, CancellationToken cancellationToken);
+    /// <returns>The id of the new link.</returns>
+    Task<string> AddAsync(Link link, CancellationToken cancellationToken);
 
     /// <summary>
     /// Retrieves all the available data from the database.

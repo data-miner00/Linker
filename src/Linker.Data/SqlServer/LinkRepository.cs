@@ -29,7 +29,7 @@ public sealed class LinkRepository : ILinkRepository
     }
 
     /// <inheritdoc/>
-    public async Task AddAsync(Link link, CancellationToken cancellationToken)
+    public async Task<string> AddAsync(Link link, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         ArgumentNullException.ThrowIfNull(link);
@@ -162,6 +162,8 @@ public sealed class LinkRepository : ILinkRepository
                 await this.connection.ExecuteAsync(insertLinksTagsOperation, new { LinkId = randomId, TagId = result.SingleOrDefault()?.Id });
             }
         }
+
+        return randomId;
     }
 
     /// <inheritdoc/>

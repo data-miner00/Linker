@@ -82,6 +82,7 @@
     <Build Include="dbo\Tables\PlaylistLinks.sql" />
     <Build Include="dbo\Views\vw_TaggedLinks.sql" />
     <Build Include="dbo\Stored Procedures\usp_GetLinksWithMatchingTag.sql" />
+    <Build Include="dbo\Tables\LinkUpdatedEvents.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Linker.Database.refactorlog" />

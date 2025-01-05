@@ -3,6 +3,7 @@
 using AutoMapper;
 using Linker.Common.Helpers;
 using Linker.Core.V2.ApiModels;
+using Linker.Core.V2.Clients;
 using Linker.Core.V2.Exceptions;
 using Linker.Core.V2.Models;
 using Linker.Core.V2.QueryParams;
@@ -19,12 +20,18 @@ public sealed class LinkController : Controller
     private readonly ILinkRepository repository;
     private readonly IMapper mapper;
     private readonly ILogger logger;
+    private readonly ILinkUpdatedEventClient eventClient;
 
-    public LinkController(ILinkRepository repository, IMapper mapper, ILogger logger)
+    public LinkController(
+        ILinkRepository repository,
+        IMapper mapper,
+        ILogger logger,
+        ILinkUpdatedEventClient eventClient)
     {
         this.repository = Guard.ThrowIfNull(repository);
         this.mapper = Guard.ThrowIfNull(mapper);
         this.logger = Guard.ThrowIfNull(logger);
+        this.eventClient = Guard.ThrowIfNull(eventClient);
     }
 
     public CancellationToken CancellationToken => this.HttpContext.RequestAborted;
@@ -104,9 +111,11 @@ public sealed class LinkController : Controller
 
             if (this.ModelState.IsValid)
             {
-                await this.repository
+                var linkId = await this.repository
                     .AddAsync(link, this.CancellationToken)
                     .ConfigureAwait(false);
+
+                await this.eventClient.PublishAsync(linkId, default);
 
                 this.TempData[Constants.Success] = "Link created successfully!";
 
@@ -135,6 +144,8 @@ public sealed class LinkController : Controller
             var link = await this.repository
                 .GetByIdAsync(id.ToString(), this.CancellationToken)
                 .ConfigureAwait(false);
+
+            await this.eventClient.PublishAsync(id.ToString(), default);
 
             return this.View(link);
         }
