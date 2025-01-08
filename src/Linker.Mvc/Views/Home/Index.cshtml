@@ -22,14 +22,20 @@
 
                 <div>
                     <a
-                        href="@link.Url"
-                        target="_blank"
-                        class="block mb-1 hover:underline"
+                    href="@link.Url"
+                    target="_blank"
+                    class="block mb-1 hover:underline"
                     >
                         @link.Name <i class="bi bi-box-arrow-up-right"></i>
                     </a>
                     <div class="flex items-center">
-                        <div class="w-4 h-4 bg-gray-100 mr-1"></div>
+                        <div class="w-4 h-4 mr-1">
+                            @{
+                                var parsedUrl = new Uri(link.Url);
+                                var faviconUrl = parsedUrl.GetLeftPart(UriPartial.Authority) + "/favicon.ico";
+                            }
+                            <img src="@faviconUrl" aria-hidden="true" />
+                        </div>
                         <p class="block text-gray-600 text-sm">@link.Domain</p>
                     </div>
                 </div>
