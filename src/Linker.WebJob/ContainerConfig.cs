@@ -127,6 +127,7 @@ internal static class ContainerConfig
         builder.RegisterType<UrlHealthCheckJob>().SingleInstance();
         builder.RegisterType<LinkUpdatedEventClient>().As<ILinkUpdatedEventClient>().SingleInstance();
         builder.RegisterType<ImageMetadataRetrieverJob>().SingleInstance();
+        builder.RegisterType<ImageMetadataHandler>().As<IImageMetadataHandler>().SingleInstance();
         builder.RegisterInstance(defaultScheduler).As<IScheduler>().SingleInstance();
         builder.RegisterType<JobScheduler>().SingleInstance();
         builder.RegisterType<WebJobService>().As<IHostedService>().SingleInstance();

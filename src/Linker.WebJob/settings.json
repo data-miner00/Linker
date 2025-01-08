@@ -3,11 +3,11 @@
     "ConnectionString": "Server=DESKTOP-KL3VEUU;Database=Linker;Trusted_Connection=True;TrustServerCertificate=True;"
   },
   "UrlHealthCheckOption": {
-    "CronExpression": "0 0/3 * 1/1 * ? *",
+    "CronExpression": "0 0/5 * 1/1 * ? *",
     "TimeoutInSeconds": 10
   },
   "ImageMetadataRetrieverOption": {
-    "CronExpression": "0 0/2 * 1/1 * ? *",
+    "CronExpression": "0 0/1 * 1/1 * ? *",
     "TimeoutInSeconds": 10
   }
 }

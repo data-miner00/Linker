@@ -20,12 +20,16 @@ public sealed class LinkUpdatedEventClient : ILinkUpdatedEventClient
 
     public Task CompleteAsync(long id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var stmt = "DELETE FROM LinkUpdatedEvents WHERE Id = @Id;";
+
+        return this.connection.ExecuteAsync(stmt, new { Id = id });
     }
 
     public Task<LinkUpdatedEvent> PeekAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var stmt = "SELECT TOP 1 * FROM LinkUpdatedEvents;";
+
+        return this.connection.QueryFirstAsync<LinkUpdatedEvent>(stmt);
     }
 
     public Task<IEnumerable<LinkUpdatedEvent>> PeekBatchAsync(CancellationToken cancellationToken)
