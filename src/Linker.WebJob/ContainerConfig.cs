@@ -2,8 +2,10 @@
 
 using Autofac;
 using Autofac.Configuration;
+using Linker.Core.V2.Clients;
 using Linker.Core.V2.Repositories;
 using Linker.Data.SqlServer;
+using Linker.Integrations.Clients;
 using Linker.WebJob.Jobs;
 using Linker.WebJob.Models;
 using Linker.WebJob.Options;
@@ -56,11 +58,17 @@ internal static class ContainerConfig
             .GetSection(nameof(UrlHealthCheckOption))
             .Get<UrlHealthCheckOption>();
 
+        var imageMetadataRetrieverOption = config
+            .GetSection(nameof(ImageMetadataRetrieverOption))
+            .Get<ImageMetadataRetrieverOption>();
+
         ArgumentNullException.ThrowIfNull(databaseOption);
         ArgumentNullException.ThrowIfNull(urlHealthCheckOption);
+        ArgumentNullException.ThrowIfNull(imageMetadataRetrieverOption);
 
         builder.RegisterInstance(databaseOption);
         builder.RegisterInstance(urlHealthCheckOption);
+        builder.RegisterInstance(imageMetadataRetrieverOption);
 
         return builder;
     }
@@ -87,7 +95,8 @@ internal static class ContainerConfig
         builder
             .Register(ctx =>
             {
-                var option = ctx.Resolve<UrlHealthCheckOption>();
+                var healthCheckOption = ctx.Resolve<UrlHealthCheckOption>();
+                var imageMetadataOption = ctx.Resolve<ImageMetadataRetrieverOption>();
 
                 var jobDescriptors = new List<JobDescriptor>
                 {
@@ -95,7 +104,13 @@ internal static class ContainerConfig
                     {
                         JobType = typeof(UrlHealthCheckJob),
                         Description = "Regularly checks on the status of url links.",
-                        CronExpression = option.CronExpression,
+                        CronExpression = healthCheckOption.CronExpression,
+                    },
+                    new()
+                    {
+                        JobType = typeof(ImageMetadataRetrieverJob),
+                        Description = "Regularly tries to search for thumbnail and favicon for new links.",
+                        CronExpression = imageMetadataOption.CronExpression,
                     },
                 };
 
@@ -110,6 +125,8 @@ internal static class ContainerConfig
         builder.RegisterType<JobFactory>().As<IJobFactory>();
         builder.RegisterType<UrlHealthChecker>().As<IUrlHealthChecker>().SingleInstance();
         builder.RegisterType<UrlHealthCheckJob>().SingleInstance();
+        builder.RegisterType<LinkUpdatedEventClient>().As<ILinkUpdatedEventClient>().SingleInstance();
+        builder.RegisterType<ImageMetadataRetrieverJob>().SingleInstance();
         builder.RegisterInstance(defaultScheduler).As<IScheduler>().SingleInstance();
         builder.RegisterType<JobScheduler>().SingleInstance();
         builder.RegisterType<WebJobService>().As<IHostedService>().SingleInstance();
