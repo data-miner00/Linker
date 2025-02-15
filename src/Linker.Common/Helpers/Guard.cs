@@ -1,8 +1,10 @@
 ﻿namespace Linker.Common.Helpers
 {
     using System;
+    using System.Collections;
     using System.ComponentModel.DataAnnotations;
     using System.Globalization;
+    using System.Linq;
     using System.Numerics;
     using System.Runtime.CompilerServices;
 
@@ -18,13 +20,41 @@
         /// <param name="obj">The object to be checked.</param>
         /// <param name="paramName">The name of the object.</param>
         /// <returns>The object itself.</returns>
-        /// <exception cref="ArgumentException">Throws when .</exception>
+        /// <exception cref="ArgumentException">Throws when object is null.</exception>
         public static T ThrowIfNull<T>(T obj, [CallerArgumentExpression(nameof(obj))] string? paramName = null)
             where T : class
         {
             if (obj is null)
             {
                 throw new ArgumentNullException(paramName, string.Create(CultureInfo.InvariantCulture, $"The object {paramName} cannot be null."));
+            }
+
+            return obj;
+        }
+
+        /// <summary>
+        /// Checks if a string or a collection is null or empty.
+        /// </summary>
+        /// <typeparam name="T">The data type.</typeparam>
+        /// <param name="obj">The object.</param>
+        /// <param name="paramName">The parameter name.</param>
+        /// <returns>The object itself.</returns>
+        /// <exception cref="ArgumentNullException">Argument null exception.</exception>
+        public static T ThrowIfNullOrEmpty<T>(T obj, [CallerArgumentExpression(nameof(obj))] string? paramName = null)
+        {
+            if (obj is null)
+            {
+                throw new ArgumentNullException(paramName, string.Create(CultureInfo.InvariantCulture, $"The object {paramName} cannot be null."));
+            }
+
+            if (obj is string str && string.IsNullOrEmpty(str))
+            {
+                throw new ArgumentException(paramName, string.Create(CultureInfo.InvariantCulture, $"The string {paramName} cannot be empty."));
+            }
+
+            if (obj is IEnumerable enumerable && !enumerable.Cast<object>().Any())
+            {
+                throw new ArgumentException(paramName, string.Create(CultureInfo.InvariantCulture, $"The collection {paramName} cannot be empty."));
             }
 
             return obj;

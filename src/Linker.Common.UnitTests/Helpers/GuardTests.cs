@@ -1,6 +1,7 @@
 ﻿namespace Linker.Common.UnitTests.Helpers
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using Linker.Common.Helpers;
     using Xunit;
@@ -27,6 +28,50 @@
             object mockObj = new object();
             var result = Guard.ThrowIfNull(mockObj);
             Assert.Equal(result, mockObj);
+        }
+
+        [Fact]
+        public void ThrowIfNullOrEmpty_ValidString_Pass()
+        {
+            var str = "hello";
+            var result = Guard.ThrowIfNullOrEmpty(str);
+            Assert.Equal(result, str);
+        }
+
+        [Fact]
+        public void ThrowIfNullOrEmpty_NullString_Throws()
+        {
+            string str = null;
+            Assert.Throws<ArgumentNullException>(() => Guard.ThrowIfNullOrEmpty(str));
+        }
+
+        [Fact]
+        public void ThrowIfNullOrEmpty_EmptyString_Throws()
+        {
+            var str = string.Empty;
+            Assert.Throws<ArgumentException>(() => Guard.ThrowIfNullOrEmpty(str));
+        }
+
+        [Fact]
+        public void ThrowIfNullOrEmpty_ValidCollection_Pass()
+        {
+            List<int> nums = [1, 2, 3];
+            var result = Guard.ThrowIfNullOrEmpty(nums);
+            Assert.Equal(nums, result);
+        }
+
+        [Fact]
+        public void ThrowIfNullOrEmpty_EmptyCollection_Pass()
+        {
+            List<int> nums = [];
+            Assert.Throws<ArgumentException>(() => Guard.ThrowIfNullOrEmpty(nums));
+        }
+
+        [Fact]
+        public void ThrowIfNullOrEmpty_NullCollection_Pass()
+        {
+            List<int> nums = null;
+            Assert.Throws<ArgumentNullException>(() => Guard.ThrowIfNullOrEmpty(nums));
         }
 
         [Theory]
