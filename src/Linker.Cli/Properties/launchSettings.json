@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Linker.Cli": {
+      "commandName": "Project",
+      "commandLineArgs": "add https://www.com --name \"hello world\""
+    }
+  }
+}
