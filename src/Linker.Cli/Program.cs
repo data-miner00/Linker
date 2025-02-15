@@ -111,6 +111,30 @@ internal static class Program
                 }
 
                 break;
+
+            case CommandType.DeleteLink:
+                {
+                    if (command.CommandArguments is DeleteLinkCommandArguments dlca)
+                    {
+                        if (!dlca.ConfirmDelete)
+                        {
+                            var linkToDelete = await repo.GetByIdAsync(dlca.Id);
+
+                            Console.Write($"Confirm delete {linkToDelete.Url}? [y/N]: ");
+                            var response = Console.ReadLine();
+
+                            if (response is null || !response.StartsWith("y", StringComparison.OrdinalIgnoreCase))
+                            {
+                                Console.WriteLine("Delete aborted.");
+                                return;
+                            }
+                        }
+
+                        await repo.RemoveAsync(dlca.Id);
+                    }
+                }
+
+                break;
         }
 
         // color cli

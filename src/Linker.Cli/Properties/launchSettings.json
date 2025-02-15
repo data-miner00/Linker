@@ -2,7 +2,7 @@
   "profiles": {
     "Linker.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "update 1 --url dxxoged.com -rt sfw -rt mmr -nw -l ms"
+      "commandLineArgs": "delete 5"
     }
   }
 }

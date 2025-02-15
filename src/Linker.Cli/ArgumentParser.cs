@@ -48,6 +48,7 @@ internal static class ArgumentParser
             CommandType.AddLink => ParseAddLinkCommand(args),
             CommandType.ShowLinks => ParseShowLinksCommand(args),
             CommandType.UpdateLink => ParseUpdateLinkCommand(args),
+            CommandType.DeleteLink => ParseDeleteLinkCommand(args),
             _ => throw new NotImplementedException(),
         };
 
@@ -204,6 +205,37 @@ internal static class ArgumentParser
             {
                 command.Language = args[index + 1];
                 index += 2;
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized args");
+            }
+        }
+
+        return command;
+    }
+
+    public static DeleteLinkCommandArguments ParseDeleteLinkCommand(string[] args)
+    {
+        var index = 1;
+        var command = new DeleteLinkCommandArguments
+        {
+            Id = int.Parse(args[index++]),
+        };
+
+        while (index < args.Length)
+        {
+            var currentArgs = args[index];
+
+            if (!currentArgs.StartsWith('-'))
+            {
+                throw new ArgumentException("Positional arguments must come before the optional arguments.");
+            }
+
+            if (currentArgs.Equals("--confirm") || currentArgs.Equals("-y"))
+            {
+                command.ConfirmDelete = true;
+                index++;
             }
             else
             {
