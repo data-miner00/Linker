@@ -48,6 +48,10 @@ internal static class ArgumentParser
         {
             command = ParseAddLinkCommand(args);
         }
+        else if (commandType == CommandType.ShowLinks)
+        {
+            command = ParseShowLinksCommand(args);
+        }
         else
         {
             throw new NotImplementedException();
@@ -96,6 +100,39 @@ internal static class ArgumentParser
             else if (currentArgs.Equals("--lang") || currentArgs.Equals("-l"))
             {
                 command.Language = args[index + 1];
+                index += 2;
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized args");
+            }
+        }
+
+        return command;
+    }
+
+    public static ShowLinksCommandArguments ParseShowLinksCommand(string[] args)
+    {
+        var index = 1;
+        var command = new ShowLinksCommandArguments();
+
+        while (index < args.Length)
+        {
+            var currentArgs = args[index];
+
+            if (!currentArgs.StartsWith('-'))
+            {
+                throw new ArgumentException("Positional arguments must come before the optional arguments.");
+            }
+
+            if (currentArgs.Equals("--top") || currentArgs.Equals("-t"))
+            {
+                command.Top = int.Parse(args[index + 1]);
+                index += 2;
+            }
+            else if (currentArgs.Equals("--skip") || currentArgs.Equals("-s"))
+            {
+                command.Skip = int.Parse(args[index + 1]);
                 index += 2;
             }
             else

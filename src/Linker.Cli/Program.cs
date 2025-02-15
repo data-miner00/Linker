@@ -3,7 +3,7 @@
 using Linker.Cli.Commands;
 using Linker.Cli.Integrations;
 
-internal class Program
+internal static class Program
 {
     static async Task Main(string[] args)
     {
@@ -24,6 +24,19 @@ internal class Program
 
                 break;
             case CommandType.ShowLinks:
+                if (command.CommandArguments is ShowLinksCommandArguments slca)
+                {
+                    var links = await repo.GetAllAsync();
+
+                    foreach (var (index, link) in links
+                        .SkipOrAll(slca.Skip)
+                        .TakeOrAll(slca.Top)
+                        .Select((link, index) => (index, link)))
+                    {
+                        Console.WriteLine($"{index + 1}. {link.Url} - {link.Name}");
+                    }
+                }
+
                 break;
         }
 
@@ -45,5 +58,15 @@ internal class Program
             link list delete 1
             link export --format csv,json,xml --destination home.csv
         ";
+    }
+
+    static IEnumerable<T> SkipOrAll<T>(this IEnumerable<T> src, int? skip)
+    {
+        return skip.HasValue ? src.Skip(skip.Value) : src;
+    }
+
+    static IEnumerable<T> TakeOrAll<T>(this IEnumerable<T> src, int? take)
+    {
+        return take.HasValue ? src.Take(take.Value) : src;
     }
 }

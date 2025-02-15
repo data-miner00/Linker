@@ -2,7 +2,7 @@
   "profiles": {
     "Linker.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "add https://www.com --name \"hello world\""
+      "commandLineArgs": "show --skip 2 -t 2"
     }
   }
 }
