@@ -38,6 +38,79 @@ internal static class Program
                 }
 
                 break;
+            case CommandType.UpdateLink:
+                {
+                    if (command.CommandArguments is UpdateLinkCommandArguments ulca)
+                    {
+                        var original = await repo.GetByIdAsync(ulca.Id);
+
+                        if (ulca.Url is not null)
+                        {
+                            original.Url = ulca.Url;
+                        }
+
+                        if (ulca.Name is not null)
+                        {
+                            original.Name = ulca.Name;
+                        }
+
+                        if (ulca.Description is not null)
+                        {
+                            original.Description = ulca.Description;
+                        }
+
+                        if (ulca.WatchLater)
+                        {
+                            original.WatchLater = true;
+                        }
+
+                        if (ulca.NoWatchLater)
+                        {
+                            original.WatchLater = false;
+                        }
+
+                        if (ulca.Tags is not null)
+                        {
+                            original.Tags = ulca.Tags;
+                        }
+
+                        if (ulca.ClearTags)
+                        {
+                            original.Tags = null;
+                        }
+
+                        if (ulca.AddTags.Count > 0)
+                        {
+                            var combined = string.Join(',', ulca.AddTags);
+                            if (original.Tags is not null)
+                            {
+                                original.Tags = string.Join(',', original.Tags, combined);
+                            }
+                            else
+                            {
+                                original.Tags = combined;
+                            }
+                        }
+
+                        if (ulca.RemoveTags.Count > 0 && original.Tags is not null) // prob write a warning here
+                        {
+                            string[] tempSplitted = original.Tags.Split(',');
+                            var filteredTags = tempSplitted.Where(tag => !ulca.RemoveTags.Contains(tag)).ToArray();
+                            original.Tags = string.Join(',', filteredTags);
+                        }
+
+                        if (ulca.Language is not null)
+                        {
+                            original.Language = ulca.Language;
+                        }
+
+                        original.ModifiedAt = DateTime.Now;
+
+                        await repo.UpdateAsync(original);
+                    }
+                }
+
+                break;
         }
 
         // color cli
@@ -48,8 +121,8 @@ internal static class Program
             link add https://www.what.com --name blah --description blah --watch-later --tags tag1,tag2,tag3 --lang en
             link show --top 10 --skip 20
             link update 1 --name blah --url https://updated.what.com --description blah --clear-tags --add-tag tag1 --remove-tag tag2 --lang kr
-            link delete
-            link visit
+            link delete 1
+            link visit 1
             link search nixos
             link list create 'my list' --description hello
             link list update 1 --name 'my 2 list' --description hello

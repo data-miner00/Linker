@@ -2,7 +2,7 @@
   "profiles": {
     "Linker.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "show --skip 2 -t 2"
+      "commandLineArgs": "update 1 --url dxxoged.com -rt sfw -rt mmr -nw -l ms"
     }
   }
 }

@@ -32,7 +32,6 @@ internal static class ArgumentParser
         Guard.ThrowIfNullOrEmpty(args);
 
         CommandType commandType;
-        object command;
 
         if (args.First().Equals("list"))
         {
@@ -44,18 +43,13 @@ internal static class ArgumentParser
             commandType = CommandDictionary[args[0]];
         }
 
-        if (commandType == CommandType.AddLink)
+        object command = commandType switch
         {
-            command = ParseAddLinkCommand(args);
-        }
-        else if (commandType == CommandType.ShowLinks)
-        {
-            command = ParseShowLinksCommand(args);
-        }
-        else
-        {
-            throw new NotImplementedException();
-        }
+            CommandType.AddLink => ParseAddLinkCommand(args),
+            CommandType.ShowLinks => ParseShowLinksCommand(args),
+            CommandType.UpdateLink => ParseUpdateLinkCommand(args),
+            _ => throw new NotImplementedException(),
+        };
 
         return (commandType, command);
     }
@@ -133,6 +127,82 @@ internal static class ArgumentParser
             else if (currentArgs.Equals("--skip") || currentArgs.Equals("-s"))
             {
                 command.Skip = int.Parse(args[index + 1]);
+                index += 2;
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized args");
+            }
+        }
+
+        return command;
+    }
+
+    public static UpdateLinkCommandArguments ParseUpdateLinkCommand(string[] args)
+    {
+        var index = 1;
+        var command = new UpdateLinkCommandArguments
+        {
+            Id = int.Parse(args[index++]),
+        };
+
+        while (index < args.Length)
+        {
+            var currentArgs = args[index];
+
+            if (!currentArgs.StartsWith('-'))
+            {
+                throw new ArgumentException("Positional arguments must come before the optional arguments.");
+            }
+
+            if (currentArgs.Equals("--url") || currentArgs.Equals("-u"))
+            {
+                command.Url = args[index + 1];
+                index += 2;
+            }
+            else if (currentArgs.Equals("--name") || currentArgs.Equals("-n"))
+            {
+                command.Name = args[index + 1];
+                index += 2;
+            }
+            else if (currentArgs.Equals("--description") || currentArgs.Equals("-d"))
+            {
+                command.Description = args[index + 1];
+                index += 2;
+            }
+            else if (currentArgs.Equals("--watch-later") || currentArgs.Equals("-w"))
+            {
+                command.WatchLater = true;
+                index++;
+            }
+            else if (currentArgs.Equals("--no-watch-later") || currentArgs.Equals("-nw"))
+            {
+                command.NoWatchLater = true;
+                index++;
+            }
+            else if (currentArgs.Equals("--tags") || currentArgs.Equals("-t"))
+            {
+                command.Tags = args[index + 1];
+                index += 2;
+            }
+            else if (currentArgs.Equals("--clear-tags") || currentArgs.Equals("-ct"))
+            {
+                command.ClearTags = true;
+                index++;
+            }
+            else if (currentArgs.Equals("--add-tag") || currentArgs.Equals("-at"))
+            {
+                command.AddTags.Add(args[index + 1]);
+                index += 2;
+            }
+            else if (currentArgs.Equals("--remove-tag") || currentArgs.Equals("-rt"))
+            {
+                command.RemoveTags.Add(args[index + 1]);
+                index += 2;
+            }
+            else if (currentArgs.Equals("--lang") || currentArgs.Equals("-l"))
+            {
+                command.Language = args[index + 1];
                 index += 2;
             }
             else
