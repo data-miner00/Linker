@@ -78,50 +78,32 @@ internal static class ArgumentParser
                 command.Name = args[index + 1];
                 index += 2;
             }
-
-            if (currentArgs.Equals("--description") || currentArgs.Equals("-d"))
+            else if (currentArgs.Equals("--description") || currentArgs.Equals("-d"))
             {
                 command.Description = args[index + 1];
                 index += 2;
             }
-
-            if (currentArgs.Equals("--watch-later") || currentArgs.Equals("-w"))
+            else if (currentArgs.Equals("--watch-later") || currentArgs.Equals("-w"))
             {
                 command.WatchLater = true;
                 index++;
             }
-
-            if (currentArgs.Equals("--tags") || currentArgs.Equals("-t"))
+            else if (currentArgs.Equals("--tags") || currentArgs.Equals("-t"))
             {
                 command.Tags = args[index + 1];
                 index += 2;
             }
-
-            if (currentArgs.Equals("--lang") || currentArgs.Equals("-l"))
+            else if (currentArgs.Equals("--lang") || currentArgs.Equals("-l"))
             {
                 command.Language = args[index + 1];
                 index += 2;
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized args");
             }
         }
 
         return command;
     }
-}
-
-enum CommandType
-{
-    None,
-    Help,
-    AddLink,
-    ShowLinks,
-    UpdateLink,
-    DeleteLink,
-    VisitLink,
-    SearchLinks,
-    CreateList,
-    UpdateList,
-    AddLinkIntoList,
-    RemoveLinkFromList,
-    DeleteList,
-    ExportLinks,
 }
