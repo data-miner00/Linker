@@ -144,6 +144,11 @@
         {
             EnsureArg.IsNotNull(request, nameof(request));
 
+            if (!this.ModelState.IsValid)
+            {
+                return this.BadRequest(this.ModelState);
+            }
+
             var userId = this.context.HttpContext?.User
                 .FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
 

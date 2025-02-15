@@ -22,6 +22,7 @@ using Serilog;
 using AppMetrics = Microsoft.Extensions.DependencyInjection.AppMetricsServiceCollectionExtensions;
 using Linker.Core.V2.Clients;
 using Linker.Integrations.Clients;
+using System.ComponentModel.DataAnnotations;
 
 /// <summary>
 /// The entry point for Linker Mvc.
@@ -120,6 +121,8 @@ public static class Program
         var credentialOption = builder.Configuration
             .GetSection(nameof(CredentialOption))
             .Get<CredentialOption>() ?? throw new InvalidOperationException("Credential option is required.");
+
+        Validator.ValidateObject(credentialOption, new ValidationContext(credentialOption), validateAllProperties: true);
 
         if (!hashingAlgorithms.TryGetValue(credentialOption.HashAlgorithmType, out var hashAlgorithm))
         {
