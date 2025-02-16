@@ -1,7 +1,9 @@
 ﻿namespace Linker.Cli;
 
 using Linker.Cli.Commands;
+using Linker.Cli.Core;
 using Linker.Cli.Integrations;
+using System.Diagnostics;
 
 internal static class Program
 {
@@ -11,6 +13,7 @@ internal static class Program
 
         using var dbContext = new AppDbContext(connStr);
         var repo = new LinkRepository(dbContext);
+        var visitRepo = new VisitRepository(dbContext);
 
         var command = ArgumentParser.Parse(args);
 
@@ -131,6 +134,51 @@ internal static class Program
                         }
 
                         await repo.RemoveAsync(dlca.Id);
+                    }
+                }
+
+                break;
+
+            case CommandType.VisitLink:
+                {
+                    if (command.CommandArguments is VisitLinkCommandArguments vlca)
+                    {
+                        Link? linkToVisit;
+
+                        if (vlca.LinkId is not null)
+                        {
+                            linkToVisit = await repo.GetByIdAsync(vlca.LinkId.Value);
+                        }
+                        else if (vlca.Random)
+                        {
+                            var links = (await repo.GetAllAsync()).ToArray();
+
+                            var random = new Random();
+
+                            var randomIndex = random.Next(links.Length);
+
+                            linkToVisit = links[randomIndex];
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("Bad condition");
+                        }
+
+                        var startInfo = new ProcessStartInfo
+                        {
+                            FileName = linkToVisit.Url,
+                            UseShellExecute = true,
+                        };
+
+                        Process.Start(startInfo);
+
+                        var visit = new Visit
+                        {
+                            LinkId = linkToVisit.Id,
+                            CreatedAt = DateTime.Now,
+                        };
+
+                        await visitRepo.AddAsync(visit);
                     }
                 }
 

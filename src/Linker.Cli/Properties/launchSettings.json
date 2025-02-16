@@ -2,7 +2,7 @@
   "profiles": {
     "Linker.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "delete 5"
+      "commandLineArgs": "visit -r"
     }
   }
 }

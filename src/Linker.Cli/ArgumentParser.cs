@@ -49,6 +49,7 @@ internal static class ArgumentParser
             CommandType.ShowLinks => ParseShowLinksCommand(args),
             CommandType.UpdateLink => ParseUpdateLinkCommand(args),
             CommandType.DeleteLink => ParseDeleteLinkCommand(args),
+            CommandType.VisitLink => ParseVisitLinkCommand(args),
             _ => throw new NotImplementedException(),
         };
 
@@ -235,6 +236,40 @@ internal static class ArgumentParser
             if (currentArgs.Equals("--confirm") || currentArgs.Equals("-y"))
             {
                 command.ConfirmDelete = true;
+                index++;
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized args");
+            }
+        }
+
+        return command;
+    }
+
+    public static VisitLinkCommandArguments ParseVisitLinkCommand(string[] args)
+    {
+        var index = 1;
+
+        var command = new VisitLinkCommandArguments();
+
+        while (index < args.Length)
+        {
+            var currentArgs = args[index];
+
+            if (!currentArgs.StartsWith('-'))
+            {
+                throw new ArgumentException("Positional arguments must come before the optional arguments.");
+            }
+
+            if (currentArgs.Equals("--id") || currentArgs.Equals("-i"))
+            {
+                command.LinkId = int.Parse(args[index + 1]);
+                index += 2;
+            }
+            else if (currentArgs.Equals("--random") || currentArgs.Equals("-r"))
+            {
+                command.Random = true;
                 index++;
             }
             else
