@@ -50,6 +50,7 @@ internal static class ArgumentParser
             CommandType.UpdateLink => ParseUpdateLinkCommand(args),
             CommandType.DeleteLink => ParseDeleteLinkCommand(args),
             CommandType.VisitLink => ParseVisitLinkCommand(args),
+            CommandType.CreateList => ParseCreateListCommand(args),
             _ => throw new NotImplementedException(),
         };
 
@@ -271,6 +272,38 @@ internal static class ArgumentParser
             {
                 command.Random = true;
                 index++;
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized args");
+            }
+        }
+
+        return command;
+    }
+
+    public static CreateListArguments ParseCreateListCommand(string[] args)
+    {
+        var index = 2;
+
+        var command = new CreateListArguments
+        {
+            Name = args[index++],
+        };
+
+        while (index < args.Length)
+        {
+            var currentArgs = args[index];
+
+            if (!currentArgs.StartsWith('-'))
+            {
+                throw new ArgumentException("Positional arguments must come before the optional arguments.");
+            }
+
+            if (currentArgs.Equals("--description") || currentArgs.Equals("-d"))
+            {
+                command.Description = args[index + 1];
+                index += 2;
             }
             else
             {

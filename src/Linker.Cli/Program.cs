@@ -14,6 +14,7 @@ internal static class Program
         using var dbContext = new AppDbContext(connStr);
         var repo = new LinkRepository(dbContext);
         var visitRepo = new VisitRepository(dbContext);
+        var listRepo = new UrlListRepository(dbContext);
 
         var command = ArgumentParser.Parse(args);
 
@@ -179,6 +180,23 @@ internal static class Program
                         };
 
                         await visitRepo.AddAsync(visit);
+                    }
+                }
+
+                break;
+            case CommandType.CreateList:
+                {
+                    if (command.CommandArguments is CreateListArguments cla)
+                    {
+                        var list = new UrlList
+                        {
+                            Name = cla.Name,
+                            Description = cla.Description,
+                            CreatedAt = DateTime.Now,
+                            ModifiedAt = DateTime.Now,
+                        };
+
+                        await listRepo.AddAsync(list);
                     }
                 }
 

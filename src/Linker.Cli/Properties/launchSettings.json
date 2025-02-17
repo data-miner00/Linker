@@ -2,7 +2,7 @@
   "profiles": {
     "Linker.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "visit -r"
+      "commandLineArgs": "list create \"Shun list!\" --description \"d d  d descriptionss\""
     }
   }
 }
