@@ -55,6 +55,7 @@ internal static class ArgumentParser
             CommandType.UpdateList => ParseUpdateListCommand(args),
             CommandType.DeleteList => ParseDeleteListCommand(args),
             CommandType.ShowLists => ParseShowListsCommand(args),
+            CommandType.AddLinkIntoList => ParseAddLinkIntoListCommand(args),
             _ => throw new NotImplementedException(),
         };
 
@@ -415,6 +416,19 @@ internal static class ArgumentParser
                 throw new ArgumentException("Unrecognized args");
             }
         }
+
+        return command;
+    }
+
+    public static AddLinkIntoListCommandArguments ParseAddLinkIntoListCommand(string[] args)
+    {
+        var index = 2;
+
+        var command = new AddLinkIntoListCommandArguments
+        {
+            ListId = int.Parse(args[index++]),
+            LinkId = int.Parse(args[index]),
+        };
 
         return command;
     }

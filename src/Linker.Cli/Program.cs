@@ -266,6 +266,20 @@ internal static class Program
                 }
 
                 break;
+
+            case CommandType.AddLinkIntoList:
+                {
+                    if (command.CommandArguments is AddLinkIntoListCommandArguments alilca)
+                    {
+                        var list = await listRepo.GetByIdAsync(alilca.ListId);
+                        var link = await repo.GetByIdAsync(alilca.LinkId);
+
+                        list.Links.Add(link);
+                        await dbContext.SaveChangesAsync();
+                    }
+                }
+
+                break;
         }
 
         // color cli
