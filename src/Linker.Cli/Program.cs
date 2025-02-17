@@ -4,6 +4,7 @@ using Linker.Cli.Commands;
 using Linker.Cli.Core;
 using Linker.Cli.Integrations;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 internal static class Program
 {
@@ -223,6 +224,30 @@ internal static class Program
                 }
 
                 break;
+
+            case CommandType.DeleteList:
+                {
+                    if (command.CommandArguments is DeleteListCommandArguments dlca)
+                    {
+                        var listToDelete = await listRepo.GetByIdAsync(dlca.Id);
+
+                        if (!dlca.ConfirmDelete)
+                        {
+                            Console.Write($"Confirm delete {listToDelete.Name}? [y/N]: ");
+                            var response = Console.ReadLine();
+
+                            if (response is null || !response.StartsWith("y", StringComparison.OrdinalIgnoreCase))
+                            {
+                                Console.WriteLine("Delete aborted.");
+                                return;
+                            }
+                        }
+
+                        await listRepo.RemoveAsync(dlca.Id);
+                    }
+                }
+
+                break;
         }
 
         // color cli
@@ -236,11 +261,12 @@ internal static class Program
             link delete 1
             link visit 1
             link search nixos
+            link list show
             link list create 'my list' --description hello
             link list update 1 --name 'my 2 list' --description hello
-            link list add 1 --linkId 1
-            link list remove 1 --linkId 1
-            link list delete 1
+            link list add 1 1
+            link list remove 1 1 --confirm
+            link list delete 1 --confirm
             link export --format csv,json,xml --destination home.csv
         ";
     }

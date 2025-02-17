@@ -23,7 +23,7 @@ internal static class ArgumentParser
         { "list update", CommandType.UpdateList },
         { "list add", CommandType.AddLinkIntoList },
         { "list remove", CommandType.RemoveLinkFromList },
-        { "list delete", CommandType.DeleteLink },
+        { "list delete", CommandType.DeleteList },
         { "export", CommandType.ExportLinks },
     };
 
@@ -52,6 +52,7 @@ internal static class ArgumentParser
             CommandType.VisitLink => ParseVisitLinkCommand(args),
             CommandType.CreateList => ParseCreateListCommand(args),
             CommandType.UpdateList => ParseUpdateListCommand(args),
+            CommandType.DeleteList => ParseDeleteListCommand(args),
             _ => throw new NotImplementedException(),
         };
 
@@ -220,7 +221,7 @@ internal static class ArgumentParser
 
     public static DeleteLinkCommandArguments ParseDeleteLinkCommand(string[] args)
     {
-        var index = 1;
+        var index = 2;
         var command = new DeleteLinkCommandArguments
         {
             Id = int.Parse(args[index++]),
@@ -342,6 +343,37 @@ internal static class ArgumentParser
             {
                 command.Description = args[index + 1];
                 index += 2;
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized args");
+            }
+        }
+
+        return command;
+    }
+
+    public static DeleteListCommandArguments ParseDeleteListCommand(string[] args)
+    {
+        var index = 2;
+        var command = new DeleteListCommandArguments
+        {
+            Id = int.Parse(args[index++]),
+        };
+
+        while (index < args.Length)
+        {
+            var currentArgs = args[index];
+
+            if (!currentArgs.StartsWith('-'))
+            {
+                throw new ArgumentException("Positional arguments must come before the optional arguments.");
+            }
+
+            if (currentArgs.Equals("--confirm") || currentArgs.Equals("-y"))
+            {
+                command.ConfirmDelete = true;
+                index++;
             }
             else
             {
