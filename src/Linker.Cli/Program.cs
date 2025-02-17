@@ -203,6 +203,24 @@ internal static class Program
 
                 break;
 
+            case CommandType.ShowLists:
+                {
+                    if (command.CommandArguments is ShowListsCommandArguments slca2)
+                    {
+                        var lists = await listRepo.GetAllAsync();
+
+                        foreach (var (index, link) in lists
+                            .SkipOrAll(slca2.Skip)
+                            .TakeOrAll(slca2.Top)
+                            .Select((link, index) => (index, link)))
+                        {
+                            Console.WriteLine($"{index + 1}. {link.Name} - {link.Description}");
+                        }
+                    }
+                }
+
+                break;
+
             case CommandType.UpdateList:
                 {
                     if (command.CommandArguments is UpdateListCommandArguments ulca)

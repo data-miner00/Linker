@@ -11,6 +11,7 @@ internal enum CommandType
     VisitLink,
     SearchLinks,
     CreateList,
+    ShowLists,
     UpdateList,
     AddLinkIntoList,
     RemoveLinkFromList,

@@ -20,6 +20,7 @@ internal static class ArgumentParser
         { "visit", CommandType.VisitLink },
         { "search", CommandType.SearchLinks },
         { "list create", CommandType.CreateList },
+        { "list show", CommandType.ShowLists },
         { "list update", CommandType.UpdateList },
         { "list add", CommandType.AddLinkIntoList },
         { "list remove", CommandType.RemoveLinkFromList },
@@ -53,6 +54,7 @@ internal static class ArgumentParser
             CommandType.CreateList => ParseCreateListCommand(args),
             CommandType.UpdateList => ParseUpdateListCommand(args),
             CommandType.DeleteList => ParseDeleteListCommand(args),
+            CommandType.ShowLists => ParseShowListsCommand(args),
             _ => throw new NotImplementedException(),
         };
 
@@ -374,6 +376,39 @@ internal static class ArgumentParser
             {
                 command.ConfirmDelete = true;
                 index++;
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized args");
+            }
+        }
+
+        return command;
+    }
+
+    public static ShowListsCommandArguments ParseShowListsCommand(string[] args)
+    {
+        var index = 2;
+        var command = new ShowListsCommandArguments();
+
+        while (index < args.Length)
+        {
+            var currentArgs = args[index];
+
+            if (!currentArgs.StartsWith('-'))
+            {
+                throw new ArgumentException("Positional arguments must come before the optional arguments.");
+            }
+
+            if (currentArgs.Equals("--top") || currentArgs.Equals("-t"))
+            {
+                command.Top = int.Parse(args[index + 1]);
+                index += 2;
+            }
+            else if (currentArgs.Equals("--skip") || currentArgs.Equals("-s"))
+            {
+                command.Skip = int.Parse(args[index + 1]);
+                index += 2;
             }
             else
             {
