@@ -201,6 +201,28 @@ internal static class Program
                 }
 
                 break;
+
+            case CommandType.UpdateList:
+                {
+                    if (command.CommandArguments is UpdateListCommandArguments ulca)
+                    {
+                        var originalList = await listRepo.GetByIdAsync(ulca.Id);
+
+                        if (ulca.Name is not null)
+                        {
+                            originalList.Name = ulca.Name;
+                        }
+
+                        if (ulca.Description is not null)
+                        {
+                            originalList.Description = ulca.Description;
+                        }
+
+                        await listRepo.UpdateAsync(originalList);
+                    }
+                }
+
+                break;
         }
 
         // color cli
