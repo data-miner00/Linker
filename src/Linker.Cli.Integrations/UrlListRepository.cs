@@ -31,7 +31,7 @@ public sealed class UrlListRepository : IRepository<UrlList>
 
     public Task<UrlList> GetByIdAsync(int id)
     {
-        return this.context.Lists.FirstAsync(x => x.Id == id);
+        return this.context.Lists.Include(x => x.Links).FirstAsync(x => x.Id == id);
     }
 
     public async Task RemoveAsync(int id)

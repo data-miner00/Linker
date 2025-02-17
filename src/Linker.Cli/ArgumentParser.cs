@@ -56,6 +56,7 @@ internal static class ArgumentParser
             CommandType.DeleteList => ParseDeleteListCommand(args),
             CommandType.ShowLists => ParseShowListsCommand(args),
             CommandType.AddLinkIntoList => ParseAddLinkIntoListCommand(args),
+            CommandType.RemoveLinkFromList => ParseRemoveLinkFromListCommand(args),
             _ => throw new NotImplementedException(),
         };
 
@@ -425,6 +426,19 @@ internal static class ArgumentParser
         var index = 2;
 
         var command = new AddLinkIntoListCommandArguments
+        {
+            ListId = int.Parse(args[index++]),
+            LinkId = int.Parse(args[index]),
+        };
+
+        return command;
+    }
+
+    public static RemoveLinkFromListCommandArguments ParseRemoveLinkFromListCommand(string[] args)
+    {
+        var index = 2;
+
+        var command = new RemoveLinkFromListCommandArguments
         {
             ListId = int.Parse(args[index++]),
             LinkId = int.Parse(args[index]),

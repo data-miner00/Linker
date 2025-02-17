@@ -280,6 +280,20 @@ internal static class Program
                 }
 
                 break;
+
+            case CommandType.RemoveLinkFromList:
+                {
+                    if (command.CommandArguments is RemoveLinkFromListCommandArguments rlflca)
+                    {
+                        var list = await listRepo.GetByIdAsync(rlflca.ListId);
+                        var link = await repo.GetByIdAsync(rlflca.LinkId);
+
+                        var isSuccess = list.Links.Remove(link);
+                        await dbContext.SaveChangesAsync();
+                    }
+                }
+
+                break;
         }
 
         // color cli

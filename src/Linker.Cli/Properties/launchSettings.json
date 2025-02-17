@@ -2,7 +2,7 @@
   "profiles": {
     "Linker.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "list add 1 1"
+      "commandLineArgs": "list remove 1 1"
     }
   }
 }
