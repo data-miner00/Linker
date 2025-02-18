@@ -3,7 +3,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-internal class CreateListArguments
+internal class CreateListCommandArguments
 {
     [Required]
     public string Name { get; set; }

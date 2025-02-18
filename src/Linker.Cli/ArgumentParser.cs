@@ -288,11 +288,11 @@ internal static class ArgumentParser
         return command;
     }
 
-    public static CreateListArguments ParseCreateListCommand(string[] args)
+    public static CreateListCommandArguments ParseCreateListCommand(string[] args)
     {
         var index = 2;
 
-        var command = new CreateListArguments
+        var command = new CreateListCommandArguments
         {
             Name = args[index++],
         };

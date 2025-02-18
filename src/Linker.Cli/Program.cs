@@ -187,7 +187,7 @@ internal static class Program
                 break;
             case CommandType.CreateList:
                 {
-                    if (command.CommandArguments is CreateListArguments cla)
+                    if (command.CommandArguments is CreateListCommandArguments cla)
                     {
                         var list = new UrlList
                         {
