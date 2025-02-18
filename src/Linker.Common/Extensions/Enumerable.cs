@@ -16,5 +16,29 @@
         /// <returns>An enumerable with tuple of the item and index.</returns>
         public static IEnumerable<(T Item, int Index)> WithIndex<T>(this IEnumerable<T> self)
             => self.Select((item, index) => (item, index));
+
+        /// <summary>
+        /// Skip items in the list or take all.
+        /// </summary>
+        /// <typeparam name="T">Any type.</typeparam>
+        /// <param name="src">The source.</param>
+        /// <param name="skip">Number of items to skip.</param>
+        /// <returns>The queried results.</returns>
+        public static IEnumerable<T> SkipOrAll<T>(this IEnumerable<T> src, int? skip)
+        {
+            return skip.HasValue ? src.Skip(skip.Value) : src;
+        }
+
+        /// <summary>
+        /// Take a few items in the list or take all.
+        /// </summary>
+        /// <typeparam name="T">Any type.</typeparam>
+        /// <param name="src">The source.</param>
+        /// <param name="take">Number of items to take.</param>
+        /// <returns>The queried results.</returns>
+        public static IEnumerable<T> TakeOrAll<T>(this IEnumerable<T> src, int? take)
+        {
+            return take.HasValue ? src.Take(take.Value) : src;
+        }
     }
 }

@@ -16,12 +16,8 @@
         /// <exception cref="System.ArgumentException">Throws when the provided key is not found.</exception>
         public static string GetConfig(string key)
         {
-            var configValue = ConfigurationManager.AppSettings.Get(key);
-
-            if (configValue == null)
-            {
-                throw new ArgumentException($"The configuration {key} is invalid and cannot be found.");
-            }
+            var configValue = ConfigurationManager.AppSettings.Get(key)
+                ?? throw new ArgumentException($"The configuration {key} is invalid and cannot be found.");
 
             return configValue;
         }

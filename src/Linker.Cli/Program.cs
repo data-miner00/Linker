@@ -1,5 +1,6 @@
 ﻿namespace Linker.Cli;
 
+using Linker.Common.Extensions;
 using Linker.Cli.Commands;
 using Linker.Cli.Core;
 using Linker.Cli.Integrations;
@@ -315,15 +316,5 @@ internal static class Program
             link list delete 1 --confirm
             link export --format csv,json,xml --destination home.csv
         ";
-    }
-
-    static IEnumerable<T> SkipOrAll<T>(this IEnumerable<T> src, int? skip)
-    {
-        return skip.HasValue ? src.Skip(skip.Value) : src;
-    }
-
-    static IEnumerable<T> TakeOrAll<T>(this IEnumerable<T> src, int? take)
-    {
-        return take.HasValue ? src.Take(take.Value) : src;
     }
 }
