@@ -6,7 +6,7 @@
     /// <summary>
     /// The static class for custom <see cref="IEnumerable{T}"/> extension methods.
     /// </summary>
-    public static class Enumerable
+    public static class EnumerableExtensions
     {
         /// <summary>
         /// Generate index for any <see cref="IEnumerable{T}"/> collection.
