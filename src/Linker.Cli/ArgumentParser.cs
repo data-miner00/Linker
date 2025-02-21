@@ -5,8 +5,6 @@ using Linker.Common.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 internal static class ArgumentParser
 {
@@ -34,10 +32,14 @@ internal static class ArgumentParser
 
         CommandType commandType;
 
-        if (args.First().Equals("list"))
+        if (args.FirstOrDefault(string.Empty).Equals("list"))
         {
             var verb = string.Join(' ', args[0], args[1]);
             commandType = CommandDictionary[verb];
+        }
+        else if (args.Length == 0 || args.Contains("--help") || args.Contains("-h"))
+        {
+            commandType = CommandDictionary["help"];
         }
         else
         {
@@ -46,6 +48,7 @@ internal static class ArgumentParser
 
         object command = commandType switch
         {
+            CommandType.Help => new object(),
             CommandType.AddLink => ParseAddLinkCommand(args),
             CommandType.ShowLinks => ParseShowLinksCommand(args),
             CommandType.UpdateLink => ParseUpdateLinkCommand(args),

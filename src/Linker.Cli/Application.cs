@@ -2,7 +2,6 @@
 
 using Linker.Cli.Commands;
 using Linker.Cli.Handlers;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 /// <summary>
@@ -55,13 +54,15 @@ internal sealed class Application
     /// <returns>The task.</returns>
     public async Task ExecuteAsync(string[] args)
     {
-        ShowBanner();
-
         var command = ArgumentParser.Parse(args);
         var arguments = command.CommandArguments;
 
         switch (command.CommandType)
         {
+            case CommandType.Help:
+                DisplayHelpMessage();
+                break;
+
             case CommandType.AddLink:
                 await this.addLinkCommandHandler.HandleAsync(arguments);
                 break;
@@ -98,13 +99,35 @@ internal sealed class Application
         }
     }
 
-    [Conditional("DEBUG")]
-    internal static void ShowBanner()
+    internal static void DisplayHelpMessage()
     {
-        // color cli
-        // animation cli
-        var prompt = @"
-            hello world banner
+        var prompt = @"usage: linker <command> [options]
+
+A CLI application to manage and organize links.
+
+Commands:
+  help                              Display this help message.
+  add         <url> [options]       Add a new link. Optionally provide details.
+  show        [options]             Display all stored links.
+  update      <id> [options]        Update an existing link's detail.
+  delete      <id> [options]        Delete a link by its ID.
+  visit       [options]             Open the specified link in the default browser.
+  search      <keyword>             Search for links containing the specified keyword.
+  list create <listname> [options]  Create a new list to organize links.
+  list show   [options]             Display all created lists.
+  list update <listid> [options]    Update details of an existing list.
+  list add    <listid> <linkid>     Add a link to a specific list.
+  list remove <listid> <linkid>     Remove a link from a specific list.
+  list delete <listid> [options]    Delete a list and all links within it.
+  export      <filename> [options]  Export all links to a file in the specified format.
+
+Options:
+  -h, --help               Show help information.";
+
+        Console.WriteLine(prompt);
+        /*
+            animation
+            color
             link --help
             link add https://www.what.com --name blah --description blah --watch-later --tags tag1,tag2,tag3 --lang en
             link show --top 10 --skip 20
@@ -119,6 +142,6 @@ internal sealed class Application
             link list remove 1 1 --confirm
             link list delete 1 --confirm
             link export --format csv,json,xml --destination home.csv
-        ";
+         */
     }
 }
