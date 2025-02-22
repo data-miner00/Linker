@@ -20,6 +20,7 @@ internal sealed class Application
     private readonly DeleteListCommandHandler deleteListCommandHandler;
     private readonly AddLinkIntoListCommandHandler addLinkIntoListCommandHandler;
     private readonly RemoveLinkFromListCommandHandler removeLinkFromListCommandHandler;
+    private readonly SearchLinkCommandHandler searchLinkCommandHandler;
 
     public Application(
         AddLinkCommandHandler addLinkCommandHandler,
@@ -32,7 +33,8 @@ internal sealed class Application
         UpdateListCommandHandler updateListCommandHandler,
         DeleteListCommandHandler deleteListCommandHandler,
         AddLinkIntoListCommandHandler addLinkIntoListCommandHandler,
-        RemoveLinkFromListCommandHandler removeLinkFromListCommandHandler)
+        RemoveLinkFromListCommandHandler removeLinkFromListCommandHandler,
+        SearchLinkCommandHandler searchLinkCommandHandler)
     {
         this.addLinkCommandHandler = addLinkCommandHandler;
         this.showLinksCommandHandler = showLinksCommandHandler;
@@ -45,6 +47,7 @@ internal sealed class Application
         this.deleteListCommandHandler = deleteListCommandHandler;
         this.addLinkIntoListCommandHandler = addLinkIntoListCommandHandler;
         this.removeLinkFromListCommandHandler = removeLinkFromListCommandHandler;
+        this.searchLinkCommandHandler = searchLinkCommandHandler;
     }
 
     /// <summary>
@@ -62,7 +65,6 @@ internal sealed class Application
             case CommandType.Help:
                 DisplayHelpMessage();
                 break;
-
             case CommandType.AddLink:
                 await this.addLinkCommandHandler.HandleAsync(arguments);
                 break;
@@ -95,6 +97,9 @@ internal sealed class Application
                 break;
             case CommandType.RemoveLinkFromList:
                 await this.removeLinkFromListCommandHandler.HandleAsync(arguments);
+                break;
+            case CommandType.SearchLinks:
+                await this.searchLinkCommandHandler.HandleAsync(arguments);
                 break;
         }
     }

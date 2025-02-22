@@ -41,4 +41,11 @@ public interface IRepository<T>
     /// <param name="item">The item with updated details.</param>
     /// <returns>The task.</returns>
     Task UpdateAsync(T item);
+
+    /// <summary>
+    /// Searches the <typeparamref name="T"/> entity with against a keyword.
+    /// </summary>
+    /// <param name="keyword">The keyword query.</param>
+    /// <returns>The list of found <typeparamref name="T"/>.</returns>
+    Task<IEnumerable<T>> SearchAsync(string keyword);
 }

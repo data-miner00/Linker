@@ -60,6 +60,7 @@ internal static class ArgumentParser
             CommandType.ShowLists => ParseShowListsCommand(args),
             CommandType.AddLinkIntoList => ParseAddLinkIntoListCommand(args),
             CommandType.RemoveLinkFromList => ParseRemoveLinkFromListCommand(args),
+            CommandType.SearchLinks => ParseSearchLinkCommands(args),
             _ => throw new NotImplementedException(),
         };
 
@@ -446,6 +447,43 @@ internal static class ArgumentParser
             ListId = int.Parse(args[index++]),
             LinkId = int.Parse(args[index]),
         };
+
+        return command;
+    }
+
+    public static SearchLinkCommandArguments ParseSearchLinkCommands(string[] args)
+    {
+        var index = 1;
+
+        var command = new SearchLinkCommandArguments
+        {
+            Keyword = args[index++],
+        };
+
+        while (index < args.Length)
+        {
+            var currentArgs = args[index];
+
+            if (!currentArgs.StartsWith('-'))
+            {
+                throw new ArgumentException("Positional arguments must come before the optional arguments.");
+            }
+
+            if (currentArgs.Equals("--top") || currentArgs.Equals("-t"))
+            {
+                command.Top = int.Parse(args[index + 1]);
+                index += 2;
+            }
+            else if (currentArgs.Equals("--skip") || currentArgs.Equals("-s"))
+            {
+                command.Skip = int.Parse(args[index + 1]);
+                index += 2;
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized args");
+            }
+        }
 
         return command;
     }

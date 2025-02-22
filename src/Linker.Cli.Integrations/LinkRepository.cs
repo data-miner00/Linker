@@ -60,4 +60,18 @@ public sealed class LinkRepository : IRepository<Link>
         this.context.Links.Update(item);
         return this.context.SaveChangesAsync();
     }
+
+    /// <inheritdoc/>
+    public async Task<IEnumerable<Link>> SearchAsync(string keyword)
+    {
+        var matched = await this.context.Links
+            .Where(
+                x => x.Url.Contains(keyword)
+                || (x.Name != null && x.Name.Contains(keyword))
+                || (x.Description != null && x.Description.Contains(keyword))
+                || (x.Tags != null && x.Tags.Contains(keyword)))
+            .ToListAsync();
+
+        return matched;
+    }
 }

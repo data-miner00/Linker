@@ -72,6 +72,7 @@ internal static class ContainerConfig
         builder.RegisterType<DeleteListCommandHandler>().AsSelf().SingleInstance();
         builder.RegisterType<AddLinkIntoListCommandHandler>().AsSelf().SingleInstance();
         builder.RegisterType<RemoveLinkFromListCommandHandler>().AsSelf().SingleInstance();
+        builder.RegisterType<SearchLinkCommandHandler>().AsSelf().SingleInstance();
 
         return builder;
     }
