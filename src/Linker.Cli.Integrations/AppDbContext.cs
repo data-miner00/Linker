@@ -27,9 +27,9 @@ public sealed class AppDbContext : DbContext
     public AppDbContext(string databaseConnectionString)
     {
         this.databaseConnectionString = Guard.ThrowIfNullOrWhitespace(databaseConnectionString);
+        this.Database.EnsureCreated();
     }
 
-#pragma warning disable SA1206 // Declaration keywords should follow order
     /// <summary>
     /// Gets or sets the database set for link.
     /// </summary>
@@ -44,7 +44,6 @@ public sealed class AppDbContext : DbContext
     /// Gets or sets the database set for url list.
     /// </summary>
     public DbSet<UrlList> Lists { get; set; }
-#pragma warning restore SA1206 // Declaration keywords should follow order
 
     /// <inheritdoc/>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
