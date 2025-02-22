@@ -57,54 +57,61 @@ internal sealed class Application
     /// <returns>The task.</returns>
     public async Task ExecuteAsync(string[] args)
     {
-        var command = ArgumentParser.Parse(args);
-        var arguments = command.CommandArguments;
-
-        switch (command.CommandType)
+        try
         {
-            case CommandType.Help:
-                DisplayHelpMessage();
-                break;
-            case CommandType.AddLink:
-                await this.addLinkCommandHandler.HandleAsync(arguments);
-                break;
-            case CommandType.ShowLinks:
-                await this.showLinksCommandHandler.HandleAsync(arguments);
-                break;
-            case CommandType.UpdateLink:
-                await this.updateLinkCommandHandler.HandleAsync(arguments);
-                break;
-            case CommandType.DeleteLink:
-                await this.deleteLinkCommandHandler.HandleAsync(arguments);
-                break;
-            case CommandType.VisitLink:
-                await this.visitLinkCommandHandler.HandleAsync(arguments);
-                break;
-            case CommandType.CreateList:
-                await this.createListCommandHandler.HandleAsync(arguments);
-                break;
-            case CommandType.ShowLists:
-                await this.showListsCommandHandler.HandleAsync(arguments);
-                break;
-            case CommandType.UpdateList:
-                await this.updateListCommandHandler.HandleAsync(arguments);
-                break;
-            case CommandType.DeleteList:
-                await this.deleteListCommandHandler.HandleAsync(arguments);
-                break;
-            case CommandType.AddLinkIntoList:
-                await this.addLinkIntoListCommandHandler.HandleAsync(arguments);
-                break;
-            case CommandType.RemoveLinkFromList:
-                await this.removeLinkFromListCommandHandler.HandleAsync(arguments);
-                break;
-            case CommandType.SearchLinks:
-                await this.searchLinkCommandHandler.HandleAsync(arguments);
-                break;
+            var command = ArgumentParser.Parse(args);
+            var arguments = command.CommandArguments;
+
+            switch (command.CommandType)
+            {
+                case CommandType.Help:
+                    DisplayHelpMessage();
+                    break;
+                case CommandType.AddLink:
+                    await this.addLinkCommandHandler.HandleAsync(arguments);
+                    break;
+                case CommandType.ShowLinks:
+                    await this.showLinksCommandHandler.HandleAsync(arguments);
+                    break;
+                case CommandType.UpdateLink:
+                    await this.updateLinkCommandHandler.HandleAsync(arguments);
+                    break;
+                case CommandType.DeleteLink:
+                    await this.deleteLinkCommandHandler.HandleAsync(arguments);
+                    break;
+                case CommandType.VisitLink:
+                    await this.visitLinkCommandHandler.HandleAsync(arguments);
+                    break;
+                case CommandType.CreateList:
+                    await this.createListCommandHandler.HandleAsync(arguments);
+                    break;
+                case CommandType.ShowLists:
+                    await this.showListsCommandHandler.HandleAsync(arguments);
+                    break;
+                case CommandType.UpdateList:
+                    await this.updateListCommandHandler.HandleAsync(arguments);
+                    break;
+                case CommandType.DeleteList:
+                    await this.deleteListCommandHandler.HandleAsync(arguments);
+                    break;
+                case CommandType.AddLinkIntoList:
+                    await this.addLinkIntoListCommandHandler.HandleAsync(arguments);
+                    break;
+                case CommandType.RemoveLinkFromList:
+                    await this.removeLinkFromListCommandHandler.HandleAsync(arguments);
+                    break;
+                case CommandType.SearchLinks:
+                    await this.searchLinkCommandHandler.HandleAsync(arguments);
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine(ex.ToString());
         }
     }
 
-    internal static void DisplayHelpMessage()
+    private static void DisplayHelpMessage()
     {
         var prompt = @"usage: linker <command> [options]
 
@@ -130,23 +137,5 @@ Options:
   -h, --help               Show help information.";
 
         Console.WriteLine(prompt);
-        /*
-            animation
-            color
-            link --help
-            link add https://www.what.com --name blah --description blah --watch-later --tags tag1,tag2,tag3 --lang en
-            link show --top 10 --skip 20
-            link update 1 --name blah --url https://updated.what.com --description blah --clear-tags --add-tag tag1 --remove-tag tag2 --lang kr
-            link delete 1
-            link visit 1
-            link search nixos
-            link list show
-            link list create 'my list' --description hello
-            link list update 1 --name 'my 2 list' --description hello
-            link list add 1 1
-            link list remove 1 1 --confirm
-            link list delete 1 --confirm
-            link export --format csv,json,xml --destination home.csv
-         */
     }
 }
