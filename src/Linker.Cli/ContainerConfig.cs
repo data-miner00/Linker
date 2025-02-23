@@ -61,18 +61,82 @@ internal static class ContainerConfig
 
     private static ContainerBuilder RegisterCommandHandlers(this ContainerBuilder builder)
     {
-        builder.RegisterType<AddLinkCommandHandler>().AsSelf().SingleInstance();
-        builder.RegisterType<ShowLinksCommandHandler>().AsSelf().SingleInstance();
-        builder.RegisterType<UpdateLinkCommandHandler>().AsSelf().SingleInstance();
-        builder.RegisterType<DeleteLinkCommandHandler>().AsSelf().SingleInstance();
-        builder.RegisterType<VisitLinkCommandHandler>().AsSelf().SingleInstance();
-        builder.RegisterType<CreateListCommandHandler>().AsSelf().SingleInstance();
-        builder.RegisterType<UpdateListCommandHandler>().AsSelf().SingleInstance();
-        builder.RegisterType<ShowListsCommandHandler>().AsSelf().SingleInstance();
-        builder.RegisterType<DeleteListCommandHandler>().AsSelf().SingleInstance();
-        builder.RegisterType<AddLinkIntoListCommandHandler>().AsSelf().SingleInstance();
-        builder.RegisterType<RemoveLinkFromListCommandHandler>().AsSelf().SingleInstance();
-        builder.RegisterType<SearchLinkCommandHandler>().AsSelf().SingleInstance();
+        builder.Register(ctx =>
+        {
+            var linkRepo = ctx.Resolve<IRepository<Link>>();
+            return new Lazy<AddLinkCommandHandler>(() => new AddLinkCommandHandler(linkRepo));
+        });
+
+        builder.Register(ctx =>
+        {
+            var linkRepo = ctx.Resolve<IRepository<Link>>();
+            return new Lazy<ShowLinksCommandHandler>(() => new ShowLinksCommandHandler(linkRepo));
+        });
+
+        builder.Register(ctx =>
+        {
+            var linkRepo = ctx.Resolve<IRepository<Link>>();
+            return new Lazy<UpdateLinkCommandHandler>(() => new UpdateLinkCommandHandler(linkRepo));
+        });
+
+        builder.Register(ctx =>
+        {
+            var linkRepo = ctx.Resolve<IRepository<Link>>();
+            return new Lazy<DeleteLinkCommandHandler>(() => new DeleteLinkCommandHandler(linkRepo));
+        });
+
+        builder.Register(ctx =>
+        {
+            var linkRepo = ctx.Resolve<IRepository<Link>>();
+            var visitRepo = ctx.Resolve<IRepository<Visit>>();
+            return new Lazy<VisitLinkCommandHandler>(() => new VisitLinkCommandHandler(linkRepo, visitRepo));
+        });
+
+        builder.Register(ctx =>
+        {
+            var listRepo = ctx.Resolve<IRepository<UrlList>>();
+            return new Lazy<CreateListCommandHandler>(() => new CreateListCommandHandler(listRepo));
+        });
+
+        builder.Register(ctx =>
+        {
+            var listRepo = ctx.Resolve<IRepository<UrlList>>();
+            return new Lazy<ShowListsCommandHandler>(() => new ShowListsCommandHandler(listRepo));
+        });
+
+        builder.Register(ctx =>
+        {
+            var listRepo = ctx.Resolve<IRepository<UrlList>>();
+            return new Lazy<UpdateListCommandHandler>(() => new UpdateListCommandHandler(listRepo));
+        });
+
+        builder.Register(ctx =>
+        {
+            var listRepo = ctx.Resolve<IRepository<UrlList>>();
+            return new Lazy<DeleteListCommandHandler>(() => new DeleteListCommandHandler(listRepo));
+        });
+
+        builder.Register(ctx =>
+        {
+            var listRepo = ctx.Resolve<IRepository<UrlList>>();
+            var linkRepo = ctx.Resolve<IRepository<Link>>();
+            var dbContext = ctx.Resolve<AppDbContext>();
+            return new Lazy<AddLinkIntoListCommandHandler>(() => new AddLinkIntoListCommandHandler(listRepo, linkRepo, dbContext));
+        });
+
+        builder.Register(ctx =>
+        {
+            var listRepo = ctx.Resolve<IRepository<UrlList>>();
+            var linkRepo = ctx.Resolve<IRepository<Link>>();
+            var dbContext = ctx.Resolve<AppDbContext>();
+            return new Lazy<RemoveLinkFromListCommandHandler>(() => new RemoveLinkFromListCommandHandler(listRepo, linkRepo, dbContext));
+        });
+
+        builder.Register(ctx =>
+        {
+            var linkRepo = ctx.Resolve<IRepository<Link>>();
+            return new Lazy<SearchLinkCommandHandler>(() => new SearchLinkCommandHandler(linkRepo));
+        });
 
         return builder;
     }

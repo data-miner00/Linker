@@ -2,6 +2,7 @@
 
 using Linker.Cli.Commands;
 using Linker.Cli.Handlers;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 /// <summary>
@@ -9,32 +10,35 @@ using System.Threading.Tasks;
 /// </summary>
 internal sealed class Application
 {
-    private readonly AddLinkCommandHandler addLinkCommandHandler;
-    private readonly ShowLinksCommandHandler showLinksCommandHandler;
-    private readonly UpdateLinkCommandHandler updateLinkCommandHandler;
-    private readonly DeleteLinkCommandHandler deleteLinkCommandHandler;
-    private readonly VisitLinkCommandHandler visitLinkCommandHandler;
-    private readonly CreateListCommandHandler createListCommandHandler;
-    private readonly ShowListsCommandHandler showListsCommandHandler;
-    private readonly UpdateListCommandHandler updateListCommandHandler;
-    private readonly DeleteListCommandHandler deleteListCommandHandler;
-    private readonly AddLinkIntoListCommandHandler addLinkIntoListCommandHandler;
-    private readonly RemoveLinkFromListCommandHandler removeLinkFromListCommandHandler;
-    private readonly SearchLinkCommandHandler searchLinkCommandHandler;
+    private readonly Lazy<AddLinkCommandHandler> addLinkCommandHandler;
+    private readonly Lazy<ShowLinksCommandHandler> showLinksCommandHandler;
+    private readonly Lazy<UpdateLinkCommandHandler> updateLinkCommandHandler;
+    private readonly Lazy<DeleteLinkCommandHandler> deleteLinkCommandHandler;
+    private readonly Lazy<VisitLinkCommandHandler> visitLinkCommandHandler;
+    private readonly Lazy<CreateListCommandHandler> createListCommandHandler;
+    private readonly Lazy<ShowListsCommandHandler> showListsCommandHandler;
+    private readonly Lazy<UpdateListCommandHandler> updateListCommandHandler;
+    private readonly Lazy<DeleteListCommandHandler> deleteListCommandHandler;
+    private readonly Lazy<AddLinkIntoListCommandHandler> addLinkIntoListCommandHandler;
+    private readonly Lazy<RemoveLinkFromListCommandHandler> removeLinkFromListCommandHandler;
+    private readonly Lazy<SearchLinkCommandHandler> searchLinkCommandHandler;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Application"/> class.
+    /// </summary>
     public Application(
-        AddLinkCommandHandler addLinkCommandHandler,
-        ShowLinksCommandHandler showLinksCommandHandler,
-        UpdateLinkCommandHandler updateLinkCommandHandler,
-        DeleteLinkCommandHandler deleteLinkCommandHandler,
-        VisitLinkCommandHandler visitLinkCommandHandler,
-        CreateListCommandHandler createListCommandHandler,
-        ShowListsCommandHandler showListsCommandHandler,
-        UpdateListCommandHandler updateListCommandHandler,
-        DeleteListCommandHandler deleteListCommandHandler,
-        AddLinkIntoListCommandHandler addLinkIntoListCommandHandler,
-        RemoveLinkFromListCommandHandler removeLinkFromListCommandHandler,
-        SearchLinkCommandHandler searchLinkCommandHandler)
+        Lazy<AddLinkCommandHandler> addLinkCommandHandler,
+        Lazy<ShowLinksCommandHandler> showLinksCommandHandler,
+        Lazy<UpdateLinkCommandHandler> updateLinkCommandHandler,
+        Lazy<DeleteLinkCommandHandler> deleteLinkCommandHandler,
+        Lazy<VisitLinkCommandHandler> visitLinkCommandHandler,
+        Lazy<CreateListCommandHandler> createListCommandHandler,
+        Lazy<ShowListsCommandHandler> showListsCommandHandler,
+        Lazy<UpdateListCommandHandler> updateListCommandHandler,
+        Lazy<DeleteListCommandHandler> deleteListCommandHandler,
+        Lazy<AddLinkIntoListCommandHandler> addLinkIntoListCommandHandler,
+        Lazy<RemoveLinkFromListCommandHandler> removeLinkFromListCommandHandler,
+        Lazy<SearchLinkCommandHandler> searchLinkCommandHandler)
     {
         this.addLinkCommandHandler = addLinkCommandHandler;
         this.showLinksCommandHandler = showLinksCommandHandler;
@@ -57,6 +61,10 @@ internal sealed class Application
     /// <returns>The task.</returns>
     public async Task ExecuteAsync(string[] args)
     {
+#if DEBUG
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+#endif
         try
         {
             var command = ArgumentParser.Parse(args);
@@ -68,40 +76,40 @@ internal sealed class Application
                     DisplayHelpMessage();
                     break;
                 case CommandType.AddLink:
-                    await this.addLinkCommandHandler.HandleAsync(arguments);
+                    await this.addLinkCommandHandler.Value.HandleAsync(arguments);
                     break;
                 case CommandType.ShowLinks:
-                    await this.showLinksCommandHandler.HandleAsync(arguments);
+                    await this.showLinksCommandHandler.Value.HandleAsync(arguments);
                     break;
                 case CommandType.UpdateLink:
-                    await this.updateLinkCommandHandler.HandleAsync(arguments);
+                    await this.updateLinkCommandHandler.Value.HandleAsync(arguments);
                     break;
                 case CommandType.DeleteLink:
-                    await this.deleteLinkCommandHandler.HandleAsync(arguments);
+                    await this.deleteLinkCommandHandler.Value.HandleAsync(arguments);
                     break;
                 case CommandType.VisitLink:
-                    await this.visitLinkCommandHandler.HandleAsync(arguments);
+                    await this.visitLinkCommandHandler.Value.HandleAsync(arguments);
                     break;
                 case CommandType.CreateList:
-                    await this.createListCommandHandler.HandleAsync(arguments);
+                    await this.createListCommandHandler.Value.HandleAsync(arguments);
                     break;
                 case CommandType.ShowLists:
-                    await this.showListsCommandHandler.HandleAsync(arguments);
+                    await this.showListsCommandHandler.Value.HandleAsync(arguments);
                     break;
                 case CommandType.UpdateList:
-                    await this.updateListCommandHandler.HandleAsync(arguments);
+                    await this.updateListCommandHandler.Value.HandleAsync(arguments);
                     break;
                 case CommandType.DeleteList:
-                    await this.deleteListCommandHandler.HandleAsync(arguments);
+                    await this.deleteListCommandHandler.Value.HandleAsync(arguments);
                     break;
                 case CommandType.AddLinkIntoList:
-                    await this.addLinkIntoListCommandHandler.HandleAsync(arguments);
+                    await this.addLinkIntoListCommandHandler.Value.HandleAsync(arguments);
                     break;
                 case CommandType.RemoveLinkFromList:
-                    await this.removeLinkFromListCommandHandler.HandleAsync(arguments);
+                    await this.removeLinkFromListCommandHandler.Value.HandleAsync(arguments);
                     break;
                 case CommandType.SearchLinks:
-                    await this.searchLinkCommandHandler.HandleAsync(arguments);
+                    await this.searchLinkCommandHandler.Value.HandleAsync(arguments);
                     break;
             }
         }
@@ -109,6 +117,13 @@ internal sealed class Application
         {
             Console.Error.WriteLine(ex.ToString());
         }
+#if DEBUG
+        finally
+        {
+            stopwatch.Stop();
+            Console.WriteLine("Time taken: {0}ms", stopwatch.ElapsedMilliseconds);
+        }
+#endif
     }
 
     private static void DisplayHelpMessage()
