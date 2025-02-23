@@ -6,32 +6,45 @@ using Linker.Cli.Integrations;
 using Linker.Common.Extensions;
 using Linker.Common.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
+/// <summary>
+/// The command handler for listing all lists.
+/// </summary>
 internal sealed class ShowListsCommandHandler : ICommandHandler
 {
     private readonly IRepository<UrlList> repository;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ShowListsCommandHandler"/> class.
+    /// </summary>
+    /// <param name="repository">The list repository.</param>
     public ShowListsCommandHandler(IRepository<UrlList> repository)
     {
         this.repository = Guard.ThrowIfNull(repository);
     }
 
+    /// <inheritdoc/>
     public async Task HandleAsync(object commandArguments)
     {
         if (commandArguments is ShowListsCommandArguments slca2)
         {
             var lists = await this.repository.GetAllAsync();
 
-            foreach (var (index, link) in lists
-                .SkipOrAll(slca2.Skip)
-                .TakeOrAll(slca2.Top)
-                .Select((link, index) => (index, link)))
+            if (lists.Any())
             {
-                Console.WriteLine($"{index + 1}. {link.Name} - {link.Description}");
+                foreach (var (link, index) in lists
+                    .SkipOrAll(slca2.Skip)
+                    .TakeOrAll(slca2.Top)
+                    .WithIndex())
+                {
+                    Console.WriteLine($"{index + 1}. {link.Name} - {link.Description}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No lists has been added yet.");
             }
 
             return;
