@@ -1,10 +1,12 @@
 ﻿namespace Linker.Cli.Integrations;
 
-using Linker.Cli.Core;
-using Linker.Common.Helpers;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
+using Linker.Cli.Core;
+using Linker.Common.Helpers;
+
+using Microsoft.EntityFrameworkCore;
 
 /// <summary>
 /// The repository layer for <see cref="Link"/>.
@@ -38,9 +40,9 @@ public sealed class LinkRepository : IRepository<Link>
     }
 
     /// <inheritdoc/>
-    public Task<Link> GetByIdAsync(int id)
+    public Task<Link?> GetByIdAsync(int id)
     {
-        return this.context.Links.Where(x => x.Id == id).FirstAsync();
+        return this.context.Links.Where(x => x.Id == id).FirstOrDefaultAsync();
     }
 
     /// <inheritdoc/>

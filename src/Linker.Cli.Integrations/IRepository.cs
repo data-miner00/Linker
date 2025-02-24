@@ -25,8 +25,8 @@ public interface IRepository<T>
     /// Retrieves the item by ID.
     /// </summary>
     /// <param name="id">The id of the item.</param>
-    /// <returns>The item itself.</returns>
-    Task<T> GetByIdAsync(int id);
+    /// <returns>The item itself. <c>null</c> if not found.</returns>
+    Task<T?> GetByIdAsync(int id);
 
     /// <summary>
     /// Deletes an item from the database with the given id.

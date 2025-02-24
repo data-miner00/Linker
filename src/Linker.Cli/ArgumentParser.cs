@@ -6,6 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+/// <summary>
+/// The command line argument parser.
+/// </summary>
 internal static class ArgumentParser
 {
     private static readonly Dictionary<string, CommandType> CommandDictionary = new Dictionary<string, CommandType>
@@ -24,8 +27,15 @@ internal static class ArgumentParser
         { "list remove", CommandType.RemoveLinkFromList },
         { "list delete", CommandType.DeleteList },
         { "export", CommandType.ExportLinks },
+        { "get", CommandType.GetLink },
     };
 
+    /// <summary>
+    /// Parses the array of raw arguments into meaningful objects.
+    /// </summary>
+    /// <param name="args">The raw command line arguments.</param>
+    /// <returns>A tuple consisting the type enum of command and the command object.</returns>
+    /// <exception cref="NotImplementedException">Invalid command provided.</exception>
     public static (CommandType CommandType, object CommandArguments) Parse(string[] args)
     {
         Guard.ThrowIfNullOrEmpty(args);
@@ -61,13 +71,14 @@ internal static class ArgumentParser
             CommandType.AddLinkIntoList => ParseAddLinkIntoListCommand(args),
             CommandType.RemoveLinkFromList => ParseRemoveLinkFromListCommand(args),
             CommandType.SearchLinks => ParseSearchLinkCommands(args),
+            CommandType.GetLink => ParseGetLinkCommand(args),
             _ => throw new NotImplementedException(),
         };
 
         return (commandType, command);
     }
 
-    public static AddLinkCommandArguments ParseAddLinkCommand(string[] args)
+    private static AddLinkCommandArguments ParseAddLinkCommand(string[] args)
     {
         var index = 1;
         var command = new AddLinkCommandArguments
@@ -118,7 +129,7 @@ internal static class ArgumentParser
         return command;
     }
 
-    public static ShowLinksCommandArguments ParseShowLinksCommand(string[] args)
+    private static ShowLinksCommandArguments ParseShowLinksCommand(string[] args)
     {
         var index = 1;
         var command = new ShowLinksCommandArguments();
@@ -151,7 +162,7 @@ internal static class ArgumentParser
         return command;
     }
 
-    public static UpdateLinkCommandArguments ParseUpdateLinkCommand(string[] args)
+    private static UpdateLinkCommandArguments ParseUpdateLinkCommand(string[] args)
     {
         var index = 1;
         var command = new UpdateLinkCommandArguments
@@ -227,7 +238,7 @@ internal static class ArgumentParser
         return command;
     }
 
-    public static DeleteLinkCommandArguments ParseDeleteLinkCommand(string[] args)
+    private static DeleteLinkCommandArguments ParseDeleteLinkCommand(string[] args)
     {
         var index = 2;
         var command = new DeleteLinkCommandArguments
@@ -258,7 +269,7 @@ internal static class ArgumentParser
         return command;
     }
 
-    public static VisitLinkCommandArguments ParseVisitLinkCommand(string[] args)
+    private static VisitLinkCommandArguments ParseVisitLinkCommand(string[] args)
     {
         var index = 1;
 
@@ -292,7 +303,7 @@ internal static class ArgumentParser
         return command;
     }
 
-    public static CreateListCommandArguments ParseCreateListCommand(string[] args)
+    private static CreateListCommandArguments ParseCreateListCommand(string[] args)
     {
         var index = 2;
 
@@ -324,7 +335,7 @@ internal static class ArgumentParser
         return command;
     }
 
-    public static UpdateListCommandArguments ParseUpdateListCommand(string[] args)
+    private static UpdateListCommandArguments ParseUpdateListCommand(string[] args)
     {
         var index = 2;
 
@@ -361,7 +372,7 @@ internal static class ArgumentParser
         return command;
     }
 
-    public static DeleteListCommandArguments ParseDeleteListCommand(string[] args)
+    private static DeleteListCommandArguments ParseDeleteListCommand(string[] args)
     {
         var index = 2;
         var command = new DeleteListCommandArguments
@@ -392,7 +403,7 @@ internal static class ArgumentParser
         return command;
     }
 
-    public static ShowListsCommandArguments ParseShowListsCommand(string[] args)
+    private static ShowListsCommandArguments ParseShowListsCommand(string[] args)
     {
         var index = 2;
         var command = new ShowListsCommandArguments();
@@ -425,7 +436,7 @@ internal static class ArgumentParser
         return command;
     }
 
-    public static AddLinkIntoListCommandArguments ParseAddLinkIntoListCommand(string[] args)
+    private static AddLinkIntoListCommandArguments ParseAddLinkIntoListCommand(string[] args)
     {
         var index = 2;
 
@@ -438,7 +449,7 @@ internal static class ArgumentParser
         return command;
     }
 
-    public static RemoveLinkFromListCommandArguments ParseRemoveLinkFromListCommand(string[] args)
+    private static RemoveLinkFromListCommandArguments ParseRemoveLinkFromListCommand(string[] args)
     {
         var index = 2;
 
@@ -451,7 +462,7 @@ internal static class ArgumentParser
         return command;
     }
 
-    public static SearchLinkCommandArguments ParseSearchLinkCommands(string[] args)
+    private static SearchLinkCommandArguments ParseSearchLinkCommands(string[] args)
     {
         var index = 1;
 
@@ -478,6 +489,65 @@ internal static class ArgumentParser
             {
                 command.Skip = int.Parse(args[index + 1]);
                 index += 2;
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized args");
+            }
+        }
+
+        return command;
+    }
+
+    private static GetLinkCommandArguments ParseGetLinkCommand(string[] args)
+    {
+        var index = 1;
+
+        var command = new GetLinkCommandArguments
+        {
+            Id = int.Parse(args[index++]),
+        };
+
+        while (index < args.Length)
+        {
+            var currentArgs = args[index++];
+
+            if (!currentArgs.StartsWith('-'))
+            {
+                throw new ArgumentException("Positional arguments must come before the optional arguments.");
+            }
+
+            if (currentArgs.Equals("--url") || currentArgs.Equals("-u"))
+            {
+                command.Url = true;
+            }
+            else if (currentArgs.Equals("--name") || currentArgs.Equals("-n"))
+            {
+                command.Name = true;
+            }
+            else if (currentArgs.Equals("--description") || currentArgs.Equals("-d"))
+            {
+                command.Description = true;
+            }
+            else if (currentArgs.Equals("--watch-later") || currentArgs.Equals("-w"))
+            {
+                command.WatchLater = true;
+            }
+            else if (currentArgs.Equals("--tags") || currentArgs.Equals("-t"))
+            {
+                command.Tags = true;
+            }
+            else if (currentArgs.Equals("--lang") || currentArgs.Equals("-l"))
+            {
+                command.Language = true;
+            }
+            else if (currentArgs.Equals("--created-at") || currentArgs.Equals("-c"))
+            {
+                command.CreatedAt = true;
+            }
+            else if (currentArgs.Equals("--modified-at") || currentArgs.Equals("-m"))
+            {
+                command.ModifiedAt = true;
             }
             else
             {

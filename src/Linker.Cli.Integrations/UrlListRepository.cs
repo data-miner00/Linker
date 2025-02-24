@@ -41,9 +41,9 @@ public sealed class UrlListRepository : IRepository<UrlList>
     }
 
     /// <inheritdoc/>
-    public Task<UrlList> GetByIdAsync(int id)
+    public Task<UrlList?> GetByIdAsync(int id)
     {
-        return this.context.Lists.Include(x => x.Links).FirstAsync(x => x.Id == id);
+        return this.context.Lists.Include(x => x.Links).FirstOrDefaultAsync(x => x.Id == id);
     }
 
     /// <inheritdoc/>

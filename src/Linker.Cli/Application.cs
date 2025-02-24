@@ -22,6 +22,7 @@ internal sealed class Application
     private readonly Lazy<AddLinkIntoListCommandHandler> addLinkIntoListCommandHandler;
     private readonly Lazy<RemoveLinkFromListCommandHandler> removeLinkFromListCommandHandler;
     private readonly Lazy<SearchLinkCommandHandler> searchLinkCommandHandler;
+    private readonly Lazy<GetLinkCommandHandler> getLinkCommandHandler;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Application"/> class.
@@ -38,7 +39,8 @@ internal sealed class Application
         Lazy<DeleteListCommandHandler> deleteListCommandHandler,
         Lazy<AddLinkIntoListCommandHandler> addLinkIntoListCommandHandler,
         Lazy<RemoveLinkFromListCommandHandler> removeLinkFromListCommandHandler,
-        Lazy<SearchLinkCommandHandler> searchLinkCommandHandler)
+        Lazy<SearchLinkCommandHandler> searchLinkCommandHandler,
+        Lazy<GetLinkCommandHandler> getLinkCommandHandler)
     {
         this.addLinkCommandHandler = addLinkCommandHandler;
         this.showLinksCommandHandler = showLinksCommandHandler;
@@ -52,6 +54,7 @@ internal sealed class Application
         this.addLinkIntoListCommandHandler = addLinkIntoListCommandHandler;
         this.removeLinkFromListCommandHandler = removeLinkFromListCommandHandler;
         this.searchLinkCommandHandler = searchLinkCommandHandler;
+        this.getLinkCommandHandler = getLinkCommandHandler;
     }
 
     /// <summary>
@@ -110,6 +113,9 @@ internal sealed class Application
                     break;
                 case CommandType.SearchLinks:
                     await this.searchLinkCommandHandler.Value.HandleAsync(arguments);
+                    break;
+                case CommandType.GetLink:
+                    await this.getLinkCommandHandler.Value.HandleAsync(arguments);
                     break;
             }
         }

@@ -2,7 +2,7 @@
   "profiles": {
     "Linker.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "search .com"
+      "commandLineArgs": "get 5 -u -n -l -c -m"
     }
   }
 }

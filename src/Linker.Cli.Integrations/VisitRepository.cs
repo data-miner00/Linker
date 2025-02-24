@@ -42,7 +42,7 @@ public sealed class VisitRepository : IRepository<Visit>
     }
 
     /// <inheritdoc/>
-    public Task<Visit> GetByIdAsync(int id)
+    public Task<Visit?> GetByIdAsync(int id)
     {
         throw new NotImplementedException();
     }
