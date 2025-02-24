@@ -144,6 +144,12 @@ internal static class ContainerConfig
             return new Lazy<GetLinkCommandHandler>(() => new GetLinkCommandHandler(linkRepo));
         });
 
+        builder.Register(ctx =>
+        {
+            var listRepo = ctx.Resolve<IRepository<UrlList>>();
+            return new Lazy<GetListCommandHandler>(() => new GetListCommandHandler(listRepo));
+        });
+
         return builder;
     }
 }

@@ -23,6 +23,7 @@ internal sealed class Application
     private readonly Lazy<RemoveLinkFromListCommandHandler> removeLinkFromListCommandHandler;
     private readonly Lazy<SearchLinkCommandHandler> searchLinkCommandHandler;
     private readonly Lazy<GetLinkCommandHandler> getLinkCommandHandler;
+    private readonly Lazy<GetListCommandHandler> getListCommandHandler;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Application"/> class.
@@ -40,7 +41,8 @@ internal sealed class Application
         Lazy<AddLinkIntoListCommandHandler> addLinkIntoListCommandHandler,
         Lazy<RemoveLinkFromListCommandHandler> removeLinkFromListCommandHandler,
         Lazy<SearchLinkCommandHandler> searchLinkCommandHandler,
-        Lazy<GetLinkCommandHandler> getLinkCommandHandler)
+        Lazy<GetLinkCommandHandler> getLinkCommandHandler,
+        Lazy<GetListCommandHandler> getListCommandHandler)
     {
         this.addLinkCommandHandler = addLinkCommandHandler;
         this.showLinksCommandHandler = showLinksCommandHandler;
@@ -55,6 +57,7 @@ internal sealed class Application
         this.removeLinkFromListCommandHandler = removeLinkFromListCommandHandler;
         this.searchLinkCommandHandler = searchLinkCommandHandler;
         this.getLinkCommandHandler = getLinkCommandHandler;
+        this.getListCommandHandler = getListCommandHandler;
     }
 
     /// <summary>
@@ -117,6 +120,9 @@ internal sealed class Application
                 case CommandType.GetLink:
                     await this.getLinkCommandHandler.Value.HandleAsync(arguments);
                     break;
+                case CommandType.GetList:
+                    await this.getListCommandHandler.Value.HandleAsync(arguments);
+                    break;
             }
         }
         catch (Exception ex)
@@ -141,6 +147,7 @@ A CLI application to manage and organize links.
 Commands:
   help                              Display this help message.
   add         <url> [options]       Add a new link. Optionally provide details.
+  get         <id> [options]        Get a link. Optionally select details.
   show        [options]             Display all stored links.
   update      <id> [options]        Update an existing link's detail.
   delete      <id> [options]        Delete a link by its ID.
@@ -150,6 +157,7 @@ Commands:
   list show   [options]             Display all created lists.
   list update <listid> [options]    Update details of an existing list.
   list add    <listid> <linkid>     Add a link to a specific list.
+  list get    <listid> [options]    Gets a list. Optional select details.
   list remove <listid> <linkid>     Remove a link from a specific list.
   list delete <listid> [options]    Delete a list and all links within it.
   export      <filename> [options]  Export all links to a file in the specified format.

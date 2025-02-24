@@ -30,21 +30,21 @@ internal sealed class SearchLinkCommandHandler : ICommandHandler
     {
         if (commandArguments is SearchLinkCommandArguments args)
         {
-            var links = await this.repository.SearchAsync(args.Keyword);
+            var links = (await this.repository.SearchAsync(args.Keyword)).ToArray();
 
-            if (links.Any())
+            Console.WriteLine($"Found {links.Length} results for keyword '{args.Keyword}.");
+
+            if (links.Length == 0)
             {
-                foreach (var (link, index) in links
-                    .SkipOrAll(args.Skip)
-                    .TakeOrAll(args.Top)
-                    .WithIndex())
-                {
-                    Console.WriteLine($"{index + 1}. {link.Url} - {link.Name}");
-                }
+                return;
             }
-            else
+
+            foreach (var (link, index) in links
+                .SkipOrAll(args.Skip)
+                .TakeOrAll(args.Top)
+                .WithIndex())
             {
-                Console.WriteLine($"Cannot find results with '{args.Keyword}' keyword.");
+                Console.WriteLine($"{index + 1}. [{link.Id}] {link.Url} - {link.Name}");
             }
 
             return;

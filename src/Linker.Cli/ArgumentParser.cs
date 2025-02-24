@@ -28,6 +28,7 @@ internal static class ArgumentParser
         { "list delete", CommandType.DeleteList },
         { "export", CommandType.ExportLinks },
         { "get", CommandType.GetLink },
+        { "list get", CommandType.GetList },
     };
 
     /// <summary>
@@ -72,6 +73,7 @@ internal static class ArgumentParser
             CommandType.RemoveLinkFromList => ParseRemoveLinkFromListCommand(args),
             CommandType.SearchLinks => ParseSearchLinkCommands(args),
             CommandType.GetLink => ParseGetLinkCommand(args),
+            CommandType.GetList => ParseGetListCommand(args),
             _ => throw new NotImplementedException(),
         };
 
@@ -548,6 +550,45 @@ internal static class ArgumentParser
             else if (currentArgs.Equals("--modified-at") || currentArgs.Equals("-m"))
             {
                 command.ModifiedAt = true;
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized args");
+            }
+        }
+
+        return command;
+    }
+
+    private static GetListCommandArguments ParseGetListCommand(string[] args)
+    {
+        var index = 2;
+
+        var command = new GetListCommandArguments
+        {
+            Id = int.Parse(args[index++]),
+        };
+
+        while (index < args.Length)
+        {
+            var currentArgs = args[index++];
+
+            if (!currentArgs.StartsWith('-'))
+            {
+                throw new ArgumentException("Positional arguments must come before the optional arguments.");
+            }
+
+            if (currentArgs.Equals("--name") || currentArgs.Equals("-n"))
+            {
+                command.Name = true;
+            }
+            else if (currentArgs.Equals("--description") || currentArgs.Equals("-d"))
+            {
+                command.Description = true;
+            }
+            else if (currentArgs.Equals("--link") || currentArgs.Equals("-l"))
+            {
+                command.Links = true;
             }
             else
             {

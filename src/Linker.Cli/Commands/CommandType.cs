@@ -18,4 +18,5 @@ internal enum CommandType
     DeleteList,
     ExportLinks,
     GetLink,
+    GetList,
 }
