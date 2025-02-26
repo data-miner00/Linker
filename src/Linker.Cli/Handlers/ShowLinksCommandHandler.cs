@@ -1,7 +1,6 @@
 ﻿namespace Linker.Cli.Handlers;
 
 using Linker.Cli.Commands;
-using Linker.Cli.Core;
 using Linker.Cli.Integrations;
 using Linker.Common.Extensions;
 using Linker.Common.Helpers;
@@ -14,13 +13,13 @@ using System.Threading.Tasks;
 /// </summary>
 internal sealed class ShowLinksCommandHandler : ICommandHandler
 {
-    private readonly IRepository<Link> repository;
+    private readonly ILinkRepository repository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ShowLinksCommandHandler"/> class.
     /// </summary>
     /// <param name="repository">The link repository.</param>
-    public ShowLinksCommandHandler(IRepository<Link> repository)
+    public ShowLinksCommandHandler(ILinkRepository repository)
     {
         this.repository = Guard.ThrowIfNull(repository);
     }
@@ -30,7 +29,7 @@ internal sealed class ShowLinksCommandHandler : ICommandHandler
     {
         if (commandArguments is ShowLinksCommandArguments args)
         {
-            var links = await this.repository.GetAllAsync();
+            var links = await this.repository.GetAllAsync(args.WatchLater);
 
             if (links.Any())
             {

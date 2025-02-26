@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 /// <summary>
 /// The repository layer for <see cref="Link"/>.
 /// </summary>
-public sealed class LinkRepository : IRepository<Link>
+public sealed class LinkRepository : ILinkRepository
 {
     private readonly AppDbContext context;
 
@@ -75,5 +75,22 @@ public sealed class LinkRepository : IRepository<Link>
             .ToListAsync();
 
         return matched;
+    }
+
+    /// <inheritdoc/>
+    public async Task<IEnumerable<Link>> GetAllAsync(bool watchLater)
+    {
+        List<Link> links;
+
+        if (watchLater)
+        {
+            links = await this.context.Links.Where(x => x.WatchLater).ToListAsync();
+        }
+        else
+        {
+            links = await this.context.Links.ToListAsync();
+        }
+
+        return links;
     }
 }

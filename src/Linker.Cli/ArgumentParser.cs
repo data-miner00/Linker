@@ -155,6 +155,11 @@ internal static class ArgumentParser
                 command.Skip = int.Parse(args[index + 1]);
                 index += 2;
             }
+            else if (currentArgs.Equals("--watch-later") || currentArgs.Equals("-w"))
+            {
+                command.WatchLater = true;
+                index += 1;
+            }
             else
             {
                 throw new ArgumentException("Unrecognized args");

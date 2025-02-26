@@ -20,6 +20,8 @@ internal sealed class GetListCommandHandler : ICommandHandler
     {
         if (commandArguments is GetListCommandArguments args)
         {
+            Guard.ThrowIfValidationFailed(args);
+
             var list = await this.repository.GetByIdAsync(args.Id);
 
             if (list == null)

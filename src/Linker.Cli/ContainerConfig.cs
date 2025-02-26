@@ -44,6 +44,7 @@ internal static class ContainerConfig
         builder
             .RegisterType<LinkRepository>()
             .As<IRepository<Link>>()
+            .As<ILinkRepository>()
             .SingleInstance();
 
         builder
@@ -69,7 +70,7 @@ internal static class ContainerConfig
 
         builder.Register(ctx =>
         {
-            var linkRepo = ctx.Resolve<IRepository<Link>>();
+            var linkRepo = ctx.Resolve<ILinkRepository>();
             return new Lazy<ShowLinksCommandHandler>(() => new ShowLinksCommandHandler(linkRepo));
         });
 
