@@ -62,6 +62,10 @@ public sealed class AppDbContext : DbContext
                 l => l.HasOne<UrlList>().WithMany().HasForeignKey("UrlListId"),
                 t => t.HasOne<Link>().WithMany().HasForeignKey("LinkId"));
 
+        modelBuilder.Entity<Link>()
+            .HasIndex(x => x.Url)
+            .IsUnique();
+
         modelBuilder.Entity<Visit>()
             .HasOne(v => v.Link)
             .WithMany(l => l.Visits)
