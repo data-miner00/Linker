@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 /// </summary>
 internal sealed class Application
 {
+    private const int SUCCESS_CODE = 0;
+    private const int FAILURE_CODE = 0x667;
+
     private readonly Lazy<AddLinkCommandHandler> addLinkCommandHandler;
     private readonly Lazy<ShowLinksCommandHandler> showLinksCommandHandler;
     private readonly Lazy<UpdateLinkCommandHandler> updateLinkCommandHandler;
@@ -68,7 +71,7 @@ internal sealed class Application
     /// </summary>
     /// <param name="args">The command line arguments.</param>
     /// <returns>The task.</returns>
-    public async Task ExecuteAsync(string[] args)
+    public async Task<int> ExecuteAsync(string[] args)
     {
 #if DEBUG
         var stopwatch = new Stopwatch();
@@ -130,10 +133,13 @@ internal sealed class Application
                     await this.exportLinksCommandHandler.Value.HandleAsync(arguments);
                     break;
             }
+
+            return SUCCESS_CODE;
         }
         catch (Exception ex)
         {
             Console.Error.WriteLine(ex.ToString());
+            return FAILURE_CODE;
         }
 #if DEBUG
         finally

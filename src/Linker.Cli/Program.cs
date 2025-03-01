@@ -12,7 +12,7 @@ internal static class Program
     /// </summary>
     /// <param name="args">A list of command line arguments.</param>
     /// <returns>The task.</returns>
-    internal static Task Main(string[] args)
+    internal static Task<int> Main(string[] args)
     {
         var container = ContainerConfig.Configure();
         var app = container.Resolve<Application>();
