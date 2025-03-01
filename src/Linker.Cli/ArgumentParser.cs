@@ -74,6 +74,7 @@ internal static class ArgumentParser
             CommandType.SearchLinks => ParseSearchLinkCommands(args),
             CommandType.GetLink => ParseGetLinkCommand(args),
             CommandType.GetList => ParseGetListCommand(args),
+            CommandType.ExportLinks => ParseExportLinksCommand(args),
             _ => throw new NotImplementedException(),
         };
 
@@ -527,34 +528,42 @@ internal static class ArgumentParser
             if (currentArgs.Equals("--url") || currentArgs.Equals("-u"))
             {
                 command.Url = true;
+                index++;
             }
             else if (currentArgs.Equals("--name") || currentArgs.Equals("-n"))
             {
                 command.Name = true;
+                index++;
             }
             else if (currentArgs.Equals("--description") || currentArgs.Equals("-d"))
             {
                 command.Description = true;
+                index++;
             }
             else if (currentArgs.Equals("--watch-later") || currentArgs.Equals("-w"))
             {
                 command.WatchLater = true;
+                index++;
             }
             else if (currentArgs.Equals("--tags") || currentArgs.Equals("-t"))
             {
                 command.Tags = true;
+                index++;
             }
             else if (currentArgs.Equals("--lang") || currentArgs.Equals("-l"))
             {
                 command.Language = true;
+                index++;
             }
             else if (currentArgs.Equals("--created-at") || currentArgs.Equals("-c"))
             {
                 command.CreatedAt = true;
+                index++;
             }
             else if (currentArgs.Equals("--modified-at") || currentArgs.Equals("-m"))
             {
                 command.ModifiedAt = true;
+                index++;
             }
             else
             {
@@ -586,14 +595,46 @@ internal static class ArgumentParser
             if (currentArgs.Equals("--name") || currentArgs.Equals("-n"))
             {
                 command.Name = true;
+                index++;
             }
             else if (currentArgs.Equals("--description") || currentArgs.Equals("-d"))
             {
                 command.Description = true;
+                index++;
             }
             else if (currentArgs.Equals("--link") || currentArgs.Equals("-l"))
             {
                 command.Links = true;
+                index++;
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized args");
+            }
+        }
+
+        return command;
+    }
+
+    private static ExportLinksCommandArgument ParseExportLinksCommand(string[] args)
+    {
+        var index = 1;
+
+        var command = new ExportLinksCommandArgument();
+
+        while (index < args.Length)
+        {
+            var currentArgs = args[index];
+
+            if (!currentArgs.StartsWith('-'))
+            {
+                throw new ArgumentException("Positional arguments must come before the optional arguments.");
+            }
+
+            if (currentArgs.Equals("--path") || currentArgs.Equals("-p"))
+            {
+                command.Path = args[index + 1];
+                index += 2;
             }
             else
             {

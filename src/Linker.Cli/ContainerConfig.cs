@@ -2,8 +2,10 @@
 
 using Autofac;
 using Linker.Cli.Core;
+using Linker.Cli.Core.Serializers;
 using Linker.Cli.Handlers;
 using Linker.Cli.Integrations;
+using Linker.Cli.Integrations.Serializers;
 
 /// <summary>
 /// A static class that contains logics for container registration.
@@ -20,6 +22,7 @@ internal static class ContainerConfig
 
         builder
             .RegisterRepositories()
+            .RegisterSerializers()
             .RegisterCommandHandlers();
 
         builder
@@ -55,6 +58,16 @@ internal static class ContainerConfig
         builder
             .RegisterType<UrlListRepository>()
             .As<IRepository<UrlList>>()
+            .SingleInstance();
+
+        return builder;
+    }
+
+    private static ContainerBuilder RegisterSerializers(this ContainerBuilder builder)
+    {
+        builder
+            .RegisterType<CsvSerializer<Link>>()
+            .As<ISerializer<Link>>()
             .SingleInstance();
 
         return builder;
@@ -149,6 +162,13 @@ internal static class ContainerConfig
         {
             var listRepo = ctx.Resolve<IRepository<UrlList>>();
             return new Lazy<GetListCommandHandler>(() => new GetListCommandHandler(listRepo));
+        });
+
+        builder.Register(ctx =>
+        {
+            var linkRepo = ctx.Resolve<IRepository<Link>>();
+            var serializer = ctx.Resolve<ISerializer<Link>>();
+            return new Lazy<ExportLinksCommandHandler>(() => new ExportLinksCommandHandler(linkRepo, serializer));
         });
 
         return builder;
