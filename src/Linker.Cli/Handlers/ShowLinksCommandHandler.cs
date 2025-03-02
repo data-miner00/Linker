@@ -36,6 +36,7 @@ internal sealed class ShowLinksCommandHandler : ICommandHandler
                 foreach (var (link, index) in links
                     .SkipOrAll(args.Skip)
                     .TakeOrAll(args.Top)
+                    .LastOrAll(args.Last)
                     .WithIndex())
                 {
                     Console.WriteLine($"{index + 1}. {link.Url} - {link.Name}");

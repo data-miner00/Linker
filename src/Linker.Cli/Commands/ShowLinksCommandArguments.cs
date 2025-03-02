@@ -7,4 +7,6 @@ internal class ShowLinksCommandArguments
     public int? Skip { get; set; }
 
     public bool WatchLater { get; set; }
+
+    public int? Last { get; set; }
 }

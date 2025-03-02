@@ -39,8 +39,6 @@ internal static class ArgumentParser
     /// <exception cref="NotImplementedException">Invalid command provided.</exception>
     public static (CommandType CommandType, object CommandArguments) Parse(string[] args)
     {
-        Guard.ThrowIfNullOrEmpty(args);
-
         CommandType commandType;
 
         if (args.FirstOrDefault(string.Empty).Equals("list"))
@@ -160,6 +158,11 @@ internal static class ArgumentParser
             {
                 command.WatchLater = true;
                 index += 1;
+            }
+            else if (currentArgs.Equals("--last") || currentArgs.Equals("-l"))
+            {
+                command.Last = int.Parse(args[index + 1]);
+                index += 2;
             }
             else
             {
