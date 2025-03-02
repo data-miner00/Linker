@@ -17,7 +17,10 @@
     <ul>
         @foreach (var link in Model.LatestLinks) {
             <li class="flex gap-4 mb-1 border border-solid border-gray-200 rounded-xl p-3 items-center">
-                <div class="h-[72px] w-[128px] bg-gray-300 rounded-xl">
+                <div class="h-[72px] w-[128px] bg-gray-300 rounded-xl overflow-hidden">
+                    @if (!string.IsNullOrWhiteSpace(link.ThumbnailUrl)) {
+                        <img src="@link.ThumbnailUrl" class="w-full h-full object-cover" />
+                    }
                 </div>
 
                 <div>
@@ -59,12 +62,18 @@
         <h2 class="font-semibold text-2xl">Active Users</h2>
         <ul>
             @foreach (var user in Model.Users) {
-                <li class="flex gap-1 items-center">
-                    <div class="w-4 h-4 bg-gray-100 rounded-full"></div>
-                    <div>
-                        <p class="font-bold">@user.Username</p>
-                        <p>@user.Email</p>
-                    </div>
+                <li>
+                    <a class="flex gap-1 items-center" asp-action="Details" asp-controller="User" asp-route-id="@user.Id">
+                        <div class="w-8 h-8 bg-gray-100 rounded-full mr-1 overflow-hidden">
+                            @if (!string.IsNullOrEmpty(user.PhotoUrl)) {
+                                <img src="@user.PhotoUrl" class="w-full h-full object-cover" />
+                            }
+                        </div>
+                        <div>
+                            <p class="font-bold">@user.Username</p>
+                            <p>@user.Email</p>
+                        </div>
+                    </a>
                 </li>
             }
         </ul>
@@ -75,12 +84,14 @@
         <h2 class="text-2xl font-semibold">New workspaces</h2>
         <ul>
             @foreach (var workspace in Model.Workspaces) {
-                <li class="flex gap-1 items-center">
-                    <div class="w-4 h-4 bg-gray-100 rounded-full"></div>
-                    <div>
-                        <p class="font-bold">@@@workspace.Handle</p>
-                        <p>@workspace.Name</p>
-                    </div>
+                <li>
+                    <a class="flex gap-1 items-center" asp-action="Details" asp-controller="Workspace" asp-route-id="@workspace.Id">
+                        <div class="w-8 h-8 bg-gray-100 rounded-full mr-1"></div>
+                        <div>
+                            <p class="font-bold">@@@workspace.Handle</p>
+                            <p>@workspace.Name</p>
+                        </div>
+                    </a>
                 </li>
             }
         </ul>
