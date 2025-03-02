@@ -1,5 +1,6 @@
 ﻿namespace Linker.Common.Extensions
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -39,6 +40,18 @@
         public static IEnumerable<T> TakeOrAll<T>(this IEnumerable<T> src, int? take)
         {
             return take.HasValue ? src.Take(take.Value) : src;
+        }
+
+        /// <summary>
+        /// Take a few items in the list from behind or take all.
+        /// </summary>
+        /// <typeparam name="T">Any type.</typeparam>
+        /// <param name="src">The source.</param>
+        /// <param name="last">Number of items to take from behind.</param>
+        /// <returns>The queried results.</returns>
+        public static IEnumerable<T> LastOrAll<T>(this IEnumerable<T> src, int? last)
+        {
+            return last.HasValue ? src.Skip(Math.Max(0, src.Count() - last.Value)) : src;
         }
     }
 }

@@ -62,4 +62,24 @@ public sealed class EnumerableExtensionsTests
 
         Assert.Equal(expected, result);
     }
+
+    [Fact]
+    public void LastOrAll_Total5Take2FromBehind_ExpectGet2()
+    {
+        int? last = 2;
+        var result = this.items.LastOrAll(last).ToArray();
+        int[] expected = [4, 5];
+
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void LastOrAll_NoSpecifyLast_ExpectGetAll()
+    {
+        int? last = null;
+        var result = this.items.LastOrAll(last).ToArray();
+        int[] expected = [1, 2, 3, 4, 5];
+
+        Assert.Equal(expected, result);
+    }
 }
