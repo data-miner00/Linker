@@ -10,7 +10,9 @@ using Linker.WebApi.Exceptions;
 using Linker.WebApi.Filters;
 using Linker.WebApi.Mappers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http.Timeouts;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Metrics;
 using Swashbuckle.AspNetCore.Filters;
@@ -110,7 +112,11 @@ builder.Services
 
 builder.Services.AddMetrics();
 
-builder.Services.AddHttpLogging(opt => opt = new());
+builder.Services.AddHttpLogging(static opt => opt = new());
+
+builder.Services.AddHealthChecks();
+
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
@@ -135,5 +141,16 @@ app
 app.MapPrometheusScrapingEndpoint();
 
 app.MapControllers();
+
+app.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    AllowCachingResponses = false,
+    ResultStatusCodes =
+    {
+        [HealthStatus.Healthy] = StatusCodes.Status200OK,
+        [HealthStatus.Degraded] = StatusCodes.Status200OK,
+        [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable,
+    },
+});
 
 app.Run();
