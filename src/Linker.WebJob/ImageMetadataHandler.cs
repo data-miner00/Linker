@@ -1,26 +1,33 @@
 ﻿namespace Linker.WebJob;
 
 using Linker.Core.V2.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AngleSharp;
+using Linker.Common.Helpers;
 
-internal class ImageMetadataHandler : IImageMetadataHandler
+/// <summary>
+/// Handler for thumbnails and favicons.
+/// </summary>
+internal sealed class ImageMetadataHandler : IImageMetadataHandler
 {
-    private const string OgImageSelector = "[property='og:image']";
+    private const string OgImageCssSelector = "[property='og:image']";
+
+    // https://stackoverflow.com/questions/5119041/how-can-i-get-a-web-sites-faviconElem
+    private const string FaviconCssSelector = "[rel=\"shortcut icon\"], [rel=\"icon\"]";
 
     private readonly ILinkRepository linkRepository;
-    private readonly HttpClient httpClient;
+    private readonly IBrowsingContext browsingContext;
 
-    public ImageMetadataHandler(
-        ILinkRepository linkRepository,
-        HttpClient httpClient)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ImageMetadataHandler"/> class.
+    /// </summary>
+    /// <param name="linkRepository">The link repository.</param>
+    public ImageMetadataHandler(ILinkRepository linkRepository)
     {
-        this.linkRepository = linkRepository;
-        this.httpClient = httpClient;
+        this.linkRepository = Guard.ThrowIfNull(linkRepository);
+
+        var config = Configuration.Default.WithDefaultLoader();
+        this.browsingContext = BrowsingContext.New(config);
     }
 
     /// <inheritdoc/>
@@ -28,22 +35,26 @@ internal class ImageMetadataHandler : IImageMetadataHandler
     {
         var link = await this.linkRepository.GetByIdAsync(linkId, cancellationToken);
 
-        var ogImageUrl = await GetOgImage(link.Url);
+        var document = await this.browsingContext.OpenAsync(link.Url, cancellationToken);
+        var ogImageElem = document.QuerySelector(OgImageCssSelector);
+        var faviconElem = document.QuerySelector(FaviconCssSelector);
+
+        var ogImageUrl = ogImageElem?.GetAttribute("content");
+        var faviconUrl = faviconElem?.GetAttribute("href");
 
         if (ogImageUrl is not null)
         {
             link.ThumbnailUrl = ogImageUrl;
+        }
+
+        if (!string.IsNullOrEmpty(faviconUrl))
+        {
+            link.FaviconUrl = faviconUrl;
+        }
+
+        if (!string.IsNullOrEmpty(ogImageUrl) || !string.IsNullOrEmpty(faviconUrl))
+        {
             await this.linkRepository.UpdateAsync(link, cancellationToken);
         }
-    }
-
-    private static async Task<string?> GetOgImage(string url)
-    {
-        var config = Configuration.Default.WithDefaultLoader();
-        var context = BrowsingContext.New(config);
-        var document = await context.OpenAsync(url);
-        var meta = document.QuerySelector(OgImageSelector);
-
-        return meta?.GetAttribute("content");
     }
 }
