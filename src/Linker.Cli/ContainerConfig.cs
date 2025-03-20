@@ -1,6 +1,7 @@
 ﻿namespace Linker.Cli;
 
 using Autofac;
+using Linker.Cli.Commands;
 using Linker.Cli.Core;
 using Linker.Cli.Core.Serializers;
 using Linker.Cli.Handlers;
@@ -77,98 +78,33 @@ internal static class ContainerConfig
     {
         builder.Register(ctx =>
         {
-            var linkRepo = ctx.Resolve<IRepository<Link>>();
-            return new Lazy<AddLinkCommandHandler>(() => new AddLinkCommandHandler(linkRepo));
-        });
-
-        builder.Register(ctx =>
-        {
-            var linkRepo = ctx.Resolve<ILinkRepository>();
-            return new Lazy<ShowLinksCommandHandler>(() => new ShowLinksCommandHandler(linkRepo));
-        });
-
-        builder.Register(ctx =>
-        {
-            var linkRepo = ctx.Resolve<IRepository<Link>>();
-            return new Lazy<UpdateLinkCommandHandler>(() => new UpdateLinkCommandHandler(linkRepo));
-        });
-
-        builder.Register(ctx =>
-        {
-            var linkRepo = ctx.Resolve<IRepository<Link>>();
-            return new Lazy<DeleteLinkCommandHandler>(() => new DeleteLinkCommandHandler(linkRepo));
-        });
-
-        builder.Register(ctx =>
-        {
-            var linkRepo = ctx.Resolve<IRepository<Link>>();
-            var visitRepo = ctx.Resolve<IRepository<Visit>>();
-            return new Lazy<VisitLinkCommandHandler>(() => new VisitLinkCommandHandler(linkRepo, visitRepo));
-        });
-
-        builder.Register(ctx =>
-        {
-            var listRepo = ctx.Resolve<IRepository<UrlList>>();
-            return new Lazy<CreateListCommandHandler>(() => new CreateListCommandHandler(listRepo));
-        });
-
-        builder.Register(ctx =>
-        {
-            var listRepo = ctx.Resolve<IRepository<UrlList>>();
-            return new Lazy<ShowListsCommandHandler>(() => new ShowListsCommandHandler(listRepo));
-        });
-
-        builder.Register(ctx =>
-        {
-            var listRepo = ctx.Resolve<IRepository<UrlList>>();
-            return new Lazy<UpdateListCommandHandler>(() => new UpdateListCommandHandler(listRepo));
-        });
-
-        builder.Register(ctx =>
-        {
-            var listRepo = ctx.Resolve<IRepository<UrlList>>();
-            return new Lazy<DeleteListCommandHandler>(() => new DeleteListCommandHandler(listRepo));
-        });
-
-        builder.Register(ctx =>
-        {
             var listRepo = ctx.Resolve<IRepository<UrlList>>();
             var linkRepo = ctx.Resolve<IRepository<Link>>();
-            var dbContext = ctx.Resolve<AppDbContext>();
-            return new Lazy<AddLinkIntoListCommandHandler>(() => new AddLinkIntoListCommandHandler(listRepo, linkRepo, dbContext));
-        });
-
-        builder.Register(ctx =>
-        {
-            var listRepo = ctx.Resolve<IRepository<UrlList>>();
-            var linkRepo = ctx.Resolve<IRepository<Link>>();
-            var dbContext = ctx.Resolve<AppDbContext>();
-            return new Lazy<RemoveLinkFromListCommandHandler>(() => new RemoveLinkFromListCommandHandler(listRepo, linkRepo, dbContext));
-        });
-
-        builder.Register(ctx =>
-        {
-            var linkRepo = ctx.Resolve<IRepository<Link>>();
-            return new Lazy<SearchLinkCommandHandler>(() => new SearchLinkCommandHandler(linkRepo));
-        });
-
-        builder.Register(ctx =>
-        {
-            var linkRepo = ctx.Resolve<IRepository<Link>>();
-            return new Lazy<GetLinkCommandHandler>(() => new GetLinkCommandHandler(linkRepo));
-        });
-
-        builder.Register(ctx =>
-        {
-            var listRepo = ctx.Resolve<IRepository<UrlList>>();
-            return new Lazy<GetListCommandHandler>(() => new GetListCommandHandler(listRepo));
-        });
-
-        builder.Register(ctx =>
-        {
-            var linkRepo = ctx.Resolve<IRepository<Link>>();
+            var interfaceLinkRepo = ctx.Resolve<ILinkRepository>();
             var serializer = ctx.Resolve<ISerializer<Link>>();
-            return new Lazy<ExportLinksCommandHandler>(() => new ExportLinksCommandHandler(linkRepo, serializer));
+            var visitRepo = ctx.Resolve<IRepository<Visit>>();
+            var dbContext = ctx.Resolve<AppDbContext>();
+
+            IDictionary<CommandType, Lazy<ICommandHandler>> commandHandlers = new Dictionary<CommandType, Lazy<ICommandHandler>>
+            {
+                { CommandType.AddLink, new Lazy<ICommandHandler>(() => new AddLinkCommandHandler(linkRepo)) },
+                { CommandType.ShowLinks, new Lazy<ICommandHandler>(() => new ShowLinksCommandHandler(interfaceLinkRepo)) },
+                { CommandType.UpdateLink, new Lazy<ICommandHandler>(() => new UpdateLinkCommandHandler(linkRepo)) },
+                { CommandType.DeleteLink, new Lazy<ICommandHandler>(() => new DeleteLinkCommandHandler(linkRepo)) },
+                { CommandType.VisitLink, new Lazy<ICommandHandler>(() => new VisitLinkCommandHandler(linkRepo, visitRepo)) },
+                { CommandType.CreateList, new Lazy<ICommandHandler>(() => new CreateListCommandHandler(listRepo)) },
+                { CommandType.ShowLists, new Lazy<ICommandHandler>(() => new ShowListsCommandHandler(listRepo)) },
+                { CommandType.UpdateList, new Lazy<ICommandHandler>(() => new UpdateListCommandHandler(listRepo)) },
+                { CommandType.DeleteList, new Lazy<ICommandHandler>(() => new DeleteListCommandHandler(listRepo)) },
+                { CommandType.AddLinkIntoList, new Lazy<ICommandHandler>(() => new AddLinkIntoListCommandHandler(listRepo, linkRepo, dbContext)) },
+                { CommandType.RemoveLinkFromList, new Lazy<ICommandHandler>(() => new RemoveLinkFromListCommandHandler(listRepo, linkRepo, dbContext)) },
+                { CommandType.SearchLinks, new Lazy<ICommandHandler>(() => new SearchLinkCommandHandler(linkRepo)) },
+                { CommandType.GetLink, new Lazy<ICommandHandler>(() => new GetLinkCommandHandler(linkRepo)) },
+                { CommandType.GetList, new Lazy<ICommandHandler>(() => new GetListCommandHandler(listRepo)) },
+                { CommandType.ExportLinks, new Lazy<ICommandHandler>(() => new ExportLinksCommandHandler(linkRepo, serializer)) },
+            };
+
+            return commandHandlers;
         });
 
         return builder;

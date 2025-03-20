@@ -2,6 +2,7 @@
 
 using Linker.Cli.Commands;
 using Linker.Cli.Handlers;
+using Linker.Common.Helpers;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -13,57 +14,15 @@ internal sealed class Application
     private const int SUCCESS_CODE = 0;
     private const int FAILURE_CODE = 0x667;
 
-    private readonly Lazy<AddLinkCommandHandler> addLinkCommandHandler;
-    private readonly Lazy<ShowLinksCommandHandler> showLinksCommandHandler;
-    private readonly Lazy<UpdateLinkCommandHandler> updateLinkCommandHandler;
-    private readonly Lazy<DeleteLinkCommandHandler> deleteLinkCommandHandler;
-    private readonly Lazy<VisitLinkCommandHandler> visitLinkCommandHandler;
-    private readonly Lazy<CreateListCommandHandler> createListCommandHandler;
-    private readonly Lazy<ShowListsCommandHandler> showListsCommandHandler;
-    private readonly Lazy<UpdateListCommandHandler> updateListCommandHandler;
-    private readonly Lazy<DeleteListCommandHandler> deleteListCommandHandler;
-    private readonly Lazy<AddLinkIntoListCommandHandler> addLinkIntoListCommandHandler;
-    private readonly Lazy<RemoveLinkFromListCommandHandler> removeLinkFromListCommandHandler;
-    private readonly Lazy<SearchLinkCommandHandler> searchLinkCommandHandler;
-    private readonly Lazy<GetLinkCommandHandler> getLinkCommandHandler;
-    private readonly Lazy<GetListCommandHandler> getListCommandHandler;
-    private readonly Lazy<ExportLinksCommandHandler> exportLinksCommandHandler;
+    private readonly IDictionary<CommandType, Lazy<ICommandHandler>> commandHandlers;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Application"/> class.
     /// </summary>
-    public Application(
-        Lazy<AddLinkCommandHandler> addLinkCommandHandler,
-        Lazy<ShowLinksCommandHandler> showLinksCommandHandler,
-        Lazy<UpdateLinkCommandHandler> updateLinkCommandHandler,
-        Lazy<DeleteLinkCommandHandler> deleteLinkCommandHandler,
-        Lazy<VisitLinkCommandHandler> visitLinkCommandHandler,
-        Lazy<CreateListCommandHandler> createListCommandHandler,
-        Lazy<ShowListsCommandHandler> showListsCommandHandler,
-        Lazy<UpdateListCommandHandler> updateListCommandHandler,
-        Lazy<DeleteListCommandHandler> deleteListCommandHandler,
-        Lazy<AddLinkIntoListCommandHandler> addLinkIntoListCommandHandler,
-        Lazy<RemoveLinkFromListCommandHandler> removeLinkFromListCommandHandler,
-        Lazy<SearchLinkCommandHandler> searchLinkCommandHandler,
-        Lazy<GetLinkCommandHandler> getLinkCommandHandler,
-        Lazy<GetListCommandHandler> getListCommandHandler,
-        Lazy<ExportLinksCommandHandler> exportLinksCommandHandler)
+    /// <param name="commandHandlers">The dictionary of command handlers.</param>
+    public Application(IDictionary<CommandType, Lazy<ICommandHandler>> commandHandlers)
     {
-        this.addLinkCommandHandler = addLinkCommandHandler;
-        this.showLinksCommandHandler = showLinksCommandHandler;
-        this.updateLinkCommandHandler = updateLinkCommandHandler;
-        this.deleteLinkCommandHandler = deleteLinkCommandHandler;
-        this.visitLinkCommandHandler = visitLinkCommandHandler;
-        this.createListCommandHandler = createListCommandHandler;
-        this.showListsCommandHandler = showListsCommandHandler;
-        this.updateListCommandHandler = updateListCommandHandler;
-        this.deleteListCommandHandler = deleteListCommandHandler;
-        this.addLinkIntoListCommandHandler = addLinkIntoListCommandHandler;
-        this.removeLinkFromListCommandHandler = removeLinkFromListCommandHandler;
-        this.searchLinkCommandHandler = searchLinkCommandHandler;
-        this.getLinkCommandHandler = getLinkCommandHandler;
-        this.getListCommandHandler = getListCommandHandler;
-        this.exportLinksCommandHandler = exportLinksCommandHandler;
+        this.commandHandlers = Guard.ThrowIfNull(commandHandlers);
     }
 
     /// <summary>
@@ -82,56 +41,16 @@ internal sealed class Application
             var command = ArgumentParser.Parse(args);
             var arguments = command.CommandArguments;
 
-            switch (command.CommandType)
+            if (command.CommandType == CommandType.Help)
             {
-                case CommandType.Help:
-                    DisplayHelpMessage();
-                    break;
-                case CommandType.AddLink:
-                    await this.addLinkCommandHandler.Value.HandleAsync(arguments);
-                    break;
-                case CommandType.ShowLinks:
-                    await this.showLinksCommandHandler.Value.HandleAsync(arguments);
-                    break;
-                case CommandType.UpdateLink:
-                    await this.updateLinkCommandHandler.Value.HandleAsync(arguments);
-                    break;
-                case CommandType.DeleteLink:
-                    await this.deleteLinkCommandHandler.Value.HandleAsync(arguments);
-                    break;
-                case CommandType.VisitLink:
-                    await this.visitLinkCommandHandler.Value.HandleAsync(arguments);
-                    break;
-                case CommandType.CreateList:
-                    await this.createListCommandHandler.Value.HandleAsync(arguments);
-                    break;
-                case CommandType.ShowLists:
-                    await this.showListsCommandHandler.Value.HandleAsync(arguments);
-                    break;
-                case CommandType.UpdateList:
-                    await this.updateListCommandHandler.Value.HandleAsync(arguments);
-                    break;
-                case CommandType.DeleteList:
-                    await this.deleteListCommandHandler.Value.HandleAsync(arguments);
-                    break;
-                case CommandType.AddLinkIntoList:
-                    await this.addLinkIntoListCommandHandler.Value.HandleAsync(arguments);
-                    break;
-                case CommandType.RemoveLinkFromList:
-                    await this.removeLinkFromListCommandHandler.Value.HandleAsync(arguments);
-                    break;
-                case CommandType.SearchLinks:
-                    await this.searchLinkCommandHandler.Value.HandleAsync(arguments);
-                    break;
-                case CommandType.GetLink:
-                    await this.getLinkCommandHandler.Value.HandleAsync(arguments);
-                    break;
-                case CommandType.GetList:
-                    await this.getListCommandHandler.Value.HandleAsync(arguments);
-                    break;
-                case CommandType.ExportLinks:
-                    await this.exportLinksCommandHandler.Value.HandleAsync(arguments);
-                    break;
+                DisplayHelpMessage();
+            }
+            else
+            {
+                if (this.commandHandlers.TryGetValue(command.CommandType, out var commandHandler))
+                {
+                    await commandHandler.Value.HandleAsync(arguments);
+                }
             }
 
             return SUCCESS_CODE;
