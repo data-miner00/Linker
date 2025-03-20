@@ -3,26 +3,48 @@
 using Linker.Cli.Commands;
 using Linker.Cli.Core;
 using Linker.Cli.Integrations;
+using Linker.Common.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-internal class AddLinkCommandHandler : ICommandHandler
+/// <summary>
+/// The command handler for adding new <see cref="Link"/>.
+/// </summary>
+internal sealed class AddLinkCommandHandler : ICommandHandler
 {
+    private const string UniqueConstraintFailedMessage = "SQLite Error 19: 'UNIQUE constraint failed: Links.Url'";
+
     private readonly IRepository<Link> repository;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AddLinkCommandHandler"/> class.
+    /// </summary>
+    /// <param name="repository">The link repository.</param>
     public AddLinkCommandHandler(IRepository<Link> repository)
     {
-        this.repository = repository;
+        this.repository = Guard.ThrowIfNull(repository);
     }
 
-    public Task HandleAsync(object commandArguments)
+    /// <inheritdoc/>
+    public async Task HandleAsync(object commandArguments)
     {
         if (commandArguments is AddLinkCommandArguments args)
         {
-            return this.repository.AddAsync(args.ToLink());
+            try
+            {
+                await this.repository.AddAsync(args.ToLink());
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException is not null && ex.InnerException.Message.Contains(UniqueConstraintFailedMessage))
+                {
+                    Console.Error.WriteLine("The URL already exists. Please add a new one.");
+                    Environment.ExitCode = 1;
+                    return;
+                }
+
+                throw;
+            }
         }
 
         throw new ArgumentException("The arguments provided does not match the command.");
