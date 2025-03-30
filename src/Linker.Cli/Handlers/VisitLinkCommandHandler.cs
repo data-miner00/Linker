@@ -5,47 +5,35 @@ using Linker.Cli.Core;
 using Linker.Cli.Integrations;
 using Linker.Common.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
+/// <summary>
+/// The command handler for visit link command.
+/// </summary>
 internal sealed class VisitLinkCommandHandler : ICommandHandler
 {
     private readonly IRepository<Link> linkRepository;
     private readonly IRepository<Visit> visitRepository;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="VisitLinkCommandHandler"/> class.
+    /// </summary>
+    /// <param name="linkRepository">The link repository.</param>
+    /// <param name="visitRepository">The visits repository.</param>
     public VisitLinkCommandHandler(IRepository<Link> linkRepository, IRepository<Visit> visitRepository)
     {
         this.linkRepository = Guard.ThrowIfNull(linkRepository);
         this.visitRepository = Guard.ThrowIfNull(visitRepository);
     }
 
+    /// <inheritdoc/>
     public async Task HandleAsync(object commandArguments)
     {
-        if (commandArguments is VisitLinkCommandArguments vlca)
+        if (commandArguments is VisitLinkCommandArguments args)
         {
-            Link? linkToVisit;
-
-            if (vlca.LinkId is not null)
-            {
-                linkToVisit = await this.linkRepository.GetByIdAsync(vlca.LinkId.Value);
-            }
-            else if (vlca.Random)
-            {
-                var links = (await this.linkRepository.GetAllAsync()).ToArray();
-
-                var random = new Random();
-
-                var randomIndex = random.Next(links.Length);
-
-                linkToVisit = links[randomIndex];
-            }
-            else
-            {
-                throw new InvalidOperationException("Bad condition");
-            }
+            var linkToVisit = await this.GetLinkFromArgs(args);
 
             var startInfo = new ProcessStartInfo
             {
@@ -66,5 +54,42 @@ internal sealed class VisitLinkCommandHandler : ICommandHandler
         }
 
         throw new ArgumentException("Wrong args");
+    }
+
+    private async Task<Link> GetLinkFromArgs(VisitLinkCommandArguments args)
+    {
+        Link? linkToVisit;
+
+        if (args.LinkId is not null)
+        {
+            linkToVisit = await this.linkRepository.GetByIdAsync(args.LinkId.Value);
+        }
+        else if (args.Random)
+        {
+            var links = (await this.linkRepository.GetAllAsync()).ToArray();
+
+            var random = new Random();
+
+            var randomIndex = random.Next(links.Length);
+
+            linkToVisit = links[randomIndex];
+        }
+        else if (args.Last)
+        {
+            var links = (await this.linkRepository.GetAllAsync()).ToArray();
+
+            linkToVisit = links.LastOrDefault();
+        }
+        else
+        {
+            throw new InvalidOperationException("No action can be taken with the current arguments.");
+        }
+
+        if (linkToVisit is null)
+        {
+            throw new InvalidOperationException("The link to be visited is null.");
+        }
+
+        return linkToVisit;
     }
 }

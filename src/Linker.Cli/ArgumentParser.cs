@@ -305,6 +305,11 @@ internal static class ArgumentParser
                 command.Random = true;
                 index++;
             }
+            else if (currentArgs.Equals("--last") || currentArgs.Equals("-l"))
+            {
+                command.Last = true;
+                index++;
+            }
             else
             {
                 throw new ArgumentException("Unrecognized args");
