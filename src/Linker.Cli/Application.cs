@@ -55,9 +55,18 @@ internal sealed class Application
 
             return SUCCESS_CODE;
         }
+        catch (KeyNotFoundException ex) when (ex.Message.StartsWith("The given key"))
+        {
+            Console.Error.WriteLine("The command could not be found.");
+            return FAILURE_CODE;
+        }
         catch (Exception ex)
         {
+#if DEBUG
             Console.Error.WriteLine(ex.ToString());
+#else
+            Console.Error.WriteLine(ex.Message);
+#endif
             return FAILURE_CODE;
         }
 #if DEBUG
