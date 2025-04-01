@@ -146,23 +146,14 @@ internal static class ArgumentParser
 
             if (currentArgs.Equals("--top") || currentArgs.Equals("-t"))
             {
-                command.Top = int.Parse(args[index + 1]);
-                index += 2;
-            }
-            else if (currentArgs.Equals("--skip") || currentArgs.Equals("-s"))
-            {
-                command.Skip = int.Parse(args[index + 1]);
+                var value = int.Parse(args[index + 1]);
+                command.Top = value == 0 ? null : value;
                 index += 2;
             }
             else if (currentArgs.Equals("--watch-later") || currentArgs.Equals("-w"))
             {
                 command.WatchLater = true;
                 index += 1;
-            }
-            else if (currentArgs.Equals("--last") || currentArgs.Equals("-l"))
-            {
-                command.Last = int.Parse(args[index + 1]);
-                index += 2;
             }
             else
             {
