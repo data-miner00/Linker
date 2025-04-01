@@ -30,9 +30,20 @@ internal sealed class SearchLinkCommandHandler : ICommandHandler
     {
         if (commandArguments is SearchLinkCommandArguments args)
         {
-            var links = (await this.repository.SearchAsync(args.Keyword)).ToArray();
+            Link[]? links;
 
-            Console.WriteLine($"Found {links.Length} results for keyword '{args.Keyword}.");
+            if (!args.Tags)
+            {
+                links = (await this.repository.SearchAsync(args.Keyword)).ToArray();
+                Console.WriteLine($"Found {links.Length} results for keyword '{args.Keyword}'.");
+            }
+            else
+            {
+                links = (await this.repository.GetAllAsync())
+                    .Where(x => x.Tags is not null && x.Tags.Contains(args.Keyword))
+                    .ToArray();
+                Console.WriteLine($"Found {links.Length} results for tag '{args.Keyword}'.");
+            }
 
             if (links.Length == 0)
             {

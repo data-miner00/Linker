@@ -2,7 +2,7 @@
   "profiles": {
     "Linker.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "visit --last"
+      "commandLineArgs": "search google --tags"
     }
   }
 }
