@@ -26,7 +26,10 @@ var sqliteConnectionString = builder.Configuration["SQLite:ConnectionString"];
 
 using var connection = new SQLiteConnection(sqliteConnectionString);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(opt =>
+{
+    opt.Filters.Add<InformerFilter>();
+});
 
 builder.Services.AddHttpContextAccessor();
 
