@@ -8,6 +8,7 @@ using Linker.Core.Repositories;
 using Linker.Data.SQLite;
 using Linker.WebApi.Exceptions;
 using Linker.WebApi.Filters;
+using Linker.WebApi.HealthChecks;
 using Linker.WebApi.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -114,7 +115,8 @@ builder.Services.AddMetrics();
 
 builder.Services.AddHttpLogging(static opt => opt = new());
 
-builder.Services.AddHealthChecks();
+builder.Services.AddHealthChecks()
+    .AddCheck<DatabaseHealthCheck>("DatabaseHealthCheck");
 
 builder.Services.AddProblemDetails();
 
