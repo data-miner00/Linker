@@ -98,6 +98,7 @@
         [SwaggerResponse((int)HttpStatusCode.OK, "Retrieved all articles.")]
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(ArticleResponseCollectionExample))]
         [ProducesResponseType(typeof(ArticleResponseCollectionExample), (int)HttpStatusCode.OK)]
+        [ScopedInformerFilter("GetAllArticles Endpoint")]
         public async Task<IActionResult> GetAllAsync()
         {
             var articles = await this.repository
