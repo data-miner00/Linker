@@ -58,6 +58,8 @@ internal sealed class AddLinkCommandHandler : ICommandHandler
 
                 throw;
             }
+
+            return;
         }
 
         throw new ArgumentException("The arguments provided does not match the command.");
