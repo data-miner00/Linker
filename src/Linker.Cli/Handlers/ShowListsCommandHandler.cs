@@ -28,15 +28,25 @@ internal sealed class ShowListsCommandHandler : ICommandHandler
     /// <inheritdoc/>
     public async Task HandleAsync(object commandArguments)
     {
-        if (commandArguments is ShowListsCommandArguments slca2)
+        if (commandArguments is ShowListsCommandArguments args)
         {
+            if (args.ShowHelp)
+            {
+                Console.WriteLine("Usage: linker list show [options]");
+                Console.WriteLine("Options:");
+                Console.WriteLine("  --skip <number>     The number of lists to skip.");
+                Console.WriteLine("  --top <number>      The number of lists to show.");
+                Console.WriteLine("  --help             Show this help message.");
+                return;
+            }
+
             var lists = await this.repository.GetAllAsync();
 
             if (lists.Any())
             {
                 foreach (var (link, index) in lists
-                    .SkipOrAll(slca2.Skip)
-                    .TakeOrAll(slca2.Top)
+                    .SkipOrAll(args.Skip)
+                    .TakeOrAll(args.Top)
                     .WithIndex())
                 {
                     Console.WriteLine($"{index + 1}. {link.Name} - {link.Description}");

@@ -14,4 +14,9 @@ internal class ShowLinksCommandArguments
     /// Gets or sets a value indicating whether to retrieve just the watch later links.
     /// </summary>
     public bool WatchLater { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to show the help message and exit.
+    /// </summary>
+    public bool ShowHelp { get; set; }
 }

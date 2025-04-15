@@ -19,4 +19,6 @@ internal class GetLinkCommandArguments
     public bool CreatedAt { get; set; }
 
     public bool ModifiedAt { get; set; }
+
+    public bool ShowHelp { get; set; }
 }

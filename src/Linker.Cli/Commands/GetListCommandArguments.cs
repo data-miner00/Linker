@@ -12,4 +12,6 @@ internal class GetListCommandArguments
     public bool Description { get; set; }
 
     public bool Links { get; set; }
+
+    public bool ShowHelp { get; set; }
 }

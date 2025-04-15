@@ -8,4 +8,6 @@ internal class DeleteLinkCommandArguments
     public int Id { get; set; }
 
     public bool ConfirmDelete { get; set; }
+
+    public bool ShowHelp { get; set; }
 }

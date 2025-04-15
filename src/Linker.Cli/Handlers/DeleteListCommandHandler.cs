@@ -23,6 +23,15 @@ internal sealed class DeleteListCommandHandler : ICommandHandler
     {
         if (commandArguments is DeleteListCommandArguments args)
         {
+            if (args.ShowHelp)
+            {
+                Console.WriteLine("Usage: linker list delete <list-id> [options]");
+                Console.WriteLine("Options:");
+                Console.WriteLine("  --confirm           Confirm the deletion.");
+                Console.WriteLine("  --help              Show this help message.");
+                return;
+            }
+
             var listToDelete = await this.repository.GetByIdAsync(args.Id);
 
             if (!args.ConfirmDelete)

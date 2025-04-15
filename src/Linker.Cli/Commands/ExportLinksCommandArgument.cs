@@ -5,4 +5,6 @@ internal sealed class ExportLinksCommandArgument
     public string? Path { get; set; }
 
     public string? Format => throw new NotImplementedException();
+
+    public bool ShowHelp { get; set; }
 }

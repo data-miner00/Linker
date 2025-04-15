@@ -21,6 +21,24 @@ internal sealed class UpdateLinkCommandHandler : ICommandHandler
     {
         if (commandArguments is UpdateLinkCommandArguments args)
         {
+            if (args.ShowHelp)
+            {
+                Console.WriteLine("Usage: linker update <link-id> [options]");
+                Console.WriteLine("Options:");
+                Console.WriteLine("  --url <url>        Update the URL of the link.");
+                Console.WriteLine("  --name <name>      Update the name of the link.");
+                Console.WriteLine("  --description <desc> Update the description of the link.");
+                Console.WriteLine("  --watch-later       Mark the link as watch later.");
+                Console.WriteLine("  --no-watch-later    Unmark the link as watch later.");
+                Console.WriteLine("  --tags <tags>      Add tags to the link.");
+                Console.WriteLine("  --clear-tags       Clear all tags from the link.");
+                Console.WriteLine("  --add-tags <tags>  Add tags to the link.");
+                Console.WriteLine("  --remove-tags <tags> Remove tags from the link.");
+                Console.WriteLine("  --language <lang>  Update the language of the link.");
+                Console.WriteLine("  --help             Show this help message.");
+                return;
+            }
+
             var original = await this.repository.GetByIdAsync(args.Id);
 
             if (args.Url is not null)

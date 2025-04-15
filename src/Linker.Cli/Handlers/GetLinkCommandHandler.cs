@@ -28,6 +28,22 @@ internal sealed class GetLinkCommandHandler : ICommandHandler
     {
         if (commandArguments is GetLinkCommandArguments args)
         {
+            if (args.ShowHelp)
+            {
+                Console.WriteLine("Usage: linker get <id> [options]");
+                Console.WriteLine("Options:");
+                Console.WriteLine("  --url               Show the URL.");
+                Console.WriteLine("  --name              Show the name.");
+                Console.WriteLine("  --description       Show the description.");
+                Console.WriteLine("  --watch-later       Show if it's a watch later link.");
+                Console.WriteLine("  --tags              Show the tags.");
+                Console.WriteLine("  --language          Show the spoken language.");
+                Console.WriteLine("  --created-at        Show the creation date.");
+                Console.WriteLine("  --modified-at       Show the last modified date.");
+                Console.WriteLine("  --help              Show this help message.");
+                return;
+            }
+
             var link = await this.repository.GetByIdAsync(args.Id);
 
             if (link == null)

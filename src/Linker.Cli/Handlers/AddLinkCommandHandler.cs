@@ -30,6 +30,19 @@ internal sealed class AddLinkCommandHandler : ICommandHandler
     {
         if (commandArguments is AddLinkCommandArguments args)
         {
+            if (args.ShowHelp)
+            {
+                Console.WriteLine("Usage: linker add <url> [options]");
+                Console.WriteLine("Options:");
+                Console.WriteLine("  --name <name>        The name of the link.");
+                Console.WriteLine("  --description <desc> The description of the link.");
+                Console.WriteLine("  --watch-later        Add the link to watch later.");
+                Console.WriteLine("  --tags <tags>       Comma-separated list of tags.");
+                Console.WriteLine("  --language <lang>   The spoken language.");
+                Console.WriteLine("  --help              Show this help message.");
+                return;
+            }
+
             try
             {
                 await this.repository.AddAsync(args.ToLink());

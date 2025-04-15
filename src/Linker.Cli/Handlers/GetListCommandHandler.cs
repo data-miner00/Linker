@@ -22,6 +22,17 @@ internal sealed class GetListCommandHandler : ICommandHandler
         {
             Guard.ThrowIfValidationFailed(args);
 
+            if (args.ShowHelp)
+            {
+                Console.WriteLine("Usage: linker list get <list-id> [options]");
+                Console.WriteLine("Options:");
+                Console.WriteLine("  --links            Show links in the list.");
+                Console.WriteLine("  --name             Show name of the list.");
+                Console.WriteLine("  --description      Show description of the list.");
+                Console.WriteLine("  --help             Show this help message.");
+                return;
+            }
+
             var list = await this.repository.GetByIdAsync(args.Id);
 
             if (list == null)

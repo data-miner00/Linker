@@ -19,4 +19,9 @@ internal sealed class VisitLinkCommandArguments
     /// Gets or sets a value indicating whether to visit the last added link.
     /// </summary>
     public bool Last { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to show the help message and exit.
+    /// </summary>
+    public bool ShowHelp { get; set; }
 }

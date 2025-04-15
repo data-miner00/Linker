@@ -30,6 +30,17 @@ internal sealed class SearchLinkCommandHandler : ICommandHandler
     {
         if (commandArguments is SearchLinkCommandArguments args)
         {
+            if (args.ShowHelp)
+            {
+                Console.WriteLine("Usage: linker search <keyword> [options]");
+                Console.WriteLine("Options:");
+                Console.WriteLine("  --tags              Search by tags.");
+                Console.WriteLine("  --skip <number>     The number of links to skip.");
+                Console.WriteLine("  --top <number>      The number of links to show.");
+                Console.WriteLine("  --help             Show this help message.");
+                return;
+            }
+
             Link[]? links;
 
             if (!args.Tags)

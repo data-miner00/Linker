@@ -33,6 +33,16 @@ internal sealed class VisitLinkCommandHandler : ICommandHandler
     {
         if (commandArguments is VisitLinkCommandArguments args)
         {
+            if (args.ShowHelp)
+            {
+                Console.WriteLine("Usage: linker visit <id> [options]");
+                Console.WriteLine("Options:");
+                Console.WriteLine("  --random            Visit a random link.");
+                Console.WriteLine("  --last              Visit the last added link.");
+                Console.WriteLine("  --help              Show this help message.");
+                return;
+            }
+
             var linkToVisit = await this.GetLinkFromArgs(args);
 
             var startInfo = new ProcessStartInfo

@@ -29,6 +29,15 @@ internal sealed class ExportLinksCommandHandler : ICommandHandler
     {
         if (commandArguments is ExportLinksCommandArgument args)
         {
+            if (args.ShowHelp)
+            {
+                Console.WriteLine("Usage: linker export [options]");
+                Console.WriteLine("Options:");
+                Console.WriteLine("  --path <path>       The path to export the links.");
+                Console.WriteLine("  --help              Show this help message.");
+                return;
+            }
+
             var exportPath = args.Path ?? DefaultExportPath;
 
             var links = await this.repository.GetAllAsync();

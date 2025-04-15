@@ -23,7 +23,23 @@ internal sealed class UpdateListCommandHandler : ICommandHandler
     {
         if (commandArguments is UpdateListCommandArguments args)
         {
+            if (args.ShowHelp)
+            {
+                Console.WriteLine("Usage: linker list update <list-id> [options]");
+                Console.WriteLine("Options:");
+                Console.WriteLine("  --name <name>       The new name of the list.");
+                Console.WriteLine("  --description <desc> The new description of the list.");
+                Console.WriteLine("  --help              Show this help message.");
+                return;
+            }
+
             var originalList = await this.repository.GetByIdAsync(args.Id);
+
+            if (originalList == null)
+            {
+                Console.WriteLine($"The list with ID {args.Id} cannot be found.");
+                return;
+            }
 
             if (args.Name is not null)
             {

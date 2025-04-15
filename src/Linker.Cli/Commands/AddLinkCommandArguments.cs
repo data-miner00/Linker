@@ -19,6 +19,8 @@ internal class AddLinkCommandArguments
 
     public string? Language { get; set; }
 
+    public bool ShowHelp { get; set; }
+
     public Link ToLink()
     {
         return new Link

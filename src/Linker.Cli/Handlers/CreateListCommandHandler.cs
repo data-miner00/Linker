@@ -23,6 +23,15 @@ internal sealed class CreateListCommandHandler : ICommandHandler
     {
         if (commandArguments is CreateListCommandArguments args)
         {
+            if (args.ShowHelp)
+            {
+                Console.WriteLine("Usage: linker list create <name> [options]");
+                Console.WriteLine("Options:");
+                Console.WriteLine("  --description <desc> The description of the list.");
+                Console.WriteLine("  --help              Show this help message.");
+                return;
+            }
+
             var list = new UrlList
             {
                 Name = args.Name,

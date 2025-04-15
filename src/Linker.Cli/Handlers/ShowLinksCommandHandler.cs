@@ -29,6 +29,16 @@ internal sealed class ShowLinksCommandHandler : ICommandHandler
     {
         if (commandArguments is ShowLinksCommandArguments args)
         {
+            if (args.ShowHelp)
+            {
+                Console.WriteLine("Usage: linker show [options]");
+                Console.WriteLine("Options:");
+                Console.WriteLine("  --watch-later        Show watch later links.");
+                Console.WriteLine("  --top <number>       The number of links to show.");
+                Console.WriteLine("  --help              Show this help message.");
+                return;
+            }
+
             var links = await this.repository.GetAllAsync(args.WatchLater);
 
             if (links.Any())

@@ -27,4 +27,6 @@ internal class UpdateLinkCommandArguments
     public IList<string> RemoveTags { get; set; } = [];
 
     public string? Language { get; set; }
+
+    public bool ShowHelp { get; set; }
 }

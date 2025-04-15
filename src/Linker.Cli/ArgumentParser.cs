@@ -1,7 +1,6 @@
 ﻿namespace Linker.Cli;
 
 using Linker.Cli.Commands;
-using Linker.Common.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +45,7 @@ internal static class ArgumentParser
             var verb = string.Join(' ', args[0], args[1]);
             commandType = CommandDictionary[verb];
         }
-        else if (args.Length == 0 || args.Contains("--help") || args.Contains("-h"))
+        else if (args.Length == 0 || args[0].Equals("--help") || args[0].Equals("-h"))
         {
             commandType = CommandDictionary["help"];
         }
@@ -121,6 +120,11 @@ internal static class ArgumentParser
                 command.Language = args[index + 1];
                 index += 2;
             }
+            else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
+            {
+                command.ShowHelp = true;
+                index++;
+            }
             else
             {
                 throw new ArgumentException("Unrecognized args");
@@ -153,7 +157,12 @@ internal static class ArgumentParser
             else if (currentArgs.Equals("--watch-later") || currentArgs.Equals("-w"))
             {
                 command.WatchLater = true;
-                index += 1;
+                index++;
+            }
+            else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
+            {
+                command.ShowHelp = true;
+                index++;
             }
             else
             {
@@ -231,6 +240,11 @@ internal static class ArgumentParser
                 command.Language = args[index + 1];
                 index += 2;
             }
+            else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
+            {
+                command.ShowHelp = true;
+                index++;
+            }
             else
             {
                 throw new ArgumentException("Unrecognized args");
@@ -260,6 +274,11 @@ internal static class ArgumentParser
             if (currentArgs.Equals("--confirm") || currentArgs.Equals("-y"))
             {
                 command.ConfirmDelete = true;
+                index++;
+            }
+            else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
+            {
+                command.ShowHelp = true;
                 index++;
             }
             else
@@ -301,6 +320,11 @@ internal static class ArgumentParser
                 command.Last = true;
                 index++;
             }
+            else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
+            {
+                command.ShowHelp = true;
+                index++;
+            }
             else
             {
                 throw new ArgumentException("Unrecognized args");
@@ -332,6 +356,11 @@ internal static class ArgumentParser
             {
                 command.Description = args[index + 1];
                 index += 2;
+            }
+            else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
+            {
+                command.ShowHelp = true;
+                index++;
             }
             else
             {
@@ -370,6 +399,11 @@ internal static class ArgumentParser
                 command.Description = args[index + 1];
                 index += 2;
             }
+            else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
+            {
+                command.ShowHelp = true;
+                index++;
+            }
             else
             {
                 throw new ArgumentException("Unrecognized args");
@@ -399,6 +433,11 @@ internal static class ArgumentParser
             if (currentArgs.Equals("--confirm") || currentArgs.Equals("-y"))
             {
                 command.ConfirmDelete = true;
+                index++;
+            }
+            else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
+            {
+                command.ShowHelp = true;
                 index++;
             }
             else
@@ -433,6 +472,11 @@ internal static class ArgumentParser
             {
                 command.Skip = int.Parse(args[index + 1]);
                 index += 2;
+            }
+            else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
+            {
+                command.ShowHelp = true;
+                index++;
             }
             else
             {
@@ -473,6 +517,7 @@ internal static class ArgumentParser
     {
         var index = 1;
 
+        // TODO: Try to make the first argument unnecessary for help command.
         var command = new SearchLinkCommandArguments
         {
             Keyword = args[index++],
@@ -500,6 +545,11 @@ internal static class ArgumentParser
             else if (currentArgs.Equals("--tags") || currentArgs.Equals("-t"))
             {
                 command.Tags = true;
+                index++;
+            }
+            else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
+            {
+                command.ShowHelp = true;
                 index++;
             }
             else
@@ -569,6 +619,11 @@ internal static class ArgumentParser
                 command.ModifiedAt = true;
                 index++;
             }
+            else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
+            {
+                command.ShowHelp = true;
+                index++;
+            }
             else
             {
                 throw new ArgumentException("Unrecognized args");
@@ -611,6 +666,11 @@ internal static class ArgumentParser
                 command.Links = true;
                 index++;
             }
+            else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
+            {
+                command.ShowHelp = true;
+                index++;
+            }
             else
             {
                 throw new ArgumentException("Unrecognized args");
@@ -639,6 +699,11 @@ internal static class ArgumentParser
             {
                 command.Path = args[index + 1];
                 index += 2;
+            }
+            else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
+            {
+                command.ShowHelp = true;
+                index++;
             }
             else
             {

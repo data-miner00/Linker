@@ -5,9 +5,6 @@ using Linker.Cli.Core;
 using Linker.Cli.Integrations;
 using Linker.Common.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 internal sealed class DeleteLinkCommandHandler : ICommandHandler
@@ -23,9 +20,24 @@ internal sealed class DeleteLinkCommandHandler : ICommandHandler
     {
         if (commandArguments is DeleteLinkCommandArguments args)
         {
+            if (args.ShowHelp)
+            {
+                Console.WriteLine("Usage: linker delete <link-id> [options]");
+                Console.WriteLine("Options:");
+                Console.WriteLine("  --confirm           Confirm the deletion.");
+                Console.WriteLine("  --help              Show this help message.");
+                return;
+            }
+
             if (!args.ConfirmDelete)
             {
                 var linkToDelete = await this.repository.GetByIdAsync(args.Id);
+
+                if (linkToDelete is null)
+                {
+                    Console.WriteLine($"Link with ID {args.Id} not found.");
+                    return;
+                }
 
                 Console.Write($"Confirm delete {linkToDelete.Url}? [y/N]: ");
                 var response = Console.ReadLine();

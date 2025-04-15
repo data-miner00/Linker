@@ -27,4 +27,9 @@ internal sealed class SearchLinkCommandArguments
     /// Gets or sets a value indicating whether to scope the search to the tags.
     /// </summary>
     public bool Tags { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to show the help message and exit.
+    /// </summary>
+    public bool ShowHelp { get; set; }
 }
