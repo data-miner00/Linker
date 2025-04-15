@@ -2,7 +2,7 @@
   "profiles": {
     "Linker.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "show -t 0 -h"
+      "commandLineArgs": "get 1 --url -n"
     }
   }
 }

@@ -572,7 +572,7 @@ internal static class ArgumentParser
 
         while (index < args.Length)
         {
-            var currentArgs = args[index++];
+            var currentArgs = args[index];
 
             if (!currentArgs.StartsWith('-'))
             {
