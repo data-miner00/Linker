@@ -5,22 +5,29 @@ using Linker.Cli.Core;
 using Linker.Cli.Integrations;
 using Linker.Common.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
+/// <summary>
+/// The delete list command handler.
+/// </summary>
 internal sealed class DeleteListCommandHandler : ICommandHandler
 {
     private readonly IRepository<UrlList> repository;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DeleteListCommandHandler"/> class.
+    /// </summary>
+    /// <param name="repository">The url list repository.</param>
     public DeleteListCommandHandler(IRepository<UrlList> repository)
     {
         this.repository = Guard.ThrowIfNull(repository);
     }
 
+    /// <inheritdoc/>
     public async Task HandleAsync(object commandArguments)
     {
+        Guard.ThrowIfNull(commandArguments);
+
         if (commandArguments is DeleteListCommandArguments args)
         {
             if (args.ShowHelp)
@@ -33,6 +40,13 @@ internal sealed class DeleteListCommandHandler : ICommandHandler
             }
 
             var listToDelete = await this.repository.GetByIdAsync(args.Id);
+
+            if (listToDelete is null)
+            {
+                Console.WriteLine($"List with ID '{args.Id}' does not exist.");
+                Environment.ExitCode = 1;
+                return;
+            }
 
             if (!args.ConfirmDelete)
             {

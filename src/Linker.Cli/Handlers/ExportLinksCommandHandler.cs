@@ -8,6 +8,9 @@ using Linker.Common.Helpers;
 using System;
 using System.Threading.Tasks;
 
+/// <summary>
+/// The command handler for exporting links.
+/// </summary>
 internal sealed class ExportLinksCommandHandler : ICommandHandler
 {
 #if DEBUG
@@ -18,6 +21,11 @@ internal sealed class ExportLinksCommandHandler : ICommandHandler
     private readonly IRepository<Link> repository;
     private readonly ISerializer<Link> serializer;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExportLinksCommandHandler"/> class.
+    /// </summary>
+    /// <param name="repository">The link repository.</param>
+    /// <param name="serializer">The link serializer.</param>
     public ExportLinksCommandHandler(IRepository<Link> repository, ISerializer<Link> serializer)
     {
         this.repository = Guard.ThrowIfNull(repository);
@@ -27,6 +35,8 @@ internal sealed class ExportLinksCommandHandler : ICommandHandler
     /// <inheritdoc/>
     public async Task HandleAsync(object commandArguments)
     {
+        Guard.ThrowIfNull(commandArguments);
+
         if (commandArguments is ExportLinksCommandArgument args)
         {
             if (args.ShowHelp)

@@ -26,6 +26,8 @@ internal sealed class GetLinkCommandHandler : ICommandHandler
     /// <inheritdoc/>
     public async Task HandleAsync(object commandArguments)
     {
+        Guard.ThrowIfNull(commandArguments);
+
         if (commandArguments is GetLinkCommandArguments args)
         {
             if (args.ShowHelp)

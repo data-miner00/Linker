@@ -28,6 +28,8 @@ internal sealed class AddLinkCommandHandler : ICommandHandler
     /// <inheritdoc/>
     public async Task HandleAsync(object commandArguments)
     {
+        Guard.ThrowIfNull(commandArguments);
+
         if (commandArguments is AddLinkCommandArguments args)
         {
             if (args.ShowHelp)

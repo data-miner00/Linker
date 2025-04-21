@@ -7,17 +7,27 @@ using Linker.Common.Helpers;
 using System;
 using System.Threading.Tasks;
 
+/// <summary>
+/// The command handler for deleting a link.
+/// </summary>
 internal sealed class DeleteLinkCommandHandler : ICommandHandler
 {
     private readonly IRepository<Link> repository;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DeleteLinkCommandHandler"/> class.
+    /// </summary>
+    /// <param name="repository">The link repository.</param>
     public DeleteLinkCommandHandler(IRepository<Link> repository)
     {
         this.repository = Guard.ThrowIfNull(repository);
     }
 
+    /// <inheritdoc/>
     public async Task HandleAsync(object commandArguments)
     {
+        Guard.ThrowIfNull(commandArguments);
+
         if (commandArguments is DeleteLinkCommandArguments args)
         {
             if (args.ShowHelp)

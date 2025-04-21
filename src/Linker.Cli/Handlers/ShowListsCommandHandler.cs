@@ -28,6 +28,8 @@ internal sealed class ShowListsCommandHandler : ICommandHandler
     /// <inheritdoc/>
     public async Task HandleAsync(object commandArguments)
     {
+        Guard.ThrowIfNull(commandArguments);
+
         if (commandArguments is ShowListsCommandArguments args)
         {
             if (args.ShowHelp)

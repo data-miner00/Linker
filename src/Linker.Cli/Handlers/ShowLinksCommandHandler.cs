@@ -27,6 +27,8 @@ internal sealed class ShowLinksCommandHandler : ICommandHandler
     /// <inheritdoc/>
     public async Task HandleAsync(object commandArguments)
     {
+        Guard.ThrowIfNull(commandArguments);
+
         if (commandArguments is ShowLinksCommandArguments args)
         {
             if (args.ShowHelp)

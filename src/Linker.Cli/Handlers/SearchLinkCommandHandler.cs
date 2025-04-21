@@ -28,6 +28,8 @@ internal sealed class SearchLinkCommandHandler : ICommandHandler
     /// <inheritdoc/>
     public async Task HandleAsync(object commandArguments)
     {
+        Guard.ThrowIfNull(commandArguments);
+
         if (commandArguments is SearchLinkCommandArguments args)
         {
             if (args.ShowHelp)

@@ -5,22 +5,29 @@ using Linker.Cli.Core;
 using Linker.Cli.Integrations;
 using Linker.Common.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
+/// <summary>
+/// The command handler for creating a new list.
+/// </summary>
 internal sealed class CreateListCommandHandler : ICommandHandler
 {
     private readonly IRepository<UrlList> repository;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CreateListCommandHandler"/> class.
+    /// </summary>
+    /// <param name="repository">The url list repository.</param>
     public CreateListCommandHandler(IRepository<UrlList> repository)
     {
         this.repository = Guard.ThrowIfNull(repository);
     }
 
+    /// <inheritdoc/>
     public async Task HandleAsync(object commandArguments)
     {
+        Guard.ThrowIfNull(commandArguments);
+
         if (commandArguments is CreateListCommandArguments args)
         {
             if (args.ShowHelp)
@@ -44,6 +51,6 @@ internal sealed class CreateListCommandHandler : ICommandHandler
             return;
         }
 
-        throw new NotImplementedException();
+        throw new ArgumentException("Invalid arguments.");
     }
 }

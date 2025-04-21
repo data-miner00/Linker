@@ -8,17 +8,27 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
+/// <summary>
+/// The command handler for updating a link.
+/// </summary>
 internal sealed class UpdateLinkCommandHandler : ICommandHandler
 {
     private readonly IRepository<Link> repository;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UpdateLinkCommandHandler"/> class.
+    /// </summary>
+    /// <param name="repository">The link repository.</param>
     public UpdateLinkCommandHandler(IRepository<Link> repository)
     {
         this.repository = Guard.ThrowIfNull(repository);
     }
 
+    /// <inheritdoc/>
     public async Task HandleAsync(object commandArguments)
     {
+        Guard.ThrowIfNull(commandArguments);
+
         if (commandArguments is UpdateLinkCommandArguments args)
         {
             if (args.ShowHelp)
@@ -39,7 +49,8 @@ internal sealed class UpdateLinkCommandHandler : ICommandHandler
                 return;
             }
 
-            var original = await this.repository.GetByIdAsync(args.Id);
+            var original = await this.repository.GetByIdAsync(args.Id)
+                ?? throw new InvalidOperationException($"The link with ID '{args.Id}' cannot be found.");
 
             if (args.Url is not null)
             {
@@ -108,6 +119,6 @@ internal sealed class UpdateLinkCommandHandler : ICommandHandler
             return;
         }
 
-        throw new ArgumentException("What the");
+        throw new ArgumentException("Invalid args");
     }
 }

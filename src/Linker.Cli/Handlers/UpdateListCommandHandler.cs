@@ -5,22 +5,29 @@ using Linker.Cli.Core;
 using Linker.Cli.Integrations;
 using Linker.Common.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
+/// <summary>
+/// The command handler for updating a list.
+/// </summary>
 internal sealed class UpdateListCommandHandler : ICommandHandler
 {
     private readonly IRepository<UrlList> repository;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UpdateListCommandHandler"/> class.
+    /// </summary>
+    /// <param name="repository">The url list repository.</param>
     public UpdateListCommandHandler(IRepository<UrlList> repository)
     {
         this.repository = Guard.ThrowIfNull(repository);
     }
 
+    /// <inheritdoc/>
     public async Task HandleAsync(object commandArguments)
     {
+        Guard.ThrowIfNull(commandArguments);
+
         if (commandArguments is UpdateListCommandArguments args)
         {
             if (args.ShowHelp)
@@ -37,7 +44,8 @@ internal sealed class UpdateListCommandHandler : ICommandHandler
 
             if (originalList == null)
             {
-                Console.WriteLine($"The list with ID {args.Id} cannot be found.");
+                Console.WriteLine($"The list with ID '{args.Id}' cannot be found.");
+                Environment.ExitCode = 1;
                 return;
             }
 

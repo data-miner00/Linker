@@ -31,6 +31,8 @@ internal sealed class VisitLinkCommandHandler : ICommandHandler
     /// <inheritdoc/>
     public async Task HandleAsync(object commandArguments)
     {
+        Guard.ThrowIfNull(commandArguments);
+
         if (commandArguments is VisitLinkCommandArguments args)
         {
             if (args.ShowHelp)
@@ -97,7 +99,7 @@ internal sealed class VisitLinkCommandHandler : ICommandHandler
 
         if (linkToVisit is null)
         {
-            throw new InvalidOperationException("The link to be visited is null.");
+            throw new InvalidOperationException("The link does not exist.");
         }
 
         return linkToVisit;

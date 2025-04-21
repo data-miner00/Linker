@@ -7,17 +7,27 @@ using Linker.Common.Helpers;
 using System;
 using System.Threading.Tasks;
 
+/// <summary>
+/// The command handler for getting a list.
+/// </summary>
 internal sealed class GetListCommandHandler : ICommandHandler
 {
     private readonly IRepository<UrlList> repository;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GetListCommandHandler"/> class.
+    /// </summary>
+    /// <param name="repository">The url list repository.</param>
     public GetListCommandHandler(IRepository<UrlList> repository)
     {
         this.repository = Guard.ThrowIfNull(repository);
     }
 
+    /// <inheritdoc/>
     public async Task HandleAsync(object commandArguments)
     {
+        Guard.ThrowIfNull(commandArguments);
+
         if (commandArguments is GetListCommandArguments args)
         {
             Guard.ThrowIfValidationFailed(args);
@@ -33,13 +43,8 @@ internal sealed class GetListCommandHandler : ICommandHandler
                 return;
             }
 
-            var list = await this.repository.GetByIdAsync(args.Id);
-
-            if (list == null)
-            {
-                Console.WriteLine($"The link with ID {args.Id} cannot be found.");
-                return;
-            }
+            var list = await this.repository.GetByIdAsync(args.Id)
+                ?? throw new InvalidOperationException($"The link with ID '{args.Id}' cannot be found.");
 
             bool[] flags = [
                 args.Links,
