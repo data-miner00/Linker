@@ -2,7 +2,7 @@
   "profiles": {
     "Linker.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "add https;// -n Some -t \"hello,ted\" -l ko"
+      "commandLineArgs": "list show"
     }
   }
 }

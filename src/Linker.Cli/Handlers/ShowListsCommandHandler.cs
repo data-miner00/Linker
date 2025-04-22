@@ -5,6 +5,7 @@ using Linker.Cli.Core;
 using Linker.Cli.Integrations;
 using Linker.Common.Extensions;
 using Linker.Common.Helpers;
+using Spectre.Console;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,13 +47,22 @@ internal sealed class ShowListsCommandHandler : ICommandHandler
 
             if (lists.Any())
             {
+                var table = new Table();
+                table.AddColumn("No.");
+                table.AddColumn("ID");
+                table.AddColumn("Name");
+                table.AddColumn("Description");
+                table.AddColumn("Created At");
+
                 foreach (var (link, index) in lists
                     .SkipOrAll(args.Skip)
                     .TakeOrAll(args.Top)
                     .WithIndex())
                 {
-                    Console.WriteLine($"{index + 1}. {link.Name} - {link.Description}");
+                    table.AddRow($"{index + 1}", $"{link.Id}", link.Name, link.Description ?? "-", link.CreatedAt.ToString());
                 }
+
+                AnsiConsole.Write(table);
             }
             else
             {

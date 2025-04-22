@@ -4,6 +4,7 @@ using Linker.Cli.Commands;
 using Linker.Cli.Integrations;
 using Linker.Common.Extensions;
 using Linker.Common.Helpers;
+using Spectre.Console;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -45,13 +46,22 @@ internal sealed class ShowLinksCommandHandler : ICommandHandler
 
             if (links.Any())
             {
+                var table = new Table();
+                table.AddColumn("No.");
+                table.AddColumn("ID");
+                table.AddColumn("URL");
+                table.AddColumn("Name");
+                table.AddColumn("Tags");
+
                 foreach (var (link, index) in links
                     .Reverse()
                     .TakeOrAll(args.Top)
                     .WithIndex())
                 {
-                    Console.WriteLine($"{index + 1}. {link.Url} - {link.Name}");
+                    table.AddRow($"{index + 1}", $"{link.Id}", link.Url, link.Name ?? "-", link.Tags ?? "-");
                 }
+
+                AnsiConsole.Write(table);
             }
             else
             {
