@@ -60,6 +60,8 @@ internal sealed class DeleteLinkCommandHandler : ICommandHandler
             }
 
             await this.repository.RemoveAsync(args.Id);
+
+            return;
         }
 
         throw new ArgumentException("Invalid args");
