@@ -5,6 +5,7 @@ using Linker.Cli.Core;
 using Linker.Cli.Integrations;
 using Linker.Common.Extensions;
 using Linker.Common.Helpers;
+using Spectre.Console;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,7 +40,7 @@ internal sealed class SearchLinkCommandHandler : ICommandHandler
                 Console.WriteLine("  --tags              Search by tags.");
                 Console.WriteLine("  --skip <number>     The number of links to skip.");
                 Console.WriteLine("  --top <number>      The number of links to show.");
-                Console.WriteLine("  --help             Show this help message.");
+                Console.WriteLine("  --help              Show this help message.");
                 return;
             }
 
@@ -63,13 +64,20 @@ internal sealed class SearchLinkCommandHandler : ICommandHandler
                 return;
             }
 
+            Console.WriteLine();
+
+            var table = new Table();
+            table.AddColumns("No.", "ID", "URL", "Name", "Tags", "Created At");
+
             foreach (var (link, index) in links
                 .SkipOrAll(args.Skip)
                 .TakeOrAll(args.Top)
                 .WithIndex())
             {
-                Console.WriteLine($"{index + 1}. [{link.Id}] {link.Url} - {link.Name}");
+                table.AddRow($"{index + 1}", $"{link.Id}", link.Url, link.Name ?? "-", link.Tags ?? "-", link.CreatedAt.ToString());
             }
+
+            AnsiConsole.Write(table);
 
             return;
         }

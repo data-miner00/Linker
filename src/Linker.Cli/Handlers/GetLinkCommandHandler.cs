@@ -4,6 +4,7 @@ using Linker.Cli.Commands;
 using Linker.Cli.Core;
 using Linker.Cli.Integrations;
 using Linker.Common.Helpers;
+using Spectre.Console;
 using System;
 using System.Threading.Tasks;
 
@@ -50,7 +51,7 @@ internal sealed class GetLinkCommandHandler : ICommandHandler
 
             if (link == null)
             {
-                Console.WriteLine($"The link with ID {args.Id} cannot be found.");
+                AnsiConsole.MarkupLine($"[red]The link with ID {args.Id} cannot be found.[/]");
                 return;
             }
 
@@ -67,45 +68,50 @@ internal sealed class GetLinkCommandHandler : ICommandHandler
 
             var isFlagsProvided = Array.Exists(flags, x => x);
 
+            var table = new Table();
+            table.AddColumns("Property", "Value");
+
             if (!isFlagsProvided || args.Url)
             {
-                Console.WriteLine("Url: " + link.Url);
+                table.AddRow(new Markup("[bold]Url[/]"), new Text(link.Url));
             }
 
             if (!isFlagsProvided || args.Name)
             {
-                Console.WriteLine("Name: " + link.Name);
+                table.AddRow("Name", link.Name ?? "-");
             }
 
             if (!isFlagsProvided || args.Description)
             {
-                Console.WriteLine("Description: " + link.Description);
+                table.AddRow("Description", link.Description ?? "-");
             }
 
             if (!isFlagsProvided || args.WatchLater)
             {
-                Console.WriteLine("Watch Later: " + link.WatchLater.ToString());
+                table.AddRow("Watch Later", link.WatchLater.ToString());
             }
 
             if (!isFlagsProvided || args.Tags)
             {
-                Console.WriteLine("Tags: " + link.Tags);
+                table.AddRow("Tags", link.Tags ?? "-");
             }
 
             if (!isFlagsProvided || args.Language)
             {
-                Console.WriteLine("Language: " + link.Language);
+                table.AddRow("Language", link.Language ?? "-");
             }
 
             if (!isFlagsProvided || args.CreatedAt)
             {
-                Console.WriteLine("Created at: " + link.CreatedAt);
+                table.AddRow("Created at", link.CreatedAt.ToString());
             }
 
             if (!isFlagsProvided || args.ModifiedAt)
             {
-                Console.WriteLine("Modified at: " + link.ModifiedAt);
+                table.AddRow("Modified at", link.ModifiedAt.ToString());
             }
+
+            AnsiConsole.Write(table);
 
             return;
         }
