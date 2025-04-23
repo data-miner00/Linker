@@ -4,6 +4,7 @@ using Linker.Cli.Commands;
 using Linker.Cli.Core;
 using Linker.Cli.Integrations;
 using Linker.Common.Helpers;
+using Spectre.Console;
 using System;
 using System.Threading.Tasks;
 
@@ -44,7 +45,7 @@ internal sealed class UpdateListCommandHandler : ICommandHandler
 
             if (originalList == null)
             {
-                Console.WriteLine($"The list with ID '{args.Id}' cannot be found.");
+                AnsiConsole.MarkupLine($"[red]The list with ID '{args.Id}' cannot be found.[/]");
                 Environment.ExitCode = 1;
                 return;
             }

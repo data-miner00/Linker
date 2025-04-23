@@ -3,6 +3,7 @@
 using Linker.Cli.Commands;
 using Linker.Cli.Handlers;
 using Linker.Common.Helpers;
+using Spectre.Console;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -57,7 +58,7 @@ internal sealed class Application
         }
         catch (KeyNotFoundException ex) when (ex.Message.StartsWith("The given key"))
         {
-            Console.Error.WriteLine($"The command could not be found.");
+            AnsiConsole.MarkupLine($"[red]The command could not be found.[/]");
             DisplayHelpMessage();
 
             return FAILURE_CODE;
@@ -65,9 +66,9 @@ internal sealed class Application
         catch (Exception ex)
         {
 #if DEBUG
-            Console.Error.WriteLine(ex.ToString());
+            AnsiConsole.WriteException(ex);
 #else
-            Console.Error.WriteLine(ex.Message);
+            AnsiConsole.MarkupLine($"[red]{ex.Message}[/]");
 #endif
             return FAILURE_CODE;
         }
@@ -75,7 +76,7 @@ internal sealed class Application
         finally
         {
             stopwatch.Stop();
-            Console.WriteLine("Time taken: {0}ms", stopwatch.ElapsedMilliseconds);
+            AnsiConsole.MarkupLine("Time taken: [green]{0}ms[/]", stopwatch.ElapsedMilliseconds);
         }
 #endif
     }

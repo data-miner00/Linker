@@ -19,4 +19,9 @@ internal class ShowLinksCommandArguments
     /// Gets or sets a value indicating whether to show the help message and exit.
     /// </summary>
     public bool ShowHelp { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to show all links.
+    /// </summary>
+    public bool All { get; set; }
 }

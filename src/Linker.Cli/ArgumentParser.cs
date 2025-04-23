@@ -164,6 +164,11 @@ internal static class ArgumentParser
                 command.ShowHelp = true;
                 index++;
             }
+            else if (currentArgs.Equals("--all") || currentArgs.Equals("-a"))
+            {
+                command.All = true;
+                index++;
+            }
             else
             {
                 throw new ArgumentException("Unrecognized args");

@@ -52,13 +52,14 @@ internal sealed class ShowLinksCommandHandler : ICommandHandler
                 table.AddColumn("URL");
                 table.AddColumn("Name");
                 table.AddColumn("Tags");
+                table.AddColumn("Created At");
 
                 foreach (var (link, index) in links
                     .Reverse()
-                    .TakeOrAll(args.Top)
+                    .TakeOrAll(args.All ? null : args.Top)
                     .WithIndex())
                 {
-                    table.AddRow($"{index + 1}", $"{link.Id}", link.Url, link.Name ?? "-", link.Tags ?? "-");
+                    table.AddRow($"{index + 1}", $"{link.Id}", link.Url, link.Name ?? "-", link.Tags ?? "-", link.CreatedAt.ToString());
                 }
 
                 AnsiConsole.Write(table);

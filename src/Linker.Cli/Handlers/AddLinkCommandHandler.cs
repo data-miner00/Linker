@@ -4,6 +4,7 @@ using Linker.Cli.Commands;
 using Linker.Cli.Core;
 using Linker.Cli.Integrations;
 using Linker.Common.Helpers;
+using Spectre.Console;
 using System;
 using System.Threading.Tasks;
 
@@ -53,7 +54,7 @@ internal sealed class AddLinkCommandHandler : ICommandHandler
             {
                 if (ex.InnerException is not null && ex.InnerException.Message.Contains(UniqueConstraintFailedMessage))
                 {
-                    Console.Error.WriteLine("The URL already exists. Please add a new one.");
+                    AnsiConsole.MarkupLine("[red]The URL already exists. URL must be unique.[/]");
                     Environment.ExitCode = 1;
                     return;
                 }

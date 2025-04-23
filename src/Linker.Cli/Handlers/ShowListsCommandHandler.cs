@@ -54,12 +54,12 @@ internal sealed class ShowListsCommandHandler : ICommandHandler
                 table.AddColumn("Description");
                 table.AddColumn("Created At");
 
-                foreach (var (link, index) in lists
+                foreach (var (list, index) in lists
                     .SkipOrAll(args.Skip)
                     .TakeOrAll(args.Top)
                     .WithIndex())
                 {
-                    table.AddRow($"{index + 1}", $"{link.Id}", link.Name, link.Description ?? "-", link.CreatedAt.ToString());
+                    table.AddRow($"{index + 1}", $"{list.Id}", list.Name, list.Description ?? "-", list.CreatedAt.ToString());
                 }
 
                 AnsiConsole.Write(table);
