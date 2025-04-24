@@ -3,7 +3,9 @@
 using Linker.Cli.Commands;
 using Linker.Cli.Core;
 using Linker.Cli.Integrations;
+using Linker.Common.Extensions;
 using Linker.Common.Helpers;
+using Spectre.Console;
 using System;
 using System.Threading.Tasks;
 
@@ -54,25 +56,45 @@ internal sealed class GetListCommandHandler : ICommandHandler
 
             var isFlagsProvided = Array.Exists(flags, x => x);
 
+            var grid = new Grid();
+
+            grid.AddColumn(new GridColumn());
             if (!isFlagsProvided || args.Name)
             {
-                Console.WriteLine("Name: " + list.Name);
+                var panel = new Panel(new Text(list.Name).Centered());
+                panel.Expand = true;
+                panel.Border = BoxBorder.Double;
+
+                grid.AddRow(panel);
             }
 
-            if (!isFlagsProvided || args.Description)
+            if ((!isFlagsProvided || args.Description) && list.Description != null)
             {
-                Console.WriteLine("Description: " + list.Description);
+                var panel = new Panel(new Text(list.Description).Centered());
+                panel.Expand = true;
+
+                grid.AddRow(panel);
             }
 
             if (!isFlagsProvided || args.Links)
             {
-                Console.WriteLine("Links:");
+                var table = new Table();
+                table.AddColumn("No.");
+                table.AddColumn("ID");
+                table.AddColumn("URL");
+                table.AddColumn("Name");
+                table.AddColumn("Tags");
+                table.AddColumn("Created At");
 
-                foreach (var link in list.Links)
+                foreach (var (link, index) in list.Links.WithIndex())
                 {
-                    Console.WriteLine($"{link.Id}. {link.Url} - {link.Name}");
+                    table.AddRow($"{index + 1}", $"{link.Id}", link.Url, link.Name ?? "-", link.Tags ?? "-", link.CreatedAt.ToString());
                 }
+
+                grid.AddRow(table);
             }
+
+            AnsiConsole.Write(grid);
 
             return;
         }
