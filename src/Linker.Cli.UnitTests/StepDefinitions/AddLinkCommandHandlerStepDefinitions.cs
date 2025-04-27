@@ -4,22 +4,20 @@ using Linker.Cli.Handlers;
 using Linker.Cli.Integrations;
 using Linker.Cli.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Linker.TestCore;
 using Moq;
 using Linker.Cli.Commands;
-using Xunit.Sdk;
 using Microsoft.Data.Sqlite;
 
 [Binding]
+[Scope(Feature = "AddLinkCommandHandler")]
 internal class AddLinkCommandHandlerStepDefinitions : BaseSteps<AddLinkCommandHandlerStepDefinitions>
 {
+    private readonly Mock<IRepository<Link>> mockRepository;
+    private readonly AddLinkCommandHandler commandHandler;
+
     private IRepository<Link>? repository;
-    private Mock<IRepository<Link>> mockRepository;
-    private AddLinkCommandHandler commandHandler;
     private object? commandArguments;
 
     public AddLinkCommandHandlerStepDefinitions()
