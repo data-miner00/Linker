@@ -39,16 +39,16 @@ internal sealed class DeleteLinkCommandHandler : ICommandHandler
                 return;
             }
 
+            var linkToDelete = await this.repository.GetByIdAsync(args.Id);
+
+            if (linkToDelete is null)
+            {
+                Console.WriteLine($"Link with ID {args.Id} not found.");
+                return;
+            }
+
             if (!args.ConfirmDelete)
             {
-                var linkToDelete = await this.repository.GetByIdAsync(args.Id);
-
-                if (linkToDelete is null)
-                {
-                    Console.WriteLine($"Link with ID {args.Id} not found.");
-                    return;
-                }
-
                 Console.Write($"Confirm delete {linkToDelete.Url}? [y/N]: ");
                 var response = Console.ReadLine();
 
