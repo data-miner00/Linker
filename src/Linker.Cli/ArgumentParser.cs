@@ -261,7 +261,7 @@ internal static class ArgumentParser
 
     private static DeleteLinkCommandArguments ParseDeleteLinkCommand(string[] args)
     {
-        var index = 2;
+        var index = 1;
         var command = new DeleteLinkCommandArguments
         {
             Id = int.Parse(args[index++]),
