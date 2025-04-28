@@ -9,6 +9,8 @@ using Linker.TestCore;
 using Moq;
 using Linker.Cli.Commands;
 using Microsoft.Data.Sqlite;
+using TechTalk.SpecFlow.Assist;
+using Linker.Cli.UnitTests.Support;
 
 [Binding]
 [Scope(Feature = "AddLinkCommandHandler")]
@@ -24,6 +26,13 @@ internal class AddLinkCommandHandlerStepDefinitions : BaseSteps<AddLinkCommandHa
     {
         this.mockRepository = new Mock<IRepository<Link>>();
         this.commandHandler = new AddLinkCommandHandler(this.mockRepository.Object);
+    }
+
+    [BeforeScenario]
+    public void BeforeScenario()
+    {
+        Service.Instance.ValueRetrievers.Unregister<TechTalk.SpecFlow.Assist.ValueRetrievers.StringValueRetriever>();
+        Service.Instance.ValueRetrievers.Register(new StringValueRetriver());
     }
 
     [Given("the repository is null")]
@@ -82,6 +91,13 @@ internal class AddLinkCommandHandlerStepDefinitions : BaseSteps<AddLinkCommandHa
         this.mockRepository
             .Setup(x => x.AddAsync(It.IsAny<Link>()))
             .ThrowsAsync(exception);
+    }
+
+    [Given("I have the command argument")]
+    public void GivenIHaveTheCommandArgument(Table values)
+    {
+        var arguments = values.CreateInstance<AddLinkCommandArguments>();
+        this.commandArguments = arguments;
     }
 
     [When("I instantiate the AddLinkCommandHandler")]

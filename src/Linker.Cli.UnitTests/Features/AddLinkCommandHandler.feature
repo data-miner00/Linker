@@ -51,3 +51,10 @@ Scenario: Uncaught exception occurred
 	Then I should expect AddAsync to be called with command with url "https://google.com"
 	And I should expect SqliteException to be thrown
 
+@handle @repository
+Scenario: Valid command argument link added
+    Given I have the command argument
+	| Url | Name | Description | WatchLater | Tags | Language | ShowHelp |
+	| https://google.com | Google | | true       | google,search | C#       | false    |
+	When I handle the command arguments
+	Then I should expect AddAsync to be called with command with url "https://google.com"

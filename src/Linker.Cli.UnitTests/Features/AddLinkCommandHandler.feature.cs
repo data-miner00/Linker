@@ -414,6 +414,67 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
+        [Xunit.SkippableFactAttribute(DisplayName="Valid command argument link added")]
+        [Xunit.TraitAttribute("FeatureTitle", "AddLinkCommandHandler")]
+        [Xunit.TraitAttribute("Description", "Valid command argument link added")]
+        [Xunit.TraitAttribute("Category", "handle")]
+        [Xunit.TraitAttribute("Category", "repository")]
+        public virtual void ValidCommandArgumentLinkAdded()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "handle",
+                    "repository"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Valid command argument link added", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 55
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+                TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Url",
+                            "Name",
+                            "Description",
+                            "WatchLater",
+                            "Tags",
+                            "Language",
+                            "ShowHelp"});
+                table1.AddRow(new string[] {
+                            "https://google.com",
+                            "Google",
+                            "",
+                            "true",
+                            "google,search",
+                            "C#",
+                            "false"});
+#line 56
+    testRunner.Given("I have the command argument", ((string)(null)), table1, "Given ");
+#line hidden
+#line 59
+ testRunner.When("I handle the command arguments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 60
+ testRunner.Then("I should expect AddAsync to be called with command with url \"https://google.com\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
         [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.9.0.0")]
         [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
         public class FixtureData : System.IDisposable

@@ -7,13 +7,13 @@ Link to a feature: [Calculator](Linker.Cli.UnitTests/Features/Calculator.feature
 
 @mytag
 Scenario: Add two numbers
-	Given the first number is 50
-	And the second number is 70
+	Given the first number is <first>
+	And the second number is <second>
 	When the two numbers are added
-	Then the result should be 120
+	Then the result should be <total>
 
-Scenario: Add two numbers 2
-	Given the first number is 23
-	And the second number is 49
-	When the two numbers are added
-	Then the result should be 72
+Examples:
+	| first | second | total |
+	| 2     | 3      | 5     |
+	| 4     | 5      | 9     |
+	| 23    | 49     | 72    |
