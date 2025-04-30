@@ -457,7 +457,7 @@ this.ScenarioInitialize(scenarioInfo);
                 table1.AddRow(new string[] {
                             "https://google.com",
                             "Google",
-                            "",
+                            "null",
                             "true",
                             "google,search",
                             "C#",
