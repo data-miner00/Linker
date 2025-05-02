@@ -38,7 +38,8 @@ internal sealed class ShowLinksCommandHandler : ICommandHandler
                 Console.WriteLine("Options:");
                 Console.WriteLine("  --watch-later        Show watch later links.");
                 Console.WriteLine("  --top <number>       The number of links to show.");
-                Console.WriteLine("  --help              Show this help message.");
+                Console.WriteLine("  --all                Show all links.");
+                Console.WriteLine("  --help               Show this help message.");
                 return;
             }
 

@@ -31,7 +31,7 @@ public sealed class CsvSerializer<T> : ISerializer<T>
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Error: {0}", ex.Message);
+            Console.Error.WriteLine("Error: {0}", ex.Message);
             return string.Empty;
         }
     }

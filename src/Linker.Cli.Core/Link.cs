@@ -1,5 +1,7 @@
 ﻿namespace Linker.Cli.Core;
 
+using System.Text.Json.Serialization;
+
 public class Link
 {
     public int Id { get; set; }
@@ -20,7 +22,9 @@ public class Link
 
     public DateTime ModifiedAt { get; set; }
 
+    [JsonIgnore]
     public ICollection<UrlList> Lists { get; set; } = [];
 
+    [JsonIgnore]
     public ICollection<Visit> Visits { get; set; } = [];
 }

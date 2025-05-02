@@ -66,9 +66,15 @@ internal static class ContainerConfig
 
     private static ContainerBuilder RegisterSerializers(this ContainerBuilder builder)
     {
+        var serializers = new Dictionary<ExportFormat, Lazy<ISerializer<Link>>>
+        {
+            { ExportFormat.Csv, new Lazy<ISerializer<Link>>(() => new CsvSerializer<Link>()) },
+            { ExportFormat.Json, new Lazy<ISerializer<Link>>(() => new JsonSerializer<Link>()) },
+        };
+
         builder
-            .RegisterType<CsvSerializer<Link>>()
-            .As<ISerializer<Link>>()
+            .Register(ctx => serializers)
+            .As<IDictionary<ExportFormat, Lazy<ISerializer<Link>>>>()
             .SingleInstance();
 
         return builder;
@@ -81,7 +87,7 @@ internal static class ContainerConfig
             var listRepo = ctx.Resolve<IRepository<UrlList>>();
             var linkRepo = ctx.Resolve<IRepository<Link>>();
             var interfaceLinkRepo = ctx.Resolve<ILinkRepository>();
-            var serializer = ctx.Resolve<ISerializer<Link>>();
+            var serializers = ctx.Resolve<IDictionary<ExportFormat, Lazy<ISerializer<Link>>>>();
             var visitRepo = ctx.Resolve<IRepository<Visit>>();
             var dbContext = ctx.Resolve<AppDbContext>();
 
@@ -101,7 +107,7 @@ internal static class ContainerConfig
                 { CommandType.SearchLinks, new Lazy<ICommandHandler>(() => new SearchLinkCommandHandler(linkRepo)) },
                 { CommandType.GetLink, new Lazy<ICommandHandler>(() => new GetLinkCommandHandler(linkRepo)) },
                 { CommandType.GetList, new Lazy<ICommandHandler>(() => new GetListCommandHandler(listRepo)) },
-                { CommandType.ExportLinks, new Lazy<ICommandHandler>(() => new ExportLinksCommandHandler(linkRepo, serializer)) },
+                { CommandType.ExportLinks, new Lazy<ICommandHandler>(() => new ExportLinksCommandHandler(linkRepo, serializers)) },
             };
 
             return commandHandlers;

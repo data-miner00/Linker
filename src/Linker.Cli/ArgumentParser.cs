@@ -705,6 +705,16 @@ internal static class ArgumentParser
                 command.Path = args[index + 1];
                 index += 2;
             }
+            else if (currentArgs.Equals("--format") || currentArgs.Equals("-f"))
+            {
+                if (!Enum.TryParse<ExportFormat>(args[index + 1], true, out var format))
+                {
+                    throw new ArgumentException("Invalid format provided. Supported formats are csv and json.");
+                }
+
+                command.Format = format;
+                index += 2;
+            }
             else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
             {
                 command.ShowHelp = true;
