@@ -2,7 +2,7 @@
   "profiles": {
     "Linker.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "export -p \"D:/my.json\" -f json"
+      "commandLineArgs": "search goo -v"
     }
   }
 }

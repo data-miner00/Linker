@@ -557,6 +557,11 @@ internal static class ArgumentParser
                 command.ShowHelp = true;
                 index++;
             }
+            else if (currentArgs.Equals("--visit") || currentArgs.Equals("-v"))
+            {
+                command.Visit = true;
+                index++;
+            }
             else
             {
                 throw new ArgumentException("Unrecognized args");

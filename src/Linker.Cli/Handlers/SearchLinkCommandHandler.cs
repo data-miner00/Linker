@@ -7,6 +7,7 @@ using Linker.Common.Extensions;
 using Linker.Common.Helpers;
 using Spectre.Console;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,14 +17,17 @@ using System.Threading.Tasks;
 internal sealed class SearchLinkCommandHandler : ICommandHandler
 {
     private readonly IRepository<Link> repository;
+    private readonly IRepository<Visit> visitRepository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchLinkCommandHandler"/> class.
     /// </summary>
     /// <param name="repository">The link repository.</param>
-    public SearchLinkCommandHandler(IRepository<Link> repository)
+    /// <param name="visitRepository">The visit repository.</param>
+    public SearchLinkCommandHandler(IRepository<Link> repository, IRepository<Visit> visitRepository)
     {
         this.repository = Guard.ThrowIfNull(repository);
+        this.visitRepository = Guard.ThrowIfNull(visitRepository);
     }
 
     /// <inheritdoc/>
@@ -40,6 +44,7 @@ internal sealed class SearchLinkCommandHandler : ICommandHandler
                 Console.WriteLine("  --tags              Search by tags.");
                 Console.WriteLine("  --skip <number>     The number of links to skip.");
                 Console.WriteLine("  --top <number>      The number of links to show.");
+                Console.WriteLine("  --visit             Whether to open the first link found.");
                 Console.WriteLine("  --help              Show this help message.");
                 return;
             }
@@ -78,6 +83,27 @@ internal sealed class SearchLinkCommandHandler : ICommandHandler
             }
 
             AnsiConsole.Write(table);
+
+            if (args.Visit)
+            {
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = links[0].Url,
+                    UseShellExecute = true,
+                };
+
+                Process.Start(startInfo);
+
+                var visit = new Visit
+                {
+                    LinkId = links[0].Id,
+                    CreatedAt = DateTime.Now,
+                };
+
+                await this.visitRepository.AddAsync(visit);
+
+                AnsiConsole.MarkupLine($"[green]Visited link:[/] [link={links[0].Url}]{links[0].Url}[/]");
+            }
 
             return;
         }

@@ -32,4 +32,9 @@ internal sealed class SearchLinkCommandArguments
     /// Gets or sets a value indicating whether to show the help message and exit.
     /// </summary>
     public bool ShowHelp { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to visit the link.
+    /// </summary>
+    public bool Visit { get; set; }
 }
