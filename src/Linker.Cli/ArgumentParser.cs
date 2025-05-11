@@ -28,6 +28,7 @@ internal static class ArgumentParser
         { "export", CommandType.ExportLinks },
         { "get", CommandType.GetLink },
         { "list get", CommandType.GetList },
+        { "list search", CommandType.SearchLists },
     };
 
     /// <summary>
@@ -72,6 +73,7 @@ internal static class ArgumentParser
             CommandType.GetLink => ParseGetLinkCommand(args),
             CommandType.GetList => ParseGetListCommand(args),
             CommandType.ExportLinks => ParseExportLinksCommand(args),
+            CommandType.SearchLists => ParseSearchListCommand(args),
             _ => throw new NotImplementedException(),
         };
 
@@ -721,6 +723,38 @@ internal static class ArgumentParser
                 index += 2;
             }
             else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
+            {
+                command.ShowHelp = true;
+                index++;
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized args");
+            }
+        }
+
+        return command;
+    }
+
+    private static SearchListCommandArguments ParseSearchListCommand(string[] args)
+    {
+        var index = 2;
+
+        var command = new SearchListCommandArguments
+        {
+            Keyword = args[index++],
+        };
+
+        while (index < args.Length)
+        {
+            var currentArgs = args[index];
+
+            if (!currentArgs.StartsWith('-'))
+            {
+                throw new ArgumentException("Positional arguments must come before the optional arguments.");
+            }
+
+            if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
             {
                 command.ShowHelp = true;
                 index++;

@@ -1,7 +1,6 @@
 ﻿namespace Linker.Cli.Integrations;
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 using Linker.Cli.Core;
@@ -55,9 +54,17 @@ public sealed class UrlListRepository : IRepository<UrlList>
     }
 
     /// <inheritdoc/>
-    public Task<IEnumerable<UrlList>> SearchAsync(string keyword)
+    public async Task<IEnumerable<UrlList>> SearchAsync(string keyword)
     {
-        throw new NotImplementedException();
+        var keywordLower = keyword.ToLowerInvariant();
+
+        var lists = await this.context.Lists
+            .Where(x => x.Name.Contains(keywordLower)
+                || string.IsNullOrEmpty(x.Description)
+                || x.Description.Contains(keywordLower))
+            .ToListAsync();
+
+        return lists;
     }
 
     /// <inheritdoc/>

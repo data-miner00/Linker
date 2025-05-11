@@ -1,5 +1,8 @@
 ﻿namespace Linker.Cli.Commands;
 
+/// <summary>
+/// The commands available for the CLI.
+/// </summary>
 internal enum CommandType
 {
     None,
@@ -19,4 +22,5 @@ internal enum CommandType
     ExportLinks,
     GetLink,
     GetList,
+    SearchLists,
 }
