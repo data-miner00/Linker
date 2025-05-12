@@ -7,105 +7,162 @@
 
 <partial name="_Notification" />
 
-<div class="flex">
-    <aside>
-        @if (!string.IsNullOrEmpty(Model.Item1.PhotoUrl))
-        {
-            <div class="border-black border-2 border-solid rounded-full w-20 h-20 overflow-hidden">
-                <img src="@Model.Item1.PhotoUrl" />
+<div class="flex max-w-screen-lg flex-col mx-auto">
+    <div class="w-full h-64 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+
+    <div class="flex items-center justify-between border-b border-solid border-black py-4">
+        <div class="flex items-center gap-4">
+            <div class="border-black border-2 border-solid rounded-full size-28 overflow-hidden">
+                @if (!string.IsNullOrEmpty(Model.Item1.PhotoUrl))
+                {
+                    <img src="@Model.Item1.PhotoUrl" alt="Profile picture" />
+                }
+                else
+                {
+                    <div class="bg-gray-600 size-full"></div>
+                }
             </div>
-        }
+            <div>
+                <p class="text-3xl font-bold mb-1">@@@Model.Item1.Username</p>
+                <p class="text-gray-600">Hello World</p>
+            </div>
 
-        <p class="text-4xl font-bold mb-4">@@@Model.Item1.Username</p>
-        <p>Joined on: @Model.Item1.CreatedAt</p>
-        <p>Joined workspaces: @Model.Item2.Count()</p>
-        <p>Status: @Model.Item1.Status</p>
-        <p>Birthday: @Model.Item1.DateOfBirth (@age years old)</p>
-
-        <form enctype="multipart/form-data" method="post" asp-controller="User" asp-action="Upload">
-            <label for="file">Upload file</label>
-            <input name="file" type="file" required accept="image/png, image/gif, image/jpeg">
-            <input type="submit" value="Upload" />
-        </form>
-    </aside>
-    <main class="p-4 rounded shadow-lg">
-        <div class="flex gap-2 items-center">
-            <form method="get" asp-action="Export">
-                <button class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">Export links..</button>
-            </form>
-
-            <select name="showType" class="p-2 rounded">
-                <option value="all">All</option>
-                <option value="public">Public</option>
-                <option value="unlisted">Unlisted</option>
-                <option value="private">Private</option>
-            </select>
         </div>
 
-        <hr class="my-4"/>
+        <div class="flex gap-2 items-center">
+            <button class="rounded-lg block py-1 px-2 text-white bg-black">Edit Profile</button>
+            <button class="rounded-lg block py-1 px-2 text-black bg-gray-300">Explore</button>
+        </div>
+    </div>
 
-        <ul>
-            @foreach (var link in Model.Item3) {
-                <li class="flex gap-4 mb-1 border border-solid border-gray-200 rounded-xl p-3 items-center">
-                    <div class="h-[72px] w-[128px] bg-gray-300 rounded-xl overflow-hidden">
-                        @if (!string.IsNullOrWhiteSpace(link.ThumbnailUrl)) {
-                            <img src="@link.ThumbnailUrl" class="w-full h-full object-cover" />
-                        }
-                    </div>
+    <div class="flex gap-2 my-4">
+        <button id="links-btn" onclick="return switchToPostsTab()" class="rounded-lg p-4 bg-blue-100">Links</button>
+        <button id="info-btn" onclick="switchToInfoTab()" class="rounded-lg p-4">Basic Information</button>
+        <button>Collections</button>
+        <button>Workspaces</button>
+    </div>
 
-                    <div>
-                        <a
-                            href="@link.Url"
-                            target="_blank"
-                            class="block mb-1 hover:underline"
-                        >
-                            @link.Name <i class="bi bi-box-arrow-up-right"></i>
-                        </a>
-                        <div class="flex items-center">
-                            <div class="w-4 h-4 mr-1">
-                                @{
-                                    var parsedUrl = new Uri(link.Url);
-                                    var faviconUrl = parsedUrl.GetLeftPart(UriPartial.Authority) + "/favicon.ico";
-                                }
-                                <img src="@faviconUrl" aria-hidden="true" />
+    <div>
+        <section id="details" class="hidden">
+            <p>Joined on: @Model.Item1.CreatedAt</p>
+            <p>Joined workspaces: @Model.Item2.Count()</p>
+            <p>Status: @Model.Item1.Status</p>
+            <p>Birthday: @Model.Item1.DateOfBirth (@age years old)</p>
+
+            <form enctype="multipart/form-data" method="post" asp-controller="User" asp-action="Upload">
+                <label for="file">Upload file</label>
+                <input name="file" type="file" required accept="image/png, image/gif, image/jpeg">
+                <input type="submit" value="Upload" />
+            </form>
+        </section>
+
+        <section id="posts" class="">
+            <div class="flex gap-2 items-center">
+                <form method="get" asp-action="Export">
+                    <button class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200">Export links..</button>
+                </form>
+
+                <select name="showType" class="p-2 rounded">
+                    <option value="all">All</option>
+                    <option value="public">Public</option>
+                    <option value="unlisted">Unlisted</option>
+                    <option value="private">Private</option>
+                </select>
+            </div>
+
+            <hr class="my-4"/>
+
+            <ul>
+                @foreach (var link in Model.Item3) {
+                    <li class="flex gap-4 mb-1 border border-solid border-gray-200 rounded-xl p-3 items-center">
+                        <div class="h-[72px] w-[128px] bg-gray-300 rounded-xl overflow-hidden">
+                            @if (!string.IsNullOrWhiteSpace(link.ThumbnailUrl)) {
+                                <img src="@link.ThumbnailUrl" class="w-full h-full object-cover" />
+                            }
+                        </div>
+
+                        <div>
+                            <a
+                                href="@link.Url"
+                                target="_blank"
+                                class="block mb-1 hover:underline"
+                            >
+                                @link.Name <i class="bi bi-box-arrow-up-right"></i>
+                            </a>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 mr-1">
+                                    @{
+                                        var parsedUrl = new Uri(link.Url);
+                                        var faviconUrl = parsedUrl.GetLeftPart(UriPartial.Authority) + "/favicon.ico";
+                                    }
+                                    <img src="@faviconUrl" aria-hidden="true" />
+                                </div>
+                                <p class="block text-gray-600 text-sm">@link.Domain</p>
                             </div>
-                            <p class="block text-gray-600 text-sm">@link.Domain</p>
                         </div>
-                    </div>
 
-                    @if (link.Visibility != Visibility.Public) {
-                        <div class="block border border-solid border-black rounded px-1 text-sm">
-                            @link.Visibility.ToString()
+                        @if (link.Visibility != Visibility.Public) {
+                            <div class="block border border-solid border-black rounded px-1 text-sm">
+                                @link.Visibility.ToString()
+                            </div>
+                        }
+
+                        <div class="ml-auto">
+                            <a
+                                asp-action="Details"
+                                asp-controller="Link"
+                                asp-route-id="@link.Id"
+                                class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                            >
+                                Details
+                            </a>
                         </div>
-                    }
-
-                    <div class="ml-auto">
-                        <a
-                            asp-action="Details"
-                            asp-controller="Link"
-                            asp-route-id="@link.Id"
-                            class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
-                        >
-                            Details
-                        </a>
-                    </div>
-                    
-                    <form method="post" asp-controller="Link" asp-action="Delete" asp-route-id="@link.Id" class="block">
-                        <button
-                            class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
-                            onclick="return confirm('Are you sure to delete this link?')"
-                        >
-                            Delete
-                        </button>
-                    </form>
-                </li>
-            }
-        </ul>
-    </main>
+                        
+                        <form method="post" asp-controller="Link" asp-action="Delete" asp-route-id="@link.Id" class="block">
+                            <button
+                                class="border rounded border-solid border-gray-400 block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                                onclick="return confirm('Are you sure to delete this link?')"
+                            >
+                                Delete
+                            </button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        </section>
+    </div>
 </div>
 
 @section Scripts {
+    @{await Html.RenderPartialAsync("_SomeScriptsPartial");}
+
     <script type="text/javascript">
-        console.log("Loaded");
+        function switchToInfoTab() {
+            var sections = document.querySelectorAll("section");
+            sections.forEach(section => section.classList = "hidden");
+
+            var btns = document.querySelectorAll("[id*='btn']");
+            btns.forEach(btn => btn.classList.remove("bg-blue-100"));
+
+            var btn = document.querySelector("#info-btn");
+            btn.classList.add("bg-blue-100");
+
+            var section = document.querySelector("#details");
+            section.classList = "block";
+        }
+
+        function switchToPostsTab() {
+            var sections = document.querySelectorAll("section");
+            sections.forEach(section => section.classList = "hidden");
+
+            var btns = document.querySelectorAll("[id*='btn']");
+            btns.forEach(btn => btn.classList.remove("bg-blue-100"));
+
+            var btn = document.querySelector("#links-btn");
+            btn.classList.add("bg-blue-100");
+
+            var section = document.querySelector("#posts");
+            section.classList = "block";
+        }
     </script>
 }
