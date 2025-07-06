@@ -66,15 +66,26 @@ internal static class ContainerConfig
 
     private static ContainerBuilder RegisterSerializers(this ContainerBuilder builder)
     {
-        var serializers = new Dictionary<ExportFormat, Lazy<ISerializer<Link>>>
+        var linkSerializers = new Dictionary<ExportFormat, Lazy<ISerializer<Link>>>
         {
             { ExportFormat.Csv, new Lazy<ISerializer<Link>>(() => new CsvSerializer<Link>()) },
             { ExportFormat.Json, new Lazy<ISerializer<Link>>(() => new JsonSerializer<Link>()) },
         };
 
+        var listSerializers = new Dictionary<ExportFormat, Lazy<ISerializer<UrlList>>>
+        {
+            { ExportFormat.Csv, new Lazy<ISerializer<UrlList>>(() => new CsvSerializer<UrlList>()) },
+            { ExportFormat.Json, new Lazy<ISerializer<UrlList>>(() => new JsonSerializer<UrlList>()) },
+        };
+
         builder
-            .Register(ctx => serializers)
+            .Register(ctx => linkSerializers)
             .As<IDictionary<ExportFormat, Lazy<ISerializer<Link>>>>()
+            .SingleInstance();
+
+        builder.
+            Register(ctx => listSerializers)
+            .As<IDictionary<ExportFormat, Lazy<ISerializer<UrlList>>>>()
             .SingleInstance();
 
         return builder;
@@ -87,7 +98,8 @@ internal static class ContainerConfig
             var listRepo = ctx.Resolve<IRepository<UrlList>>();
             var linkRepo = ctx.Resolve<IRepository<Link>>();
             var interfaceLinkRepo = ctx.Resolve<ILinkRepository>();
-            var serializers = ctx.Resolve<IDictionary<ExportFormat, Lazy<ISerializer<Link>>>>();
+            var linkSerializers = ctx.Resolve<IDictionary<ExportFormat, Lazy<ISerializer<Link>>>>();
+            var listSerializers = ctx.Resolve<IDictionary<ExportFormat, Lazy<ISerializer<UrlList>>>>();
             var visitRepo = ctx.Resolve<IRepository<Visit>>();
             var dbContext = ctx.Resolve<AppDbContext>();
 
@@ -107,8 +119,9 @@ internal static class ContainerConfig
                 { CommandType.SearchLinks, new Lazy<ICommandHandler>(() => new SearchLinkCommandHandler(linkRepo, visitRepo)) },
                 { CommandType.GetLink, new Lazy<ICommandHandler>(() => new GetLinkCommandHandler(linkRepo)) },
                 { CommandType.GetList, new Lazy<ICommandHandler>(() => new GetListCommandHandler(listRepo)) },
-                { CommandType.ExportLinks, new Lazy<ICommandHandler>(() => new ExportLinksCommandHandler(linkRepo, serializers)) },
+                { CommandType.ExportLinks, new Lazy<ICommandHandler>(() => new ExportLinksCommandHandler(linkRepo, linkSerializers)) },
                 { CommandType.SearchLists, new Lazy<ICommandHandler>(() => new SearchListCommandHandler(listRepo)) },
+                { CommandType.ExportLists, new Lazy<ICommandHandler>(() => new ExportListsCommandHandler(listRepo, linkSerializers, listSerializers)) },
             };
 
             return commandHandlers;

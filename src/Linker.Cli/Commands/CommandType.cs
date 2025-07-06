@@ -23,4 +23,5 @@ internal enum CommandType
     GetLink,
     GetList,
     SearchLists,
+    ExportLists,
 }

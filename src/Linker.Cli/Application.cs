@@ -52,6 +52,10 @@ internal sealed class Application
                 {
                     await commandHandler.Value.HandleAsync(arguments);
                 }
+                else
+                {
+                    AnsiConsole.MarkupLine($"[red]The command has not been registered.[/]");
+                }
             }
 
             return SUCCESS_CODE;

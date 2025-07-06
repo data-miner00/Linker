@@ -29,6 +29,7 @@ internal static class ArgumentParser
         { "get", CommandType.GetLink },
         { "list get", CommandType.GetList },
         { "list search", CommandType.SearchLists },
+        { "list export", CommandType.ExportLists },
     };
 
     /// <summary>
@@ -74,6 +75,7 @@ internal static class ArgumentParser
             CommandType.GetList => ParseGetListCommand(args),
             CommandType.ExportLinks => ParseExportLinksCommand(args),
             CommandType.SearchLists => ParseSearchListCommand(args),
+            CommandType.ExportLists => ParseExportListsCommand(args),
             _ => throw new NotImplementedException(),
         };
 
@@ -755,6 +757,55 @@ internal static class ArgumentParser
             }
 
             if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
+            {
+                command.ShowHelp = true;
+                index++;
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized args");
+            }
+        }
+
+        return command;
+    }
+
+    private static ExportListsCommandArguments ParseExportListsCommand(string[] args)
+    {
+        var index = 2;
+
+        var command = new ExportListsCommandArguments();
+
+        while (index < args.Length)
+        {
+            var currentArgs = args[index];
+
+            if (!currentArgs.StartsWith('-'))
+            {
+                throw new ArgumentException("Positional arguments must come before the optional arguments.");
+            }
+
+            if (currentArgs.Equals("--path") || currentArgs.Equals("-p"))
+            {
+                command.Path = args[index + 1];
+                index += 2;
+            }
+            else if (currentArgs.Equals("--format") || currentArgs.Equals("-f"))
+            {
+                if (!Enum.TryParse<ExportFormat>(args[index + 1], true, out var format))
+                {
+                    throw new ArgumentException("Invalid format provided. Supported formats are csv and json.");
+                }
+
+                command.Format = format;
+                index += 2;
+            }
+            else if (currentArgs.Equals("--listId") || currentArgs.Equals("-id"))
+            {
+                command.ListId = int.Parse(args[index + 1]);
+                index += 2;
+            }
+            else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
             {
                 command.ShowHelp = true;
                 index++;

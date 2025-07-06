@@ -2,7 +2,7 @@
   "profiles": {
     "Linker.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "list search 2"
+      "commandLineArgs": "list export -id 1"
     }
   }
 }
