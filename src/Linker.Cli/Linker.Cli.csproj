@@ -16,4 +16,10 @@
     <ProjectReference Include="..\Linker.Cli.Integrations\Linker.Cli.Integrations.csproj" />
   </ItemGroup>
 
+  <Target Name="TestExeExist" AfterTargets="Build">
+    <Error
+        Condition=" '$(OS)' == 'Windows_NT' And !Exists('$(OutputPath)$(TargetFileName)')"
+        Text="$([System.String]::Format('The error message {0} is shown.', '$(ErrorMessage)'))" />
+  </Target>
+
 </Project>
