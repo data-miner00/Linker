@@ -29,7 +29,8 @@ using var connection = new SQLiteConnection(sqliteConnectionString);
 builder.Services.AddControllers(opt =>
 {
     opt.Filters.Add<InformerFilter>();
-});
+})
+    .AddNewtonsoftJson();
 
 builder.Services.AddHttpContextAccessor();
 

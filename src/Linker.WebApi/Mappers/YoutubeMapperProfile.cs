@@ -38,7 +38,8 @@ public sealed class YoutubeMapperProfile : Profile
     /// </summary>
     public void ConfigureMapFromPutRequestToYoutube()
     {
-        this.CreateMap<UpdateYoutubeRequest, Youtube>(MemberList.Source);
+        this.CreateMap<UpdateYoutubeRequest, Youtube>(MemberList.Source)
+            .ReverseMap();
     }
 
     /// <summary>

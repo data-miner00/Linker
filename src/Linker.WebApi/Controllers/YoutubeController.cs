@@ -1,7 +1,9 @@
 ﻿namespace Linker.WebApi.Controllers
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Net;
+    using System.Runtime.CompilerServices;
     using System.Security.Claims;
     using AutoMapper;
     using EnsureThat;
@@ -13,6 +15,7 @@
     using Linker.WebApi.Filters;
     using Linker.WebApi.Swagger;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.JsonPatch;
     using Microsoft.AspNetCore.Mvc;
     using Swashbuckle.AspNetCore.Annotations;
     using Swashbuckle.AspNetCore.Filters;
@@ -163,6 +166,68 @@
             }
 
             var channel = this.mapper.Map<Youtube>(request);
+            channel.Id = id.ToString();
+
+            await this.repository
+                .UpdateAsync(channel, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            return this.NoContent();
+        }
+
+        /// <summary>
+        /// Updates a Youtube channel partially.
+        /// </summary>
+        /// <param name="id">The channel Id.</param>
+        /// <param name="request">The patch document.</param>
+        /// <example>
+        /// [
+        ///  {
+        ///    "op": "replace",
+        ///    "path": "/description",
+        ///    "value": "Updated description here."
+        ///  }
+        /// ].
+        /// </example>
+        /// <remarks>See more at <see href="https://learn.microsoft.com/en-us/aspnet/core/web-api/jsonpatch?view=aspnetcore-9.0">JSON Patch</see>.</remarks>
+        /// <returns>The action result.</returns>
+        [Experimental(nameof(PatchAsync))]
+        [RoleAuthorize(Role.Administrator)]
+        [HttpPatch("{id:guid}", Name = "PatchYoutube")]
+        [SwaggerResponse((int)HttpStatusCode.NoContent, "Youtube updated.")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Youtube not found.")]
+        public async Task<IActionResult> PatchAsync([FromRoute] Guid id, [FromBody] JsonPatchDocument<UpdateYoutubeRequest> request)
+        {
+            EnsureArg.IsNotNull(request, nameof(request));
+
+            var userId = this.context.HttpContext?.User
+                .FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+            Youtube existing;
+
+            try
+            {
+                existing = await this.repository
+                    .GetByIdAsync(id.ToString(), CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                var userRole = this.User.FindFirstValue(ClaimTypes.Role);
+
+                if (userRole != "Administrator" && userId != existing.CreatedBy)
+                {
+                    return this.Unauthorized();
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                return this.NotFound();
+            }
+
+            var requestToPatch = this.mapper.Map<UpdateYoutubeRequest>(existing);
+
+            request.ApplyTo(requestToPatch);
+
+            var channel = this.mapper.Map<Youtube>(requestToPatch);
             channel.Id = id.ToString();
 
             await this.repository
