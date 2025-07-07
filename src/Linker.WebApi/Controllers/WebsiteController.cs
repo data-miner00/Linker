@@ -215,7 +215,7 @@
 
         /// <inheritdoc/>
         [AccountAuthorize]
-        [HttpPut("/byuser/{userId:guid}/{linkId:guid}", Name = "UpdateWebsiteByUser")]
+        [HttpPut("byuser/{userId:guid}/{linkId:guid}", Name = "UpdateWebsiteByUser")]
         [SwaggerResponse((int)HttpStatusCode.NoContent, "Website updated.")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Website not found.")]
         public async Task<IActionResult> UpdateByUserAsync(
@@ -254,7 +254,7 @@
 
         /// <inheritdoc/>
         [AccountAuthorize]
-        [HttpDelete("/byuser/{userId:guid}/{linkId:guid}", Name = "DeleteWebsiteByUser")]
+        [HttpDelete("byuser/{userId:guid}/{linkId:guid}", Name = "DeleteWebsiteByUser")]
         [SwaggerResponse((int)HttpStatusCode.NoContent, "Website successfully deleted.")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Website not found.")]
         public async Task<IActionResult> DeleteByUserAsync(

@@ -178,7 +178,7 @@
 
         /// <inheritdoc/>
         [AccountAuthorize]
-        [HttpDelete("/byuser/{userId:guid}/{linkId:guid}", Name = "DeleteYoutubeByUser")]
+        [HttpDelete("byuser/{userId:guid}/{linkId:guid}", Name = "DeleteYoutubeByUser")]
         [SwaggerResponse((int)HttpStatusCode.NoContent, "Youtube successfully deleted.")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Youtube not found.")]
         public async Task<IActionResult> DeleteByUserAsync(Guid userId, Guid linkId)
@@ -246,7 +246,7 @@
 
         /// <inheritdoc/>
         [AccountAuthorize]
-        [HttpPut("/byuser/{userId:guid}/{linkId:guid}", Name = "UpdateYoutubeByUser")]
+        [HttpPut("byuser/{userId:guid}/{linkId:guid}", Name = "UpdateYoutubeByUser")]
         [SwaggerResponse((int)HttpStatusCode.NoContent, "Youtube updated.")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Youtube not found.")]
         public async Task<IActionResult> UpdateByUserAsync(
