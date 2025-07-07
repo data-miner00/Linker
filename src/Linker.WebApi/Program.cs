@@ -119,7 +119,7 @@ builder.Services.AddMetrics();
 builder.Services.AddHttpLogging(static opt => opt = new());
 
 builder.Services.AddHealthChecks()
-    .AddCheck<DatabaseHealthCheck>("DatabaseHealthCheck");
+    .AddCheck<DatabaseHealthCheck>(nameof(DatabaseHealthCheck));
 
 builder.Services.AddProblemDetails();
 
