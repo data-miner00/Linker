@@ -17,15 +17,15 @@ using System.Threading.Tasks;
 internal sealed class ExportListsCommandHandler : ICommandHandler
 {
     private const ExportFormat DefaultExportFormat = ExportFormat.Csv;
-
 #if DEBUG
     private const string DefaultExportPath = "D:/staging-list";
-    private readonly IRepository<UrlList> listRepository;
-    private readonly IDictionary<ExportFormat, Lazy<ISerializer<Link>>> linkSerializer;
-    private readonly IDictionary<ExportFormat, Lazy<ISerializer<UrlList>>> listSerializer;
 #else
     private const string DefaultExportPath = "D:/export-list";
 #endif
+
+    private readonly IRepository<UrlList> listRepository;
+    private readonly IDictionary<ExportFormat, Lazy<ISerializer<Link>>> linkSerializer;
+    private readonly IDictionary<ExportFormat, Lazy<ISerializer<UrlList>>> listSerializer;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ExportListsCommandHandler"/> class.
