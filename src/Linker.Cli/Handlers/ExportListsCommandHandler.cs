@@ -17,15 +17,11 @@ using System.Threading.Tasks;
 internal sealed class ExportListsCommandHandler : ICommandHandler
 {
     private const ExportFormat DefaultExportFormat = ExportFormat.Csv;
-#if DEBUG
-    private const string DefaultExportPath = "D:/staging-list";
-#else
-    private const string DefaultExportPath = "D:/export-list";
-#endif
 
     private readonly IRepository<UrlList> listRepository;
     private readonly IDictionary<ExportFormat, Lazy<ISerializer<Link>>> linkSerializer;
     private readonly IDictionary<ExportFormat, Lazy<ISerializer<UrlList>>> listSerializer;
+    private readonly string defaultExportPath;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ExportListsCommandHandler"/> class.
@@ -33,14 +29,17 @@ internal sealed class ExportListsCommandHandler : ICommandHandler
     /// <param name="listRepository">The url list repository.</param>
     /// <param name="linkSerializer">The link serializer.</param>
     /// <param name="listSerializer">The url list serializer.</param>
+    /// <param name="defaultExportPath">The default export path.</param>
     public ExportListsCommandHandler(
         IRepository<UrlList> listRepository,
         IDictionary<ExportFormat, Lazy<ISerializer<Link>>> linkSerializer,
-        IDictionary<ExportFormat, Lazy<ISerializer<UrlList>>> listSerializer)
+        IDictionary<ExportFormat, Lazy<ISerializer<UrlList>>> listSerializer,
+        string defaultExportPath)
     {
         this.listRepository = listRepository;
         this.linkSerializer = linkSerializer;
         this.listSerializer = listSerializer;
+        this.defaultExportPath = defaultExportPath;
     }
 
     /// <inheritdoc/>
@@ -88,7 +87,7 @@ internal sealed class ExportListsCommandHandler : ICommandHandler
         var serialized = serializer.Value.Serialize(lists);
 
         var fileExtension = args.Format == ExportFormat.Json ? ".json" : ".csv";
-        var exportPath = args.Path ?? DefaultExportPath + fileExtension;
+        var exportPath = args.Path ?? this.defaultExportPath + fileExtension;
 
         File.WriteAllText(exportPath, serialized);
 
@@ -111,7 +110,7 @@ internal sealed class ExportListsCommandHandler : ICommandHandler
 
         var fileExtension = args.Format == ExportFormat.Json ? ".json" : ".csv";
         var specificList = "-" + args.ListId.Value;
-        var exportPath = args.Path ?? DefaultExportPath + specificList + fileExtension;
+        var exportPath = args.Path ?? this.defaultExportPath + specificList + fileExtension;
 
         File.WriteAllText(exportPath, serialized);
 

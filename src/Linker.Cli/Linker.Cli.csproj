@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="8.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.7" />
     <PackageReference Include="Spectre.Console" Version="0.50.0" />
   </ItemGroup>
 
@@ -16,10 +17,22 @@
     <ProjectReference Include="..\Linker.Cli.Integrations\Linker.Cli.Integrations.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="settings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <DependentUpon>settings.json</DependentUpon>
+    </None>
+    <None Update="settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="settings.Production.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <DependentUpon>settings.json</DependentUpon>
+    </None>
+  </ItemGroup>
+
   <Target Name="TestExeExist" AfterTargets="Build">
-    <Error
-        Condition=" '$(OS)' == 'Windows_NT' And !Exists('$(OutputPath)$(TargetFileName)')"
-        Text="$([System.String]::Format('The error message {0} is shown.', '$(ErrorMessage)'))" />
+    <Error Condition=" '$(OS)' == 'Windows_NT' And !Exists('$(OutputPath)$(TargetFileName)')" Text="$([System.String]::Format('The error message {0} is shown.', '$(ErrorMessage)'))" />
   </Target>
 
 </Project>

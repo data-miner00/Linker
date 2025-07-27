@@ -1,0 +1,9 @@
+﻿{
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=D:\\prod.sqlite;"
+  },
+  "DefaultExportPath": {
+    "Links": "D:/export",
+    "Lists": "D:/export-list"
+  }
+}

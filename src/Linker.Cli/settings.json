@@ -1,0 +1,9 @@
+﻿{
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=D:\\db.sqlite;"
+  },
+  "DefaultExportPath": {
+    "Links": "D:/staging",
+    "Lists": "D:/staging-list"
+  }
+}

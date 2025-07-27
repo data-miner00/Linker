@@ -7,6 +7,7 @@ using Linker.Cli.Core.Serializers;
 using Linker.Cli.Handlers;
 using Linker.Cli.Integrations;
 using Linker.Cli.Integrations.Serializers;
+using Microsoft.Extensions.Configuration;
 
 /// <summary>
 /// A static class that contains logics for container registration.
@@ -22,6 +23,7 @@ internal static class ContainerConfig
         var builder = new ContainerBuilder();
 
         builder
+            .ConfigureSettings()
             .RegisterRepositories()
             .RegisterSerializers()
             .RegisterCommandHandlers();
@@ -34,16 +36,32 @@ internal static class ContainerConfig
         return builder.Build();
     }
 
+    private static ContainerBuilder ConfigureSettings(this ContainerBuilder builder)
+    {
+        var environment = Environment.GetEnvironmentVariable("NETCORE_ENVIRONMENT");
+
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("settings.json", optional: false, reloadOnChange: false)
+            .AddJsonFile($"settings.{environment}.json", optional: false, reloadOnChange: false)
+            .Build();
+
+        builder.RegisterInstance(configuration).As<IConfiguration>().SingleInstance();
+
+        return builder;
+    }
+
     private static ContainerBuilder RegisterRepositories(this ContainerBuilder builder)
     {
-#if DEBUG
-        var connStr = "Data Source=D:\\db.sqlite;";
-#else
-        var connStr = "Data Source=D:\\prod.sqlite;";
-#endif
-        var dbContext = new AppDbContext(connStr);
+        builder.Register(ctx =>
+        {
+            var config = ctx.Resolve<IConfiguration>();
 
-        builder.RegisterInstance(dbContext);
+            var connStr = config.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
+
+            return new AppDbContext(connStr);
+        }).SingleInstance();
 
         builder
             .RegisterType<LinkRepository>()
@@ -102,6 +120,12 @@ internal static class ContainerConfig
             var listSerializers = ctx.Resolve<IDictionary<ExportFormat, Lazy<ISerializer<UrlList>>>>();
             var visitRepo = ctx.Resolve<IRepository<Visit>>();
             var dbContext = ctx.Resolve<AppDbContext>();
+            var config = ctx.Resolve<IConfiguration>();
+
+            var linksDefaultExportPath = config.GetValue<string>("DefaultExportPath:Links")
+                ?? throw new InvalidOperationException("Links default export path is not configured.");
+            var listsDefaultExportPath = config.GetValue<string>("DefaultExportPath:Lists")
+                ?? throw new InvalidOperationException("Lists default export path is not configured.");
 
             IDictionary<CommandType, Lazy<ICommandHandler>> commandHandlers = new Dictionary<CommandType, Lazy<ICommandHandler>>
             {
@@ -119,9 +143,9 @@ internal static class ContainerConfig
                 { CommandType.SearchLinks, new Lazy<ICommandHandler>(() => new SearchLinkCommandHandler(linkRepo, visitRepo)) },
                 { CommandType.GetLink, new Lazy<ICommandHandler>(() => new GetLinkCommandHandler(linkRepo)) },
                 { CommandType.GetList, new Lazy<ICommandHandler>(() => new GetListCommandHandler(listRepo)) },
-                { CommandType.ExportLinks, new Lazy<ICommandHandler>(() => new ExportLinksCommandHandler(linkRepo, linkSerializers)) },
+                { CommandType.ExportLinks, new Lazy<ICommandHandler>(() => new ExportLinksCommandHandler(linkRepo, linkSerializers, linksDefaultExportPath)) },
                 { CommandType.SearchLists, new Lazy<ICommandHandler>(() => new SearchListCommandHandler(listRepo)) },
-                { CommandType.ExportLists, new Lazy<ICommandHandler>(() => new ExportListsCommandHandler(listRepo, linkSerializers, listSerializers)) },
+                { CommandType.ExportLists, new Lazy<ICommandHandler>(() => new ExportListsCommandHandler(listRepo, linkSerializers, listSerializers, listsDefaultExportPath)) },
             };
 
             return commandHandlers;

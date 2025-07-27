@@ -15,25 +15,24 @@ internal sealed class ExportLinksCommandHandler : ICommandHandler
 {
     private const ExportFormat DefaultExportFormat = ExportFormat.Csv;
 
-#if DEBUG
-    private const string DefaultExportPath = "D:/staging";
-#else
-    private const string DefaultExportPath = "D:/export";
-#endif
     private readonly IRepository<Link> repository;
     private readonly IDictionary<ExportFormat, Lazy<ISerializer<Link>>> serializers;
+    private readonly string defaultExportPath;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ExportLinksCommandHandler"/> class.
     /// </summary>
     /// <param name="repository">The link repository.</param>
     /// <param name="serializers">The link serializers.</param>
+    /// <param name="defaultExportPath">The default export path.</param>
     public ExportLinksCommandHandler(
         IRepository<Link> repository,
-        IDictionary<ExportFormat, Lazy<ISerializer<Link>>> serializers)
+        IDictionary<ExportFormat, Lazy<ISerializer<Link>>> serializers,
+        string defaultExportPath)
     {
         this.repository = Guard.ThrowIfNull(repository);
         this.serializers = Guard.ThrowIfNull(serializers);
+        this.defaultExportPath = Guard.ThrowIfNullOrWhitespace(defaultExportPath);
     }
 
     /// <inheritdoc/>
@@ -54,7 +53,7 @@ internal sealed class ExportLinksCommandHandler : ICommandHandler
             }
 
             var fileExtension = args.Format == ExportFormat.Json ? ".json" : ".csv";
-            var exportPath = args.Path ?? DefaultExportPath + fileExtension;
+            var exportPath = args.Path ?? this.defaultExportPath + fileExtension;
 
             var links = await this.repository.GetAllAsync();
 

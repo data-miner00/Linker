@@ -1,8 +1,18 @@
 {
   "profiles": {
-    "Linker.Cli": {
+    "Linker.Cli.Dev": {
       "commandName": "Project",
-      "commandLineArgs": "list export -id 1"
+      "commandLineArgs": "show",
+      "environmentVariables": {
+        "NETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "Linker.Cli.Prod": {
+      "commandName": "Project",
+      "commandLineArgs": "show",
+      "environmentVariables": {
+        "NETCORE_ENVIRONMENT": "Production"
+      }
     }
   }
 }
