@@ -390,3 +390,6 @@ babel-standalone/
 
 # Upload folder
 Uploads/
+
+# Generated API Documentation
+Linker.WebApi.xml

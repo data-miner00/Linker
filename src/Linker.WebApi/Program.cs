@@ -42,6 +42,10 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Linker API", Version = "v1" });
     c.EnableAnnotations();
     c.ExampleFilters();
+
+    c.IncludeXmlComments(
+        Path.Combine(AppContext.BaseDirectory, "Linker.WebApi.xml"),
+        includeControllerXmlComments: true);
 });
 
 builder.Services.AddCors(opt =>

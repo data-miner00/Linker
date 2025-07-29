@@ -43,6 +43,8 @@
 
         /// <inheritdoc/>
         [HttpPost("/login", Name = "Login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -71,7 +73,7 @@
             }
             catch (InvalidOperationException)
             {
-                return this.BadRequest("Invalid username or password.");
+                return this.Unauthorized("Invalid username or password.");
             }
         }
 
