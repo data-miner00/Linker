@@ -108,6 +108,8 @@ Commands:
   list remove <listid> <linkid>     Remove a link from a specific list.
   list delete <listid> [options]    Delete a list and all links within it.
   export      <filename> [options]  Export all links to a file in the specified format.
+  list export <filename> [options]  Export all lists detail or links of a specific list to a file in the specified format.
+  list visit  <listid> [options]    Visit links in a list. Options include visiting all links, a random link or the last link.
 
 Options:
   -h, --help               Show help information.";
