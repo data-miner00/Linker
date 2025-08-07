@@ -3,8 +3,16 @@
 The behaviours for delete link command handler.
 
 @constructor
-Scenario: Constructor invalid parameters
+Scenario: Constructor invalid parameters: null repository
 	Given the link repository is null
+	And the console is not null
+	When I instantiate the DeleteLinkCommandHandler
+	Then I should expect ArgumentNullException to be thrown
+
+@constructor
+Scenario: Constructor invalid parameters: null console
+	Given the link repository is not null
+	And the console is null
 	When I instantiate the DeleteLinkCommandHandler
 	Then I should expect ArgumentNullException to be thrown
 
@@ -26,6 +34,7 @@ Scenario: Request for help
 	When I handle the command arguments
 	Then I should expect GetByIdAsync to not be called
 	And I should expect RemoveAsync to not be called
+	And I should expect console write to be called 0 times
     And I should expect no exception is thrown
 
 @handle @arguments
@@ -34,13 +43,16 @@ Scenario: Link does not exist for deletion
 	When I handle the command arguments
 	Then I should expect GetByIdAsync to be called with id 1
 	And I should expect RemoveAsync to not be called
+	And I should expect console write to be called 1 times
     And I should expect no exception is thrown
 
 @handle @arguments
 Scenario: Link exist for deletion and confirm delete
     Given the link with id 1 exists
+	And the link can be successfully deleted
 	When I handle the command arguments
 	Then I should expect GetByIdAsync to be called with id 1
 	And I should expect RemoveAsync to be called with id 1
+	And I should expect console write to be called 1 times
     And I should expect no exception is thrown
 

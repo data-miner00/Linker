@@ -147,7 +147,7 @@ internal static class ContainerConfig
                 { CommandType.AddLink, new Lazy<ICommandHandler>(() => new AddLinkCommandHandler(linkRepo, console)) },
                 { CommandType.ShowLinks, new Lazy<ICommandHandler>(() => new ShowLinksCommandHandler(interfaceLinkRepo)) },
                 { CommandType.UpdateLink, new Lazy<ICommandHandler>(() => new UpdateLinkCommandHandler(linkRepo)) },
-                { CommandType.DeleteLink, new Lazy<ICommandHandler>(() => new DeleteLinkCommandHandler(linkRepo)) },
+                { CommandType.DeleteLink, new Lazy<ICommandHandler>(() => new DeleteLinkCommandHandler(linkRepo, console)) },
                 { CommandType.VisitLink, new Lazy<ICommandHandler>(() => new VisitLinkCommandHandler(linkRepo, visitRepo)) },
                 { CommandType.CreateList, new Lazy<ICommandHandler>(() => new CreateListCommandHandler(listRepo)) },
                 { CommandType.ShowLists, new Lazy<ICommandHandler>(() => new ShowListsCommandHandler(listRepo)) },

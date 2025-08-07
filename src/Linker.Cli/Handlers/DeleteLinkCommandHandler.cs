@@ -4,6 +4,7 @@ using Linker.Cli.Commands;
 using Linker.Cli.Core;
 using Linker.Cli.Integrations;
 using Linker.Common.Helpers;
+using Spectre.Console;
 using System;
 using System.Threading.Tasks;
 
@@ -13,14 +14,17 @@ using System.Threading.Tasks;
 internal sealed class DeleteLinkCommandHandler : ICommandHandler
 {
     private readonly IRepository<Link> repository;
+    private readonly IAnsiConsole console;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DeleteLinkCommandHandler"/> class.
     /// </summary>
     /// <param name="repository">The link repository.</param>
-    public DeleteLinkCommandHandler(IRepository<Link> repository)
+    /// <param name="console">The ansi console instance.</param>
+    public DeleteLinkCommandHandler(IRepository<Link> repository, IAnsiConsole console)
     {
         this.repository = Guard.ThrowIfNull(repository);
+        this.console = Guard.ThrowIfNull(console);
     }
 
     /// <inheritdoc/>
@@ -28,42 +32,41 @@ internal sealed class DeleteLinkCommandHandler : ICommandHandler
     {
         Guard.ThrowIfNull(commandArguments);
 
-        if (commandArguments is DeleteLinkCommandArguments args)
+        if (commandArguments is not DeleteLinkCommandArguments args)
         {
-            if (args.ShowHelp)
-            {
-                Console.WriteLine("Usage: linker delete <link-id> [options]");
-                Console.WriteLine("Options:");
-                Console.WriteLine("  --confirm           Confirm the deletion.");
-                Console.WriteLine("  --help              Show this help message.");
-                return;
-            }
+            throw new ArgumentException("Invalid args");
+        }
 
-            var linkToDelete = await this.repository.GetByIdAsync(args.Id);
-
-            if (linkToDelete is null)
-            {
-                Console.WriteLine($"Link with ID {args.Id} not found.");
-                return;
-            }
-
-            if (!args.ConfirmDelete)
-            {
-                Console.Write($"Confirm delete {linkToDelete.Url}? [y/N]: ");
-                var response = Console.ReadLine();
-
-                if (response is null || !response.StartsWith("y", StringComparison.OrdinalIgnoreCase))
-                {
-                    Console.WriteLine("Delete aborted.");
-                    return;
-                }
-            }
-
-            await this.repository.RemoveAsync(args.Id);
-
+        if (args.ShowHelp)
+        {
+            Console.WriteLine("Usage: linker delete <link-id> [options]");
+            Console.WriteLine("Options:");
+            Console.WriteLine("  --confirm           Confirm the deletion.");
+            Console.WriteLine("  --help              Show this help message.");
             return;
         }
 
-        throw new ArgumentException("Invalid args");
+        var linkToDelete = await this.repository.GetByIdAsync(args.Id);
+
+        if (linkToDelete is null)
+        {
+            this.console.MarkupLineInterpolated($"[red]Link with ID \"{args.Id}\" could not be found.[/]");
+            return;
+        }
+
+        if (!args.ConfirmDelete)
+        {
+            this.console.MarkupInterpolated($"[yellow]Confirm delete {linkToDelete.Url}? [[y/N]]: [/]");
+            var response = Console.ReadLine();
+
+            if (response is null || !response.StartsWith("y", StringComparison.OrdinalIgnoreCase))
+            {
+                this.console.MarkupLine("[red]Delete aborted.[/]");
+                return;
+            }
+        }
+
+        await this.repository.RemoveAsync(args.Id);
+        this.console.MarkupLine("[green]Successfully deleted the link.[/]");
     }
 }
