@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 /// </summary>
 internal sealed class Application
 {
-    private const int SUCCESS_CODE = 0;
-    private const int FAILURE_CODE = 0x667;
+    private const int SuccessCode = 0;
+    private const int FailureCode = 0x667;
 
     private readonly IDictionary<CommandType, Lazy<ICommandHandler>> commandHandlers;
 
@@ -58,14 +58,14 @@ internal sealed class Application
                 }
             }
 
-            return SUCCESS_CODE;
+            return SuccessCode;
         }
         catch (KeyNotFoundException ex) when (ex.Message.StartsWith("The given key"))
         {
             AnsiConsole.MarkupLine($"[red]The command could not be found.[/]");
             DisplayHelpMessage();
 
-            return FAILURE_CODE;
+            return FailureCode;
         }
         catch (Exception ex)
         {
@@ -74,7 +74,7 @@ internal sealed class Application
 #else
             AnsiConsole.MarkupLine($"[red]{ex.Message}[/]");
 #endif
-            return FAILURE_CODE;
+            return FailureCode;
         }
 #if DEBUG
         finally
