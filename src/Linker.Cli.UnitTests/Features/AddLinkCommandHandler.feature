@@ -5,6 +5,14 @@ The behaviour for the AddLinkCommandHandler.
 @constructor
 Scenario: When the repository is null, it should throw an exception
 	Given the repository is null
+	And the console is not null
+	When I instantiate the AddLinkCommandHandler
+	Then I should expect an exception to be thrown
+
+@constructor
+Scenario: When the console is null, it should throw an exception
+	Given the console is null
+	And the repository is not null
 	When I instantiate the AddLinkCommandHandler
 	Then I should expect an exception to be thrown
 
@@ -41,6 +49,7 @@ Scenario: Does not allow duplicate URLs
 	When I handle the command arguments
 	Then I should expect AddAsync to be called with command with url "https://google.com"
 	And I should expect environment exit code to be 1
+	And I should expect console write to be called
     And I should expect no exception is thrown
 
 @handle @repository

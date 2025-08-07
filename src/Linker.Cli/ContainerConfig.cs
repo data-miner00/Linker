@@ -8,6 +8,7 @@ using Linker.Cli.Handlers;
 using Linker.Cli.Integrations;
 using Linker.Cli.Integrations.Serializers;
 using Microsoft.Extensions.Configuration;
+using Spectre.Console;
 
 /// <summary>
 /// A static class that contains logics for container registration.
@@ -26,7 +27,8 @@ internal static class ContainerConfig
             .ConfigureSettings()
             .RegisterRepositories()
             .RegisterSerializers()
-            .RegisterCommandHandlers();
+            .RegisterCommandHandlers()
+            .RegisterAnsiConsole();
 
         builder
             .RegisterType<Application>()
@@ -82,6 +84,18 @@ internal static class ContainerConfig
         return builder;
     }
 
+    private static ContainerBuilder RegisterAnsiConsole(this ContainerBuilder builder)
+    {
+        var settings = new AnsiConsoleSettings();
+        var ansi = AnsiConsole.Create(settings);
+
+        builder
+            .RegisterInstance(ansi)
+            .As<IAnsiConsole>();
+
+        return builder;
+    }
+
     private static ContainerBuilder RegisterSerializers(this ContainerBuilder builder)
     {
         var linkSerializers = new Dictionary<ExportFormat, Lazy<ISerializer<Link>>>
@@ -113,6 +127,7 @@ internal static class ContainerConfig
     {
         builder.Register(ctx =>
         {
+            var console = ctx.Resolve<IAnsiConsole>();
             var listRepo = ctx.Resolve<IRepository<UrlList>>();
             var linkRepo = ctx.Resolve<IRepository<Link>>();
             var interfaceLinkRepo = ctx.Resolve<ILinkRepository>();
@@ -129,7 +144,7 @@ internal static class ContainerConfig
 
             IDictionary<CommandType, Lazy<ICommandHandler>> commandHandlers = new Dictionary<CommandType, Lazy<ICommandHandler>>
             {
-                { CommandType.AddLink, new Lazy<ICommandHandler>(() => new AddLinkCommandHandler(linkRepo)) },
+                { CommandType.AddLink, new Lazy<ICommandHandler>(() => new AddLinkCommandHandler(linkRepo, console)) },
                 { CommandType.ShowLinks, new Lazy<ICommandHandler>(() => new ShowLinksCommandHandler(interfaceLinkRepo)) },
                 { CommandType.UpdateLink, new Lazy<ICommandHandler>(() => new UpdateLinkCommandHandler(linkRepo)) },
                 { CommandType.DeleteLink, new Lazy<ICommandHandler>(() => new DeleteLinkCommandHandler(linkRepo)) },

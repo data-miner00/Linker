@@ -11,21 +11,27 @@ using Linker.Cli.Commands;
 using Microsoft.Data.Sqlite;
 using TechTalk.SpecFlow.Assist;
 using Linker.Cli.UnitTests.Support;
+using Spectre.Console.Rendering;
+
+using IAnsiConsole = Spectre.Console.IAnsiConsole;
 
 [Binding]
 [Scope(Feature = "AddLinkCommandHandler")]
 internal class AddLinkCommandHandlerStepDefinitions : BaseSteps<AddLinkCommandHandlerStepDefinitions>
 {
     private readonly Mock<IRepository<Link>> mockRepository;
+    private readonly Mock<IAnsiConsole> mockConsole;
     private readonly AddLinkCommandHandler commandHandler;
 
     private IRepository<Link>? repository;
+    private IAnsiConsole? console;
     private object? commandArguments;
 
     public AddLinkCommandHandlerStepDefinitions()
     {
         this.mockRepository = new Mock<IRepository<Link>>();
-        this.commandHandler = new AddLinkCommandHandler(this.mockRepository.Object);
+        this.mockConsole = new Mock<IAnsiConsole>();
+        this.commandHandler = new AddLinkCommandHandler(this.mockRepository.Object, this.mockConsole.Object);
     }
 
     [BeforeScenario]
@@ -35,10 +41,20 @@ internal class AddLinkCommandHandlerStepDefinitions : BaseSteps<AddLinkCommandHa
         Service.Instance.ValueRetrievers.Register(new StringValueRetriver());
     }
 
-    [Given("the repository is null")]
-    public void GivenTheRepositoryIsNull()
+    [Given("the repository is (.*?)null")]
+    public void GivenTheRepositoryIs(string isNull)
     {
-        this.repository = null;
+        this.repository = string.IsNullOrEmpty(isNull)
+            ? null
+            : this.mockRepository.Object;
+    }
+
+    [Given("the console is (.*?)null")]
+    public void GivenTheConsoleIs(string isNull)
+    {
+        this.console = string.IsNullOrEmpty(isNull)
+            ? null
+            : this.mockConsole.Object;
     }
 
     [Given("the command argument is null")]
@@ -103,7 +119,7 @@ internal class AddLinkCommandHandlerStepDefinitions : BaseSteps<AddLinkCommandHa
     [When("I instantiate the AddLinkCommandHandler")]
     public void WhenIInstantiateTheAddLinkCommandHandler()
     {
-        this.RecordException(() => new AddLinkCommandHandler(this.repository));
+        this.RecordException(() => new AddLinkCommandHandler(this.repository, this.console));
     }
 
     [When("I handle the command arguments")]
@@ -154,6 +170,13 @@ internal class AddLinkCommandHandlerStepDefinitions : BaseSteps<AddLinkCommandHa
     public void ThenIShouldExpectEnvironmentExitCodeToBe(int exitCode)
     {
         Assert.Equal(exitCode, Environment.ExitCode);
+    }
+
+    [Then("I should expect console write to be called")]
+    public void ThenIShouldExpectConsoleMarkupLineToBeCalled()
+    {
+        this.mockConsole
+            .Verify(x => x.Write(It.IsAny<IRenderable>()), Times.Once());
     }
 
     public override AddLinkCommandHandlerStepDefinitions GetSteps()

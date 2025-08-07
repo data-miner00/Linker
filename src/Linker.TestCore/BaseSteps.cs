@@ -159,7 +159,7 @@
         /// <returns>The step class.</returns>
         public TSteps ThenIExpectExceptionIsThrown(Type exceptionType)
         {
-            exceptionType.Should().BeAssignableTo(typeof(Exception));
+            exceptionType.Should().BeAssignableTo<Exception>();
             this.Exception.Should().BeOfType(exceptionType);
             return this.GetSteps();
         }
