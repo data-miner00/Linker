@@ -119,13 +119,13 @@ internal class AddLinkCommandHandlerStepDefinitions : BaseSteps<AddLinkCommandHa
     [When("I instantiate the AddLinkCommandHandler")]
     public void WhenIInstantiateTheAddLinkCommandHandler()
     {
-        this.RecordException(() => new AddLinkCommandHandler(this.repository, this.console));
+        this.RecordException(() => new AddLinkCommandHandler(this.repository!, this.console!));
     }
 
     [When("I handle the command arguments")]
     public Task WhenIHandleTheCommandArguments()
     {
-        return this.RecordExceptionAsync(() => this.commandHandler.HandleAsync(this.commandArguments));
+        return this.RecordExceptionAsync(() => this.commandHandler.HandleAsync(this.commandArguments!));
     }
 
     [Then("I should expect an exception to be thrown")]

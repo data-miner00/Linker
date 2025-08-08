@@ -114,13 +114,13 @@ internal class DeleteLinkCommandHandlerSteps : BaseSteps<DeleteLinkCommandHandle
     [When("I instantiate the DeleteLinkCommandHandler")]
     public void WhenIInstantiateTheDeleteLinkCommandHandler()
     {
-        this.RecordException(() => new DeleteLinkCommandHandler(this.repository, this.console));
+        this.RecordException(() => new DeleteLinkCommandHandler(this.repository!, this.console!));
     }
 
     [When("I handle the command arguments")]
     public Task WhenIHandleTheCommandArguments()
     {
-        return this.RecordExceptionAsync(() => this.commandHandler.HandleAsync(this.commandArguments));
+        return this.RecordExceptionAsync(() => this.commandHandler.HandleAsync(this.commandArguments!));
     }
 
     [Then("I should expect ArgumentNullException to be thrown")]

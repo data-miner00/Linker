@@ -82,23 +82,27 @@ internal class CreateListCommandHandlerSteps : BaseSteps<CreateListCommandHandle
     [When("I instantiate the CreateListCommandHandler")]
     public void WhenIConstructTheHandler()
     {
-        this.RecordException(() => new CreateListCommandHandler(this.repository, this.console));
+        this.RecordException(() => new CreateListCommandHandler(this.repository!, this.console!));
     }
 
     [When("I handle the command arguments")]
     public Task WhenIHandleTheCommandArguments()
     {
-        return this.RecordExceptionAsync(() => this.handler.HandleAsync(this.commandArguments));
+        return this.RecordExceptionAsync(() => this.handler.HandleAsync(this.commandArguments!));
     }
 
     [Then("I should expect (.*?) exception to be thrown")]
     public void ThenIExpectExceptionToThrow(string errorType)
     {
-        var error = string.Equals(errorType, "argument null")
-            ? typeof(ArgumentNullException)
-            : string.Equals(errorType, "argument")
-            ? typeof(ArgumentException)
-            : typeof(InvalidOperationException);
+        var isArgumentException = string.Equals(errorType, "argument");
+        var isArgumentNullException = string.Equals(errorType, "argument null");
+
+        var error = errorType switch
+        {
+            _ when isArgumentException => typeof(ArgumentException),
+            _ when isArgumentNullException => typeof(ArgumentNullException),
+            _ => typeof(InvalidOperationException),
+        };
 
         this.ThenIExpectExceptionIsThrown(error);
     }
