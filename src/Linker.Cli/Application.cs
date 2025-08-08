@@ -16,14 +16,19 @@ internal sealed class Application
     private const int FailureCode = 0x667;
 
     private readonly IDictionary<CommandType, Lazy<ICommandHandler>> commandHandlers;
+    private readonly IAnsiConsole console;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Application"/> class.
     /// </summary>
     /// <param name="commandHandlers">The dictionary of command handlers.</param>
-    public Application(IDictionary<CommandType, Lazy<ICommandHandler>> commandHandlers)
+    /// <param name="console">The ansi console instance.</param>
+    public Application(
+        IDictionary<CommandType, Lazy<ICommandHandler>> commandHandlers,
+        IAnsiConsole console)
     {
         this.commandHandlers = Guard.ThrowIfNull(commandHandlers);
+        this.console = Guard.ThrowIfNull(console);
     }
 
     /// <summary>
@@ -44,7 +49,7 @@ internal sealed class Application
 
             if (command.CommandType == CommandType.Help)
             {
-                DisplayHelpMessage();
+                this.DisplayHelpMessage();
             }
             else
             {
@@ -54,7 +59,7 @@ internal sealed class Application
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine($"[red]The command has not been registered.[/]");
+                    this.console.MarkupLine($"[red]The command provided are not recognized.[/]");
                 }
             }
 
@@ -62,17 +67,17 @@ internal sealed class Application
         }
         catch (KeyNotFoundException ex) when (ex.Message.StartsWith("The given key"))
         {
-            AnsiConsole.MarkupLine($"[red]The command could not be found.[/]");
-            DisplayHelpMessage();
+            this.console.MarkupLine($"[red]The command could not be found.[/]");
+            this.DisplayHelpMessage();
 
             return FailureCode;
         }
         catch (Exception ex)
         {
 #if DEBUG
-            AnsiConsole.WriteException(ex);
+            this.console.WriteException(ex);
 #else
-            AnsiConsole.MarkupLine($"[red]{ex.Message}[/]");
+            this.console.MarkupLine($"[red]{ex.Message}[/]");
 #endif
             return FailureCode;
         }
@@ -80,12 +85,12 @@ internal sealed class Application
         finally
         {
             stopwatch.Stop();
-            AnsiConsole.MarkupLine("Time taken: [green]{0}ms[/]", stopwatch.ElapsedMilliseconds);
+            this.console.MarkupLine("Time taken: [green]{0}ms[/]", stopwatch.ElapsedMilliseconds);
         }
 #endif
     }
 
-    private static void DisplayHelpMessage()
+    private void DisplayHelpMessage()
     {
         var prompt = @"usage: linker <command> [options]
 
@@ -112,6 +117,6 @@ Commands:
 Options:
   -h, --help               Show help information.";
 
-        Console.WriteLine(prompt);
+        this.console.WriteLine(prompt);
     }
 }
