@@ -949,6 +949,15 @@ internal static class ArgumentParser
     private static VisitListLinkCommandArguments ParseVisitListLinkCommand(string[] args)
     {
         var index = 2;
+
+        if (IsHelp(args[index]))
+        {
+            return new VisitListLinkCommandArguments
+            {
+                ShowHelp = true,
+            };
+        }
+
         var command = new VisitListLinkCommandArguments
         {
             ListId = int.Parse(args[index++]),
