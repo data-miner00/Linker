@@ -30,6 +30,7 @@ internal static class ArgumentParser
         { "list get", CommandType.GetList },
         { "list search", CommandType.SearchLists },
         { "list export", CommandType.ExportLists },
+        { "list visit", CommandType.VisitListLink },
     };
 
     /// <summary>
@@ -76,6 +77,7 @@ internal static class ArgumentParser
             CommandType.ExportLinks => ParseExportLinksCommand(args),
             CommandType.SearchLists => ParseSearchListCommand(args),
             CommandType.ExportLists => ParseExportListsCommand(args),
+            CommandType.VisitListLink => ParseVisitListLinkCommand(args),
             _ => throw new NotImplementedException(),
         };
 
@@ -929,6 +931,51 @@ internal static class ArgumentParser
             {
                 command.ListId = int.Parse(args[index + 1]);
                 index += 2;
+            }
+            else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
+            {
+                command.ShowHelp = true;
+                index++;
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized args");
+            }
+        }
+
+        return command;
+    }
+
+    private static VisitListLinkCommandArguments ParseVisitListLinkCommand(string[] args)
+    {
+        var index = 2;
+        var command = new VisitListLinkCommandArguments
+        {
+            ListId = int.Parse(args[index++]),
+        };
+
+        while (index < args.Length)
+        {
+            var currentArgs = args[index];
+            if (!currentArgs.StartsWith('-'))
+            {
+                throw new ArgumentException("Positional arguments must come before the optional arguments.");
+            }
+
+            if (currentArgs.Equals("--all") || currentArgs.Equals("-a"))
+            {
+                command.All = true;
+                index++;
+            }
+            else if (currentArgs.Equals("--random") || currentArgs.Equals("-r"))
+            {
+                command.Random = true;
+                index++;
+            }
+            else if (currentArgs.Equals("--last") || currentArgs.Equals("-l"))
+            {
+                command.Last = true;
+                index++;
             }
             else if (currentArgs.Equals("--help") || currentArgs.Equals("-h"))
             {

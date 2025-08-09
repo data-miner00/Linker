@@ -161,6 +161,7 @@ internal static class ContainerConfig
                 { CommandType.ExportLinks, new Lazy<ICommandHandler>(() => new ExportLinksCommandHandler(linkRepo, linkSerializers, linksDefaultExportPath)) },
                 { CommandType.SearchLists, new Lazy<ICommandHandler>(() => new SearchListCommandHandler(listRepo)) },
                 { CommandType.ExportLists, new Lazy<ICommandHandler>(() => new ExportListsCommandHandler(listRepo, linkSerializers, listSerializers, listsDefaultExportPath)) },
+                { CommandType.VisitListLink, new Lazy<ICommandHandler>(() => new VisitListLinkCommandHandler(visitRepo, listRepo)) },
             };
 
             return commandHandlers;
