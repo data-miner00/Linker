@@ -2,7 +2,7 @@
   "profiles": {
     "Linker.Cli.Dev": {
       "commandName": "Project",
-      "commandLineArgs": "show",
+      "commandLineArgs": "list visit 1 --all --random",
       "environmentVariables": {
         "NETCORE_ENVIRONMENT": "Development"
       }
