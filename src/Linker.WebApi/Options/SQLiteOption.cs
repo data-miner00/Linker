@@ -1,8 +1,11 @@
 ﻿namespace Linker.WebApi.Options
 {
+    using System.ComponentModel;
+
     /// <summary>
     /// The options required for SQLite.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     internal sealed class SQLiteOption
     {
         /// <summary>

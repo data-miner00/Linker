@@ -114,9 +114,58 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.Given("the repository is null", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 8
- testRunner.When("I instantiate the AddLinkCommandHandler", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.And("the console is not null", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 9
+ testRunner.When("I instantiate the AddLinkCommandHandler", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 10
+ testRunner.Then("I should expect an exception to be thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="When the console is null, it should throw an exception")]
+        [Xunit.TraitAttribute("FeatureTitle", "AddLinkCommandHandler")]
+        [Xunit.TraitAttribute("Description", "When the console is null, it should throw an exception")]
+        [Xunit.TraitAttribute("Category", "constructor")]
+        public virtual void WhenTheConsoleIsNullItShouldThrowAnException()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "constructor"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("When the console is null, it should throw an exception", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 13
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 14
+ testRunner.Given("the console is null", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 15
+ testRunner.And("the repository is not null", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 16
+ testRunner.When("I instantiate the AddLinkCommandHandler", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 17
  testRunner.Then("I should expect an exception to be thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -135,7 +184,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "arguments"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Handling a null command argument, it should throw an exception", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 12
+#line 20
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -155,13 +204,13 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 13
+#line 21
     testRunner.Given("the command argument is null", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 14
+#line 22
  testRunner.When("I handle the command arguments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 15
+#line 23
  testRunner.Then("I should expect an exception to be thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -180,7 +229,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "arguments"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Handling an invalid type argument, it should throw an exception", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 18
+#line 26
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -200,13 +249,13 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 19
+#line 27
     testRunner.Given("the command argument is incorrect type", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 20
+#line 28
  testRunner.When("I handle the command arguments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 21
+#line 29
  testRunner.Then("I should expect ArgumentException to be thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -225,7 +274,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "arguments"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Given request for help, should do nothing", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 24
+#line 32
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -245,16 +294,16 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 25
+#line 33
     testRunner.Given("the command argument is help", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 26
+#line 34
  testRunner.When("I handle the command arguments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 27
+#line 35
  testRunner.Then("I should expect AddAsync to not be called", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 28
+#line 36
     testRunner.And("I should expect no exception is thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -273,7 +322,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "arguments"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Given a valid command argument, it should call the repository", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 31
+#line 39
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -293,16 +342,16 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 32
+#line 40
     testRunner.Given("the command with url \"https://google.com\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 33
+#line 41
  testRunner.When("I handle the command arguments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 34
+#line 42
  testRunner.Then("I should expect AddAsync to be called with command with url \"https://google.com\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 35
+#line 43
     testRunner.And("I should expect no exception is thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -321,7 +370,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "repository"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Does not allow duplicate URLs", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 38
+#line 46
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -341,22 +390,25 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 39
+#line 47
     testRunner.Given("the url already exists", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 40
+#line 48
     testRunner.And("the command with url \"https://google.com\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 41
+#line 49
  testRunner.When("I handle the command arguments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 42
+#line 50
  testRunner.Then("I should expect AddAsync to be called with command with url \"https://google.com\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 43
+#line 51
  testRunner.And("I should expect environment exit code to be 1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 44
+#line 52
+ testRunner.And("I should expect console write to be called", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 53
     testRunner.And("I should expect no exception is thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -375,7 +427,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "repository"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Uncaught exception occurred", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 47
+#line 56
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -395,19 +447,19 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 48
+#line 57
     testRunner.Given("the command with url \"https://google.com\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 49
+#line 58
  testRunner.And("SqliteException occurs", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 50
+#line 59
  testRunner.When("I handle the command arguments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 51
+#line 60
  testRunner.Then("I should expect AddAsync to be called with command with url \"https://google.com\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 52
+#line 61
  testRunner.And("I should expect SqliteException to be thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -426,7 +478,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "repository"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Valid command argument link added", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 55
+#line 64
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -462,13 +514,13 @@ this.ScenarioInitialize(scenarioInfo);
                             "google,search",
                             "C#",
                             "false"});
-#line 56
+#line 65
     testRunner.Given("I have the command argument", ((string)(null)), table1, "Given ");
 #line hidden
-#line 59
+#line 68
  testRunner.When("I handle the command arguments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 60
+#line 69
  testRunner.Then("I should expect AddAsync to be called with command with url \"https://google.com\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }

@@ -87,6 +87,15 @@ internal static class ArgumentParser
     private static AddLinkCommandArguments ParseAddLinkCommand(string[] args)
     {
         var index = 1;
+
+        if (IsHelp(args[index]))
+        {
+            return new AddLinkCommandArguments
+            {
+                ShowHelp = true,
+            };
+        }
+
         var command = new AddLinkCommandArguments
         {
             Url = args[index++],
@@ -143,6 +152,15 @@ internal static class ArgumentParser
     private static ShowLinksCommandArguments ParseShowLinksCommand(string[] args)
     {
         var index = 1;
+
+        if (IsHelp(args[index]))
+        {
+            return new ShowLinksCommandArguments
+            {
+                ShowHelp = true,
+            };
+        }
+
         var command = new ShowLinksCommandArguments();
 
         while (index < args.Length)
@@ -187,6 +205,15 @@ internal static class ArgumentParser
     private static UpdateLinkCommandArguments ParseUpdateLinkCommand(string[] args)
     {
         var index = 1;
+
+        if (IsHelp(args[index]))
+        {
+            return new UpdateLinkCommandArguments
+            {
+                ShowHelp = true,
+            };
+        }
+
         var command = new UpdateLinkCommandArguments
         {
             Id = int.Parse(args[index++]),
@@ -268,6 +295,15 @@ internal static class ArgumentParser
     private static DeleteLinkCommandArguments ParseDeleteLinkCommand(string[] args)
     {
         var index = 1;
+
+        if (IsHelp(args[index]))
+        {
+            return new DeleteLinkCommandArguments
+            {
+                ShowHelp = true,
+            };
+        }
+
         var command = new DeleteLinkCommandArguments
         {
             Id = int.Parse(args[index++]),
@@ -304,6 +340,14 @@ internal static class ArgumentParser
     private static VisitLinkCommandArguments ParseVisitLinkCommand(string[] args)
     {
         var index = 1;
+
+        if (IsHelp(args[index]))
+        {
+            return new VisitLinkCommandArguments
+            {
+                ShowHelp = true,
+            };
+        }
 
         var command = new VisitLinkCommandArguments();
 
@@ -349,6 +393,14 @@ internal static class ArgumentParser
     {
         var index = 2;
 
+        if (IsHelp(args[index]))
+        {
+            return new CreateListCommandArguments
+            {
+                ShowHelp = true,
+            };
+        }
+
         var command = new CreateListCommandArguments
         {
             Name = args[index++],
@@ -385,6 +437,14 @@ internal static class ArgumentParser
     private static UpdateListCommandArguments ParseUpdateListCommand(string[] args)
     {
         var index = 2;
+
+        if (IsHelp(args[index]))
+        {
+            return new UpdateListCommandArguments
+            {
+                ShowHelp = true,
+            };
+        }
 
         var command = new UpdateListCommandArguments
         {
@@ -427,6 +487,15 @@ internal static class ArgumentParser
     private static DeleteListCommandArguments ParseDeleteListCommand(string[] args)
     {
         var index = 2;
+
+        if (IsHelp(args[index]))
+        {
+            return new DeleteListCommandArguments
+            {
+                ShowHelp = true,
+            };
+        }
+
         var command = new DeleteListCommandArguments
         {
             Id = int.Parse(args[index++]),
@@ -463,6 +532,15 @@ internal static class ArgumentParser
     private static ShowListsCommandArguments ParseShowListsCommand(string[] args)
     {
         var index = 2;
+
+        if (IsHelp(args[index]))
+        {
+            return new ShowListsCommandArguments
+            {
+                ShowHelp = true,
+            };
+        }
+
         var command = new ShowListsCommandArguments();
 
         while (index < args.Length)
@@ -528,7 +606,14 @@ internal static class ArgumentParser
     {
         var index = 1;
 
-        // TODO: Try to make the first argument unnecessary for help command.
+        if (IsHelp(args[index]))
+        {
+            return new SearchLinkCommandArguments
+            {
+                ShowHelp = true,
+            };
+        }
+
         var command = new SearchLinkCommandArguments
         {
             Keyword = args[index++],
@@ -580,6 +665,14 @@ internal static class ArgumentParser
     private static GetLinkCommandArguments ParseGetLinkCommand(string[] args)
     {
         var index = 1;
+
+        if (IsHelp(args[index]))
+        {
+            return new GetLinkCommandArguments
+            {
+                ShowHelp = true,
+            };
+        }
 
         var command = new GetLinkCommandArguments
         {
@@ -653,6 +746,14 @@ internal static class ArgumentParser
     {
         var index = 2;
 
+        if (IsHelp(args[index]))
+        {
+            return new GetListCommandArguments
+            {
+                ShowHelp = true,
+            };
+        }
+
         var command = new GetListCommandArguments
         {
             Id = int.Parse(args[index++]),
@@ -700,6 +801,14 @@ internal static class ArgumentParser
     {
         var index = 1;
 
+        if (IsHelp(args[index]))
+        {
+            return new ExportLinksCommandArgument
+            {
+                ShowHelp = true,
+            };
+        }
+
         var command = new ExportLinksCommandArgument();
 
         while (index < args.Length)
@@ -744,6 +853,14 @@ internal static class ArgumentParser
     {
         var index = 2;
 
+        if (IsHelp(args[index]))
+        {
+            return new SearchListCommandArguments
+            {
+                ShowHelp = true,
+            };
+        }
+
         var command = new SearchListCommandArguments
         {
             Keyword = args[index++],
@@ -775,6 +892,14 @@ internal static class ArgumentParser
     private static ExportListsCommandArguments ParseExportListsCommand(string[] args)
     {
         var index = 2;
+
+        if (IsHelp(args[index]))
+        {
+            return new ExportListsCommandArguments
+            {
+                ShowHelp = true,
+            };
+        }
 
         var command = new ExportListsCommandArguments();
 
@@ -824,6 +949,15 @@ internal static class ArgumentParser
     private static VisitListLinkCommandArguments ParseVisitListLinkCommand(string[] args)
     {
         var index = 2;
+
+        if (IsHelp(args[index]))
+        {
+            return new VisitListLinkCommandArguments
+            {
+                ShowHelp = true,
+            };
+        }
+
         var command = new VisitListLinkCommandArguments
         {
             ListId = int.Parse(args[index++]),
@@ -864,5 +998,11 @@ internal static class ArgumentParser
         }
 
         return command;
+    }
+
+    private static bool IsHelp(string keyword)
+    {
+        string[] helps = ["help", "--help", "-h"];
+        return helps.Contains(keyword, StringComparer.OrdinalIgnoreCase);
     }
 }

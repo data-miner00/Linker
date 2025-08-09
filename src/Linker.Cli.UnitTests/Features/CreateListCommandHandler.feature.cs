@@ -19,7 +19,7 @@ namespace Linker.Cli.UnitTests.Features
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.9.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class DeleteLinkCommandHandlerFeature : object, Xunit.IClassFixture<DeleteLinkCommandHandlerFeature.FixtureData>, System.IDisposable
+    public partial class CreateListCommandHandlerFeature : object, Xunit.IClassFixture<CreateListCommandHandlerFeature.FixtureData>, System.IDisposable
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
@@ -28,10 +28,10 @@ namespace Linker.Cli.UnitTests.Features
         
         private Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "DeleteLinkCommandHandler.feature"
+#line 1 "CreateListCommandHandler.feature"
 #line hidden
         
-        public DeleteLinkCommandHandlerFeature(DeleteLinkCommandHandlerFeature.FixtureData fixtureData, Linker_Cli_UnitTests_XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public CreateListCommandHandlerFeature(CreateListCommandHandlerFeature.FixtureData fixtureData, Linker_Cli_UnitTests_XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
             this.TestInitialize();
@@ -40,7 +40,7 @@ namespace Linker.Cli.UnitTests.Features
         public static void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "DeleteLinkCommandHandler", "The behaviours for delete link command handler.", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "CreateListCommandHandler", "The behaviours for the create list command handler.", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -80,16 +80,16 @@ namespace Linker.Cli.UnitTests.Features
             this.TestTearDown();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Constructor invalid parameters: null repository")]
-        [Xunit.TraitAttribute("FeatureTitle", "DeleteLinkCommandHandler")]
-        [Xunit.TraitAttribute("Description", "Constructor invalid parameters: null repository")]
+        [Xunit.SkippableFactAttribute(DisplayName="Invalid constructor parameters: null repository")]
+        [Xunit.TraitAttribute("FeatureTitle", "CreateListCommandHandler")]
+        [Xunit.TraitAttribute("Description", "Invalid constructor parameters: null repository")]
         [Xunit.TraitAttribute("Category", "constructor")]
-        public virtual void ConstructorInvalidParametersNullRepository()
+        public virtual void InvalidConstructorParametersNullRepository()
         {
             string[] tagsOfScenario = new string[] {
                     "constructor"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Constructor invalid parameters: null repository", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Invalid constructor parameters: null repository", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 6
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -111,31 +111,31 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 7
- testRunner.Given("the link repository is null", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+    testRunner.Given("the repository is null", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 8
- testRunner.And("the console is not null", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("the console is not null", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 9
- testRunner.When("I instantiate the DeleteLinkCommandHandler", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.When("I instantiate the CreateListCommandHandler", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 10
- testRunner.Then("I should expect ArgumentNullException to be thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("I should expect argument null exception to be thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Constructor invalid parameters: null console")]
-        [Xunit.TraitAttribute("FeatureTitle", "DeleteLinkCommandHandler")]
-        [Xunit.TraitAttribute("Description", "Constructor invalid parameters: null console")]
+        [Xunit.SkippableFactAttribute(DisplayName="Invalid constructor parameters: null console")]
+        [Xunit.TraitAttribute("FeatureTitle", "CreateListCommandHandler")]
+        [Xunit.TraitAttribute("Description", "Invalid constructor parameters: null console")]
         [Xunit.TraitAttribute("Category", "constructor")]
-        public virtual void ConstructorInvalidParametersNullConsole()
+        public virtual void InvalidConstructorParametersNullConsole()
         {
             string[] tagsOfScenario = new string[] {
                     "constructor"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Constructor invalid parameters: null console", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Invalid constructor parameters: null console", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 13
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -157,31 +157,33 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 14
- testRunner.Given("the link repository is not null", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+    testRunner.Given("the repository is not null", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 15
- testRunner.And("the console is null", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("the console is null", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 16
- testRunner.When("I instantiate the DeleteLinkCommandHandler", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.When("I instantiate the CreateListCommandHandler", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 17
- testRunner.Then("I should expect ArgumentNullException to be thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("I should expect argument null exception to be thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Handle null arguments")]
-        [Xunit.TraitAttribute("FeatureTitle", "DeleteLinkCommandHandler")]
-        [Xunit.TraitAttribute("Description", "Handle null arguments")]
-        [Xunit.TraitAttribute("Category", "handler")]
-        public virtual void HandleNullArguments()
+        [Xunit.SkippableFactAttribute(DisplayName="Handling a null command argument, it should throw an exception")]
+        [Xunit.TraitAttribute("FeatureTitle", "CreateListCommandHandler")]
+        [Xunit.TraitAttribute("Description", "Handling a null command argument, it should throw an exception")]
+        [Xunit.TraitAttribute("Category", "handle")]
+        [Xunit.TraitAttribute("Category", "arguments")]
+        public virtual void HandlingANullCommandArgumentItShouldThrowAnException()
         {
             string[] tagsOfScenario = new string[] {
-                    "handler"};
+                    "handle",
+                    "arguments"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Handle null arguments", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Handling a null command argument, it should throw an exception", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 20
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -203,20 +205,20 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 21
- testRunner.Given("the command argument is null", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+    testRunner.Given("the command argument is null", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 22
- testRunner.When("I handle the command arguments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.When("I handle the command arguments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 23
- testRunner.Then("I should expect ArgumentNullException to be thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("I should expect argument null exception to be thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
         [Xunit.SkippableFactAttribute(DisplayName="Handling an invalid type argument, it should throw an exception")]
-        [Xunit.TraitAttribute("FeatureTitle", "DeleteLinkCommandHandler")]
+        [Xunit.TraitAttribute("FeatureTitle", "CreateListCommandHandler")]
         [Xunit.TraitAttribute("Description", "Handling an invalid type argument, it should throw an exception")]
         [Xunit.TraitAttribute("Category", "handle")]
         [Xunit.TraitAttribute("Category", "arguments")]
@@ -251,27 +253,25 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Given("the command argument is incorrect type", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 28
- testRunner.When("I handle the command arguments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.When("I handle the command arguments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 29
- testRunner.Then("I should expect ArgumentException to be thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("I should expect argument exception to be thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Request for help")]
-        [Xunit.TraitAttribute("FeatureTitle", "DeleteLinkCommandHandler")]
-        [Xunit.TraitAttribute("Description", "Request for help")]
+        [Xunit.SkippableFactAttribute(DisplayName="Getting help for command")]
+        [Xunit.TraitAttribute("FeatureTitle", "CreateListCommandHandler")]
+        [Xunit.TraitAttribute("Description", "Getting help for command")]
         [Xunit.TraitAttribute("Category", "handle")]
-        [Xunit.TraitAttribute("Category", "arguments")]
-        public virtual void RequestForHelp()
+        public virtual void GettingHelpForCommand()
         {
             string[] tagsOfScenario = new string[] {
-                    "handle",
-                    "arguments"};
+                    "handle"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Request for help", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Getting help for command", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 32
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -296,37 +296,29 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Given("the command argument is help", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 34
- testRunner.When("I handle the command arguments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.When("I handle the command arguments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 35
- testRunner.Then("I should expect GetByIdAsync to not be called", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("I should expect console write being called 1 times", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 36
- testRunner.And("I should expect RemoveAsync to not be called", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 37
- testRunner.And("I should expect console write to be called 0 times", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 38
-    testRunner.And("I should expect no exception is thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.Then("I should expect no exception is thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Link does not exist for deletion")]
-        [Xunit.TraitAttribute("FeatureTitle", "DeleteLinkCommandHandler")]
-        [Xunit.TraitAttribute("Description", "Link does not exist for deletion")]
+        [Xunit.SkippableFactAttribute(DisplayName="Normal flow, call add async")]
+        [Xunit.TraitAttribute("FeatureTitle", "CreateListCommandHandler")]
+        [Xunit.TraitAttribute("Description", "Normal flow, call add async")]
         [Xunit.TraitAttribute("Category", "handle")]
-        [Xunit.TraitAttribute("Category", "arguments")]
-        public virtual void LinkDoesNotExistForDeletion()
+        public virtual void NormalFlowCallAddAsync()
         {
             string[] tagsOfScenario = new string[] {
-                    "handle",
-                    "arguments"};
+                    "handle"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Link does not exist for deletion", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 41
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Normal flow, call add async", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 39
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -346,79 +338,25 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
+#line 40
+    testRunner.Given("the command argument has name \"hello\" and description \"world\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 41
+    testRunner.When("I handle the command arguments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
 #line 42
-    testRunner.Given("the link with id 1 does not exist", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+    testRunner.Then("I should expect console write being called 0 times", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
+                TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Name",
+                            "Description"});
+                table2.AddRow(new string[] {
+                            "hello",
+                            "world"});
 #line 43
- testRunner.When("I handle the command arguments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 44
- testRunner.Then("I should expect GetByIdAsync to be called with id 1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-#line 45
- testRunner.And("I should expect RemoveAsync to not be called", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("I should expect repository add async to be called with argument", ((string)(null)), table2, "And ");
 #line hidden
 #line 46
- testRunner.And("I should expect console write to be called 1 times", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 47
-    testRunner.And("I should expect no exception is thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [Xunit.SkippableFactAttribute(DisplayName="Link exist for deletion and confirm delete")]
-        [Xunit.TraitAttribute("FeatureTitle", "DeleteLinkCommandHandler")]
-        [Xunit.TraitAttribute("Description", "Link exist for deletion and confirm delete")]
-        [Xunit.TraitAttribute("Category", "handle")]
-        [Xunit.TraitAttribute("Category", "arguments")]
-        public virtual void LinkExistForDeletionAndConfirmDelete()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "handle",
-                    "arguments"};
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Link exist for deletion and confirm delete", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 50
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            bool isScenarioIgnored = default(bool);
-            bool isFeatureIgnored = default(bool);
-            if ((tagsOfScenario != null))
-            {
-                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((this._featureTags != null))
-            {
-                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((isScenarioIgnored || isFeatureIgnored))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 51
-    testRunner.Given("the link with id 1 exists", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 52
- testRunner.And("the link can be successfully deleted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 53
- testRunner.When("I handle the command arguments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 54
- testRunner.Then("I should expect GetByIdAsync to be called with id 1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-#line 55
- testRunner.And("I should expect RemoveAsync to be called with id 1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 56
- testRunner.And("I should expect console write to be called 1 times", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 57
     testRunner.And("I should expect no exception is thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -432,12 +370,12 @@ this.ScenarioInitialize(scenarioInfo);
             
             public FixtureData()
             {
-                DeleteLinkCommandHandlerFeature.FeatureSetup();
+                CreateListCommandHandlerFeature.FeatureSetup();
             }
             
             void System.IDisposable.Dispose()
             {
-                DeleteLinkCommandHandlerFeature.FeatureTearDown();
+                CreateListCommandHandlerFeature.FeatureTearDown();
             }
         }
     }
