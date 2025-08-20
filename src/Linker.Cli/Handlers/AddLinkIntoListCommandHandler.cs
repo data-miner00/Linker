@@ -35,26 +35,26 @@ internal sealed class AddLinkIntoListCommandHandler : ICommandHandler
     /// <inheritdoc/>
     public async Task HandleAsync(object commandArguments)
     {
-        if (commandArguments is AddLinkIntoListCommandArguments args)
+        Guard.ThrowIfNull(commandArguments);
+
+        if (commandArguments is not AddLinkIntoListCommandArguments args)
         {
-            var list = await this.listRepository.GetByIdAsync(args.ListId);
-            var link = await this.linkRepository.GetByIdAsync(args.LinkId);
-
-            if (list is null)
-            {
-                throw new InvalidOperationException($"List with ID '{args.ListId}' does not exist.");
-            }
-            else if (link is null)
-            {
-                throw new InvalidOperationException($"Link with ID '{args.LinkId}' does not exist.");
-            }
-
-            list.Links.Add(link);
-            await this.context.SaveChangesAsync();
-
-            return;
+            throw new ArgumentException("Invalid args");
         }
 
-        throw new ArgumentException("Invalid args");
+        var list = await this.listRepository.GetByIdAsync(args.ListId);
+        var link = await this.linkRepository.GetByIdAsync(args.LinkId);
+
+        if (list is null)
+        {
+            throw new InvalidOperationException($"List with ID '{args.ListId}' does not exist.");
+        }
+        else if (link is null)
+        {
+            throw new InvalidOperationException($"Link with ID '{args.LinkId}' does not exist.");
+        }
+
+        list.Links.Add(link);
+        await this.context.SaveChangesAsync();
     }
 }
