@@ -1,0 +1,31 @@
+﻿@using Linker.Core.V2.Models
+@model User 
+@{
+    ViewData["Title"] = "Edit my profile";
+}
+
+<partial name="_Notification" />
+
+<h1 class="text-2xl font-bold">Edit Profile</h1>
+
+<form asp-action="Edit" class="border border-black border-solid p-4">
+    <div class="">
+        <label for="email">Email: </label>
+        <input name="email" type="email" value="@Model.Email" />
+    </div>
+
+    <div>
+        <label for="photoUrl">Photo URL: </label>
+        <input name="photoUrl" type="text" value="@Model.PhotoUrl" />
+    </div>
+
+    <div>
+        <label for="description">Description: </label>
+        <textarea class="bg-gray-100" name="description">@Model.Description</textarea>
+    </div>
+
+    <div class="flex gap-1 items-center">
+        <button class="border border-solid border-black px-4 py-1 rounded" onclick="history.back()">Cancel</button>
+        <button class="bg-black px-4 py-1 rounded text-white">Submit</button>
+    </div>
+</form>
