@@ -7,7 +7,7 @@ using Linker.Common.Helpers;
 /// <summary>
 /// The application's database context.
 /// </summary>
-public sealed class AppDbContext : DbContext
+public class AppDbContext : DbContext
 {
     private readonly string databaseConnectionString;
 

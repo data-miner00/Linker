@@ -2,6 +2,7 @@
 
 using Linker.Common.Validators;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Xunit;
 
 public sealed class NoNullValuesAttributeTests
@@ -27,4 +28,43 @@ public sealed class NoNullValuesAttributeTests
 
         Assert.True(result);
     }
+
+    [Fact]
+    public void StringsTryValidate_HaveNullValue_Invalid()
+    {
+        var model = new ModelContainsStrings
+        {
+            Strings = new List<string> { "not_null", null },
+        };
+        var results = new List<ValidationResult>();
+        var context = new ValidationContext(model);
+
+        var success = Validator.TryValidateObject(model, context, results, true);
+
+        Assert.False(success);
+        Assert.Single(results);
+        Assert.Equal("Collection items must not be null.", results[0].ErrorMessage);
+    }
+
+    [Fact]
+    public void StringsTryValidate_NoNullValue_Valid()
+    {
+        var model = new ModelContainsStrings
+        {
+            Strings = new List<string> { "not_null", "hello" },
+        };
+        var results = new List<ValidationResult>();
+        var context = new ValidationContext(model);
+
+        var success = Validator.TryValidateObject(model, context, results, true);
+
+        Assert.True(success);
+        Assert.Empty(results);
+    }
+}
+
+file sealed class ModelContainsStrings
+{
+    [NoNullValues]
+    public IEnumerable<string> Strings { get; set; } = null!;
 }

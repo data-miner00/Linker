@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Linker.Common.Helpers;
 using Serilog;
+using Linker.Core.V2.ApiModels;
 
 public sealed class UserController : Controller
 {
@@ -135,5 +136,31 @@ public sealed class UserController : Controller
         var memoryStream = await dataStreamifier.StreamifyAsync(posts.ToList(), default);
 
         return this.File(memoryStream, "application/octet-stream", "exports.json");
+    }
+
+    public async Task<IActionResult> Edit()
+    {
+        var user = await this.repository
+            .GetByIdAsync(this.UserId, this.CancellationToken);
+
+        return this.View(user);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(UpdateUserRequest request)
+    {
+        var user = await this.repository
+            .GetByIdAsync(this.UserId, this.CancellationToken);
+
+        user.Email = request.Email;
+        user.PhotoUrl = request.PhotoUrl;
+        user.Description = request.Description;
+
+        await this.repository.UpdateAsync(user, this.CancellationToken);
+
+        this.TempData[Constants.Success] = "Successfully updated the profile.";
+
+        return this.RedirectToAction(nameof(this.Index));
     }
 }

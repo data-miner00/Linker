@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-
+    <NoWarn>SA1600;SA1400;</NoWarn>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
