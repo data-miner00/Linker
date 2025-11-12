@@ -30,75 +30,73 @@ internal sealed class GetListCommandHandler : ICommandHandler
     {
         Guard.ThrowIfNull(commandArguments);
 
-        if (commandArguments is GetListCommandArguments args)
+        if (commandArguments is not GetListCommandArguments args)
         {
-            Guard.ThrowIfValidationFailed(args);
+            throw new ArgumentException("Invalid args");
+        }
 
-            if (args.ShowHelp)
-            {
-                Console.WriteLine("Usage: linker list get <list-id> [options]");
-                Console.WriteLine("Options:");
-                Console.WriteLine("  --links            Show links in the list.");
-                Console.WriteLine("  --name             Show name of the list.");
-                Console.WriteLine("  --description      Show description of the list.");
-                Console.WriteLine("  --help             Show this help message.");
-                return;
-            }
+        Guard.ThrowIfValidationFailed(args);
 
-            var list = await this.repository.GetByIdAsync(args.Id)
-                ?? throw new InvalidOperationException($"The link with ID '{args.Id}' cannot be found.");
-
-            bool[] flags = [
-                args.Links,
-                args.Name,
-                args.Description,
-            ];
-
-            var isFlagsProvided = Array.Exists(flags, x => x);
-
-            var grid = new Grid();
-
-            grid.AddColumn(new GridColumn());
-            if (!isFlagsProvided || args.Name)
-            {
-                var panel = new Panel(new Text(list.Name).Centered());
-                panel.Expand = true;
-                panel.Border = BoxBorder.Double;
-
-                grid.AddRow(panel);
-            }
-
-            if ((!isFlagsProvided || args.Description) && list.Description != null)
-            {
-                var panel = new Panel(new Text(list.Description).Centered());
-                panel.Expand = true;
-
-                grid.AddRow(panel);
-            }
-
-            if (!isFlagsProvided || args.Links)
-            {
-                var table = new Table();
-                table.AddColumn("No.");
-                table.AddColumn("ID");
-                table.AddColumn("URL");
-                table.AddColumn("Name");
-                table.AddColumn("Tags");
-                table.AddColumn("Created At");
-
-                foreach (var (link, index) in list.Links.WithIndex())
-                {
-                    table.AddRow($"{index + 1}", $"{link.Id}", link.Url, link.Name ?? "-", link.Tags ?? "-", link.CreatedAt.ToString());
-                }
-
-                grid.AddRow(table);
-            }
-
-            AnsiConsole.Write(grid);
-
+        if (args.ShowHelp)
+        {
+            Console.WriteLine("Usage: linker list get <list-id> [options]");
+            Console.WriteLine("Options:");
+            Console.WriteLine("  --links            Show links in the list.");
+            Console.WriteLine("  --name             Show name of the list.");
+            Console.WriteLine("  --description      Show description of the list.");
+            Console.WriteLine("  --help             Show this help message.");
             return;
         }
 
-        throw new ArgumentException("Invalid args");
+        var list = await this.repository.GetByIdAsync(args.Id)
+            ?? throw new InvalidOperationException($"The link with ID '{args.Id}' cannot be found.");
+
+        bool[] flags = [
+            args.Links,
+            args.Name,
+            args.Description,
+        ];
+
+        var isFlagsProvided = Array.Exists(flags, x => x);
+
+        var grid = new Grid();
+
+        grid.AddColumn(new GridColumn());
+        if (!isFlagsProvided || args.Name)
+        {
+            var panel = new Panel(new Text(Markup.Escape(list.Name)).Centered());
+            panel.Expand = true;
+            panel.Border = BoxBorder.Double;
+
+            grid.AddRow(panel);
+        }
+
+        if ((!isFlagsProvided || args.Description) && list.Description != null)
+        {
+            var panel = new Panel(new Text(Markup.Escape(list.Description)).Centered());
+            panel.Expand = true;
+
+            grid.AddRow(panel);
+        }
+
+        if (!isFlagsProvided || args.Links)
+        {
+            var table = new Table();
+            table.AddColumn("No.");
+            table.AddColumn("ID");
+            table.AddColumn("URL");
+            table.AddColumn("Name");
+            table.AddColumn("Tags");
+            table.AddColumn("Created At");
+
+            foreach (var (link, index) in list.Links.WithIndex())
+            {
+                table.AddRow($"{index + 1}", $"{link.Id}", link.Url, Markup.Escape(link.Name ?? "-"), link.Tags ?? "-", link.CreatedAt.ToString());
+            }
+
+            grid.AddRow(table);
+        }
+
+        AnsiConsole.Write(grid);
     }
 }

@@ -31,47 +31,45 @@ internal sealed class ShowListsCommandHandler : ICommandHandler
     {
         Guard.ThrowIfNull(commandArguments);
 
-        if (commandArguments is ShowListsCommandArguments args)
+        if (commandArguments is not ShowListsCommandArguments args)
         {
-            if (args.ShowHelp)
-            {
-                Console.WriteLine("Usage: linker list show [options]");
-                Console.WriteLine("Options:");
-                Console.WriteLine("  --skip <number>     The number of lists to skip.");
-                Console.WriteLine("  --top <number>      The number of lists to show.");
-                Console.WriteLine("  --help             Show this help message.");
-                return;
-            }
+            throw new ArgumentException("Invalid arguments");
+        }
 
-            var lists = await this.repository.GetAllAsync();
-
-            if (lists.Any())
-            {
-                var table = new Table();
-                table.AddColumn("No.");
-                table.AddColumn("ID");
-                table.AddColumn("Name");
-                table.AddColumn("Description");
-                table.AddColumn("Created At");
-
-                foreach (var (list, index) in lists
-                    .SkipOrAll(args.Skip)
-                    .TakeOrAll(args.Top)
-                    .WithIndex())
-                {
-                    table.AddRow($"{index + 1}", $"{list.Id}", list.Name, list.Description ?? "-", list.CreatedAt.ToString());
-                }
-
-                AnsiConsole.Write(table);
-            }
-            else
-            {
-                Console.WriteLine("No lists has been added yet.");
-            }
-
+        if (args.ShowHelp)
+        {
+            Console.WriteLine("Usage: linker list show [options]");
+            Console.WriteLine("Options:");
+            Console.WriteLine("  --skip <number>     The number of lists to skip.");
+            Console.WriteLine("  --top <number>      The number of lists to show.");
+            Console.WriteLine("  --help             Show this help message.");
             return;
         }
 
-        throw new ArgumentException("Args bad");
+        var lists = await this.repository.GetAllAsync();
+
+        if (lists.Any())
+        {
+            var table = new Table();
+            table.AddColumn("No.");
+            table.AddColumn("ID");
+            table.AddColumn("Name");
+            table.AddColumn("Description");
+            table.AddColumn("Created At");
+
+            foreach (var (list, index) in lists
+                .SkipOrAll(args.Skip)
+                .TakeOrAll(args.Top)
+                .WithIndex())
+            {
+                table.AddRow($"{index + 1}", $"{list.Id}", Markup.Escape(list.Name), Markup.Escape(list.Description ?? "-"), list.CreatedAt.ToString());
+            }
+
+            AnsiConsole.Write(table);
+        }
+        else
+        {
+            Console.WriteLine("No lists has been added yet.");
+        }
     }
 }

@@ -78,12 +78,12 @@ internal sealed class GetLinkCommandHandler : ICommandHandler
 
             if (!isFlagsProvided || args.Name)
             {
-                table.AddRow("Name", link.Name ?? "-");
+                table.AddRow("Name", Markup.Escape(link.Name ?? "-"));
             }
 
             if (!isFlagsProvided || args.Description)
             {
-                table.AddRow("Description", link.Description ?? "-");
+                table.AddRow("Description", Markup.Escape(link.Description ?? "-"));
             }
 
             if (!isFlagsProvided || args.WatchLater)
