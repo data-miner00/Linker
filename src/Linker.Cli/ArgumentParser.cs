@@ -88,7 +88,7 @@ internal static class ArgumentParser
     {
         var index = 1;
 
-        if (IsHelp(args[index]))
+        if (args.Length > index && IsHelp(args[index]))
         {
             return new AddLinkCommandArguments
             {
@@ -153,7 +153,7 @@ internal static class ArgumentParser
     {
         var index = 1;
 
-        if (IsHelp(args[index]))
+        if (args.Length > index && IsHelp(args[index]))
         {
             return new ShowLinksCommandArguments
             {
@@ -206,7 +206,7 @@ internal static class ArgumentParser
     {
         var index = 1;
 
-        if (IsHelp(args[index]))
+        if (args.Length > index && IsHelp(args[index]))
         {
             return new UpdateLinkCommandArguments
             {
@@ -296,7 +296,7 @@ internal static class ArgumentParser
     {
         var index = 1;
 
-        if (IsHelp(args[index]))
+        if (args.Length > index && IsHelp(args[index]))
         {
             return new DeleteLinkCommandArguments
             {
@@ -341,7 +341,7 @@ internal static class ArgumentParser
     {
         var index = 1;
 
-        if (IsHelp(args[index]))
+        if (args.Length > index && IsHelp(args[index]))
         {
             return new VisitLinkCommandArguments
             {
@@ -393,7 +393,7 @@ internal static class ArgumentParser
     {
         var index = 2;
 
-        if (IsHelp(args[index]))
+        if (args.Length > index && IsHelp(args[index]))
         {
             return new CreateListCommandArguments
             {
@@ -438,7 +438,7 @@ internal static class ArgumentParser
     {
         var index = 2;
 
-        if (IsHelp(args[index]))
+        if (args.Length > index && IsHelp(args[index]))
         {
             return new UpdateListCommandArguments
             {
@@ -488,7 +488,7 @@ internal static class ArgumentParser
     {
         var index = 2;
 
-        if (IsHelp(args[index]))
+        if (args.Length > index && IsHelp(args[index]))
         {
             return new DeleteListCommandArguments
             {
@@ -533,7 +533,7 @@ internal static class ArgumentParser
     {
         var index = 2;
 
-        if (IsHelp(args[index]))
+        if (args.Length > index && IsHelp(args[index]))
         {
             return new ShowListsCommandArguments
             {
