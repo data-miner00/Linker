@@ -40,7 +40,7 @@ internal static class ContainerConfig
 
     private static ContainerBuilder ConfigureSettings(this ContainerBuilder builder)
     {
-        var environment = Environment.GetEnvironmentVariable("NETCORE_ENVIRONMENT");
+        var environment = Environment.GetEnvironmentVariable("NETCORE_ENVIRONMENT") ?? "Production";
 
         var configuration = new ConfigurationBuilder()
             .SetBasePath(AppContext.BaseDirectory)
