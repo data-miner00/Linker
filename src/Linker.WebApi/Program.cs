@@ -156,7 +156,8 @@ app
     .UseHttpsRedirection()
     .UseRequestTimeouts()
     .UseAuthentication()
-    .UseAuthorization();
+    .UseAuthorization()
+    .UseStatusCodePages();
 
 app.MapPrometheusScrapingEndpoint();
 
