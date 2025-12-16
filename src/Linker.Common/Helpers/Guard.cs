@@ -1,4 +1,5 @@
-﻿namespace Linker.Common.Helpers
+﻿#nullable enable
+namespace Linker.Common.Helpers
 {
     using System;
     using System.Collections;
@@ -21,7 +22,7 @@
         /// <param name="paramName">The name of the object.</param>
         /// <returns>The object itself.</returns>
         /// <exception cref="ArgumentException">Throws when object is null.</exception>
-        public static T ThrowIfNull<T>(T obj, [CallerArgumentExpression(nameof(obj))] string? paramName = null)
+        public static T ThrowIfNull<T>(T? obj, [CallerArgumentExpression(nameof(obj))] string? paramName = null)
             where T : class
         {
             if (obj is null)
@@ -40,7 +41,7 @@
         /// <param name="paramName">The parameter name.</param>
         /// <returns>The object itself.</returns>
         /// <exception cref="ArgumentNullException">Argument null exception.</exception>
-        public static T ThrowIfNullOrEmpty<T>(T obj, [CallerArgumentExpression(nameof(obj))] string? paramName = null)
+        public static T ThrowIfNullOrEmpty<T>(T? obj, [CallerArgumentExpression(nameof(obj))] string? paramName = null)
         {
             if (obj is null)
             {
@@ -67,7 +68,7 @@
         /// <param name="paramName">The name of the string.</param>
         /// <returns>The string itself.</returns>
         /// <exception cref="ArgumentException">Throws when string is null or empty.</exception>
-        public static string ThrowIfNullOrWhitespace(string str, [CallerArgumentExpression(nameof(str))] string? paramName = null)
+        public static string ThrowIfNullOrWhitespace(string? str, [CallerArgumentExpression(nameof(str))] string? paramName = null)
         {
             if (string.IsNullOrEmpty(str))
             {
