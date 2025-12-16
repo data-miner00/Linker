@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Metrics;
@@ -96,6 +97,13 @@ builder.Services.AddRequestTimeouts(opt =>
     opt.AddPolicy("MoreThanTenSeconds", TimeSpan.FromSeconds(10));
 });
 
+builder.Services.AddResponseCompression(opt =>
+{
+    opt.EnableForHttps = true;
+    opt.Providers.Add<GzipCompressionProvider>();
+    opt.Providers.Add<BrotliCompressionProvider>();
+});
+
 builder.Services
     .AddSingleton<IDbConnection>(connection)
     .AddSingleton<IWebsiteRepository, WebsiteRepository>()
@@ -157,7 +165,8 @@ app
     .UseRequestTimeouts()
     .UseAuthentication()
     .UseAuthorization()
-    .UseStatusCodePages();
+    .UseStatusCodePages()
+    .UseResponseCompression();
 
 app.MapPrometheusScrapingEndpoint();
 
