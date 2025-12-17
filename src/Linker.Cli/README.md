@@ -24,6 +24,8 @@ The command line program for managing links.
 1. Delete list
 1. Add link into list
 1. Remove link from list
+1. Set list as default context
+1. Visit all links in list
 
 ## Roadmaps
 

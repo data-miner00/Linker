@@ -5,6 +5,7 @@
     using System.Data;
     using System.Data.SQLite;
     using System.Runtime.CompilerServices;
+    using System.Text.Json;
     using System.Threading.Tasks;
     using System.Timers;
     using Dapper;
@@ -15,13 +16,17 @@
 
     internal static class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var connectionString = LoadConnectionString("SqlServer");
             using var connection = new SqlConnection(connectionString);
 
-            var a = GetAll(connection).GetAwaiter().GetResult();
-            Console.WriteLine();
+            var a = await GetAll(connection);
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+            };
+            Console.WriteLine(JsonSerializer.Serialize(a, options));
         }
 
         public static Task<IEnumerable<Link>> GetAll(IDbConnection connection)

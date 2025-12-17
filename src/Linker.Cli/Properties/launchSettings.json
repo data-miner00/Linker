@@ -2,14 +2,14 @@
   "profiles": {
     "Linker.Cli.Dev": {
       "commandName": "Project",
-      "commandLineArgs": "list visit 1 --all --random",
+      "commandLineArgs": "show -a",
       "environmentVariables": {
         "NETCORE_ENVIRONMENT": "Development"
       }
     },
     "Linker.Cli.Prod": {
       "commandName": "Project",
-      "commandLineArgs": "show",
+      "commandLineArgs": "show -a",
       "environmentVariables": {
         "NETCORE_ENVIRONMENT": "Production"
       }
