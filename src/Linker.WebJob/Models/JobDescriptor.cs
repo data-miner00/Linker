@@ -21,4 +21,9 @@ internal sealed class JobDescriptor
     /// Gets or sets the cron expression of the job.
     /// </summary>
     required public string CronExpression { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to enable the job or not.
+    /// </summary>
+    public bool Enabled { get; set; }
 }

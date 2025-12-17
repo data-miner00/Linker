@@ -53,22 +53,26 @@ internal sealed class JobScheduler
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var jobSchedulingTasks = this.jobDescriptors.Select(jobDescriptor =>
-        {
-            var job = JobBuilder.Create()
-                .OfType(jobDescriptor.JobType)
-                .WithIdentity(jobDescriptor.JobType.Name)
-                .WithDescription(jobDescriptor.Description)
-                .Build();
+        var jobSchedulingTasks = this.jobDescriptors
+            .Where(jobDescriptor => jobDescriptor.Enabled)
+            .Select(jobDescriptor =>
+            {
+                Console.WriteLine($"Registering Job: {jobDescriptor.JobType.Name}");
 
-            var trigger = TriggerBuilder.Create()
-                .WithIdentity(jobDescriptor.JobType.Name + "trigger")
-                .WithDescription($"The trigger for {jobDescriptor.JobType.Name} job")
-                .WithCronSchedule(jobDescriptor.CronExpression)
-                .Build();
+                var job = JobBuilder.Create()
+                    .OfType(jobDescriptor.JobType)
+                    .WithIdentity(jobDescriptor.JobType.Name)
+                    .WithDescription(jobDescriptor.Description)
+                    .Build();
 
-            return this.scheduler.ScheduleJob(job, trigger, cancellationToken);
-        });
+                var trigger = TriggerBuilder.Create()
+                    .WithIdentity(jobDescriptor.JobType.Name + "trigger")
+                    .WithDescription($"The trigger for {jobDescriptor.JobType.Name} job")
+                    .WithCronSchedule(jobDescriptor.CronExpression)
+                    .Build();
+
+                return this.scheduler.ScheduleJob(job, trigger, cancellationToken);
+            });
 
         return Task.WhenAll(jobSchedulingTasks);
     }

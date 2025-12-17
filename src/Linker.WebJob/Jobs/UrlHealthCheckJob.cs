@@ -54,7 +54,7 @@ internal class UrlHealthCheckJob : IJob
                 context.CancellationToken);
 
             Stopwatch stopwatch = Stopwatch.StartNew();
-            await Console.Out.WriteLineAsync("Starting execution");
+            await Console.Out.WriteLineAsync($"Starting {nameof(UrlHealthCheckJob)}");
 
             var allUrls = await this
                 .GetAllUrlsAsync(linkedCancellationToken.Token)
@@ -70,6 +70,7 @@ internal class UrlHealthCheckJob : IJob
             await Console.Out.WriteLineAsync("Upsert started");
             await Task.WhenAll(upsertTasks);
             await Console.Out.WriteLineAsync("Upsert done");
+            await Console.Out.WriteLineAsync($"Done {nameof(UrlHealthCheckJob)}");
             stopwatch.Stop();
 
             var ts = stopwatch.Elapsed;
@@ -84,10 +85,10 @@ internal class UrlHealthCheckJob : IJob
 
     private async Task<IEnumerable<string>> GetAllUrlsAsync(CancellationToken cancellationToken)
     {
-        var articleUrls = await this.linkRepository
+        var link = await this.linkRepository
             .GetAllAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        return articleUrls.Select(x => x.Url).ToList();
+        return link.Select(x => x.Url).ToList();
     }
 }

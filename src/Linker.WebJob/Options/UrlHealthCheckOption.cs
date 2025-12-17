@@ -22,4 +22,9 @@ internal sealed class UrlHealthCheckOption
     [Required]
     [Range(0, int.MaxValue)]
     required public int TimeoutInSeconds { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this job should be enabled or not.
+    /// </summary>
+    public bool Enabled { get; set; }
 }

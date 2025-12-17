@@ -105,12 +105,14 @@ internal static class ContainerConfig
                         JobType = typeof(UrlHealthCheckJob),
                         Description = "Regularly checks on the status of url links.",
                         CronExpression = healthCheckOption.CronExpression,
+                        Enabled = healthCheckOption.Enabled,
                     },
                     new()
                     {
                         JobType = typeof(ImageMetadataRetrieverJob),
                         Description = "Regularly tries to search for thumbnail and favicon for new links.",
                         CronExpression = imageMetadataOption.CronExpression,
+                        Enabled = imageMetadataOption.Enabled,
                     },
                 };
 

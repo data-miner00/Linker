@@ -4,10 +4,7 @@ using Linker.Core.V2.Clients;
 using Linker.WebJob.Options;
 using Quartz;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 /// <summary>

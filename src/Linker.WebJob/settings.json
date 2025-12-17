@@ -4,10 +4,12 @@
   },
   "UrlHealthCheckOption": {
     "CronExpression": "0 0/5 * 1/1 * ? *",
-    "TimeoutInSeconds": 10
+    "TimeoutInSeconds": 60,
+    "Enabled": true
   },
   "ImageMetadataRetrieverOption": {
-    "CronExpression": "0 0/1 * 1/1 * ? *",
-    "TimeoutInSeconds": 10
+    "CronExpression": "0 0/10 * 1/1 * ? *",
+    "TimeoutInSeconds": 60,
+    "Enabled": true
   }
 }
