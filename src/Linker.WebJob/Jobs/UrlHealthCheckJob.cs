@@ -1,5 +1,6 @@
 ﻿namespace Linker.WebJob.Jobs;
 
+using Linker.Common.Helpers;
 using Linker.Core.V2.Repositories;
 using Linker.WebJob.Options;
 using Quartz;
@@ -33,10 +34,10 @@ internal class UrlHealthCheckJob : IJob
         IHealthCheckRepository healthCheckRepository,
         UrlHealthCheckOption option)
     {
-        this.checker = checker;
-        this.linkRepository = linkRepository;
-        this.healthCheckRepository = healthCheckRepository;
-        this.option = option;
+        this.checker = Guard.ThrowIfNull(checker);
+        this.linkRepository = Guard.ThrowIfNull(linkRepository);
+        this.healthCheckRepository = Guard.ThrowIfNull(healthCheckRepository);
+        this.option = Guard.ThrowIfNull(option);
     }
 
     /// <inheritdoc/>
@@ -89,6 +90,6 @@ internal class UrlHealthCheckJob : IJob
             .GetAllAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        return link.Select(x => x.Url).ToList();
+        return link.Select(x => x.Url);
     }
 }

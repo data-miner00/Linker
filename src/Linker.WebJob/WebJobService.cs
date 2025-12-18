@@ -1,5 +1,6 @@
 ﻿namespace Linker.WebJob;
 
+using Linker.Common.Helpers;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading;
@@ -18,7 +19,7 @@ internal class WebJobService : BackgroundService
     /// <param name="jobScheduler">The custom job scheduler.</param>
     public WebJobService(JobScheduler jobScheduler)
     {
-        this.jobScheduler = jobScheduler;
+        this.jobScheduler = Guard.ThrowIfNull(jobScheduler);
     }
 
     /// <inheritdoc/>

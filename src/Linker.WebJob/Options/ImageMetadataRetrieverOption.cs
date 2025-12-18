@@ -4,6 +4,9 @@ using Linker.WebJob.Filters;
 using System;
 using System.ComponentModel.DataAnnotations;
 
+/// <summary>
+/// The options for image metadata retriever job.
+/// </summary>
 internal sealed class ImageMetadataRetrieverOption
 {
     /// <summary>

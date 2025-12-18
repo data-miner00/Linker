@@ -1,5 +1,6 @@
 ﻿namespace Linker.WebJob.Jobs;
 
+using Linker.Common.Helpers;
 using Linker.Core.V2.Clients;
 using Linker.WebJob.Options;
 using Quartz;
@@ -30,9 +31,9 @@ internal class ImageMetadataRetrieverJob : IJob
         ImageMetadataRetrieverOption option,
         IImageMetadataHandler handler)
     {
-        this.client = client;
-        this.option = option;
-        this.handler = handler;
+        this.client = Guard.ThrowIfNull(client);
+        this.option = Guard.ThrowIfNull(option);
+        this.handler = Guard.ThrowIfNull(handler);
     }
 
     /// <inheritdoc/>

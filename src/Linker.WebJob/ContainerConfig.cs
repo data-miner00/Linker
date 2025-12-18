@@ -34,7 +34,7 @@ internal static class ContainerConfig
             .RegisterOptions()
             .RegisterRepositories()
             .RegisterDatabaseConnection()
-            .RegisterUrlHealthCheck();
+            .RegisterJobs();
 
         return builder.Build();
     }
@@ -90,7 +90,7 @@ internal static class ContainerConfig
         return builder;
     }
 
-    private static ContainerBuilder RegisterUrlHealthCheck(this ContainerBuilder builder)
+    private static ContainerBuilder RegisterJobs(this ContainerBuilder builder)
     {
         builder
             .Register(ctx =>
@@ -123,7 +123,7 @@ internal static class ContainerConfig
 
         var defaultScheduler = StdSchedulerFactory.GetDefaultScheduler().GetAwaiter().GetResult();
 
-        builder.RegisterInstance(new HttpClient()).SingleInstance();
+        builder.RegisterType<HttpClient>().SingleInstance();
         builder.RegisterType<JobFactory>().As<IJobFactory>();
         builder.RegisterType<UrlHealthChecker>().As<IUrlHealthChecker>().SingleInstance();
         builder.RegisterType<UrlHealthCheckJob>().SingleInstance();

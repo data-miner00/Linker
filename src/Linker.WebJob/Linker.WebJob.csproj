@@ -11,7 +11,6 @@
     <PackageReference Include="AngleSharp" Version="1.2.0" />
     <PackageReference Include="Autofac" Version="8.0.0" />
     <PackageReference Include="Autofac.Configuration" Version="6.0.0" />
-    <PackageReference Include="Ensure.That" Version="10.1.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />

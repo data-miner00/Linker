@@ -33,6 +33,9 @@ internal sealed class ImageMetadataHandler : IImageMetadataHandler
     /// <inheritdoc/>
     public async Task HandleAsync(string linkId, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+        Guard.ThrowIfNullOrWhitespace(linkId);
+
         var link = await this.linkRepository.GetByIdAsync(linkId, cancellationToken);
 
         var document = await this.browsingContext.OpenAsync(link.Url, cancellationToken);

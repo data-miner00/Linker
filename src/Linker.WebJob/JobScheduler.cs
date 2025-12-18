@@ -1,5 +1,6 @@
 ﻿namespace Linker.WebJob;
 
+using Linker.Common.Helpers;
 using Linker.WebJob.Models;
 using Quartz;
 using Quartz.Spi;
@@ -23,9 +24,9 @@ internal sealed class JobScheduler
     /// <param name="jobFactory">The custom IoC-aware job factory.</param>
     public JobScheduler(IScheduler scheduler, IEnumerable<JobDescriptor> jobDescriptors, IJobFactory jobFactory)
     {
-        this.scheduler = scheduler;
-        this.jobDescriptors = jobDescriptors;
-        this.jobFactory = jobFactory;
+        this.scheduler = Guard.ThrowIfNull(scheduler);
+        this.jobDescriptors = Guard.ThrowIfNull(jobDescriptors);
+        this.jobFactory = Guard.ThrowIfNull(jobFactory);
     }
 
     /// <summary>

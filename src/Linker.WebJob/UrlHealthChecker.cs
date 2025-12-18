@@ -1,6 +1,6 @@
 ﻿namespace Linker.WebJob;
 
-using EnsureThat;
+using Linker.Common.Helpers;
 using Linker.Core.V2.Models;
 using System;
 using System.Threading.Tasks;
@@ -18,7 +18,7 @@ public sealed class UrlHealthChecker : IUrlHealthChecker
     /// <param name="httpClient">The HTTP client.</param>
     public UrlHealthChecker(HttpClient httpClient)
     {
-        this.httpClient = EnsureArg.IsNotNull(httpClient, nameof(httpClient));
+        this.httpClient = Guard.ThrowIfNull(httpClient);
     }
 
     /// <inheritdoc/>

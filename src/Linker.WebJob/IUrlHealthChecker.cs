@@ -13,5 +13,5 @@ public interface IUrlHealthChecker
     /// <param name="url">The url of the website.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The health check result.</returns>
-    public Task<HealthCheckResult> PingAsync(string url, CancellationToken cancellationToken);
+    Task<HealthCheckResult> PingAsync(string url, CancellationToken cancellationToken);
 }
