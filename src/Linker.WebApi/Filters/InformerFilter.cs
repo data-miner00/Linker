@@ -2,15 +2,42 @@
 
 using Microsoft.AspNetCore.Mvc.Filters;
 
-public sealed class InformerFilter : IActionFilter
+/// <summary>
+/// A filter that logs when and after an action has been executed.
+/// </summary>
+public sealed partial class InformerFilter : IActionFilter
 {
-    public void OnActionExecuting(ActionExecutingContext context)
+    private readonly ILogger<InformerFilter> logger;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="InformerFilter"/> class.
+    /// </summary>
+    /// <param name="logger">The logger.</param>
+    public InformerFilter(ILogger<InformerFilter> logger)
     {
-        Console.WriteLine("Before action executed");
+        ArgumentNullException.ThrowIfNull(logger);
+        this.logger = logger;
     }
 
+    /// <inheritdoc/>
+    public void OnActionExecuting(ActionExecutingContext context)
+    {
+        this.LogExecuting(context.ActionDescriptor.DisplayName ?? "Unknown Action");
+    }
+
+    /// <inheritdoc/>
     public void OnActionExecuted(ActionExecutedContext context)
     {
-        Console.WriteLine("After action executed");
+        this.LogExecuted(context.ActionDescriptor.DisplayName ?? "Unknown Action");
     }
+
+    /// <summary>
+    /// Implementation following <see href="https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1873">CA1873: Avoid potentially expensive logging</see>.
+    /// </summary>
+    /// <param name="actionName">The name of the action.</param>
+    [LoggerMessage(Level = LogLevel.Information, Message = "Executing action: {ActionName}")]
+    private partial void LogExecuting(string actionName);
+
+    [LoggerMessage(Level = LogLevel.Trace, Message = "Executed action: {ActionName}")]
+    private partial void LogExecuted(string actionName);
 }
