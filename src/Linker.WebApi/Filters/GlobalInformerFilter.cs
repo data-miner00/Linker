@@ -3,17 +3,17 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 
 /// <summary>
-/// A filter that logs when and after an action has been executed.
+/// A global filter that logs when and after an action has been executed.
 /// </summary>
-public sealed partial class InformerFilter : IActionFilter
+public sealed partial class GlobalInformerFilter : IActionFilter
 {
-    private readonly ILogger<InformerFilter> logger;
+    private readonly ILogger<GlobalInformerFilter> logger;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InformerFilter"/> class.
+    /// Initializes a new instance of the <see cref="GlobalInformerFilter"/> class.
     /// </summary>
     /// <param name="logger">The logger.</param>
-    public InformerFilter(ILogger<InformerFilter> logger)
+    public GlobalInformerFilter(ILogger<GlobalInformerFilter> logger)
     {
         ArgumentNullException.ThrowIfNull(logger);
         this.logger = logger;
@@ -35,9 +35,9 @@ public sealed partial class InformerFilter : IActionFilter
     /// Implementation following <see href="https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1873">CA1873: Avoid potentially expensive logging</see>.
     /// </summary>
     /// <param name="actionName">The name of the action.</param>
-    [LoggerMessage(Level = LogLevel.Information, Message = "Executing action: {ActionName}")]
+    [LoggerMessage(Level = LogLevel.Information, Message = "Global executing action: {ActionName}")]
     private partial void LogExecuting(string actionName);
 
-    [LoggerMessage(Level = LogLevel.Trace, Message = "Executed action: {ActionName}")]
+    [LoggerMessage(Level = LogLevel.Trace, Message = "Global executed action: {ActionName}")]
     private partial void LogExecuted(string actionName);
 }
