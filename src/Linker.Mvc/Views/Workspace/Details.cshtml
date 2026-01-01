@@ -269,6 +269,8 @@
 @section Scripts {
     <partial name="_SomeScriptsPartial" />
     <script type="text/javascript" async>
+        var ringtone = new Audio('/assets/audio/msn-ringtone.mp3');
+
         var connection = new signalR
             .HubConnectionBuilder()
             .withUrl("https://localhost:7201/Chat")
@@ -306,6 +308,9 @@
             `;
             console.log(`${usr} - ${JSON.stringify(msg)}`);
             $("#chatcontainer").append(newChatElem);
+            if (msg.authorId !== "@userId") {
+                ringtone.play();
+            }
         });
 
         connection.on("EditMessage", (msg) => {
