@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.2.32616.157
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.ConsoleUI", "Linker.ConsoleUI\Linker.ConsoleUI.csproj", "{9BDF7E70-01E7-40BF-9213-5D7170C1DF78}"
 EndProject
@@ -54,8 +54,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.GraphQL", "Linker.GraphQL\Linker.GraphQL.csproj", "{F585C28D-A62C-4E36-AC93-3C77A93FAC15}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.Mvc.UnitTests", "Linker.Mvc.UnitTests\Linker.Mvc.UnitTests.csproj", "{428F405D-8BDB-4C2F-9E3A-24CCB78D5A71}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.GrpcServer", "Linker.GrpcServer\Linker.GrpcServer.csproj", "{CF4B4CE8-E697-41F1-9FAD-03DE06228079}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker.Core.V2", "Linker.Core.V2\Linker.Core.V2.csproj", "{F1AA35C0-C64E-4ECF-A41E-C632018121C0}"
 EndProject
@@ -149,10 +147,6 @@ Global
 		{428F405D-8BDB-4C2F-9E3A-24CCB78D5A71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{428F405D-8BDB-4C2F-9E3A-24CCB78D5A71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{428F405D-8BDB-4C2F-9E3A-24CCB78D5A71}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF4B4CE8-E697-41F1-9FAD-03DE06228079}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF4B4CE8-E697-41F1-9FAD-03DE06228079}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF4B4CE8-E697-41F1-9FAD-03DE06228079}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF4B4CE8-E697-41F1-9FAD-03DE06228079}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F1AA35C0-C64E-4ECF-A41E-C632018121C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F1AA35C0-C64E-4ECF-A41E-C632018121C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1AA35C0-C64E-4ECF-A41E-C632018121C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
