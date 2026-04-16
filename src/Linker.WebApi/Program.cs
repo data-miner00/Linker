@@ -146,6 +146,13 @@ builder.Services.Configure<ForwardedHeadersOptions>(opt =>
     opt.KnownProxies.Clear();
 });
 
+builder.Services.AddHsts(options =>
+{
+    options.Preload = true;
+    options.IncludeSubDomains = true;
+    options.MaxAge = TimeSpan.FromDays(60); // Default is 30 days
+});
+
 var app = builder.Build();
 
 app.UseForwardedHeaders();
@@ -156,6 +163,10 @@ if (app.Environment.IsDevelopment())
     app
         .UseSwagger()
         .UseSwaggerUI();
+}
+else
+{
+    app.UseHsts();
 }
 
 app
