@@ -69,43 +69,28 @@ This project is still in active development and the entities and database design
 | | Directory | Description |
 | --- | --- | --- |
 |  1. | Linker.Common | Library that includes commonly shared codes across other projects |
-|  2. | Linker.ConsoleUI | The very first version of the application. Uses CSV as the backing store and has limited features |
-|  3. | Linker.Core | Old library that contains the models and interfaces used across the codebase |
-|  4. | Linker.Core.V2 | Latest library that contains the models and interfaces with the updated design decision |
-|  5. | Linker.Data | The integration layer between the application and data sources such as database |
-|  6. | Linker.Database | The project that stores all the TSQL definitions such as tables and stored procedures for the database |
-|  7. | Linker.Debugger | A console for debugging codes |
-|  8. | Linker.GraphQL | The client with GraphQL. Working in progress. |
-|  9. | Linker.GrpcServer | An experimental client with gRPC. Working in progress. |
-| 10. | Linker.Mvc | The main client for the application. Working in progress. |
-| 11. | Linker.Preprocess | A small tool to collect minimal links |
-| 12. | Linker.WebApi | A HTTP client for the app |
-| 13. | Linker.WebJob | A cron-powered background service that housekeep the records |
-| 14. | Linker.Wpf | A GUI client for the app. Working in progress. |
-
-**Tests**
-| | Directory | Description |
-| --- | --- | --- |
-|  1. | Linker.Common.UnitTests | Unit tests for `Linker.Common` |
-|  2. | Linker.ConsoleUI.UnitTests | Unit tests for `Linker.ConsoleUI` |
-|  3. | Linker.Mvc.UnitTests | Unit tests for `Linker.Mvc`. Uses SpecFlow for BDD styled tests. |
-|  4. | Linker.TestCore | Library that contains utilities for unit test projects |
-|  5. | Linker.WebApi.IntegrationTests | Integration tests for `Linker.WebApi` _(Have not set up yet)_. |
-|  6. | Linker.WebApi.UnitTests | Unit tests for `Linker.WebApi` |
+|  2. | Linker.Core | Old library that contains the models and interfaces used across the codebase |
+|  3. | Linker.Core.V2 | Latest library that contains the models and interfaces with the updated design decision |
+|  4. | Linker.Data | The integration layer between the application and data sources such as database |
+|  5. | Linker.Database | The project that stores all the TSQL definitions such as tables and stored procedures for the database |
+|  6. | Linker.Mvc | The main client for the application. Working in progress. |
+|  7. | Linker.WebApi | A HTTP client for the app |
+|  8. | Linker.WebJob | A cron-powered background service that housekeep the records |
+|  9. | Linker.Cli | A standalone CLI app |
+| 10. | Linker.Cli.Core | Library used by the CLI app |
+| 11. | Linker.Cli.Integrations | Library containing data access orchestration used by the CLI app |
 
 ### Built With
 
 The technologies and tools used within this project.
 
 - .NET Core
-- .NET MVC
 - Pnpm
 - TailwindCSS
 - JavaScript
 - jQuery
 - TSQL/SQL Server
 - SignalR
-- Powershell
 - xUnit
 - SpecFlow
 
@@ -151,7 +136,7 @@ To run this template project in your local for personal use or contribution, sim
    ```
    dotnet build
    ```
-5. Restore database (steps coming soon..)
+5. Restore database
 6. Run Mvc
    ```
    dotnet run --project src/Linker.Mvc/Linker.Mvc.csproj
@@ -163,16 +148,13 @@ To run this template project in your local for personal use or contribution, sim
 
 ## Roadmap
 
-- [ ] Add OAuth/OIDC/Okta authentication
+- [ ] Add OAuth/OIDC authentication
 - [ ] Add QRCode
 - [ ] Use RabbitMQ
 - [ ] Use Grafana for telemetry tracking
 - [ ] Configure code coverage with report generator
 - [ ] Create Mobile App
 - [ ] Sending Email
-- [ ] Working SpecFlow unit tests
-- [ ] Working integration tests
-- [ ] Add component tests
 - [ ] Change GitHub Workflows to use Azure Pipelines
 
 See the [open issues](https://github.com/data-miner00/Linker/issues) for a full list of proposed features (and known issues).
