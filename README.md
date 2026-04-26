@@ -74,14 +74,9 @@ This project is still in active development and the entities and database design
 |  4. | Linker.Core.V2 | Latest library that contains the models and interfaces with the updated design decision |
 |  5. | Linker.Data | The integration layer between the application and data sources such as database |
 |  6. | Linker.Database | The project that stores all the TSQL definitions such as tables and stored procedures for the database |
-|  7. | Linker.Debugger | A console for debugging codes |
-|  8. | Linker.GraphQL | The client with GraphQL. Working in progress. |
-|  9. | Linker.GrpcServer | An experimental client with gRPC. Working in progress. |
-| 10. | Linker.Mvc | The main client for the application. Working in progress. |
-| 11. | Linker.Preprocess | A small tool to collect minimal links |
-| 12. | Linker.WebApi | A HTTP client for the app |
-| 13. | Linker.WebJob | A cron-powered background service that housekeep the records |
-| 14. | Linker.Wpf | A GUI client for the app. Working in progress. |
+|  7. | Linker.Mvc | The main client for the application. Working in progress. |
+|  8. | Linker.WebApi | A HTTP client for the app |
+|  9. | Linker.WebJob | A cron-powered background service that housekeep the records |
 
 **Tests**
 | | Directory | Description |
@@ -90,8 +85,7 @@ This project is still in active development and the entities and database design
 |  2. | Linker.ConsoleUI.UnitTests | Unit tests for `Linker.ConsoleUI` |
 |  3. | Linker.Mvc.UnitTests | Unit tests for `Linker.Mvc`. Uses SpecFlow for BDD styled tests. |
 |  4. | Linker.TestCore | Library that contains utilities for unit test projects |
-|  5. | Linker.WebApi.IntegrationTests | Integration tests for `Linker.WebApi` _(Have not set up yet)_. |
-|  6. | Linker.WebApi.UnitTests | Unit tests for `Linker.WebApi` |
+|  5. | Linker.WebApi.UnitTests | Unit tests for `Linker.WebApi` |
 
 ### Built With
 
