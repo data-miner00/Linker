@@ -1,0 +1,37 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../.gitattributes" />
+    <File Path="../.github/workflows/dotnet.yml" />
+    <File Path="../.gitignore" />
+    <File Path="../CITATION.cff" />
+    <File Path="../LICENSE" />
+    <File Path="../README.md" />
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="package.json" />
+    <File Path="pnpm-workspace.yaml" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Linker.Cli.UnitTests/Linker.Cli.UnitTests.csproj" />
+    <Project Path="Linker.Common.UnitTests/Linker.Common.UnitTests.csproj" />
+    <Project Path="Linker.Integrations.UnitTests/Linker.Integrations.UnitTests.csproj" />
+    <Project Path="Linker.Mvc.UnitTests/Linker.Mvc.UnitTests.csproj" />
+    <Project Path="Linker.TestCore/Linker.TestCore.csproj" />
+    <Project Path="Linker.WebApi.UnitTests/Linker.WebApi.UnitTests.csproj" />
+  </Folder>
+  <Project Path="Linker.Cli.Core/Linker.Cli.Core.csproj" />
+  <Project Path="Linker.Cli.Integrations/Linker.Cli.Integrations.csproj" />
+  <Project Path="Linker.Cli/Linker.Cli.csproj" />
+  <Project Path="Linker.Common/Linker.Common.csproj" />
+  <Project Path="Linker.Core.V2/Linker.Core.V2.csproj" />
+  <Project Path="Linker.Core/Linker.Core.csproj" />
+  <Project Path="Linker.Data/Linker.Data.csproj" />
+  <Project Path="Linker.Database/Linker.Database.sqlproj" Id="f7a0beec-6abb-408e-a940-027128bffdeb">
+    <Build Solution="Release|*" />
+    <Deploy />
+  </Project>
+  <Project Path="Linker.Integrations/Linker.Integrations.csproj" />
+  <Project Path="Linker.Mvc/Linker.Mvc.csproj" />
+  <Project Path="Linker.WebApi/Linker.WebApi.csproj" />
+  <Project Path="Linker.WebJob/Linker.WebJob.csproj" />
+</Solution>
